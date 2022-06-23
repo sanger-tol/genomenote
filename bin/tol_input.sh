@@ -21,7 +21,7 @@ analysis=$data/$taxon/$organism/analysis/$assembly
 
 if compgen -G $analysis/read_mapping/hic*/${gca}.*cram > /dev/null
     then echo "sample,datatype,datafile" > samplesheet.csv
-    crams=($(ls $analysis/read_mapping/*/${gca}.*cram))
+    crams=($(ls $analysis/read_mapping/hic*/${gca}.*cram))
     for aln in ${crams[@]}
         do sample=$(basename $aln | awk -F. '{print $(NF-1)}')
         datatype=$(basename $aln | awk -F. '{print $(NF-2)}')
