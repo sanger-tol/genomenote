@@ -11,16 +11,16 @@ process INPUT_TOL {
     val project
 
     output:
-    path "*.unmasked.fasta", emit: fasta
+    path "*.fasta", emit: fasta
     path "samplesheet.csv",  emit: csv
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def proj = project ? "${project}" : ""
+    def args = task.ext.args ?: ''
     """
-    tol_input.sh $tolid ${proj}
+    tol_input.sh $tolid "$project" $args
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

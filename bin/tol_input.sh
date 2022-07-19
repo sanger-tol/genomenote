@@ -30,6 +30,6 @@ if compgen -G $analysis/read_mapping/hic*/${gca}.*cram > /dev/null
 else echo "No cram files."; exit 1; fi
 
 if compgen -G $analysis/assembly/indices/${gca}.unmasked.fasta > /dev/null
-    then cp $analysis/assembly/indices/${gca}.unmasked.fasta ./
+    then ln -s $analysis/assembly/indices/${gca}.unmasked.fasta unmasked_genome.fasta
 else "Unmasked fasta does not exist."; exit 1; fi
 
