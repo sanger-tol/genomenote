@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ! $# -eq 2 ]; then echo -e "Please provide a ToL ID. \nUsage: ./automate_io <tol_id> <tol_project>. \n<tol_id> must match the expected genome. \n<tol_project> defaults to 'darwin'."; exit 1; fi
+if [ ! $# -eq 2 ]; then echo -e "Please provide a ToL ID. \nUsage: ./automate_io <tol_id> <tol_project>. \n<tol_id> must match the expected genome. \n<tol_project> name of the tree of life project."; exit 1; fi
 
 id=$1
 project=$2
