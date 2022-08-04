@@ -21,7 +21,7 @@ process BED_FILTER {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        GNU Awk: \$(echo \$(awk --version 2>&1) | grep -i awk | sed 's/GNU Awk //; s/,.*//')
+        GNU Bash: \$(echo \$(bash -version 2>&1) | grep -i bash | sed 's/GNU bash, version //; s/ .*//')
     END_VERSIONS
     """
 }

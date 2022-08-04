@@ -13,6 +13,7 @@ process INPUT_TOL {
     output:
     path "*.fasta", emit: fasta
     path "samplesheet.csv",  emit: csv
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when

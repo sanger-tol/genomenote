@@ -9,10 +9,9 @@ def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 // Validate input parameters
 WorkflowGenomenote.initialise(params, log)
 
-// TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.multiqc_config, params.fasta ]
-for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
+// def checkPathParamList = [ params.multiqc_config, params.fasta ]
+// for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
 if (params.input && params.fasta) { inputs = [ file(params.input, checkIfExists: true), file(params.fasta) ] }
@@ -37,7 +36,8 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include { INPUT_CHECK  } from '../subworkflows/local/input_check'
+include { CONTACT_MAPS } from '../subworkflows/local/contact_maps'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,14 +70,21 @@ workflow GENOMENOTE {
     //
     Channel.of ( inputs ).set { ch_input }
     INPUT_CHECK ( ch_input )
-    // ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     //
     // MODULE: Convert CRAM to BAM
     //
     ch_fasta = INPUT_CHECK.out.genome.collect()
     SAMTOOLS_VIEW ( INPUT_CHECK.out.aln, ch_fasta )
-    // ch_versions = ch_versions.mix(SAMTOOLS_VIEW.out.versions)
+    ch_versions = ch_versions.mix(SAMTOOLS_VIEW.out.versions)
+
+    //
+    // SUBWORKFLOW: Create contact maps from BAM
+    //
+    ch_bin = Channel.of(params.binsize)
+    CONTACT_MAPS (SAMTOOLS_VIEW.out.bam, SAMTOOLS_VIEW.out.fai, ch_bin)
+    ch_versions = ch_versions.mix(CONTACT_MAPS.out.versions)
 
     //
     // MODULE: Combine different versions.yml

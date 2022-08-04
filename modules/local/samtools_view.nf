@@ -13,6 +13,7 @@ process SAMTOOLS_VIEW {
 
     output:
     tuple val(meta), path("*.bam") , emit: bam
+    path("*.fai")                  , emit: fai
     path  "versions.yml"           , emit: versions
 
     when:

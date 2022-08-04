@@ -47,7 +47,6 @@ workflow CONTACT_MAPS {
     // Create the `.cool` file
     COOLER_CLOAD ( ch_cooler, cool_bin, GENOME_FILTER.out.list )
     ch_versions = ch_versions.mix(COOLER_CLOAD.out.versions)
-    COOLER_CLOAD.out.cool.view()
 
     COOLER_CLOAD.out.cool
     .map { meta, bin, cool ->
@@ -58,7 +57,6 @@ workflow CONTACT_MAPS {
     // Create the `.mcool` file
     COOLER_ZOOMIFY ( ch_zoomify )
     ch_versions = ch_versions.mix(COOLER_ZOOMIFY.out.versions)
-    COOLER_ZOOMIFY.out.mcool.view()
 
     emit:
     cool = COOLER_CLOAD.out.cool      // tuple val(meta), val(cool_bin), path("*.cool")
