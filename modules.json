@@ -3,6 +3,12 @@
     "homePage": "https://github.com/nf-core/genomenote",
     "repos": {
         "nf-core/modules": {
+            "cooler/cload": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
+            "cooler/zoomify": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
             "custom/dumpsoftwareversions": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },

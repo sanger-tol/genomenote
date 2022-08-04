@@ -1,4 +1,5 @@
-process INPUT_TOL {
+process GENOME_FILTER {
+    tag "$index.simpleName"
     label 'process_nompi'
 
     conda (params.enable_conda ? "conda-forge::gawk=5.1.0" : null)
@@ -7,21 +8,16 @@ process INPUT_TOL {
         'quay.io/biocontainers/gawk:5.1.0' }"
 
     input:
-    val tolid
-    val project
+    path index
 
     output:
-    path "*.fasta", emit: fasta
-    path "samplesheet.csv",  emit: csv
+    path "*list",        emit: list
     path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
-    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${index.simpleName}"
     """
-    tol_input.sh $tolid "$project" $args
+    genome_filter.sh $index ${prefix}.filtered.list
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
