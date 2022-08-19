@@ -14,7 +14,7 @@ process SAMPLESHEET_CHECK {
     path '*.csv'       , emit: csv
     path "versions.yml", emit: versions
 
-    script: // This script is bundled with the pipeline, in nf-core/readmapping/bin/
+    script: // This script is bundled with the pipeline, in nf-core/genomenote/bin/
     """
     check_samplesheet.py \\
         $samplesheet \\
