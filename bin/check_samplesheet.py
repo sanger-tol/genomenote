@@ -15,6 +15,7 @@ def parse_args(args=None):
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
     parser.add_argument("FILE_IN", help="Input samplesheet file.")
     parser.add_argument("FILE_OUT", help="Output file.")
+    parser.add_argument('--version', action='version', version='%(prog)s 1.0')
     return parser.parse_args(args)
 
 
