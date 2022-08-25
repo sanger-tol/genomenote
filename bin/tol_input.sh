@@ -1,16 +1,24 @@
 #!/bin/bash
 
-if [ ! $# -eq 2 ]; then echo -e "Please provide a ToL ID and project name. \nUsage: ./tol_input.sh <tol_id> <tol_project>. \n<tol_id> must match the expected genome. \n<tol_project> name of the tree of life project."; exit 1; fi
+PROJECT_BASEDIR=/lustre/scratch124/tol/projects
 
-id=$1
-project=$2
-data=/lustre/scratch124/tol/projects/$project/data
+if [ $# -ne 2 ]; then echo -e "Script to create a samplesheet for a species.\nUsage: $0 <tol_id> <tol_project>.\nVersion: 1.0"; exit 1; fi
+
+id="$1"
+project="$2"
+data="$PROJECT_BASEDIR/$project/data"
+
+if [[ ! -d "$data" ]]
+then
+    echo "Project "$project" cannot be found under $PROJECT_BASEDIR"
+    exit 1
+fi
 
 if compgen -G $data/*/*/assembly/release/${id}.[0-9]/insdc/GCA*fasta.gz > /dev/null
     then genome=$(ls $data/*/*/assembly/release/${id}.[0-9]/insdc/GCA*fasta.gz | tail -1)
 elif compgen -G $data/*/*/assembly/release/${id}.[0-9]_{p,m}aternal_haplotype/insdc/GCA*fasta.gz > /dev/null
     then genome=$(ls $data/*/*/assembly/release/${id}.[0-9]_*aternal_haplotype/insdc/GCA*fasta.gz | tail -1)
-else echo "Genome for $id not found"; exit 1; fi
+else echo "Genome for $id not found in $data"; exit 1; fi
 
 taxon=$(echo $genome | cut -f8 -d'/')
 organism=$(echo $genome | cut -f9 -d'/')
@@ -31,5 +39,5 @@ else echo "No cram files."; exit 1; fi
 
 if compgen -G $analysis/assembly/indices/${gca}.unmasked.fasta > /dev/null
     then ln -s $analysis/assembly/indices/${gca}.unmasked.fasta unmasked_genome.fasta
-else "Unmasked fasta does not exist."; exit 1; fi
+else echo "Unmasked fasta does not exist."; exit 1; fi
 
