@@ -1,9 +1,9 @@
-# ![nf-core/genomenote](docs/images/nf-core/genomenote_logo_light.png#gh-light-mode-only) ![nf-core/genomenote](docs/images/nf-core/genomenote_logo_dark.png#gh-dark-mode-only)
+# ![nf-core/genomenote](docs/images/sanger-tol-genomenote_logo.png#gh-light-mode-only) ![nf-core/genomenote](docs/images/sanger-tol-genomenote_logo.png#gh-dark-mode-only)
 
-[![GitHub Actions CI Status](https://github.com/nf-core/genomenote/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/genomenote/actions?query=workflow%3A%22nf-core+CI%22)
-[![GitHub Actions Linting Status](https://github.com/nf-core/genomenote/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/genomenote/actions?query=workflow%3A%22nf-core+linting%22)
-[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/genomenote/results)
-[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
+<!-- [![GitHub Actions CI Status](https://github.com/nf-core/genomenote/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/genomenote/actions?query=workflow%3A%22nf-core+CI%22) --> 
+<!-- [![GitHub Actions Linting Status](https://github.com/nf-core/genomenote/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/genomenote/actions?query=workflow%3A%22nf-core+linting%22) -->
+<!-- [![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/genomenote/results) -->
+[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.6785935-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.6785935)
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A522.04.0-23aa62.svg?labelColor=000000)](https://www.nextflow.io/)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
@@ -16,22 +16,32 @@
 
 ## Introduction
 
-<!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
-
-**nf-core/genomenote** is a bioinformatics best-practice analysis pipeline for This Nextflow DSL2 pipeline takes aligned HiC reads, creates contact maps and a table of statistics..
+**nf-core/genomenote** is a bioinformatics best-practice analysis pipeline for generating contact maps and statistics from aligned HiC reads and a genome fasta.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
-<!-- TODO nf-core: Add full-sized test dataset and amend the paragraph below if applicable -->
-
-On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/genomenote/results).
+Prior to release, automated tests are run on the pipeline using full-sized dataset from a small, medium and large genome on the Wellcome Sanger Institute (WSI) compute farm. This ensures that the pipeline has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources.
 
 ## Pipeline summary
 
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
+### Genome
 
-1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+1. Unmask genome if masked
+2. Create genome index if does not exists ([samtools faidx](https://www.htslib.org/doc/samtools-faidx.html))
+3. Filter genome index
+
+### Aligned HiC Reads
+
+1. Convert to BAM if in CRAM format
+2. Conver to BED ([bedtools bamtobed](https://bedtools.readthedocs.io/en/latest/content/tools/bamtobed.html))
+3. Sort BED
+4. Filter BED to create pairs
+5. Sort BED pairs
+
+### Contact maps
+
+1. `.cool` file using genome index, sorted BED pairs and bin size (default: 1000) ([cooler cload pairs](https://cooler.readthedocs.io/en/latest/cli.html#cooler-cload-pairs))
+2. `.mcool` file using `.cool` map ([cooler zoomify](https://cooler.readthedocs.io/en/latest/cli.html#cooler-zoomify))
 
 ## Quick Start
 
@@ -42,7 +52,7 @@ On release, automated continuous integration tests run the pipeline on a full-si
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
    ```console
-   nextflow run nf-core/genomenote -profile test,YOURPROFILE --outdir <OUTDIR>
+   nextflow run sanger-tol/genomenote -profile test,YOURPROFILE --outdir <OUTDIR>
    ```
 
    Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
@@ -54,36 +64,31 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 4. Start running your own analysis!
 
-   <!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
-
    ```console
-   nextflow run nf-core/genomenote --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
+   nextflow run sanger-tol/genomenote --input samplesheet.csv --outdir <OUTDIR> --genome /path/to/genome.fasta -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
    ```
 
 ## Documentation
 
-The nf-core/genomenote pipeline comes with documentation about the pipeline [usage](https://nf-co.re/genomenote/usage), [parameters](https://nf-co.re/genomenote/parameters) and [output](https://nf-co.re/genomenote/output).
+The nf-core/genomenote pipeline comes with documentation about the pipeline [usage](decs/usage.md) and [parameters](decs/parameters.med).
 
 ## Credits
 
-nf-core/genomenote was originally written by @priyanka-surana.
+sanger-tol/genomenote was originally written by @priyanka-surana.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
+– @mcshane and @yumisims for providing software/tool details
 
 ## Contributions and Support
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
-For further information or help, don't hesitate to get in touch on the [Slack `#genomenote` channel](https://nfcore.slack.com/channels/genomenote) (you can join with [this invite](https://nf-co.re/join/slack)).
+For further information or help, don't hesitate to get in touch on the [Slack `#genomenote` channel](https://sangertreeoflife.slack.com/channels/pipelines).
 
 ## Citations
 
-<!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use  nf-core/genomenote for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
-
-<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
+If you use sanger-tol/genomenote for your analysis, please cite it using the following doi: [10.5281/zenodo.6785935](https://doi.org/10.5281/zenodo.6785935)
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
