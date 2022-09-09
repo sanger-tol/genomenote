@@ -7,23 +7,18 @@ include { CREATE_TABLE        } from '../../modules/local/create_table'
 
 workflow GENOME_STATISTICS {
     take:
-    genome
+    asm
     kmer
 
     main:
     ch_versions = Channel.empty()
 
     // Contig and scaffold N50
-    genome
-        .flatten()
-        .map { file  -> file.baseName.replaceFirst(/.unmasked/, "").replaceFirst(/.subset/, "") }
-        .set { asm }
-
     GOAT_NFIFTY ( asm )
     ch_versions = ch_versions.mix(GOAT_NFIFTY.out.versions)
 
     // Combine results
-    ct = GOAT_NFIFTY.out.json.toList()
+    ct = GOAT_NFIFTY.out.json
 
     CREATE_TABLE ( ct )
     ch_versions = ch_versions.mix(CREATE_TABLE.out.versions)

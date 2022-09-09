@@ -89,8 +89,16 @@ workflow GENOMENOTE {
     //
     // SUBWORKFLOW: Create genome statistics table
     //
+    CONTACT_MAPS.out.mcool.flatten().concat(ch_fasta.flatten()).toList()
+        .map { meta, mcool, fasta ->
+        new_meta = meta.clone()
+        new_meta.id = fasta.baseName.replaceFirst(/.unmasked/, "").replaceFirst(/.subset/, "")
+        [ [id: new_meta.id, outdir: new_meta.outdir], fasta ]
+    }
+    .set { ch_asm }
     ch_kmer = Channel.fromPath(params.kmer)
-    GENOME_STATISTICS ( ch_fasta, ch_kmer )
+
+    GENOME_STATISTICS ( ch_asm, ch_kmer )
     ch_versions = ch_versions.mix(GENOME_STATISTICS.out.versions)
 
     //

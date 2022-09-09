@@ -1,4 +1,5 @@
 process CREATE_TABLE {
+    tag "${meta.id}"
     label 'process_single'
 
     conda (params.enable_conda ? "conda-forge::python=3.9.1" : null)
@@ -7,15 +8,16 @@ process CREATE_TABLE {
         'quay.io/biocontainers/python:3.9--1' }"
 
     input:
-    path json
+    tuple val(meta), path(json)
 
     output:
-    path "genome_statistics.csv",   emit: csv
-    path "versions.yml", emit: versions
+    path("*.genome_statistics.csv"), emit: csv
+    path "versions.yml",             emit: versions
 
-    script: // This script is bundled with the pipeline, in nf-core/genomenote/bin/
+    script: // This script is bundled with the pipeline, in sanger-tol/genomenote/bin/
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    create_table.py $json genome_statistics.csv
+    create_table.py $json ${prefix}.genome_statistics.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
