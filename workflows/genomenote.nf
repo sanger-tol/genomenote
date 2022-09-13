@@ -96,9 +96,11 @@ workflow GENOMENOTE {
         [ [id: new_meta.id, outdir: new_meta.outdir], fasta ]
     }
     .set { ch_asm }
+    ch_lineage = Channel.of(params.lineage)
+    ch_busco_db = Channel.fromPath(params.lineage_db)
     ch_kmer = Channel.fromPath(params.kmer)
 
-    GENOME_STATISTICS ( ch_asm, ch_kmer )
+    GENOME_STATISTICS ( ch_asm, ch_lineage, ch_busco_db, ch_kmer )
     ch_versions = ch_versions.mix(GENOME_STATISTICS.out.versions)
 
     //
