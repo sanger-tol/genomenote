@@ -36,9 +36,9 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK  } from '../subworkflows/local/input_check'
-include { CONTACT_MAPS } from '../subworkflows/local/contact_maps'
-
+include { INPUT_CHECK       } from '../subworkflows/local/input_check'
+include { CONTACT_MAPS      } from '../subworkflows/local/contact_maps'
+include { GENOME_STATISTICS } from '../subworkflows/local/genome_statistics'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -85,6 +85,21 @@ workflow GENOMENOTE {
     ch_bin = Channel.of(params.binsize)
     CONTACT_MAPS (SAMTOOLS_VIEW.out.bam, SAMTOOLS_VIEW.out.fai, ch_bin)
     ch_versions = ch_versions.mix(CONTACT_MAPS.out.versions)
+
+    //
+    // SUBWORKFLOW: Create genome statistics table
+    //
+    CONTACT_MAPS.out.mcool.flatten().concat(ch_fasta.flatten()).toList()
+        .map { meta, mcool, fasta ->
+        new_meta = meta.clone()
+        new_meta.id = fasta.baseName.replaceFirst(/.unmasked/, "").replaceFirst(/.subset/, "")
+        [ [id: new_meta.id, outdir: new_meta.outdir], fasta ]
+    }
+    .set { ch_asm }
+    ch_kmer = Channel.fromPath(params.kmer)
+
+    GENOME_STATISTICS ( ch_asm, ch_kmer )
+    ch_versions = ch_versions.mix(GENOME_STATISTICS.out.versions)
 
     //
     // MODULE: Combine different versions.yml
