@@ -1,7 +1,7 @@
 //
 // Prepare contact maps using aligned reads
 //
-include { BEDTOOLS_BAMTOBED       } from '../../modules/local/bedtools_bamtobed'
+include { BEDTOOLS_BAMTOBED       } from '../../modules/nf-core/modules/bedtools/bamtobed/main'
 include { GENOME_FILTER           } from '../../modules/local/genome_filter'
 include { GNU_SORT as BED_SORT    } from '../../modules/local/gnu_sort'
 include { GNU_SORT as FILTER_SORT } from '../../modules/local/gnu_sort'

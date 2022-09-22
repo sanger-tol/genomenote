@@ -1,5 +1,5 @@
 process BUSCO {
-    tag "${meta.id}"
+    tag "$meta.id"
     label 'process_medium'
 
     conda (params.enable_conda ? "bioconda::busco=5.4.3" : null)

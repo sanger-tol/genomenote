@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROJECT_BASEDIR=/lustre/scratch124/tol/projects
+PROJECT_BASEDIR=/lustre/scratch123/tol/projects
 
 if [ $# -ne 2 ]; then echo -e "Script to create a samplesheet for a species.\nUsage: $0 <tol_id> <tol_project>.\nVersion: 1.0"; exit 1; fi
 

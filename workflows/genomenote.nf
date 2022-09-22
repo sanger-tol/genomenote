@@ -41,7 +41,6 @@ include { GENOME_STATISTICS } from '../subworkflows/local/genome_statistics'
 // MODULE: Installed directly from nf-core/modules
 //
 include { SAMTOOLS_VIEW               } from '../modules/local/samtools_view'
-include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 
 /*
@@ -67,8 +66,9 @@ workflow GENOMENOTE {
     //
     // MODULE: Convert CRAM to BAM
     //
+    ch_reads = INPUT_CHECK.out.aln.map { meta, reads -> [ meta, reads, [] ] }
     ch_fasta = INPUT_CHECK.out.genome.collect()
-    SAMTOOLS_VIEW ( INPUT_CHECK.out.aln, ch_fasta )
+    SAMTOOLS_VIEW ( ch_reads, ch_fasta )
     ch_versions = ch_versions.mix(SAMTOOLS_VIEW.out.versions)
 
     //

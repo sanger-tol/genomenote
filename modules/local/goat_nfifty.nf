@@ -12,12 +12,15 @@ process GOAT_NFIFTY {
 
     output:
     tuple val(meta), path("*.json"), emit: json
-    path "versions.yml",               emit: versions
+    path "versions.yml",             emit: versions
 
     script:
     def asm = task.ext.asm ?: "${meta.id}"
     """
-    curl -X 'GET' 'https://goat.genomehubs.org/api/v2/search?query=${asm}&result=assembly&includeEstimates=false&fields=contig_n50%2Cscaffold_n50' -H 'accept: application/json' > ${asm}.n50.json
+    curl -X 'GET' \
+        'https://goat.genomehubs.org/api/v2/search?query=${asm}&result=assembly&includeEstimates=false&fields=contig_n50%2Cscaffold_n50' \
+        -H 'accept: application/json' \
+        > ${asm}.n50.json
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

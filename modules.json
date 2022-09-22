@@ -3,6 +3,9 @@
     "homePage": "https://github.com/nf-core/genomenote",
     "repos": {
         "nf-core/modules": {
+            "bedtools/bamtobed": {
+                "git_sha": "90aef30f432332bdf0ce9f4b9004aa5d5c4960bb"
+            },
             "busco": {
                 "git_sha": "89a84538bede7c6919f7c042fdb4c79e5e2d9d2a"
             },
