@@ -6,10 +6,10 @@ import json
 import sys
 
 def parse_args(args=None):
-    Description = "Create a table by (1) parsing json output to extract n50 values."
+    Description = "Create a table by parsing json output to extract N50 and BUSCO values."
 
     parser = argparse.ArgumentParser(description=Description)
-    parser.add_argument("N50", help="Input JSON file.")
+    parser.add_argument("N50", help="Input GOAT N50 JSON file.")
     parser.add_argument("BUSCO", help="Input BUSCO short summary JSON file.")
     parser.add_argument("FILE_OUT", help="Output CSV file.")
     parser.add_argument('--version', action='version', version='%(prog)s 1.0')
