@@ -5,6 +5,7 @@
 include { GOAT_NFIFTY         } from '../../modules/local/goat_nfifty'
 include { GET_ODB             } from '../../modules/local/get_odb'
 include { BUSCO               } from '../../modules/nf-core/modules/busco/main'
+include { MERQURYFK_MERQURYFK } from '../../modules/nf-core/modules/merquryfk/merquryfk/main'
 include { CREATE_TABLE        } from '../../modules/local/create_table'
 
 workflow GENOME_STATISTICS {
@@ -28,6 +29,12 @@ workflow GENOME_STATISTICS {
     ch_lineage = GET_ODB.out.csv.splitCsv().map { row -> row[1] }
     BUSCO ( genome, ch_lineage, lineage_db, [] )
     ch_versions = ch_versions.mix(BUSCO.out.versions.first())
+
+    // MerquryFK
+    ch_merq = genome.combine(kmer).map { meta, fasta, hist, ktab -> [ meta, hist, ktab, fasta ] }
+
+    //MERQURYFK_MERQURYFK ( ch_merq )
+    //ch_versions = ch_versions.mix(MERQURYFK_MERQURYFK.out.versions)
 
     // Combine results
     ct = GOAT_NFIFTY.out.json.join( BUSCO.out.short_summaries_json )

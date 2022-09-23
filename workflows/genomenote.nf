@@ -74,7 +74,9 @@ workflow GENOMENOTE {
     //
     ch_asm = CONTACT_MAPS.out.mcool.combine ( ch_fasta ).map { meta1, mcool, meta2, fasta -> [ [ id: meta2.id, outdir: meta1.outdir ], fasta ] }
     ch_buscoDB = Channel.of(params.lineage_db)
-    ch_kmer = Channel.fromPath(params.kmer)
+    ch_hist = Channel.fromPath("$params.kmer/*.hist").toList()
+    ch_ktab = Channel.fromPath("$params.kmer/*.ktab*", hidden:true).toList()
+    ch_kmer = ch_hist.concat(ch_ktab).toList()
 
     GENOME_STATISTICS ( ch_asm, ch_buscoDB, ch_kmer )
     ch_versions = ch_versions.mix(GENOME_STATISTICS.out.versions)
