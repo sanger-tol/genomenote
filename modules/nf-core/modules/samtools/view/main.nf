@@ -10,13 +10,15 @@ process SAMTOOLS_VIEW {
     input:
     tuple val(meta), path(input), path(index)
     path fasta
+    path qname
 
     output:
-    tuple val(meta), path("*.bam"),  emit: bam,  optional: true
-    tuple val(meta), path("*.cram"), emit: cram, optional: true
-    tuple val(meta), path("*.sam"),  emit: sam,  optional: true
-    tuple val(meta), path("*.csi"),  emit: csi,  optional: true
-    path("*.fai"),                   emit: fai
+    tuple val(meta), path("*.bam"),  emit: bam,     optional: true
+    tuple val(meta), path("*.cram"), emit: cram,    optional: true
+    tuple val(meta), path("*.sam"),  emit: sam,     optional: true
+    tuple val(meta), path("*.bai"),  emit: bai,     optional: true
+    tuple val(meta), path("*.csi"),  emit: csi,     optional: true
+    tuple val(meta), path("*.crai"), emit: crai,    optional: true
     path  "versions.yml",            emit: versions
 
     when:
@@ -26,6 +28,7 @@ process SAMTOOLS_VIEW {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def reference = fasta ? "--reference ${fasta}" : ""
+    def readnames = qname ? "--qname-file ${qname}": ""
     def file_type = args.contains("--output-fmt sam") ? "sam" :
                     args.contains("--output-fmt bam") ? "bam" :
                     args.contains("--output-fmt cram") ? "cram" :
@@ -36,9 +39,22 @@ process SAMTOOLS_VIEW {
         view \\
         --threads ${task.cpus-1} \\
         ${reference} \\
+        ${readnames} \\
         $args \\
-        $input \\
-        > ${prefix}.${file_type}
+        -o ${prefix}.${file_type} \\
+        $input
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
+    END_VERSIONS
+    """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}.bam
+    touch ${prefix}.cram
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

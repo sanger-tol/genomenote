@@ -2,7 +2,7 @@ process GET_ODB {
     tag "${meta.id}"
     label 'process_single'
 
-    conda (params.enable_conda ? "conda-forge::requests=2.28.1" : null)
+    conda (params.enable_conda ? "conda-forge::requests=2.26.0" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/requests:2.26.0' :
         'quay.io/biocontainers/requests:2.26.0' }"
