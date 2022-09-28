@@ -19,9 +19,9 @@
                 },
                 "project": {
                     "type": "string",
-		    "format": "directory-path",
+                    "format": "directory-path",
                     "description": "Tree of Life project directory. Please use absolute paths, for example, /lustre/scratch124/tol/projects/darwin.",
-		    "fa_icon": "fas fa-folder-open"
+                    "fa_icon": "fas fa-folder-open"
                 },
                 "binsize": {
                     "type": "integer",
