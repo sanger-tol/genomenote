@@ -1,16 +1,14 @@
 #!/bin/bash
 
-PROJECT_BASEDIR=/lustre/scratch123/tol/projects
 
-if [ $# -ne 2 ]; then echo -e "Script to create a samplesheet for a species.\nUsage: $0 <tol_id> <tol_project>.\nVersion: 1.0"; exit 1; fi
+if [ $# -ne 2 ]; then echo -e "Script to create a samplesheet for a species.\nUsage: $0 <tol_id> <tol_project_dir>.\nVersion: 1.1"; exit 1; fi
 
 id="$1"
-project="$2"
-data="$PROJECT_BASEDIR/$project/data"
+data="$2/data"
 
 if [[ ! -d "$data" ]]
 then
-    echo "Project "$project" cannot be found under $PROJECT_BASEDIR"
+    echo "Project directory " $data " does not exist."
     exit 1
 fi
 

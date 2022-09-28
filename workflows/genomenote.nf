@@ -9,10 +9,6 @@ def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 // Validate input parameters
 WorkflowGenomenote.initialise(params, log)
 
-// Check input path parameters to see if they exist
-// def checkPathParamList = [ params.multiqc_config, params.fasta ]
-// for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
-
 // Check mandatory parameters
 if (params.input && params.fasta) { inputs = [ file(params.input, checkIfExists: true), file(params.fasta) ] }
 else if (params.input && params.project) { inputs = [ params.input, params.project ] }
@@ -69,7 +65,7 @@ workflow GENOMENOTE {
     ch_reads = INPUT_CHECK.out.aln.map { meta, reads -> [ meta, reads, [] ] }
     ch_fasta = INPUT_CHECK.out.genome.collect()
     SAMTOOLS_VIEW ( ch_reads, ch_fasta )
-    ch_versions = ch_versions.mix(SAMTOOLS_VIEW.out.versions)
+    ch_versions = ch_versions.mix(SAMTOOLS_VIEW.out.versions.first())
 
     //
     // SUBWORKFLOW: Create contact maps from BAM
