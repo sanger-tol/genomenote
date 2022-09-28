@@ -17,6 +17,12 @@
             },
             "custom/dumpsoftwareversions": {
                 "git_sha": "5e7b1ef9a5a2d9258635bcbf70fcf37dacd1b247"
+            },
+            "samtools/faidx": {
+                "git_sha": "3eb99152cedbb7280258858e5df08478a4670696"
+            },
+            "samtools/view": {
+                "git_sha": "83b05a8dc05b9dd2f1979d1a9f08411fb1a82b11"
             }
         }
     }

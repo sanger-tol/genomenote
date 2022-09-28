@@ -40,7 +40,7 @@ def extract_busco(file_in, file_out):
 
     with open(file_out, "a") as fout:
         print("busco_lineage", data["lineage_dataset"]["name"], sep=",", file=fout)
-        print("busco_summary", data["results"]["one_line_summary"], sep=",", file=fout)
+        print("busco_summary", '"' + data["results"]["one_line_summary"] + '"', sep=",", file=fout)
 
 def main(args=None):
     args = parse_args(args)
