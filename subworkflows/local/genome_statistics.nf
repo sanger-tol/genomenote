@@ -34,7 +34,7 @@ workflow GENOME_STATISTICS {
     ch_versions = ch_versions.mix(BUSCO.out.versions)
 
     // Combine results
-    ct = GOAT_NFIFTY.out.json.join(BUSCO.out.short_summaries_json, by: [0])
+    ct = GOAT_NFIFTY.out.json.join(BUSCO.out.short_summaries_json])
 
     CREATE_TABLE ( ct )
     ch_versions = ch_versions.mix(CREATE_TABLE.out.versions)
