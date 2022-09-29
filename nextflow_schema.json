@@ -23,6 +23,12 @@
                     "description": "Tree of Life project directory. Please use absolute paths, for example, /lustre/scratch124/tol/projects/darwin.",
                     "fa_icon": "fas fa-folder-open"
                 },
+                "lineage_db": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Path to BUSCO lineage directory. Please use absolute paths, for example, /lustre/scratch124/tol/projects/darwin.",
+                    "fa_icon": "fas fa-folder-open"
+                },
                 "binsize": {
                     "type": "integer",
                     "description": "Bin size for cooler cload pairs.",
