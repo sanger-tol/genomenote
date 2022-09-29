@@ -11,7 +11,7 @@ process GENOME_FILTER {
     tuple val(meta), path(fai)
 
     output:
-    path "*.list", emit: sizes
+    path "*.list",       emit: list
     path "versions.yml", emit: versions
 
     script:
