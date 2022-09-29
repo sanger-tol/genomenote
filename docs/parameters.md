@@ -10,7 +10,7 @@ This can either be a Tree of Life organism ID or a path to comma-separated file 
 
 ### `--project`
 
-If Tree of Life organism ID is provided as `input`, then the corresponding `project` ID should be given here.
+If Tree of Life organism ID is provided as `input`, then the corresponding `project` directory should be given here. For example: "/lustre/scratch124/tol/projects/darwin"
 
 ### `--fasta`
 

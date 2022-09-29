@@ -1,7 +1,9 @@
 //
 // Prepare contact maps using aligned reads
 //
-include { BEDTOOLS_BAMTOBED       } from '../../modules/local/bedtools_bamtobed'
+include { SAMTOOLS_FAIDX          } from '../../modules/nf-core/modules/samtools/faidx/main'
+include { SAMTOOLS_VIEW           } from '../../modules/nf-core/modules/samtools/view/main'
+include { BEDTOOLS_BAMTOBED       } from '../../modules/nf-core/modules/bedtools/bamtobed/main'
 include { GENOME_FILTER           } from '../../modules/local/genome_filter'
 include { GNU_SORT as BED_SORT    } from '../../modules/local/gnu_sort'
 include { GNU_SORT as FILTER_SORT } from '../../modules/local/gnu_sort'
@@ -11,52 +13,51 @@ include { COOLER_ZOOMIFY          } from '../../modules/nf-core/modules/cooler/z
 
 workflow CONTACT_MAPS {
     take:
-    aln                                       // channel: [ val(meta), [ datafile ] ]
-    index                                     // channel: fai
+    genome                                    // channel: [ meta, fasta ]
+    reads                                     // channel: [ meta, reads, [] ]
     cool_bin                                  // channel: val(cooler_bins)
 
     main:
     ch_versions = Channel.empty()
 
-    // Bam to Bed
-    BEDTOOLS_BAMTOBED ( aln )
-    ch_versions = ch_versions.mix(BEDTOOLS_BAMTOBED.out.versions)
+    // Index genome file
+    SAMTOOLS_FAIDX ( genome )
+    ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions.first())
+
+    // CRAM to BAM
+    ch_fasta = genome.map { meta, fasta -> fasta }
+    SAMTOOLS_VIEW ( reads, ch_fasta, [] )
+    ch_versions = ch_versions.mix(SAMTOOLS_VIEW.out.versions.first())
+    
+    // BAM to Bed
+    BEDTOOLS_BAMTOBED ( SAMTOOLS_VIEW.out.bam )
+    ch_versions = ch_versions.mix(BEDTOOLS_BAMTOBED.out.versions.first())
 
     // Filter the genome index file
-    GENOME_FILTER ( index )
-    ch_versions = ch_versions.mix(GENOME_FILTER.out.versions)
+    GENOME_FILTER ( SAMTOOLS_FAIDX.out.fai )
+    ch_versions = ch_versions.mix(GENOME_FILTER.out.versions.first())
 
     // Sort the bed file
     BED_SORT ( BEDTOOLS_BAMTOBED.out.bed )
-    ch_versions = ch_versions.mix(BED_SORT.out.versions)
+    ch_versions = ch_versions.mix(BED_SORT.out.versions.first())
 
     // Filter the bed file
     BED_FILTER ( BED_SORT.out.bed )
-    ch_versions = ch_versions.mix(BED_FILTER.out.versions)
+    ch_versions = ch_versions.mix(BED_FILTER.out.versions.first())
 
     // Sort the filtered bed
     FILTER_SORT ( BED_FILTER.out.pairs )
-    ch_versions = ch_versions.mix(FILTER_SORT.out.versions)
+    ch_versions = ch_versions.mix(FILTER_SORT.out.versions.first())
 
-    FILTER_SORT.out.bed
-    .map { meta, bed ->
-    [ meta, bed, [] ]
-    }
-    .set { ch_cooler }
-    
     // Create the `.cool` file
+    ch_cooler = FILTER_SORT.out.bed.map { meta, bed -> [ meta, bed, [] ] }
     COOLER_CLOAD ( ch_cooler, cool_bin, GENOME_FILTER.out.list )
-    ch_versions = ch_versions.mix(COOLER_CLOAD.out.versions)
-
-    COOLER_CLOAD.out.cool
-    .map { meta, bin, cool ->
-    [ meta, cool ]
-    }
-    .set { ch_zoomify }
+    ch_versions = ch_versions.mix(COOLER_CLOAD.out.versions).first()
 
     // Create the `.mcool` file
+    ch_zoomify = COOLER_CLOAD.out.cool.map { meta, bin, cool -> [ meta, cool ] }
     COOLER_ZOOMIFY ( ch_zoomify )
-    ch_versions = ch_versions.mix(COOLER_ZOOMIFY.out.versions)
+    ch_versions = ch_versions.mix(COOLER_ZOOMIFY.out.versions.first())
 
     emit:
     cool = COOLER_CLOAD.out.cool      // tuple val(meta), val(cool_bin), path("*.cool")

@@ -3,6 +3,12 @@
     "homePage": "https://github.com/nf-core/genomenote",
     "repos": {
         "nf-core/modules": {
+            "bedtools/bamtobed": {
+                "git_sha": "90aef30f432332bdf0ce9f4b9004aa5d5c4960bb"
+            },
+            "busco": {
+                "git_sha": "89a84538bede7c6919f7c042fdb4c79e5e2d9d2a"
+            },
             "cooler/cload": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
@@ -10,10 +16,13 @@
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "custom/dumpsoftwareversions": {
-                "git_sha": "e5b44499efcf6f7fb24874886bac60591c5d94dd"
+                "git_sha": "5e7b1ef9a5a2d9258635bcbf70fcf37dacd1b247"
             },
-            "multiqc": {
-                "git_sha": "5138acca0985ca01c38a1c4fba917d83772b1106"
+            "samtools/faidx": {
+                "git_sha": "3eb99152cedbb7280258858e5df08478a4670696"
+            },
+            "samtools/view": {
+                "git_sha": "83b05a8dc05b9dd2f1979d1a9f08411fb1a82b11"
             }
         }
     }

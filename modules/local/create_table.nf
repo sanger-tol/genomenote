@@ -8,7 +8,7 @@ process CREATE_TABLE {
         'quay.io/biocontainers/python:3.9--1' }"
 
     input:
-    tuple val(meta), path(json)
+    tuple val(meta), path(n50), path(busco)
 
     output:
     path("*.genome_statistics.csv"), emit: csv
@@ -17,7 +17,7 @@ process CREATE_TABLE {
     script: // This script is bundled with the pipeline, in sanger-tol/genomenote/bin/
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    create_table.py $json ${prefix}.genome_statistics.csv
+    create_table.py $n50 $busco ${prefix}.genome_statistics.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

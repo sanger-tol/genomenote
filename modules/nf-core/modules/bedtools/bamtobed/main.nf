@@ -1,6 +1,6 @@
 process BEDTOOLS_BAMTOBED {
     tag "$meta.id"
-    label 'process_medium'
+    label 'process_single'
 
     conda (params.enable_conda ? "bioconda::bedtools=2.30.0" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -25,7 +25,7 @@ process BEDTOOLS_BAMTOBED {
         bamtobed \\
         $args \\
         -i $bam \\
-        > ${prefix}.bed
+        | bedtools sort > ${prefix}.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

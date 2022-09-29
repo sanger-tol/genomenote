@@ -11,8 +11,8 @@ process GOAT_NFIFTY {
     tuple val(meta), path(fasta)
 
     output:
-    tuple val(meta), path("*.json"), emit: json
-    path "versions.yml",               emit: versions
+    tuple val(meta), path("*.n50.json"), emit: json
+    path "versions.yml",                 emit: versions
 
     script:
     def asm = task.ext.asm ?: "${meta.id}"
