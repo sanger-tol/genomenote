@@ -6,7 +6,6 @@ process GET_ODB {
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/requests:2.26.0' :
         'quay.io/biocontainers/requests:2.26.0' }"
-    
     input:
     tuple val(meta), path(fasta)
 

@@ -33,7 +33,7 @@ workflow GENOME_STATISTICS {
     // MerquryFK
     ch_merq = genome.combine(kmer).map { meta, fasta, hist, ktab -> [ meta, hist, ktab, fasta ] }
     MERQURYFK_MERQURYFK ( ch_merq )
-    ch_versions = ch_versions.mix(MERQURYFK_MERQURYFK.out.versions)
+    ch_versions = ch_versions.mix(MERQURYFK_MERQURYFK.out.versions.first())
 
     // Combine results
     ct = GOAT_NFIFTY.out.json.join( BUSCO.out.short_summaries_json ).join( MERQURYFK_MERQURYFK.out.qv ).join( MERQURYFK_MERQURYFK.out.stats )
