@@ -12,7 +12,7 @@ workflow GENOME_STATISTICS {
     take:
     genome                 // channel: [ meta, fasta ]
     lineage_db             // channel: /path/to/buscoDB
-    kmer                   // channel: /path/to/kmer
+    kmer                   // channel: [ [ /path/to/kmer/hist ], [ /path/to/kmer/ktabs ] ]
 
     main:
     ch_versions = Channel.empty()
@@ -33,6 +33,7 @@ workflow GENOME_STATISTICS {
     // MerquryFK
     ch_merq = genome.combine(kmer).map { meta, fasta, hist, ktab -> [ meta, hist, ktab, fasta ] }
 
+    ch_merq.view()
     //MERQURYFK_MERQURYFK ( ch_merq )
     //ch_versions = ch_versions.mix(MERQURYFK_MERQURYFK.out.versions)
 

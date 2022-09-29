@@ -11,13 +11,13 @@ process GENOME_FILTER {
     tuple val(meta), path(fai)
 
     output:
-    path "*.chromsizes", emit: sizes
+    path "*.list", emit: sizes
     path "versions.yml", emit: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    genome_filter.sh $fai ${prefix}.chromsizes
+    genome_filter.sh $fai ${prefix}.filtered.list
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
