@@ -39,9 +39,7 @@ def check_samplesheet(file_in, file_out):
 
     sample,datatype,datafile
     sample1,hic,/path/to/file1.cram
-    sample1,illumina,/path/to/file2.cram
-    sample1,pacbio,/path/to/file3.cram
-    sample1,ont,/path/to/file4.cram
+    sample1,pacbio_kNN,/path/to/kmer/dir
 
     For an example see:
     https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/samplesheet/samplesheet_test_illumina_amplicon.csv
@@ -84,35 +82,35 @@ def check_samplesheet(file_in, file_out):
                 print_error("Sample entry has not been specified!", "Line", line)
 
             ##* Check datatype name entries
-            datatypes = ["hic"]
-            if datatype:
-                if datatype not in datatypes:
-                    print_error(
-                        "Data type must be one of {}.".format(",".join(datatypes)),
-                        "Line",
-                        line,
-                    )
-            else:
-                print_error(
-                    "Data type has not been specified!. Must be one of {}.".format(",".join(datatypes)),
-                    "Line",
-                    line,
-                )
+            #datatypes = ["hic"]
+            #if datatype:
+            #    if datatype not in datatypes:
+            #        print_error(
+            #            "Data type must be one of {}.".format(",".join(datatypes)),
+            #            "Line",
+            #            line,
+            #        )
+            #else:
+            #    print_error(
+            #        "Data type has not been specified!. Must be one of {}.".format(",".join(datatypes)),
+            #        "Line",
+            #        line,
+            #    )
 
             ##* Check data file extension
-            if datafile:
-                if datafile.find(" ") != -1:
-                    print_error(
-                        "Data file contains spaces!",
-                        "Line",
-                        line,
-                    )
-                if not datafile.endswith(".cram") and not datafile.endswith(".bam"):
-                    print_error(
-                        "Data file does not have extension '.cram' or '.bam'.",
-                        "Line",
-                        line,
-                    )
+            #if datafile:
+            #    if datafile.find(" ") != -1:
+            #        print_error(
+            #            "Data file contains spaces!",
+            #            "Line",
+            #            line,
+            #        )
+            #    if not datafile.endswith(".cram") and not datafile.endswith(".bam"):
+            #        print_error(
+            #            "Data file does not have extension '.cram' or '.bam'.",
+            #            "Line",
+            #            line,
+            #        )
 
             ##* Create sample mapping dictionary = { sample: [ datatype, datafile ] }
             sample_info = [datatype, datafile]

@@ -57,16 +57,22 @@ workflow GENOMENOTE {
     Channel.of ( inputs ).set { ch_input }
 
     INPUT_CHECK ( ch_input )
+    .aln
+    .branch { meta, file ->
+        hic : meta.datatype == "hic"
+            return [ meta, file, [] ]
+        kmer : meta.datatype != "hic"
+            return [ meta, file ]
+    }.set { ch_inputs }
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     //
     // SUBWORKFLOW: Create contact map matrices from CRAM alignment files
     //
     ch_fasta = INPUT_CHECK.out.genome.map { fasta -> [ [ id: fasta.baseName.replaceFirst(/.unmasked/, "").replaceFirst(/.subset/, "") ], fasta ] }
-    ch_reads = INPUT_CHECK.out.aln.map { meta, reads -> [ meta, reads, [] ] }
     ch_bin = Channel.of(params.binsize)
 
-    CONTACT_MAPS (ch_fasta, ch_reads, ch_bin)
+    CONTACT_MAPS (ch_fasta, ch_inputs.hic, ch_bin)
     ch_versions = ch_versions.mix(CONTACT_MAPS.out.versions)
 
     //

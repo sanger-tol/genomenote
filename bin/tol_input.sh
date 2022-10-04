@@ -23,6 +23,9 @@ organism=$(echo $genome | cut -f9 -d'/')
 assembly=$(echo $genome | cut -f12 -d'/')
 gca=$(echo $genome | cut -f14 -d'/' | sed 's/.fasta.gz//')
 
+# Currently this will import a masked file, but once the `insdcdownload` pipeline goes in production, it will be unmasked
+gunzip -c $genome > ${gca}.fasta
+
 analysis=$data/$taxon/$organism/analysis/$assembly
 
 if compgen -G $analysis/read_mapping/hic*/${gca}.*cram > /dev/null
@@ -30,12 +33,25 @@ if compgen -G $analysis/read_mapping/hic*/${gca}.*cram > /dev/null
     crams=($(ls $analysis/read_mapping/hic*/${gca}.*cram))
     for aln in ${crams[@]}
         do sample=$(basename $aln | awk -F. '{print $(NF-1)}')
-        datatype=$(basename $aln | awk -F. '{print $(NF-2)}')
-        echo "${sample},${datatype},${aln}" >> samplesheet.csv
+        echo "${sample},hic,${aln}" >> samplesheet.csv
     done
 else echo "No cram files."; exit 1; fi
 
-if compgen -G $analysis/assembly/indices/${gca}.unmasked.fasta > /dev/null
-    then ln -s $analysis/assembly/indices/${gca}.unmasked.fasta ${gca}.unmasked.fasta
-else echo "Unmasked fasta does not exist."; exit 1; fi
+gdata=$data/$taxon/$organism/genomic_data
 
+if compgen -G $gdata/*/pacbio/kmer > /dev/null
+    then kmer=($(ls -d $data/*/*/genomic_data/*/pacbio/kmer/*))
+    datatype="pacbio"
+elif compgen -G $gdata/*/illumina/kmer > /dev/null
+    then kmer=($(ls -d $data/*/*/genomic_data/*/illumina/kmer/*))
+    datatype="illumina"
+elif compgen -G $gdata/*/10x/kmer > /dev/null
+    then kmer=($(ls -d $data/*/*/genomic_data/*/10x/kmer/*))
+    datatype="10x"
+else echo "No kmer folders found."; exit 1; fi
+
+for dloc in ${kmer[@]}
+    do sample=$(echo $dloc | cut -d'/' -f11)
+    kval=$(basename $dloc)
+    echo "${sample},${datatype}_${kval},$dloc" >> samplesheet.csv
+done
