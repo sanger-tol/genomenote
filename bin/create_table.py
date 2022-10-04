@@ -32,8 +32,9 @@ def extract_n50(file_in, file_out):
     make_dir(out_dir)
 
     with open(file_out, "w") as fout:
-        print("ContigN50", data["contig_n50"]["value"], sep=",", file=fout)
-        print("ScaffoldN50", data["scaffold_n50"]["value"], sep=",", file=fout)
+        writer = csv.writer(fout)
+        _ = writer.writerow(["ContigN50", data["contig_n50"]["value"]])
+        _ = writer.writerow(["ScaffoldN50", data["scaffold_n50"]["value"]])
 
 def extract_busco(file_in, file_out):
     with open(file_in, "r") as fin:
@@ -45,7 +46,8 @@ def extract_busco(file_in, file_out):
     with open(file_out, "a") as fout:
         lineage = data["lineage_dataset"]["name"].upper()
         summary = data["results"]["one_line_summary"]
-        print("BUSCO", '"' + lineage + ' ' + summary + '"', sep=",", file=fout)
+        writer = csv.writer(fout)
+        _ = writer.writerow(["BUSCO", lineage + " " + summary])
 
 def extract_qv(datatype, file_in, file_out):
     out_dir = os.path.dirname(file_out)
@@ -53,9 +55,9 @@ def extract_qv(datatype, file_in, file_out):
 
     with open(file_in, "r") as fin, open(file_out, "a") as fout:
         data = csv.DictReader(fin, delimiter="\t")
+        writer = csv.writer(fout)
         for row in data:
-            del row["Assembly"]
-            print("QV_" + datatype, row["QV"], sep=",", file=fout)
+            _ = writer.writerow(["QV_" + datatype, row["QV"]])
 
 def extract_completeness(datatype, file_in, file_out):
     out_dir = os.path.dirname(file_out)
@@ -63,8 +65,9 @@ def extract_completeness(datatype, file_in, file_out):
     
     with open(file_in, "r") as fin, open(file_out, "a") as fout:
         data = csv.DictReader(fin, delimiter="\t")
+        writer = csv.writer(fout)
         for row in data:
-            print("Completeness_" + datatype, row["% Covered"], sep=",", file=fout)
+            _ = writer.writerow(["Completeness_" + datatype, row["% Covered"]])
 
 def main(args=None):
     args = parse_args(args)
