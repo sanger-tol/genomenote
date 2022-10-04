@@ -17,7 +17,7 @@ process CREATE_TABLE {
     script: // This script is bundled with the pipeline, in sanger-tol/genomenote/bin/
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    create_table.py $n50 $busco $qv $completeness ${prefix}.genome_statistics.csv
+    create_table.py ${meta.datatype} $n50 $busco $qv $completeness ${prefix}.genome_statistics.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

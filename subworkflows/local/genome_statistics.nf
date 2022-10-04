@@ -38,7 +38,7 @@ workflow GENOME_STATISTICS {
     // Combine results
     ct1 = GOAT_NFIFTY.out.json.join( BUSCO.out.short_summaries_json )
     ct2 = MERQURYFK_MERQURYFK.out.qv.join( MERQURYFK_MERQURYFK.out.stats )
-    ct  = ct1.combine( ct2 ).map { meta, n50, busco, meta2, qv, stats -> [ meta, n50, busco, qv, stats ] }
+    ct  = ct1.combine( ct2 ).map { meta, n50, busco, meta2, qv, stats -> [ [id: meta.id, datatype: meta2.datatype, outdir: meta.outdir], n50, busco, qv, stats ] }
     CREATE_TABLE ( ct )
     ch_versions = ch_versions.mix(CREATE_TABLE.out.versions.first())
 
