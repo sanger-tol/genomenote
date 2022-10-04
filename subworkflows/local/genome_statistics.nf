@@ -12,7 +12,7 @@ workflow GENOME_STATISTICS {
     take:
     genome                 // channel: [ meta, fasta ]
     lineage_db             // channel: /path/to/buscoDB
-    kmer                   // channel: [ [ /path/to/kmer/hist ], [ /path/to/kmer/ktabs ] ]
+    kmer                   // channel: [ [ meta ], [ /path/to/kmer/kNN ] ]
 
     main:
     ch_versions = Channel.empty()
@@ -31,16 +31,30 @@ workflow GENOME_STATISTICS {
     ch_versions = ch_versions.mix(BUSCO.out.versions.first())
 
     // MerquryFK
-    ch_merq = genome.combine(kmer).map { meta, fasta, hist, ktab -> [ meta, hist, ktab, fasta ] }
+    ch_merq = GrabFiles(kmer).combine(genome).map { meta, hist, ktab, meta2, fasta -> [ meta, hist, ktab, fasta ] }
     MERQURYFK_MERQURYFK ( ch_merq )
     ch_versions = ch_versions.mix(MERQURYFK_MERQURYFK.out.versions.first())
 
     // Combine results
-    ct = GOAT_NFIFTY.out.json.join( BUSCO.out.short_summaries_json ).join( MERQURYFK_MERQURYFK.out.qv ).join( MERQURYFK_MERQURYFK.out.stats )
+    ct1 = GOAT_NFIFTY.out.json.join( BUSCO.out.short_summaries_json )
+    ct2 = MERQURYFK_MERQURYFK.out.qv.join( MERQURYFK_MERQURYFK.out.stats )
+    ct  = ct1.combine( ct2 ).map { meta, n50, busco, meta2, qv, stats -> [ meta, n50, busco, qv, stats ] }
     CREATE_TABLE ( ct )
     ch_versions = ch_versions.mix(CREATE_TABLE.out.versions.first())
 
     emit:
     table    = CREATE_TABLE.out.csv     // channel: [ csv ]
     versions = ch_versions              // channel: [ versions.yml ]
+}
+
+process GrabFiles {
+    executor 'local'
+
+    input:
+    tuple val(meta), path("in")
+
+    output:
+    tuple val(meta), path("in/*.hist"), path("in/*.ktab*", hidden:true)
+
+    "true"
 }
