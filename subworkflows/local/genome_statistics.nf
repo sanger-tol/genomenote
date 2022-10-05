@@ -12,7 +12,7 @@ workflow GENOME_STATISTICS {
     take:
     genome                 // channel: [ meta, fasta ]
     lineage_db             // channel: /path/to/buscoDB
-    kmer                   // channel: [ [ meta ], [ /path/to/kmer/kNN ] ]
+    kmer                   // channel: [ meta, [ /path/to/kmer/kNN ] ]
 
     main:
     ch_versions = Channel.empty()
