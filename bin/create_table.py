@@ -71,10 +71,14 @@ def extract_completeness(datatype, file_in, file_out):
 
 def main(args=None):
     args = parse_args(args)
-    extract_n50(args.N50, args.FILE_OUT)
-    extract_busco(args.BUSCO, args.FILE_OUT)
-    extract_qv(args.DATATYPE, args.QV, args.FILE_OUT)
-    extract_completeness(args.DATATYPE, args.COMPLETENESS, args.FILE_OUT)
+    out_dir = os.path.dirname(args.FILE_OUT)
+    make_dir(out_dir)
+    with open(args.FILE_OUT, "w") as fout:
+        writer = csv.writer(fout)
+        extract_n50(args.N50, writer)
+        extract_busco(args.BUSCO, writer)
+        extract_qv(args.DATATYPE, args.QV, writer)
+        extract_completeness(args.DATATYPE, writer)
 
 if __name__ == "__main__":
     sys.exit(main())
