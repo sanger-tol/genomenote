@@ -23,41 +23,27 @@ def make_dir(path):
     if len(path) > 0:
         os.makedirs(path, exist_ok=True)
 
-def extract_n50(file_in, file_out):
+def extract_n50(file_in, writer):
     with open(file_in, "r") as fin:
         data = json.load(fin)
-        data = data["results"][0]["result"]["fields"]
+    
+    data = data["results"][0]["result"]["fields"]
+    writer.writerow(["ContigN50", data["contig_n50"]["value"]])
+    writer.writerow(["ScaffoldN50", data["scaffold_n50"]["value"]])
 
-    out_dir = os.path.dirname(file_out)
-    make_dir(out_dir)
-
-    with open(file_out, "w") as fout:
-        writer = csv.writer(fout)
-        _ = writer.writerow(["ContigN50", data["contig_n50"]["value"]])
-        _ = writer.writerow(["ScaffoldN50", data["scaffold_n50"]["value"]])
-
-def extract_busco(file_in, file_out):
+def extract_busco(file_in, writer):
     with open(file_in, "r") as fin:
         data = json.load(fin)
 
-    out_dir = os.path.dirname(file_out)
-    make_dir(out_dir)
+    lineage = data["lineage_dataset"]["name"]
+    summary = data["results"]["one_line_summary"]
+    writer.writerow(["BUSCO", lineage + " " + summary])
 
-    with open(file_out, "a") as fout:
-        lineage = data["lineage_dataset"]["name"].upper()
-        summary = data["results"]["one_line_summary"]
-        writer = csv.writer(fout)
-        _ = writer.writerow(["BUSCO", lineage + " " + summary])
-
-def extract_qv(datatype, file_in, file_out):
-    out_dir = os.path.dirname(file_out)
-    make_dir(out_dir)
-
-    with open(file_in, "r") as fin, open(file_out, "a") as fout:
+def extract_qv(datatype, file_in, writer):
+    with open(file_in, "r") as fin:
         data = csv.DictReader(fin, delimiter="\t")
-        writer = csv.writer(fout)
         for row in data:
-            _ = writer.writerow(["QV_" + datatype, row["QV"]])
+            writer.writerow(["QV_" + datatype, row["QV"]])
 
 def extract_completeness(datatype, file_in, writer):
     with open(file_in, "r") as fin:
@@ -67,14 +53,16 @@ def extract_completeness(datatype, file_in, writer):
 
 def main(args=None):
     args = parse_args(args)
+
     out_dir = os.path.dirname(args.FILE_OUT)
     make_dir(out_dir)
+    
     with open(args.FILE_OUT, "w") as fout:
         writer = csv.writer(fout)
         extract_n50(args.N50, writer)
         extract_busco(args.BUSCO, writer)
         extract_qv(args.DATATYPE, args.QV, writer)
-        extract_completeness(args.DATATYPE, writer)
+        extract_completeness(args.DATATYPE, args.COMPLETENESS, writer)
 
 if __name__ == "__main__":
     sys.exit(main())

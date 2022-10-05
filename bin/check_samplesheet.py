@@ -82,35 +82,41 @@ def check_samplesheet(file_in, file_out):
                 print_error("Sample entry has not been specified!", "Line", line)
 
             ##* Check datatype name entries
-            #datatypes = ["hic"]
-            #if datatype:
-            #    if datatype not in datatypes:
-            #        print_error(
-            #            "Data type must be one of {}.".format(",".join(datatypes)),
-            #            "Line",
-            #            line,
-            #        )
-            #else:
-            #    print_error(
-            #        "Data type has not been specified!. Must be one of {}.".format(",".join(datatypes)),
-            #        "Line",
-            #        line,
-            #    )
+            datatypes = ["hic", "pacbio_k31", "illumina_k31", "10x_k31"]
+            if datatype:
+                if datatype not in datatypes:
+                    print_error(
+                        "Data type must be one of {}.".format(",".join(datatypes)),
+                        "Line",
+                        line,
+                    )
+            else:
+                print_error(
+                    "Data type has not been specified!. Must be one of {}.".format(",".join(datatypes)),
+                    "Line",
+                    line,
+                )
 
             ##* Check data file extension
-            #if datafile:
-            #    if " " in datafile:
-            #        print_error(
-            #            "Data file contains spaces!",
-            #            "Line",
-            #            line,
-            #        )
-            #    if not datafile.endswith(".cram") and not datafile.endswith(".bam"):
-            #        print_error(
-            #            "Data file does not have extension '.cram' or '.bam'.",
-            #            "Line",
-            #            line,
-            #        )
+            if datafile:
+                if " " in datafile:
+                    print_error(
+                        "Data file contains spaces!",
+                        "Line",
+                        line,
+                    )
+                if datatype == "hic" and not datafile.endswith(".cram") and not datafile.endswith(".bam"):
+                    print_error(
+                        "Data file does not have extension '.cram' or '.bam'.",
+                        "Line",
+                        line,
+                    )
+                if datatype != "hic" and not os.path.isdir(datafile):
+                    print_error(
+                            "Data path is not a directory",
+                            "Line",
+                        line,
+                    )
 
             ##* Create sample mapping dictionary = { sample: [ datatype, datafile ] }
             sample_info = [datatype, datafile]
