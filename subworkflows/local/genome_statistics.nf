@@ -48,6 +48,7 @@ workflow GENOME_STATISTICS {
 }
 
 process GrabFiles {
+    tag "${meta.id}"
     executor 'local'
 
     input:
