@@ -59,15 +59,11 @@ def extract_qv(datatype, file_in, file_out):
         for row in data:
             _ = writer.writerow(["QV_" + datatype, row["QV"]])
 
-def extract_completeness(datatype, file_in, file_out):
-    out_dir = os.path.dirname(file_out)
-    make_dir(out_dir)
-    
-    with open(file_in, "r") as fin, open(file_out, "a") as fout:
+def extract_completeness(datatype, file_in, writer):
+    with open(file_in, "r") as fin:
         data = csv.DictReader(fin, delimiter="\t")
-        writer = csv.writer(fout)
         for row in data:
-            _ = writer.writerow(["Completeness_" + datatype, row["% Covered"]])
+            writer.writerow(["Completeness_" + datatype, row["% Covered"]])
 
 def main(args=None):
     args = parse_args(args)
