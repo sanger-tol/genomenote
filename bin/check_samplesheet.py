@@ -99,7 +99,7 @@ def check_samplesheet(file_in, file_out):
 
             ##* Check data file extension
             #if datafile:
-            #    if datafile.find(" ") != -1:
+            #    if " " in datafile:
             #        print_error(
             #            "Data file contains spaces!",
             #            "Line",
