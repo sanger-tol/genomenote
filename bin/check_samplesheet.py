@@ -39,9 +39,7 @@ def check_samplesheet(file_in, file_out):
 
     sample,datatype,datafile
     sample1,hic,/path/to/file1.cram
-    sample1,illumina,/path/to/file2.cram
-    sample1,pacbio,/path/to/file3.cram
-    sample1,ont,/path/to/file4.cram
+    sample1,pacbio_kNN,/path/to/kmer/dir
 
     For an example see:
     https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/samplesheet/samplesheet_test_illumina_amplicon.csv
@@ -84,7 +82,7 @@ def check_samplesheet(file_in, file_out):
                 print_error("Sample entry has not been specified!", "Line", line)
 
             ##* Check datatype name entries
-            datatypes = ["hic"]
+            datatypes = ["hic", "pacbio_k31", "illumina_k31", "10x_k31"]
             if datatype:
                 if datatype not in datatypes:
                     print_error(
@@ -101,16 +99,22 @@ def check_samplesheet(file_in, file_out):
 
             ##* Check data file extension
             if datafile:
-                if datafile.find(" ") != -1:
+                if " " in datafile:
                     print_error(
                         "Data file contains spaces!",
                         "Line",
                         line,
                     )
-                if not datafile.endswith(".cram") and not datafile.endswith(".bam"):
+                if datatype == "hic" and not datafile.endswith(".cram") and not datafile.endswith(".bam"):
                     print_error(
                         "Data file does not have extension '.cram' or '.bam'.",
                         "Line",
+                        line,
+                    )
+                if datatype != "hic" and not os.path.isdir(datafile):
+                    print_error(
+                            "Data path is not a directory",
+                            "Line",
                         line,
                     )
 

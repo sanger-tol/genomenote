@@ -57,16 +57,22 @@ workflow GENOMENOTE {
     Channel.of ( inputs ).set { ch_input }
 
     INPUT_CHECK ( ch_input )
+    .aln
+    .branch { meta, file ->
+        hic : meta.datatype == "hic"
+            return [ meta, file, [] ]
+        kmer : meta.datatype != "hic"
+            return [ meta, file ]
+    }.set { ch_inputs }
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     //
     // SUBWORKFLOW: Create contact map matrices from CRAM alignment files
     //
     ch_fasta = INPUT_CHECK.out.genome.map { fasta -> [ [ id: fasta.baseName.replaceFirst(/.unmasked/, "").replaceFirst(/.subset/, "") ], fasta ] }
-    ch_reads = INPUT_CHECK.out.aln.map { meta, reads -> [ meta, reads, [] ] }
     ch_bin = Channel.of(params.binsize)
 
-    CONTACT_MAPS (ch_fasta, ch_reads, ch_bin)
+    CONTACT_MAPS (ch_fasta, ch_inputs.hic, ch_bin)
     ch_versions = ch_versions.mix(CONTACT_MAPS.out.versions)
 
     //
@@ -74,11 +80,10 @@ workflow GENOMENOTE {
     //
     ch_asm = CONTACT_MAPS.out.mcool.combine ( ch_fasta ).map { meta1, mcool, meta2, fasta -> [ [ id: meta2.id, outdir: meta1.outdir ], fasta ] }
     ch_buscoDB = Channel.of(params.lineage_db)
-    ch_kmer = Channel.fromPath(params.kmer)
 
-    GENOME_STATISTICS ( ch_asm, ch_buscoDB, ch_kmer )
+    GENOME_STATISTICS ( ch_asm, ch_buscoDB, ch_inputs.kmer )
     ch_versions = ch_versions.mix(GENOME_STATISTICS.out.versions)
-
+    
     //
     // MODULE: Combine different versions.yml
     //

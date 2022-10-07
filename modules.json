@@ -16,7 +16,10 @@
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "custom/dumpsoftwareversions": {
-                "git_sha": "5e7b1ef9a5a2d9258635bcbf70fcf37dacd1b247"
+                "git_sha": "82501fe6d0d12614db67751d30af98d16e63dc59"
+            },
+            "merquryfk/merquryfk": {
+                "git_sha": "96602d03faf2b3a22323a19032f6e7e97b532d70"
             },
             "samtools/faidx": {
                 "git_sha": "3eb99152cedbb7280258858e5df08478a4670696"

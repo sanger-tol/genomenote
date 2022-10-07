@@ -5,13 +5,14 @@
 include { GOAT_NFIFTY         } from '../../modules/local/goat_nfifty'
 include { GET_ODB             } from '../../modules/local/get_odb'
 include { BUSCO               } from '../../modules/nf-core/modules/busco/main'
+include { MERQURYFK_MERQURYFK } from '../../modules/nf-core/modules/merquryfk/merquryfk/main'
 include { CREATE_TABLE        } from '../../modules/local/create_table'
 
 workflow GENOME_STATISTICS {
     take:
     genome                 // channel: [ meta, fasta ]
     lineage_db             // channel: /path/to/buscoDB
-    kmer                   // channel: /path/to/kmer
+    kmer                   // channel: [ meta, [ /path/to/kmer/kNN ] ]
 
     main:
     ch_versions = Channel.empty()
@@ -29,12 +30,32 @@ workflow GENOME_STATISTICS {
     BUSCO ( genome, ch_lineage, lineage_db, [] )
     ch_versions = ch_versions.mix(BUSCO.out.versions.first())
 
+    // MerquryFK
+    ch_merq = GrabFiles(kmer).combine(genome).map { meta, hist, ktab, meta2, fasta -> [ meta, hist, ktab, fasta ] }
+    MERQURYFK_MERQURYFK ( ch_merq )
+    ch_versions = ch_versions.mix(MERQURYFK_MERQURYFK.out.versions.first())
+
     // Combine results
-    ct = GOAT_NFIFTY.out.json.join( BUSCO.out.short_summaries_json )
+    ct1 = GOAT_NFIFTY.out.json.join( BUSCO.out.short_summaries_json )
+    ct2 = MERQURYFK_MERQURYFK.out.qv.join( MERQURYFK_MERQURYFK.out.stats )
+    ct  = ct1.combine( ct2 ).map { meta, n50, busco, meta2, qv, stats -> [ [id: meta.id, datatype: meta2.datatype, outdir: meta.outdir], n50, busco, qv, stats ] }
     CREATE_TABLE ( ct )
     ch_versions = ch_versions.mix(CREATE_TABLE.out.versions.first())
 
     emit:
     table    = CREATE_TABLE.out.csv     // channel: [ csv ]
     versions = ch_versions              // channel: [ versions.yml ]
+}
+
+process GrabFiles {
+    tag "${meta.id}"
+    executor 'local'
+
+    input:
+    tuple val(meta), path("in")
+
+    output:
+    tuple val(meta), path("in/*.hist"), path("in/*.ktab*", hidden:true)
+
+    "true"
 }

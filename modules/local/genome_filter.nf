@@ -1,5 +1,5 @@
 process GENOME_FILTER {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     conda (params.enable_conda ? "conda-forge::gawk=5.1.0" : null)
@@ -11,7 +11,7 @@ process GENOME_FILTER {
     tuple val(meta), path(fai)
 
     output:
-    path "*list",        emit: list
+    path "*.list",       emit: list
     path "versions.yml", emit: versions
 
     script:
