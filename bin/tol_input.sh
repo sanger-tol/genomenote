@@ -24,7 +24,7 @@ assembly=$(echo $genome | cut -f12 -d'/')
 gca=$(echo $genome | cut -f14 -d'/' | sed 's/.fasta.gz//')
 
 # Currently this will import a masked file, but once the `insdcdownload` pipeline goes in production, it will be unmasked
-gunzip -c $genome > ${gca}.fasta
+ln -s $genome
 
 analysis=$data/$taxon/$organism/analysis/$assembly
 

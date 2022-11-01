@@ -4,8 +4,8 @@
 
 include { GOAT_NFIFTY         } from '../../modules/local/goat_nfifty'
 include { GET_ODB             } from '../../modules/local/get_odb'
-include { BUSCO               } from '../../modules/nf-core/modules/busco/main'
-include { MERQURYFK_MERQURYFK } from '../../modules/nf-core/modules/merquryfk/merquryfk/main'
+include { BUSCO               } from '../../modules/nf-core/busco/main'
+include { MERQURYFK_MERQURYFK } from '../../modules/nf-core/merquryfk/merquryfk/main'
 include { CREATE_TABLE        } from '../../modules/local/create_table'
 
 workflow GENOME_STATISTICS {

@@ -1,15 +1,15 @@
 //
 // Prepare contact maps using aligned reads
 //
-include { SAMTOOLS_FAIDX          } from '../../modules/nf-core/modules/samtools/faidx/main'
-include { SAMTOOLS_VIEW           } from '../../modules/nf-core/modules/samtools/view/main'
-include { BEDTOOLS_BAMTOBED       } from '../../modules/nf-core/modules/bedtools/bamtobed/main'
+include { SAMTOOLS_FAIDX          } from '../../modules/nf-core/samtools/faidx/main'
+include { SAMTOOLS_VIEW           } from '../../modules/nf-core/samtools/view/main'
+include { BEDTOOLS_BAMTOBED       } from '../../modules/nf-core/bedtools/bamtobed/main'
 include { GENOME_FILTER           } from '../../modules/local/genome_filter'
 include { GNU_SORT as BED_SORT    } from '../../modules/local/gnu_sort'
 include { GNU_SORT as FILTER_SORT } from '../../modules/local/gnu_sort'
 include { BED_FILTER              } from '../../modules/local/bed_filter'
-include { COOLER_CLOAD            } from '../../modules/nf-core/modules/cooler/cload/main'
-include { COOLER_ZOOMIFY          } from '../../modules/nf-core/modules/cooler/zoomify/main'
+include { COOLER_CLOAD            } from '../../modules/nf-core/cooler/cload/main'
+include { COOLER_ZOOMIFY          } from '../../modules/nf-core/cooler/zoomify/main'
 
 workflow CONTACT_MAPS {
     take:
@@ -50,12 +50,12 @@ workflow CONTACT_MAPS {
     ch_versions = ch_versions.mix(FILTER_SORT.out.versions.first())
 
     // Create the `.cool` file
-    ch_cooler = FILTER_SORT.out.bed.map { meta, bed -> [ meta, bed, [] ] }
-    COOLER_CLOAD ( ch_cooler, cool_bin, GENOME_FILTER.out.list )
+    ch_cooler = FILTER_SORT.out.bed.combine(cool_bin).map { meta, bed, bin -> [ meta, bed, [], bin ] }
+    COOLER_CLOAD ( ch_cooler, GENOME_FILTER.out.list )
     ch_versions = ch_versions.mix(COOLER_CLOAD.out.versions).first()
 
     // Create the `.mcool` file
-    ch_zoomify = COOLER_CLOAD.out.cool.map { meta, bin, cool -> [ meta, cool ] }
+    ch_zoomify = COOLER_CLOAD.out.cool.map { meta, cool, bin -> [ meta, cool ] }
     COOLER_ZOOMIFY ( ch_zoomify )
     ch_versions = ch_versions.mix(COOLER_ZOOMIFY.out.versions.first())
 

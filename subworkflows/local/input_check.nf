@@ -6,6 +6,7 @@
 
 include { INPUT_TOL         } from '../../modules/local/input_tol'
 include { SAMPLESHEET_CHECK } from '../../modules/local/samplesheet_check'
+include { GUNZIP            } from '../../modules/nf-core/gunzip/main'
 
 workflow INPUT_CHECK {
     take:
@@ -41,9 +42,13 @@ workflow INPUT_CHECK {
         .set { aln }
     ch_versions = ch_versions.mix(SAMPLESHEET_CHECK.out.versions)
 
+    ch_genome = genome.map{ file -> [ [id:file.baseName], file ] }
+    ch_fasta = GUNZIP(ch_genome).gunzip.map{ meta, file -> file }
+    ch_versions = ch_versions.mix(GUNZIP.out.versions)
+
     emit:
     aln                                       // channel: [ val(meta), [ datafile ] ]
-    genome                                    // channel: fasta
+    genome = ch_fasta                         // channel: fasta
     versions = ch_versions                    // channel: [ versions.yml ]
 }
 
