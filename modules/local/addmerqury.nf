@@ -22,6 +22,7 @@ process ADDMERQURY {
     def outname = summary.baseName + "_" + prefix.split('_')[0..-2].join('_')
     """
     add_merqury.py \\
+        $summary \\
         ${prefix} \\
         $qv \\
         $completeness \\

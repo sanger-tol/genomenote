@@ -10,6 +10,7 @@ def parse_args(args=None):
     Description = "Create a table by parsing json output to extract N50, BUSCO, QV and COMPLETENESS stats."
 
     parser = argparse.ArgumentParser(description=Description)
+    parser.add_argument("FILE_IN", help="Input CSV file.")
     parser.add_argument("SAMPLE", help="PacBio sample ID used for MerquryFK.")
     parser.add_argument("QV", help="Input QV TSV file from MERQURYFK.")
     parser.add_argument("COMPLETENESS", help="Input COMPLETENESS stats TSV file from MERQURYFK.")
@@ -38,8 +39,12 @@ def main(args=None):
 
     out_dir = os.path.dirname(args.FILE_OUT)
     make_dir(out_dir)
-    
+
     with open(args.FILE_OUT, "w") as fout:
+        with open(args.FILE_IN, "r") as fin:
+            for line in fin:
+                fout.write(line)
+
         writer = csv.writer(fout)
         writer.writerow(["MerquryFK", args.SAMPLE])
         extract_qv(args.QV, writer)
