@@ -46,7 +46,7 @@ def main(args=None):
                 fout.write(line)
 
         writer = csv.writer(fout)
-        writer.writerow(["MerquryFK", args.SAMPLE])
+        writer.writerow(["##MerquryFK", "_".join(args.SAMPLE.split("_")[:-1])])
         extract_qv(args.QV, writer)
         extract_completeness(args.COMPLETENESS, writer)
 

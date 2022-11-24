@@ -2,12 +2,13 @@
 // Create genome statistics table for genome notes
 //
 
-include { NCBIDATASETS_SUMMARYGENOME } from '../../modules/local/ncbidatasets/summarygenome'
-include { GET_ODB                    } from '../../modules/local/get_odb'
-include { BUSCO                      } from '../../modules/nf-core/busco/main'
-include { SUMMARYTABLE               } from '../../modules/local/summarytable'
-include { MERQURYFK_MERQURYFK        } from '../../modules/nf-core/merquryfk/merquryfk/main'
-include { ADDMERQURY                 } from '../../modules/local/addmerqury'
+include { NCBIDATASETS_SUMMARYGENOME as SUMMARYGENOME   } from '../../modules/local/ncbidatasets/summarygenome'
+include { NCBIDATASETS_SUMMARYGENOME as SUMMARYSEQUENCE } from '../../modules/local/ncbidatasets/summarygenome'
+include { GET_ODB                                       } from '../../modules/local/get_odb'
+include { BUSCO                                         } from '../../modules/nf-core/busco/main'
+include { SUMMARYTABLE                                  } from '../../modules/local/summarytable'
+include { MERQURYFK_MERQURYFK                           } from '../../modules/nf-core/merquryfk/merquryfk/main'
+include { ADDMERQURY                                    } from '../../modules/local/addmerqury'
 
 workflow GENOME_STATISTICS {
     take:
@@ -19,8 +20,12 @@ workflow GENOME_STATISTICS {
     ch_versions = Channel.empty()
 
     // Genome summary statistics
-    NCBIDATASETS_SUMMARYGENOME ( genome )
-    ch_versions = ch_versions.mix(NCBIDATASETS_SUMMARYGENOME.out.versions.first())
+    SUMMARYGENOME ( genome )
+    ch_versions = ch_versions.mix(SUMMARYGENOME.out.versions.first())
+
+    // Sequence summary statistics
+    SUMMARYSEQUENCE ( genome )
+    ch_versions = ch_versions.mix(SUMMARYSEQUENCE.out.versions.first())
 
     // Get ODB lineage value
     GET_ODB ( genome )
@@ -32,7 +37,7 @@ workflow GENOME_STATISTICS {
     ch_versions = ch_versions.mix(BUSCO.out.versions.first())
 
     // Create assembly table
-    ch_json = NCBIDATASETS_SUMMARYGENOME.out.summary.join( BUSCO.out.short_summaries_json )
+    ch_json = SUMMARYGENOME.out.summary.join(SUMMARYSEQUENCE.out.summary).join( BUSCO.out.short_summaries_json )
     SUMMARYTABLE ( ch_json )
     ch_versions = ch_versions.mix(SUMMARYTABLE.out.versions.first())
 

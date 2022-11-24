@@ -8,7 +8,7 @@ process SUMMARYTABLE {
         'quay.io/biocontainers/python:3.9--1' }"
 
     input:
-    tuple val(meta), path(summary), path(busco)
+    tuple val(meta), path(genome_summary), path(sequence_summary), path(busco)
 
     output:
     tuple val(meta), path("*.csv"), emit: csv
@@ -21,7 +21,8 @@ process SUMMARYTABLE {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     summary_table.py \\
-        $summary \\
+        $genome_summary \\
+        $sequence_summary \\
         $busco \\
         ${prefix}.csv
 

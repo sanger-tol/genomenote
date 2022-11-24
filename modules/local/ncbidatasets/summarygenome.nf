@@ -23,7 +23,7 @@ process NCBIDATASETS_SUMMARYGENOME {
         summary \\
         genome \\
         accession \\
-        ${prefix} \\
+        ${meta.id} \\
         ${args} \\
         > ${prefix}.json
 
