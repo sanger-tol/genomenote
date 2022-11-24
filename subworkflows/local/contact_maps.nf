@@ -2,9 +2,9 @@
 // Prepare contact maps using aligned reads
 //
 include { SAMTOOLS_FAIDX          } from '../../modules/nf-core/samtools/faidx/main'
+include { GENOME_FILTER           } from '../../modules/local/genome_filter'
 include { SAMTOOLS_VIEW           } from '../../modules/nf-core/samtools/view/main'
 include { BEDTOOLS_BAMTOBED       } from '../../modules/nf-core/bedtools/bamtobed/main'
-include { GENOME_FILTER           } from '../../modules/local/genome_filter'
 include { GNU_SORT as BED_SORT    } from '../../modules/local/gnu_sort'
 include { GNU_SORT as FILTER_SORT } from '../../modules/local/gnu_sort'
 include { BED_FILTER              } from '../../modules/local/bed_filter'
@@ -24,6 +24,10 @@ workflow CONTACT_MAPS {
     SAMTOOLS_FAIDX ( genome )
     ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions.first())
 
+    // Filter the genome index file
+    GENOME_FILTER ( SAMTOOLS_FAIDX.out.fai )
+    ch_versions = ch_versions.mix(GENOME_FILTER.out.versions.first())
+
     // CRAM to BAM
     ch_fasta = genome.map { meta, fasta -> fasta }
     SAMTOOLS_VIEW ( reads, ch_fasta, [] )
@@ -32,10 +36,6 @@ workflow CONTACT_MAPS {
     // BAM to Bed
     BEDTOOLS_BAMTOBED ( SAMTOOLS_VIEW.out.bam )
     ch_versions = ch_versions.mix(BEDTOOLS_BAMTOBED.out.versions.first())
-
-    // Filter the genome index file
-    GENOME_FILTER ( SAMTOOLS_FAIDX.out.fai )
-    ch_versions = ch_versions.mix(GENOME_FILTER.out.versions.first())
 
     // Sort the bed file
     BED_SORT ( BEDTOOLS_BAMTOBED.out.bed )
