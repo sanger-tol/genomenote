@@ -35,7 +35,7 @@ def ncbi_stats(genome_in, seq_in, writer):
 
     writer.writerow(["##Assembly_Information"])
     writer.writerow(["Accession", data["accession"]])
-    writer.writerow(["Common_Name", data["organism"]["common_name"]])
+    if "common_name" in data["organism"]: writer.writerow(["Common_Name", data["organism"]["common_name"]])
     writer.writerow(["Organism_Name", data["organism"]["organism_name"]])
     writer.writerow(["ToL_ID", "".join([ pairs["value"] for pairs in attr if pairs["name"] == "tolid" ])])
     writer.writerow(["Taxon_ID", data["organism"]["tax_id"]])
