@@ -78,7 +78,7 @@ workflow GENOMENOTE {
     //
     // SUBWORKFLOW: Create genome statistics table
     //
-    ch_asm = CONTACT_MAPS.out.mcool.combine ( ch_fasta ).map { meta1, mcool, meta2, fasta -> [ [ id: meta2.id, outdir: meta1.outdir ], fasta ] }
+    ch_asm = ch_inputs.hic.combine ( ch_fasta ).map { meta1, cram, blank, meta2, fasta -> [ [ id: meta2.id, outdir: meta1.outdir ], fasta ] }
     ch_buscoDB = Channel.of(params.lineage_db)
 
     GENOME_STATISTICS ( ch_asm, ch_buscoDB, ch_inputs.kmer )
