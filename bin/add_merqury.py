@@ -41,7 +41,7 @@ def main(args=None):
     make_dir(out_dir)
 
     with open(args.FILE_OUT, "w") as fout:
-        with open(args.FILE_IN, "r") as fin:
+        with open(args.FILE_IN, "r", newline="") as fin:
             for line in fin:
                 fout.write(line)
 
