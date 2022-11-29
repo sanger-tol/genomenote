@@ -6,9 +6,8 @@ include { NCBIDATASETS_SUMMARYGENOME as SUMMARYGENOME   } from '../../modules/lo
 include { NCBIDATASETS_SUMMARYGENOME as SUMMARYSEQUENCE } from '../../modules/local/ncbidatasets/summarygenome'
 include { GET_ODB                                       } from '../../modules/local/get_odb'
 include { BUSCO                                         } from '../../modules/nf-core/busco/main'
-include { SUMMARYTABLE                                  } from '../../modules/local/summarytable'
 include { MERQURYFK_MERQURYFK                           } from '../../modules/nf-core/merquryfk/merquryfk/main'
-include { ADDMERQURY                                    } from '../../modules/local/addmerqury'
+include { CREATETABLE                                   } from '../../modules/local/createtable'
 
 workflow GENOME_STATISTICS {
     take:
@@ -35,25 +34,21 @@ workflow GENOME_STATISTICS {
     ch_lineage = GET_ODB.out.csv.splitCsv().map { row -> row[1] }
     BUSCO ( genome, ch_lineage, lineage_db, [] )
     ch_versions = ch_versions.mix(BUSCO.out.versions.first())
-
-    // Create assembly table
-    ch_json = SUMMARYGENOME.out.summary.join(SUMMARYSEQUENCE.out.summary).join( BUSCO.out.short_summaries_json )
-    SUMMARYTABLE ( ch_json )
-    ch_versions = ch_versions.mix(SUMMARYTABLE.out.versions.first())
-
+    
     // MerquryFK
     ch_merq = GrabFiles(kmer).combine(genome).map { meta, hist, ktab, meta2, fasta -> [ meta, hist, ktab, fasta ] }
     MERQURYFK_MERQURYFK ( ch_merq )
     ch_versions = ch_versions.mix(MERQURYFK_MERQURYFK.out.versions.first())
 
-    // Add MerquryFK results
-    ch_merqury = MERQURYFK_MERQURYFK.out.qv.join( MERQURYFK_MERQURYFK.out.stats ).combine( SUMMARYTABLE.out.csv.map { meta, file -> file } )
-    ADDMERQURY ( ch_merqury )
-    ch_versions = ch_versions.mix(ADDMERQURY.out.versions.first())
+    // Combined table
+    ch_summary = SUMMARYGENOME.out.summary.join(SUMMARYSEQUENCE.out.summary)
+    ch_busco = BUSCO.out.short_summaries_json.map { meta, file -> file}.ifEmpty([])
+    ch_merqury = MERQURYFK_MERQURYFK.out.qv.join(MERQURYFK_MERQURYFK.out.stats).ifEmpty([[],[],[]])
+    CREATETABLE ( ch_summary, ch_busco, ch_merqury )
+    ch_versions = ch_versions.mix(CREATETABLE.out.versions.first())
 
     emit:
-    summary  = SUMMARYTABLE.out.csv     // channel: [ csv ]
-    table    = ADDMERQURY.out.csv       // channel: [ csv ]
+    summary  = CREATETABLE.out.csv      // channel: [ csv ]
     versions = ch_versions              // channel: [ versions.yml ]
 }
 

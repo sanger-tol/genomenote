@@ -10,11 +10,14 @@ def parse_args(args=None):
     Description = "Create a table by parsing json output to extract N50, BUSCO, QV and COMPLETENESS stats."
 
     parser = argparse.ArgumentParser(description=Description)
-    parser.add_argument("GENOME", help="Input NCBI genome summary JSON file.")
-    parser.add_argument("SEQUENCE", help="Input NCBI sequence summary JSON file.")
-    parser.add_argument("BUSCO", help="Input BUSCO short summary JSON file.")
-    parser.add_argument("FILE_OUT", help="Output CSV file.")
-    parser.add_argument('--version', action='version', version='%(prog)s 1.0')
+    parser.add_argument("-g", "--genome", help="Input NCBI genome summary JSON file.")
+    parser.add_argument("-s", "--sequence", help="Input NCBI sequence summary JSON file.")
+    parser.add_argument("-b", "--busco", help="Input BUSCO short summary JSON file.")
+    parser.add_argument("-p", "--pacbio", help="PacBio sample ID used for MerquryFK.")
+    parser.add_argument("-q", "--qv", help="Input QV TSV file from MERQURYFK.")
+    parser.add_argument("-c", "--completeness", help="Input COMPLETENESS stats TSV file from MERQURYFK.")
+    parser.add_argument("-o", "--outcsv", help="Output CSV file.")
+    parser.add_argument("-v", "--version", action="version", version="%(prog)s 1.0")
     return parser.parse_args(args)
 
 def make_dir(path):
@@ -70,16 +73,35 @@ def extract_busco(file_in, writer):
     writer.writerow(["Lineage", data["lineage_dataset"]["name"]])
     writer.writerow(["Summary", data["results"]["one_line_summary"]])
 
+def extract_qv(file_in, writer):
+    with open(file_in, "r") as fin:
+        data = csv.DictReader(fin, delimiter="\t")
+        for row in data:
+            writer.writerow(["QV", row["QV"]])
+
+def extract_completeness(file_in, writer):
+    with open(file_in, "r") as fin:
+        data = csv.DictReader(fin, delimiter="\t")
+        for row in data:
+            writer.writerow(["Completeness", row["% Covered"]])
+
 def main(args=None):
     args = parse_args(args)
 
-    out_dir = os.path.dirname(args.FILE_OUT)
+    out_dir = os.path.dirname(args.outcsv)
     make_dir(out_dir)
 
-    with open(args.FILE_OUT, "w") as fout:
+    with open(args.outcsv, "w") as fout:
         writer = csv.writer(fout)
-        ncbi_stats(args.GENOME, args.SEQUENCE, writer)
-        extract_busco(args.BUSCO, writer)
+        ncbi_stats(args.genome, args.sequence, writer)
+        if args.busco is not None:
+            extract_busco(args.busco, writer)
+        if args.pacbio is not None:
+            writer.writerow(["##MerquryFK", "_".join(args.pacbio.split("_")[:-1])])
+        if args.qv is not None:
+            extract_qv(args.qv, writer)
+        if args.completeness is not None: 
+            extract_completeness(args.completeness, writer)
 
 if __name__ == "__main__":
     sys.exit(main())
