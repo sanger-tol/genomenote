@@ -11,7 +11,7 @@ process INPUT_TOL {
     val project
 
     output:
-    path "*.fasta",          emit: fasta
+    path "*.fasta*",          emit: fasta
     path "samplesheet.csv",  emit: csv
     path "versions.yml",     emit: versions
 
