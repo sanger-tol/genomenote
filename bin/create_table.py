@@ -17,7 +17,7 @@ def parse_args(args=None):
     parser.add_argument("-q", "--qv", help="Input QV TSV file from MERQURYFK.")
     parser.add_argument("-c", "--completeness", help="Input COMPLETENESS stats TSV file from MERQURYFK.")
     parser.add_argument("-o", "--outcsv", help="Output CSV file.")
-    parser.add_argument("-v", "--version", action="version", version="%(prog)s 1.0")
+    parser.add_argument("-v", "--version", action="version", version="%(prog)s 2.0")
     return parser.parse_args(args)
 
 def make_dir(path):
