@@ -10,13 +10,13 @@ def parse_args(args=None):
     Description = "Create a table by parsing json output to extract N50, BUSCO, QV and COMPLETENESS stats."
 
     parser = argparse.ArgumentParser(description=Description)
-    parser.add_argument("-g", "--genome", help="Input NCBI genome summary JSON file.")
-    parser.add_argument("-s", "--sequence", help="Input NCBI sequence summary JSON file.")
+    parser.add_argument("-g", "--genome", help="Input NCBI genome summary JSON file.", required=True)
+    parser.add_argument("-s", "--sequence", help="Input NCBI sequence summary JSON file.", required=True)
     parser.add_argument("-b", "--busco", help="Input BUSCO short summary JSON file.")
     parser.add_argument("-p", "--pacbio", help="PacBio sample ID used for MerquryFK.")
     parser.add_argument("-q", "--qv", help="Input QV TSV file from MERQURYFK.")
     parser.add_argument("-c", "--completeness", help="Input COMPLETENESS stats TSV file from MERQURYFK.")
-    parser.add_argument("-o", "--outcsv", help="Output CSV file.")
+    parser.add_argument("-o", "--outcsv", help="Output CSV file.", required=True)
     parser.add_argument("-v", "--version", action="version", version="%(prog)s 2.0")
     return parser.parse_args(args)
 
