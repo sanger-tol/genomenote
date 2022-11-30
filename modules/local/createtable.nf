@@ -39,7 +39,7 @@ process CREATETABLE {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        create_table.py: \$(summary_table.py --version | cut -d' ' -f2)
+        create_table.py: \$(create_table.py --version | cut -d' ' -f2)
     END_VERSIONS
     """
 }
