@@ -24,7 +24,7 @@ process CREATETABLE {
     def gen = genome_summary ? "--genome ${genome_summary}" : ""
     def seq = sequence_summary ? "--sequence ${sequence_summary}" : ""
     def bus = busco ? "--busco ${busco}" : ""
-    def pac = qv ? "--pacbio ${meta2.id}" : ""
+    def pac = qv || completeness ? "--pacbio ${meta2.id}" : ""
     def mqv = qv ? "--qv ${qv}" : ""
     def mco = completeness ? "--completeness ${completeness}" : ""
     """
