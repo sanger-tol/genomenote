@@ -5,6 +5,7 @@ import os
 import json
 import sys
 import csv
+import re
 
 def parse_args(args=None):
     Description = "Create a table by parsing json output to extract N50, BUSCO, QV and COMPLETENESS stats."
@@ -16,6 +17,8 @@ def parse_args(args=None):
     parser.add_argument("-p", "--pacbio", help="PacBio sample ID used for MerquryFK.")
     parser.add_argument("-q", "--qv", help="Input QV TSV file from MERQURYFK.")
     parser.add_argument("-c", "--completeness", help="Input COMPLETENESS stats TSV file from MERQURYFK.")
+    parser.add_argument("-m", "--mapped", help="HiC sample ID used for contact maps.")
+    parser.add_argument("-f", "--flagstat", help="HiC flagstat file created by Samtools.")
     parser.add_argument("-o", "--outcsv", help="Output CSV file.", required=True)
     parser.add_argument("-v", "--version", action="version", version="%(prog)s 2.0")
     return parser.parse_args(args)
@@ -60,7 +63,10 @@ def ncbi_stats(genome_in, seq_in, writer):
     for mol in seq:
         if "gc_percent" in mol and mol["assembly_unit"] != "non-nuclear":
             writer.writerow([mol["chr_name"], mol["length"], mol["gc_percent"]])
-    writer.writerow(["##Organelle", "Length", "GC_Percent"])
+    for mol in seq:
+        if "gc_percent" in mol and mol["assembly_unit"] == "non-nuclear":
+            writer.writerow(["##Organelle", "Length", "GC_Percent"])
+            break
     for mol in seq:
         if "gc_percent" in mol and mol["assembly_unit"] == "non-nuclear":
             writer.writerow([mol["assigned_molecule_location_type"], mol["length"], mol["gc_percent"]])
@@ -85,6 +91,13 @@ def extract_completeness(file_in, writer):
         for row in data:
             writer.writerow(["Completeness", row["% Covered"]])
 
+def extract_mapped(sample, file_in, writer):
+    writer.writerow(["##HiC", "_".join(sample.split("_")[:-1])])
+    with open(file_in, "r") as fin:
+        for line in fin:
+            if "primary mapped" in line:
+                writer.writerow(["Primary_Mapped", re.findall("[0-9]+.[0-9]+%", line)[0]])
+
 def main(args=None):
     args = parse_args(args)
 
@@ -102,6 +115,8 @@ def main(args=None):
             extract_qv(args.qv, writer)
         if args.completeness is not None: 
             extract_completeness(args.completeness, writer)
+        if args.mapped is not None:
+            extract_mapped(args.mapped, args.flagstat, writer)
 
 if __name__ == "__main__":
     sys.exit(main())

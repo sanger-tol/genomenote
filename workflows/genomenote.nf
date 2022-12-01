@@ -80,8 +80,9 @@ workflow GENOMENOTE {
     //
     ch_asm = ch_inputs.hic.combine ( ch_fasta ).map { meta1, cram, blank, meta2, fasta -> [ [ id: meta2.id, outdir: meta1.outdir ], fasta ] }
     ch_buscoDB = Channel.of(params.lineage_db)
+    ch_flagstat = ch_inputs.hic.map{ meta, file, blank -> [ meta, file.join("").split("\\.")[0..-2].join(".") + ".flagstat" ] }
 
-    GENOME_STATISTICS ( ch_asm, ch_buscoDB, ch_inputs.kmer )
+    GENOME_STATISTICS ( ch_asm, ch_buscoDB, ch_inputs.kmer, ch_flagstat )
     ch_versions = ch_versions.mix(GENOME_STATISTICS.out.versions)
     
     //

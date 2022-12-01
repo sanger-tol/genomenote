@@ -14,6 +14,7 @@ workflow GENOME_STATISTICS {
     genome                 // channel: [ meta, fasta ]
     lineage_db             // channel: /path/to/buscoDB
     kmer                   // channel: [ meta, [ /path/to/kmer/kNN ] ]
+    flagstat               // channel: [ meta, flagstat ]
 
     main:
     ch_versions = Channel.empty()
@@ -42,9 +43,10 @@ workflow GENOME_STATISTICS {
 
     // Combined table
     ch_summary = SUMMARYGENOME.out.summary.join(SUMMARYSEQUENCE.out.summary)
-    ch_busco = BUSCO.out.short_summaries_json.map { meta, file -> file}.ifEmpty([])
+    ch_busco = BUSCO.out.short_summaries_json.ifEmpty([[],[]])
     ch_merqury = MERQURYFK_MERQURYFK.out.qv.join(MERQURYFK_MERQURYFK.out.stats).ifEmpty([[],[],[]])
-    CREATETABLE ( ch_summary, ch_busco, ch_merqury )
+   
+    CREATETABLE ( ch_summary, ch_busco, ch_merqury, flagstat )
     ch_versions = ch_versions.mix(CREATETABLE.out.versions.first())
 
     emit:
