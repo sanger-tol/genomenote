@@ -63,12 +63,12 @@ def ncbi_stats(genome_in, seq_in, writer):
     for mol in seq:
         if "gc_percent" in mol and mol["assembly_unit"] != "non-nuclear":
             writer.writerow([mol["chr_name"], mol["length"], mol["gc_percent"]])
+    organelle_header = False
     for mol in seq:
         if "gc_percent" in mol and mol["assembly_unit"] == "non-nuclear":
-            writer.writerow(["##Organelle", "Length", "GC_Percent"])
-            break
-    for mol in seq:
-        if "gc_percent" in mol and mol["assembly_unit"] == "non-nuclear":
+            if not organelle_header:
+                writer.writerow(["##Organelle", "Length", "GC_Percent"])
+                organelle_header = True
             writer.writerow([mol["assigned_molecule_location_type"], mol["length"], mol["gc_percent"]])
 
 def extract_busco(file_in, writer):
