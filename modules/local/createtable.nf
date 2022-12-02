@@ -9,7 +9,7 @@ process CREATETABLE {
 
     input:
     tuple val(meta), path(genome_summary), path(sequence_summary)
-    tuple val(meta), path(busco)
+    tuple val(meta1), path(busco)
     tuple val(meta2), path(qv), path(completeness)
     tuple val(meta3), path(flagstat)
 
