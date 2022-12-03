@@ -28,7 +28,7 @@ process CREATETABLE {
     def pac = qv || completeness ? "--pacbio ${meta2.id}" : ""
     def mqv = qv ? "--qv ${qv}" : ""
     def mco = completeness ? "--completeness ${completeness}" : ""
-    def hic = flagstat ? "--mapped ${meta3.id}" : ""
+    def hic = flagstat ? "--hic ${meta3.id}" : ""
     def fst = flagstat ? "--flagstat ${flagstat}" : ""
     """
     create_table.py \\
@@ -40,7 +40,7 @@ process CREATETABLE {
         $mco \\
         $hic \\
         $fst \\
-        -o ${prefix}.csv
+        --outcsv ${prefix}.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

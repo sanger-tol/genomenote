@@ -11,16 +11,16 @@ def parse_args(args=None):
     Description = "Create a table by parsing json output to extract N50, BUSCO, QV and COMPLETENESS stats."
 
     parser = argparse.ArgumentParser(description=Description)
-    parser.add_argument("-g", "--genome", help="Input NCBI genome summary JSON file.", required=True)
-    parser.add_argument("-s", "--sequence", help="Input NCBI sequence summary JSON file.", required=True)
-    parser.add_argument("-b", "--busco", help="Input BUSCO short summary JSON file.")
-    parser.add_argument("-p", "--pacbio", help="PacBio sample ID used for MerquryFK.")
-    parser.add_argument("-q", "--qv", help="Input QV TSV file from MERQURYFK.")
-    parser.add_argument("-c", "--completeness", help="Input COMPLETENESS stats TSV file from MERQURYFK.")
-    parser.add_argument("-m", "--mapped", help="HiC sample ID used for contact maps.")
-    parser.add_argument("-f", "--flagstat", help="HiC flagstat file created by Samtools.")
-    parser.add_argument("-o", "--outcsv", help="Output CSV file.", required=True)
-    parser.add_argument("-v", "--version", action="version", version="%(prog)s 2.0")
+    parser.add_argument("--genome", help="Input NCBI genome summary JSON file.", required=True)
+    parser.add_argument("--sequence", help="Input NCBI sequence summary JSON file.", required=True)
+    parser.add_argument("--busco", help="Input BUSCO short summary JSON file.")
+    parser.add_argument("--pacbio", help="PacBio sample ID used for MerquryFK.")
+    parser.add_argument("--qv", help="Input QV TSV file from MERQURYFK.")
+    parser.add_argument("--completeness", help="Input COMPLETENESS stats TSV file from MERQURYFK.")
+    parser.add_argument("--hic", help="HiC sample ID used for contact maps.")
+    parser.add_argument("--flagstat", help="HiC flagstat file created by Samtools.")
+    parser.add_argument("--outcsv", help="Output CSV file.", required=True)
+    parser.add_argument("--version", action="version", version="%(prog)s 2.0")
     return parser.parse_args(args)
 
 def make_dir(path):
@@ -115,8 +115,8 @@ def main(args=None):
             extract_qv(args.qv, writer)
         if args.completeness is not None: 
             extract_completeness(args.completeness, writer)
-        if args.mapped is not None:
-            extract_mapped(args.mapped, args.flagstat, writer)
+        if args.hic is not None:
+            extract_mapped(args.hic, args.flagstat, writer)
 
 if __name__ == "__main__":
     sys.exit(main())
