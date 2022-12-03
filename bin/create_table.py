@@ -5,19 +5,22 @@ import os
 import json
 import sys
 import csv
+import re
 
 def parse_args(args=None):
     Description = "Create a table by parsing json output to extract N50, BUSCO, QV and COMPLETENESS stats."
 
     parser = argparse.ArgumentParser(description=Description)
-    parser.add_argument("-g", "--genome", help="Input NCBI genome summary JSON file.", required=True)
-    parser.add_argument("-s", "--sequence", help="Input NCBI sequence summary JSON file.", required=True)
-    parser.add_argument("-b", "--busco", help="Input BUSCO short summary JSON file.")
-    parser.add_argument("-p", "--pacbio", help="PacBio sample ID used for MerquryFK.")
-    parser.add_argument("-q", "--qv", help="Input QV TSV file from MERQURYFK.")
-    parser.add_argument("-c", "--completeness", help="Input COMPLETENESS stats TSV file from MERQURYFK.")
-    parser.add_argument("-o", "--outcsv", help="Output CSV file.", required=True)
-    parser.add_argument("-v", "--version", action="version", version="%(prog)s 2.0")
+    parser.add_argument("--genome", help="Input NCBI genome summary JSON file.", required=True)
+    parser.add_argument("--sequence", help="Input NCBI sequence summary JSON file.", required=True)
+    parser.add_argument("--busco", help="Input BUSCO short summary JSON file.")
+    parser.add_argument("--pacbio", help="PacBio sample ID used for MerquryFK.")
+    parser.add_argument("--qv", help="Input QV TSV file from MERQURYFK.")
+    parser.add_argument("--completeness", help="Input COMPLETENESS stats TSV file from MERQURYFK.")
+    parser.add_argument("--hic", help="HiC sample ID used for contact maps.")
+    parser.add_argument("--flagstat", help="HiC flagstat file created by Samtools.")
+    parser.add_argument("--outcsv", help="Output CSV file.", required=True)
+    parser.add_argument("--version", action="version", version="%(prog)s 2.0")
     return parser.parse_args(args)
 
 def make_dir(path):
@@ -60,9 +63,12 @@ def ncbi_stats(genome_in, seq_in, writer):
     for mol in seq:
         if "gc_percent" in mol and mol["assembly_unit"] != "non-nuclear":
             writer.writerow([mol["chr_name"], mol["length"], mol["gc_percent"]])
-    writer.writerow(["##Organelle", "Length", "GC_Percent"])
+    organelle_header = False
     for mol in seq:
         if "gc_percent" in mol and mol["assembly_unit"] == "non-nuclear":
+            if not organelle_header:
+                writer.writerow(["##Organelle", "Length", "GC_Percent"])
+                organelle_header = True
             writer.writerow([mol["assigned_molecule_location_type"], mol["length"], mol["gc_percent"]])
 
 def extract_busco(file_in, writer):
@@ -85,6 +91,13 @@ def extract_completeness(file_in, writer):
         for row in data:
             writer.writerow(["Completeness", row["% Covered"]])
 
+def extract_mapped(sample, file_in, writer):
+    writer.writerow(["##HiC", "_".join(sample.split("_")[:-1])])
+    with open(file_in, "r") as fin:
+        for line in fin:
+            if "primary mapped" in line:
+                writer.writerow(["Primary_Mapped", re.search(r'\((.*?) :', line).group(1)])
+
 def main(args=None):
     args = parse_args(args)
 
@@ -102,6 +115,8 @@ def main(args=None):
             extract_qv(args.qv, writer)
         if args.completeness is not None: 
             extract_completeness(args.completeness, writer)
+        if args.hic is not None:
+            extract_mapped(args.hic, args.flagstat, writer)
 
 if __name__ == "__main__":
     sys.exit(main())

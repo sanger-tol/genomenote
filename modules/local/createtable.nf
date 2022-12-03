@@ -9,8 +9,9 @@ process CREATETABLE {
 
     input:
     tuple val(meta), path(genome_summary), path(sequence_summary)
-    path(busco)
+    tuple val(meta1), path(busco)
     tuple val(meta2), path(qv), path(completeness)
+    tuple val(meta3), path(flagstat)
 
     output:
     tuple val(meta), path("*.csv"), emit: csv
@@ -27,6 +28,8 @@ process CREATETABLE {
     def pac = qv || completeness ? "--pacbio ${meta2.id}" : ""
     def mqv = qv ? "--qv ${qv}" : ""
     def mco = completeness ? "--completeness ${completeness}" : ""
+    def hic = flagstat ? "--hic ${meta3.id}" : ""
+    def fst = flagstat ? "--flagstat ${flagstat}" : ""
     """
     create_table.py \\
         $gen \\
@@ -35,7 +38,9 @@ process CREATETABLE {
         $pac \\
         $mqv \\
         $mco \\
-        -o ${prefix}.csv
+        $hic \\
+        $fst \\
+        --outcsv ${prefix}.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
