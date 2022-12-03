@@ -96,7 +96,7 @@ def extract_mapped(sample, file_in, writer):
     with open(file_in, "r") as fin:
         for line in fin:
             if "primary mapped" in line:
-                writer.writerow(["Primary_Mapped", re.findall("[0-9]+.[0-9]+%", line)[0]])
+                writer.writerow(["Primary_Mapped", re.search(r'\((.*?) :', line).group(1)])
 
 def main(args=None):
     args = parse_args(args)
