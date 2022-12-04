@@ -53,15 +53,19 @@ def ncbi_stats(genome_in, seq_in, writer):
     writer.writerow(["Sex", "".join( pairs["value"] for pairs in attr if pairs["name"] == "sex" )])
     writer.writerow(["##Assembly_Statistics"])
     writer.writerow(["Total_Sequence", stats["total_sequence_length"]])
-    writer.writerow(["Chromosomes", stats["total_number_of_chromosomes"]])
+    if "total_number_of_chromosomes" in stats:
+        writer.writerow(["Chromosomes", stats["total_number_of_chromosomes"]])
     writer.writerow(["Scaffolds", stats["number_of_scaffolds"]])
     writer.writerow(["Scaffold_N50", stats["scaffold_n50"]])
     writer.writerow(["Contigs", stats["number_of_contigs"]])
     writer.writerow(["Contig_N50", stats["contig_n50"]])
     writer.writerow(["GC_Percent", stats["gc_percent"]])
-    writer.writerow(["##Chromosome", "Length", "GC_Percent"])
+    chromosome_header = False
     for mol in seq:
         if "gc_percent" in mol and mol["assembly_unit"] != "non-nuclear":
+            if not chromosome_header:
+                writer.writerow(["##Chromosome", "Length", "GC_Percent"])
+                chromosome_header = True
             writer.writerow([mol["chr_name"], mol["length"], mol["gc_percent"]])
     organelle_header = False
     for mol in seq:
