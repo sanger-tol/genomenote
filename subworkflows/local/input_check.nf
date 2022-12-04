@@ -47,7 +47,7 @@ workflow INPUT_CHECK {
     ch_versions = ch_versions.mix(GUNZIP.out.versions)
 
     emit:
-    aln                                       // channel: [ val(meta), [ datafile ] ]
+    aln                                       // channel: [ meta, datafile ]
     genome = ch_fasta                         // channel: fasta
     versions = ch_versions                    // channel: [ versions.yml ]
 }
@@ -60,6 +60,6 @@ def create_data_channels(LinkedHashMap row, tol) {
     meta.outdir     = (tol == 1) ? row.datafile.split('/')[0..10].join('/') : "${params.outdir}"
 
     def array = []
-    array = [ meta, [ file(row.datafile) ] ]
+    array = [ meta, file(row.datafile) ]
     return array
 }
