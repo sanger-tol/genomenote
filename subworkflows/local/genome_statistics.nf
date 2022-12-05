@@ -45,9 +45,7 @@ workflow GENOME_STATISTICS {
     }
 
     ch_input.file.map { meta, bam ->
-    new_meta = meta.clone()
-    new_meta.id = new_meta.id.split('_')[0..-2].join('_')
-    [ [id: new_meta.id, datatype: new_meta.datatype, outdir: new_meta.outdir] , bam ]
+        [ meta + [id: meta.id.split('_')[0..-2].join('_'), datatype: new_meta.datatype, outdir: new_meta.outdir] , bam ]
     }
     .groupTuple(by: [0])
     .set { ch_pacs }
