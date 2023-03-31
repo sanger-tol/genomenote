@@ -4,7 +4,7 @@ process RUN_WGET {
   tag "${meta.source}|${meta.type}"
   label 'process_single'
 
-  conda (params.enable_conda ? "bioconda::wget=1.18" : null)
+  conda "bioconda::wget=1.18"
   container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
       'https://depot.galaxyproject.org/singularity/gnu-wget:1.18--h7132678_6' :
       'quay.io/biocontainers/gnu-wget:1.18--h7132678_6' }"

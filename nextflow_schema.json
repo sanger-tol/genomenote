@@ -34,6 +34,28 @@
                     "description": "Bin size for cooler cload pairs.",
                     "default": 1000
                 },
+                "assembly": {
+                    "type": "string",
+                    "description": "The Genbank assembly accession for the assembly, for example: GCA_922984935.2."
+                },
+                "taxon_id": {
+                    "type": "string",
+                    "description": "The NCBI taxonomy ID corresponding to the GCA assembly accession, for example: 9662."
+                },
+                "bioproject": {
+                    "type": "string",
+                    "description": "The bioproject accesion linked to the genome assembly, for example: PRJEB49353."
+                },
+                "biosample": {
+                    "type": "string",
+                    "description": "The biosample accesion(s) linked to the samples in the experiment, for example: SAMEA7524400."
+                },
+                "genome_metadata_file_template": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Path to BUSCO lineage directory. Please use absolute paths, for example, /lustre/scratch124/tol/projects/darwin.",
+                    "fa_icon": "fas fa-folder-open"
+                },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
