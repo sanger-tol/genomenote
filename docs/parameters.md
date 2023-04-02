@@ -20,27 +20,6 @@ If a samplesheet is provided as `input`, then the path to the genome fasta file 
 >
 > pattern: `^\S+\.fn?a(sta)?(\.gz)?$`
 
-
-### `--assembly`
-
-The Genbank assembly accession for the assembly, for example: GCA_922984935.2.
- `required`
-
-### `--taxon_id`
-
-The NCBI taxonomy ID corresponding to the GCA assembly accession.
- `required`
-
-### `--bioproject`
-
-The bioproject accesion linked to the genome assembly.
- `required`
-
-### `--biosample`
-
-The biosample accesion(s) linked to the samples in the experiment.
- `required`
-
 ### `--outdir`
 
 The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure. default: `./results`. `required`
@@ -139,7 +118,7 @@ Email address for completion summary, only when pipeline fails.
 >
 > pattern: `^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$`
 
-### `--plaintext_email`
+### `--plaintext_email`
 
 Send plain-text email instead of HTML.
 
