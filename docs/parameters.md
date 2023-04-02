@@ -28,7 +28,7 @@ The Genbank assembly accession for the assembly, for example: GCA_922984935.2.
 
 ### `--taxon_id`
 
-The NCBI taxonomy ID corresponding to the GCA.
+The NCBI taxonomy ID corresponding to the GCA assembly accession.
  `required`
 
 ### `--bioproject`
