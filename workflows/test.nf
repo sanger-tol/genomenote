@@ -10,7 +10,7 @@ def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 WorkflowGenomenote.initialise(params, log)
 
 // Check mandatory parameters
-if (params.assembly && params.taxon_id && params.bioproject && params.biosample) { inputs = [ params.input, params.project, params.bioproject, params.biosample ] }
+if (params.assembly && params.taxon_id && params.bioproject && params.biosample) { inputs = [ params.assembly, params.taxon_id, params.bioproject, params.biosample ] }
 else { exit 1, 'Input not specified. Please include an assembly accession, a taxon id, a bioproject accession and a biosample_accession' }
 
 /*
