@@ -57,7 +57,7 @@ workflow TEST {
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
 
-    ch_file_list = Channel.fromPath("${projectDir}/assets/genome_metadata_template.csv")   
+    ch_file_list = Channel.fromPath(params.genome_metadata_file_template)   
 
     GENOME_METADATA ( ch_file_list )
 }
