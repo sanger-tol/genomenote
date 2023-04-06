@@ -1,4 +1,4 @@
-#File Source, File Type, Url, Output Type
+#File_source,File_type,Url,Output_type
 ENA,Assembly,https://www.ebi.ac.uk/ena/browser/api/xml/ASSEMBLY_ACCESSION,xml
 ENA,Bioproject,https://www.ebi.ac.uk/ena/browser/api/xml/BIOPROJECT_ACCESSION,xml
 ENA,Biosample,https://www.ebi.ac.uk/ena/browser/api/xml/BIOSAMPLE_ACCESSION,xml
