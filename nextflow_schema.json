@@ -34,6 +34,22 @@
                     "description": "Bin size for cooler cload pairs.",
                     "default": 1000
                 },
+                "assembly": {
+                    "type": "string",
+                    "description": "The Genbank assembly accession for the assembly, for example: GCA_922984935.2."
+                },
+                "taxon_id": {
+                    "type": "string",
+                    "description": "The NCBI taxonomy ID corresponding to the GCA assembly accession, for example: 9662."
+                },
+                "bioproject": {
+                    "type": "string",
+                    "description": "The bioproject accesion linked to the genome assembly, for example: PRJEB49353."
+                },
+                "biosample": {
+                    "type": "string",
+                    "description": "The biosample accesion(s) linked to the samples in the experiment, for example: SAMEA7524400."
+                },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
@@ -51,6 +67,11 @@
                     "type": "string",
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
+                },
+                "genome_metadata_file_template": {
+                    "type": "string",
+                    "description": "Path to genome meta data file template. Please use absolute paths, for example, /lustre/scratch124/tol/projects/darwin.",
+                    "fa_icon": "fas fa-file-csv"
                 }
             }
         },
@@ -251,12 +272,6 @@
                     "description": "Show all params when using `--help`",
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
-                },
-                "enable_conda": {
-                    "type": "boolean",
-                    "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
-                    "hidden": true,
-                    "fa_icon": "fas fa-bacon"
                 }
             }
         }

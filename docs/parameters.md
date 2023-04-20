@@ -118,7 +118,7 @@ Email address for completion summary, only when pipeline fails.
 >
 > pattern: `^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$`
 
-### `--plaintext_email`
+### `--plaintext_email`
 
 Send plain-text email instead of HTML.
 

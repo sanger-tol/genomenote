@@ -1,0 +1,7 @@
+#File_source,File_type,Url,Output_type
+ENA,Assembly,https://www.ebi.ac.uk/ena/browser/api/xml/ASSEMBLY_ACCESSION,xml
+ENA,Bioproject,https://www.ebi.ac.uk/ena/browser/api/xml/BIOPROJECT_ACCESSION,xml
+ENA,Biosample,https://www.ebi.ac.uk/ena/browser/api/xml/BIOSAMPLE_ACCESSION,xml
+ENA,Taxonomy,https://www.ebi.ac.uk/ena/browser/api/xml/TAXONOMY_ID,xml
+NCBI,Assembly,https://api.ncbi.nlm.nih.gov/datasets/v2alpha/genome/accession/ASSEMBLY_ACCESSION/dataset_report?filters.exclude_atypical=false&filters.assembly_version=current&chromosomes=1&chromosomes=2&chromosomes=3&chromosomes=X&chromosomes=Y&chromosomes=M,json
+NCBI,Taxonomy,https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=taxonomy&id=TAXONOMY_ID,xml
