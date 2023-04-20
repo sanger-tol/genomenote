@@ -67,6 +67,11 @@
                     "type": "string",
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
+                },
+                "genome_metadata_file_template": {
+                    "type": "string",
+                    "description": "Path to genome meta data file template. Please use absolute paths, for example, /lustre/scratch124/tol/projects/darwin.",
+                    "fa_icon": "fas fa-file-csv"
                 }
             }
         },
