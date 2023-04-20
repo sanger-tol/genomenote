@@ -33,7 +33,7 @@ WorkflowMain.initialise(workflow, params, log)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { GENOMENOTE } from './workflows/genomenote'
+include { GENOMENOTE } from './workflows/test'
 
 //
 // WORKFLOW: Run main nf-core/genomenote analysis pipeline

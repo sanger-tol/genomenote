@@ -42,7 +42,7 @@ include { GENOME_METADATA       } from '../subworkflows/local/genome_metadata'
 */
 
 
-workflow TEST {
+workflow GENOMENOTE {
 
     ch_versions = Channel.empty()
 
