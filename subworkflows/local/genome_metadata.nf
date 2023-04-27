@@ -4,7 +4,8 @@
 // Fetch genome metadata for genome notes
 //
 
-include { RUN_WGET     } from '../../modules/local/run_wget'
+include { RUN_WGET     }                from '../../modules/local/run_wget'
+include { PARSE_ENA_ASSEMBLY   }   from '../../modules/local/parse_ena_assembly'
 
 workflow GENOME_METADATA {
     take:
@@ -41,6 +42,14 @@ workflow GENOME_METADATA {
     //ch_all_files = Channel.empty()
     //.mix( RUN_WGET.out.file_path)
 
+
+
+    ch_input = RUN_WGET.out.file_path.branch { 
+        ENA_ASSEMBLY: it[0].source == "ENA"  && it[0].type == "Assembly"
+    }
+
+    PARSE_ENA_ASSEMBLY ( ch_input.ENA_ASSEMBLY )
+    
     emit:
     versions    = ch_versions.ifEmpty(null) // channel: [versions.yml]
 }
