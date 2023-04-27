@@ -13,14 +13,20 @@ process PARSE_ENA_ASSEMBLY {
 
     output:
     tuple val(meta), path("parsed.csv") , emit:  file_path
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script: // This script is bundled with the pipeline, in nf-core/genomenote/bin/
     """
-        parse_xml_ena_assembly.py \\
-            $xml \\
-            parsed.csv
+    parse_xml_ena_assembly.py \\
+        $xml \\
+        parsed.csv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        check_samplesheet.py: \$(check_samplesheet.py --version | cut -d' ' -f2)
+    END_VERSIONS        
     """
 }
