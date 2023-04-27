@@ -10,6 +10,7 @@ include { GNU_SORT as FILTER_SORT } from '../../modules/local/gnu_sort'
 include { BED_FILTER              } from '../../modules/local/bed_filter'
 include { COOLER_CLOAD            } from '../../modules/nf-core/cooler/cload/main'
 include { COOLER_ZOOMIFY          } from '../../modules/nf-core/cooler/zoomify/main'
+include { COOLER_DUMP             } from '../../modules/nf-core/cooler/dump/main'
 
 workflow CONTACT_MAPS {
     take:
@@ -52,15 +53,21 @@ workflow CONTACT_MAPS {
     // Create the `.cool` file
     ch_cooler = FILTER_SORT.out.bed.combine(cool_bin).map { meta, bed, bin -> [ meta, bed, [], bin ] }
     COOLER_CLOAD ( ch_cooler, GENOME_FILTER.out.list )
-    ch_versions = ch_versions.mix(COOLER_CLOAD.out.versions).first()
+    ch_versions = ch_versions.mix(COOLER_CLOAD.out.versions.first())
 
     // Create the `.mcool` file
     ch_zoomify = COOLER_CLOAD.out.cool.map { meta, cool, bin -> [ meta, cool ] }
     COOLER_ZOOMIFY ( ch_zoomify )
     ch_versions = ch_versions.mix(COOLER_ZOOMIFY.out.versions.first())
 
+    // Create the `.genome` file
+    ch_dump = COOLER_CLOAD.out.cool.map { meta, cool, bin -> [ meta, cool, [] ] }
+    COOLER_DUMP ( ch_dump )
+    ch_versions = ch_versions.mix(COOLER_DUMP.out.versions.first())
+
     emit:
     cool = COOLER_CLOAD.out.cool      // tuple val(meta), val(cool_bin), path("*.cool")
     mcool = COOLER_ZOOMIFY.out.mcool  // tuple val(meta), path("*.mcool")
+    grid = COOLER_DUMP.out.bedpe      // tuple val(meta), path("*.bedpe")
     versions = ch_versions            // channel: [ versions.yml ]
 }
