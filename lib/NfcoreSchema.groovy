@@ -2,6 +2,7 @@
 // This file holds several functions used to perform JSON parameter validation, help and summary rendering for the nf-core pipeline template.
 //
 
+import nextflow.Nextflow
 import org.everit.json.schema.Schema
 import org.everit.json.schema.loader.SchemaLoader
 import org.everit.json.schema.ValidationException
@@ -46,7 +47,6 @@ class NfcoreSchema {
             'quiet',
             'syslog',
             'v',
-            'version',
 
             // Options for `nextflow run` command
             'ansi',
@@ -84,6 +84,7 @@ class NfcoreSchema {
             'stub-run',
             'test',
             'w',
+            'with-apptainer',
             'with-charliecloud',
             'with-conda',
             'with-dag',
@@ -178,7 +179,7 @@ class NfcoreSchema {
         }
 
         if (has_error) {
-            System.exit(1)
+            Nextflow.error('Exiting!')
         }
     }
 
@@ -333,8 +334,6 @@ class NfcoreSchema {
     //
     // Loop over nested exceptions and print the causingException
     //
-    private static void printExceptions(ex_json, params_json, log, enums, limit=5) {
-        def causingExceptions = ex_json['causingExceptions']
         if (causingExceptions.length() == 0) {
             def m = ex_json['message'] =~ /required key \[([^\]]+)\] not found/
             // Missing required param

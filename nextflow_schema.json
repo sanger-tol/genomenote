@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/genomenote/master/nextflow_schema.json",
-    "title": "nf-core/genomenote pipeline parameters",
-    "description": "This Nextflow DSL2 pipeline takes aligned HiC reads, creates contact maps and a table of statistics.",
+    "$id": "https://raw.githubusercontent.com/sanger-tol/genomenote/master/nextflow_schema.json",
+    "title": "sanger-tol/genomenote pipeline parameters",
+    "description": "Creating standarised genome assembly publications",
     "type": "object",
     "definitions": {
         "input_output_options": {
@@ -10,29 +10,27 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input"],
+            "required": ["input", "binsize", "kmer_size", "outdir"],
             "properties": {
                 "input": {
                     "type": "string",
-                    "description": "Either the Tree of Life organism ID or the path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "Provide a Tree of Life organism ID. Otherwise, you will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/genomenote/usage#samplesheet-input)."
-                },
-                "project": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "description": "Tree of Life project directory. Please use absolute paths, for example, /lustre/scratch124/tol/projects/darwin.",
-                    "fa_icon": "fas fa-folder-open"
-                },
-                "lineage_db": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "description": "Path to BUSCO lineage directory. Please use absolute paths, for example, /lustre/scratch124/tol/projects/darwin.",
-                    "fa_icon": "fas fa-folder-open"
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.csv$",
+                    "schema": "assets/schema_input.json",
+                    "description": "Path to comma-separated file containing information about the samples in the experiment.",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
+                    "fa_icon": "fas fa-file-csv"
                 },
                 "binsize": {
                     "type": "integer",
-                    "description": "Bin size for cooler cload pairs.",
-                    "default": 1000
+                    "default": 1000,
+                    "description": "Bin size in base pairs for cooler cload"
+                },
+                "kmer_size": {
+                    "type": "integer",
+                    "default": 31,
+                    "description": "Kmer size for Fastk to create the PacBio library"
                 },
                 "outdir": {
                     "type": "string",
@@ -54,18 +52,24 @@
                 }
             }
         },
+        "databases": {
+            "title": "Databases",
+            "type": "object",
+            "description": "Define where the pipeline should find databases.",
+            "default": "",
+            "properties": {
+                "lineage_db": {
+                    "type": "string",
+                    "default": "None"
+                }
+            }
+        },
         "reference_genome_options": {
             "title": "Reference genome options",
             "type": "object",
             "fa_icon": "fas fa-dna",
             "description": "Reference genome related files and options required for the workflow.",
             "properties": {
-                "genome": {
-                    "type": "string",
-                    "description": "Name of iGenomes reference.",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
-                },
                 "fasta": {
                     "type": "string",
                     "format": "file-path",
@@ -74,23 +78,9 @@
                     "description": "Path to FASTA genome file.",
                     "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
                     "fa_icon": "far fa-file-code"
-                },
-                "igenomes_base": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "description": "Directory / URL base for iGenomes references.",
-                    "default": "s3://ngi-igenomes/igenomes",
-                    "fa_icon": "fas fa-cloud-download-alt",
-                    "hidden": true
-                },
-                "igenomes_ignore": {
-                    "type": "boolean",
-                    "description": "Do not load the iGenomes reference config.",
-                    "fa_icon": "fas fa-ban",
-                    "hidden": true,
-                    "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
                 }
-            }
+            },
+            "required": ["fasta"]
         },
         "institutional_config_options": {
             "title": "Institutional config options",
@@ -188,6 +178,12 @@
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 },
+                "version": {
+                    "type": "boolean",
+                    "description": "Display version and exit.",
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true
+                },
                 "publish_dir_mode": {
                     "type": "string",
                     "default": "copy",
@@ -225,9 +221,28 @@
                     "fa_icon": "fas fa-palette",
                     "hidden": true
                 },
+                "hook_url": {
+                    "type": "string",
+                    "description": "Incoming hook URL for messaging service",
+                    "fa_icon": "fas fa-people-group",
+                    "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
+                    "hidden": true
+                },
                 "multiqc_config": {
                     "type": "string",
                     "description": "Custom config file to supply to MultiQC.",
+                    "fa_icon": "fas fa-cog",
+                    "hidden": true
+                },
+                "multiqc_logo": {
+                    "type": "string",
+                    "description": "Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file",
+                    "fa_icon": "fas fa-image",
+                    "hidden": true
+                },
+                "multiqc_methods_description": {
+                    "type": "string",
+                    "description": "Custom MultiQC yaml file containing HTML including a methods description.",
                     "fa_icon": "fas fa-cog",
                     "hidden": true
                 },
@@ -251,12 +266,6 @@
                     "description": "Show all params when using `--help`",
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
-                },
-                "enable_conda": {
-                    "type": "boolean",
-                    "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
-                    "hidden": true,
-                    "fa_icon": "fas fa-bacon"
                 }
             }
         }
@@ -264,6 +273,9 @@
     "allOf": [
         {
             "$ref": "#/definitions/input_output_options"
+        },
+        {
+            "$ref": "#/definitions/databases"
         },
         {
             "$ref": "#/definitions/reference_genome_options"
