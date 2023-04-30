@@ -19,7 +19,7 @@
                     "pattern": "^\\S+\\.csv$",
                     "schema": "assets/schema_input.json",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://pipelines.tol.sanger.ac.uk/genomenote/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "binsize": {
@@ -30,13 +30,14 @@
                 "kmer_size": {
                     "type": "integer",
                     "default": 31,
-                    "description": "Kmer size for Fastk to create the PacBio library"
+                    "description": "Size for Fastk to create the PacBio k-mer library"
                 },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
-                    "fa_icon": "fas fa-folder-open"
+                    "fa_icon": "fas fa-folder-open",
+                    "default": "results"
                 },
                 "email": {
                     "type": "string",
@@ -60,9 +61,13 @@
             "properties": {
                 "lineage_db": {
                     "type": "string",
-                    "default": "None"
+                    "format": "directory-path",
+                    "description": "Local directory where clade-specific BUSCO lineage datasets are stored.",
+                    "default": "None",
+                    "fa_icon": "fas fa-folder-open"
                 }
-            }
+            },
+            "fa_icon": "fas fa-database"
         },
         "reference_genome_options": {
             "title": "Reference genome options",
@@ -76,7 +81,6 @@
                     "mimetype": "text/plain",
                     "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
                     "description": "Path to FASTA genome file.",
-                    "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
                     "fa_icon": "far fa-file-code"
                 }
             },
@@ -249,7 +253,7 @@
                 "tracedir": {
                     "type": "string",
                     "description": "Directory to keep pipeline Nextflow logs and reports.",
-                    "default": "${params.outdir}/pipeline_info",
+                    "default": "${params.outdir}/genomenote_info",
                     "fa_icon": "fas fa-cogs",
                     "hidden": true
                 },

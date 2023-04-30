@@ -1,6 +1,6 @@
 # sanger-tol/genomenote: Usage
 
-## :warning: Please read this documentation on the sanger-tol website: [https://pipelines.tol.sanger.ac.uk/genomenote/dev/usage](https://pipelines.tol.sanger.ac.uk/genomenote/1.0.0/usage)
+## :warning: Please read this documentation on the sanger-tol website: [https://pipelines.tol.sanger.ac.uk/genomenote/usage](https://pipelines.tol.sanger.ac.uk/genomenote/usage)
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
@@ -44,7 +44,7 @@ sample1,pacbio,/path/to/unaligned/bam
 | `datatype` | Type of sequencing data. Must be `hic` or `pacbio`.                                                                                                                                           |
 | `datafile` | Full path to the data location. Can be either `bam` or `cram` aligned reads for `hic` data type. Can be either the FASTK `kmer` directory or the unaligned `bam` files for `pacbio` datatype. |
 
-An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
+An [example samplesheet](https://raw.githubusercontent.com/sanger-tol/genomenote/main/assets/samplesheet.csv) has been provided with the pipeline.
 
 ## Running the pipeline
 

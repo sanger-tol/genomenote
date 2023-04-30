@@ -50,6 +50,10 @@ These tests are run both with the latest available version of `Nextflow` and als
 - Fix the bug, and bump version (X.Y.Z+1).
 - A PR should be made on `master` from patch to directly this particular bug.
 
+## Getting help
+
+For further information/help, please consult the [sanger-tol/genomenote documentation](https://pipelines.tol.sanger.ac.uk/genomenote/usage) and don't hesitate to get in touch.
+
 ## Pipeline contribution conventions
 
 To make the sanger-tol/genomenote code and processing logic more understandable for new contributors and to ensure quality, we semi-standardise the way the code and other contributions are written.

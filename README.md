@@ -1,3 +1,5 @@
+# ![sanger-tol/genomenote](https://raw.githubusercontent.com/sanger-tol/genomenote/main/docs/images/sanger-tol-genomenote_logo.png)
+
 [![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A523.04.0-23aa62.svg)](https://www.nextflow.io/)
@@ -6,11 +8,13 @@
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
 [![Launch on Nextflow Tower](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Nextflow%20Tower-%234256e7)](https://tower.nf/launch?pipeline=https://github.com/sanger-tol/genomenote)
 
+[![Follow on Twitter](http://img.shields.io/badge/twitter-%40SangerToL-1DA1F2?labelColor=000000&logo=twitter)](https://twitter.com/SangerToL)
+
 ## Introduction
 
 **sanger-tol/genomenote** is a bioinformatics pipeline that takes aligned HiC reads, creates contact maps and chromosomal grid using Cooler, and display on a [HiGlass server](https://genome-note-higlass.tol.sanger.ac.uk/app). The pipeline also collates (1) assembly information, statistics and chromosome details from NCBI datasets, (2) genome completeness from BUSCO, (3) consensus quality and k-mer completeness from MerquryFK, and (4) HiC primary mapped percentage from samtools flagstat.
 
-![sanger-tol/genomenote workflow](https://raw.githubusercontent.com/sanger-tol/genomenote/dev/docs/images/sanger-tol-genomenote_workflow.png)
+![sanger-tol/genomenote workflow](https://raw.githubusercontent.com/sanger-tol/genomenote/main/docs/images/sanger-tol-genomenote_workflow.png)
 
 1. Filter genome index ([`samtools faidx`](https://www.htslib.org/doc/samtools-faidx.html), `filter genome`)
 2. Convert alignment to BED ([`samtools view`](https://www.htslib.org/doc/samtools-view.html), [`bedtools bamtobed`](https://bedtools.readthedocs.io/en/latest/content/tools/bamtobed.html))
@@ -56,7 +60,7 @@ nextflow run sanger-tol/genomenote \
 > provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
 > see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
 
-For more details, please refer to the [usage documentation](https://pipelines.tol.sanger.ac.uk/genomenote/1.0.0/usage) and the [parameter documentation](https://pipelines.tol.sanger.ac.uk/genomenote/1.0.0/parameters).
+For more details, please refer to the [usage documentation](https://pipelines.tol.sanger.ac.uk/genomenote/usage) and the [parameter documentation](https://pipelines.tol.sanger.ac.uk/genomenote/parameters).
 
 ## Credits
 
