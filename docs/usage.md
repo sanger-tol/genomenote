@@ -1,12 +1,12 @@
 # sanger-tol/genomenote: Usage
 
-## :warning: Please read this documentation on the sanger-tol website: [https://pipelines.tol.sanger.ac.uk/genomenote/dev/usage](https://pipelines.tol.sanger.ac.uk/genomenote/dev/usage)
+## :warning: Please read this documentation on the sanger-tol website: [https://pipelines.tol.sanger.ac.uk/genomenote/dev/usage](https://pipelines.tol.sanger.ac.uk/genomenote/1.0.0/usage)
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
 ## Introduction
 
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
+The [sanger-tol/genomenote](https://pipelines.tol.sanger.ac.uk/genomenote) pipeline takes aligned HiC reads, creates contact maps and chromosomal grid using Cooler, and display on a [HiGlass server](https://genome-note-higlass.tol.sanger.ac.uk/app). The pipeline also collates (1) assembly information, statistics and chromosome details from NCBI datasets, (2) genome completeness from BUSCO, (3) consensus quality and k-mer completeness from MerquryFK, and (4) HiC primary mapped percentage from samtools flagstat.
 
 ## Samplesheet input
 
