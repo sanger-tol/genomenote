@@ -4,14 +4,14 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
+def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 
 // Validate input parameters
-// WorkflowGenomenote.initialise(params, log)
+WorkflowGenomenote.initialise(params, log)
 
 // Check input path parameters to see if they exist
-// def checkPathParamList = [ params.input, params.multiqc_config, params.lineage_db, params.fasta ]
-// for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
+def checkPathParamList = [ params.input, params.multiqc_config, params.lineage_db, params.fasta ]
+for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
 if (params.input)     { ch_input = Channel.fromPath(params.input) } else { exit 1, 'Input samplesheet not specified!' }
@@ -132,7 +132,7 @@ workflow GENOMENOTE {
     //
     CUSTOM_DUMPSOFTWAREVERSIONS ( ch_versions.unique().collectFile(name: 'collated_versions.yml') )
 
-/*
+
     //
     // MODULE: MultiQC
     //
@@ -146,7 +146,6 @@ workflow GENOMENOTE {
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
-    //ch_multiqc_files = ch_multiqc_files.mix(BUSCO.out.short_summary.collect{it[1]}.ifEmpty([]))
 
     MULTIQC (
         ch_multiqc_files.collect(),
@@ -155,7 +154,7 @@ workflow GENOMENOTE {
         ch_multiqc_logo.toList()
     )
     multiqc_report = MULTIQC.out.report.toList()
-*/
+
 }
 
 
