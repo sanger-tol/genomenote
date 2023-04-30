@@ -1,5 +1,7 @@
 # sanger-tol/genomenote: Citations
 
+## [sanger-tol/genomenote](https://pipelines.tol.sanger.ac.uk/genomenote)
+
 ## [nf-core](https://nf-co.re)
 
 > Ewels, Philip A., et al. “The Nf-Core Framework for Community-Curated Bioinformatics Pipelines.” Nature Biotechnology, vol. 38, no. 3, Feb. 2020, pp. 276–78, https://doi.org/10.1038/s41587-020-0439-x.
@@ -10,9 +12,35 @@
 
 ## Pipeline tools
 
+- [BedTools](https://bedtools.readthedocs.io/en/latest/)
+
+  > Quinlan, Aaron R., and Ira M. Hall. “BEDTools: A Flexible Suite of Utilities for Comparing Genomic Features.” Bioinformatics, vol. 26, no. 6, 2010, pp. 841–842., https://doi.org/10.1093/bioinformatics/btq033.
+
+- [BUSCO](https://busco.ezlab.org)
+
+  > Manni, Mosè, et al. “BUSCO: Assessing Genomic Data Quality and Beyond.” Current Protocols, vol. 1, no. 12, Dec. 2021, https://doi.org/10.1002/cpz1.323.
+
+- [Cooler](https://cooler.readthedocs.io/en/latest/)
+
+  > Abdennur, Nezar, and Leonid A Mirny. “Cooler: Scalable Storage for Hi-C Data and Other Genomically Labeled Arrays.” Bioinformatics, vol. 36, no. 1, 2019, pp. 311–316., https://doi.org/10.1093/bioinformatics/btz540.
+
+- [FastK](https://github.com/thegenemyers/FASTK)
+
+- [MerquryFK](https://github.com/thegenemyers/MERQURY.FK)
+
 - [MultiQC](https://multiqc.info)
 
   > Ewels, Philip, et al. “MultiQC: Summarize Analysis Results for Multiple Tools and Samples in a Single Report.” Bioinformatics, vol. 32, no. 19, 2016, pp. 3047–3048., https://doi.org/10.1093/bioinformatics/btw354.
+
+- [NCBI Datasets CLI](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/download-and-install/)
+
+- [R](https://www.r-project.org)
+
+  > R Core Team. “R: A Language and Environment for Statistical Computing.” 4.2.0, R Foundation for Statistical Computing, 2020.
+
+- [Samtools](https://www.htslib.org)
+
+  > Danecek, Petr, et al. “Twelve Years of SAMtools and BCFtools.” GigaScience, vol. 10, no. 2, Jan. 2021, https://doi.org/10.1093/gigascience/giab008.
 
 ## Software packaging/containerisation tools
 
