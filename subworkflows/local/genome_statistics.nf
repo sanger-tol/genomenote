@@ -4,7 +4,7 @@
 
 include { NCBIDATASETS_SUMMARYGENOME as SUMMARYGENOME   } from '../../modules/local/ncbidatasets/summarygenome'
 include { NCBIDATASETS_SUMMARYGENOME as SUMMARYSEQUENCE } from '../../modules/local/ncbidatasets/summarygenome'
-include { GET_ODB                                       } from '../../modules/local/get_odb'
+include { GOAT_ODB                                      } from '../../modules/local/goat/odb'
 include { BUSCO                                         } from '../../modules/nf-core/busco/main'
 include { FASTK_FASTK                                   } from '../../modules/nf-core/fastk/fastk/main'
 include { MERQURYFK_MERQURYFK                           } from '../../modules/nf-core/merquryfk/merquryfk/main'
@@ -34,12 +34,13 @@ workflow GENOME_STATISTICS {
 
 
     // Get ODB lineage value
-    GET_ODB ( genome )
-    ch_versions = ch_versions.mix ( GET_ODB.out.versions.first() )
+    GOAT_ODB ( genome )
+    ch_versions = ch_versions.mix ( GOAT_ODB.out.versions.first() )
 
 
     // BUSCO
-    GET_ODB.out.csv
+    GOAT_ODB.out.csv
+    | map { meta, csv -> csv }
     | splitCsv()
     | map { row -> row[1] }
     | set { ch_lineage }

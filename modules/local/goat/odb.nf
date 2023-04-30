@@ -1,20 +1,24 @@
-process GET_ODB {
-    tag "${meta.id}"
+process GOAT_ODB {
+    tag "$meta.id"
     label 'process_single'
 
     conda "conda-forge::requests=2.26.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/requests:2.26.0' :
-        'quay.io/biocontainers/requests:2.26.0' }"
-    
+        'https://depot.galaxyproject.org/singularity/requests:2.26.0':
+        'biocontainers/requests:2.26.0' }"
+
     input:
     tuple val(meta), path(fasta)
 
     output:
-    path("*.busco_odb.csv"), emit: csv
-    path "versions.yml"    , emit: versions
+    tuple val(meta), path("*.busco_odb.csv"), emit: csv
+    path "versions.yml"                     , emit: versions
 
-    script: // This script is bundled with the pipeline, in sanger-tol/genomenote/bin/
+    when:
+    task.ext.when == null || task.ext.when
+
+    script:
+    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     get_odb.py ${prefix} ${prefix}.busco_odb.csv

@@ -1,5 +1,5 @@
 process BUSCO {
-    tag "$meta.id"
+    tag "${meta.id}_${lineage}"
     label 'process_medium'
 
     conda "bioconda::busco=5.4.3"
