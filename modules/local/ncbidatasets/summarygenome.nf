@@ -2,7 +2,7 @@ process NCBIDATASETS_SUMMARYGENOME {
     tag "$meta.id"
     label 'process_single'
 
-    conda (params.enable_conda ? "conda-forge::ncbi-datasets-cli=14.2.2" : null)
+    conda "conda-forge::ncbi-datasets-cli=14.2.2"
     container "biocontainers/ncbi-datasets-cli:14.2.2_cv1"
 
     input:

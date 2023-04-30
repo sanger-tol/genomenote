@@ -12,18 +12,12 @@ def parse_args(args=None):
     Description = "Create a table by parsing json output to extract N50, BUSCO, QV and COMPLETENESS stats."
 
     parser = argparse.ArgumentParser(description=Description)
-    parser.add_argument(
-        "--genome", help="Input NCBI genome summary JSON file.", required=True
-    )
-    parser.add_argument(
-        "--sequence", help="Input NCBI sequence summary JSON file.", required=True
-    )
+    parser.add_argument("--genome", help="Input NCBI genome summary JSON file.", required=True)
+    parser.add_argument("--sequence", help="Input NCBI sequence summary JSON file.", required=True)
     parser.add_argument("--busco", help="Input BUSCO short summary JSON file.")
     parser.add_argument("--pacbio", help="PacBio sample ID used for MerquryFK.")
     parser.add_argument("--qv", help="Input QV TSV file from MERQURYFK.")
-    parser.add_argument(
-        "--completeness", help="Input COMPLETENESS stats TSV file from MERQURYFK."
-    )
+    parser.add_argument("--completeness", help="Input COMPLETENESS stats TSV file from MERQURYFK.")
     parser.add_argument("--hic", help="HiC sample ID used for contact maps.")
     parser.add_argument("--flagstat", help="HiC flagstat file created by Samtools.")
     parser.add_argument("--outcsv", help="Output CSV file.", required=True)
@@ -74,9 +68,7 @@ def ncbi_stats(genome_in, seq_in, writer):
             "".join(pairs["value"] for pairs in attr if pairs["name"] == "tissue"),
         ]
     )
-    writer.writerow(
-        ["Sex", "".join(pairs["value"] for pairs in attr if pairs["name"] == "sex")]
-    )
+    writer.writerow(["Sex", "".join(pairs["value"] for pairs in attr if pairs["name"] == "sex")])
     writer.writerow(["##Assembly_Statistics"])
     writer.writerow(["Total_Sequence", stats["total_sequence_length"]])
     if "total_number_of_chromosomes" in stats:
@@ -136,9 +128,7 @@ def extract_mapped(sample, file_in, writer):
     with open(file_in, "r") as fin:
         for line in fin:
             if "primary mapped" in line:
-                writer.writerow(
-                    ["Primary_Mapped", re.search(r"\((.*?) :", line).group(1)]
-                )
+                writer.writerow(["Primary_Mapped", re.search(r"\((.*?) :", line).group(1)])
 
 
 def main(args=None):

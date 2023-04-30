@@ -4,14 +4,14 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
+// def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 
 // Validate input parameters
-WorkflowGenomenote.initialise(params, log)
+// WorkflowGenomenote.initialise(params, log)
 
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.lineage_db, params.fasta ]
-for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
+// def checkPathParamList = [ params.input, params.multiqc_config, params.lineage_db, params.fasta ]
+// for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
 if (params.input)     { ch_input = Channel.fromPath(params.input) } else { exit 1, 'Input samplesheet not specified!' }
@@ -21,6 +21,7 @@ if (params.kmer_size) { ch_kmer  = Channel.of(params.kmer_size)   } else { exit 
 
 // Check optional parameters
 if (params.lineage_db) { ch_busco = Channel.fromPath(params.lineage_db) } else { ch_busco = Channel.empty() }
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,6 +33,7 @@ ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config
 ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
 ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
 ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,6 +48,7 @@ include { INPUT_CHECK       } from '../subworkflows/local/input_check'
 include { CONTACT_MAPS      } from '../subworkflows/local/contact_maps'
 include { GENOME_STATISTICS } from '../subworkflows/local/genome_statistics'
 
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -58,6 +61,7 @@ include { GENOME_STATISTICS } from '../subworkflows/local/genome_statistics'
 include { GUNZIP                      } from '../modules/nf-core/gunzip/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -72,11 +76,11 @@ workflow GENOMENOTE {
 
     ch_versions = Channel.empty()
 
+
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
-    INPUT_CHECK ( ch_input )
-    | data
+    INPUT_CHECK ( ch_input ).data
     | branch { meta, file ->
         hic : meta.datatype == 'hic'
             return [ meta, file, [] ]
@@ -85,6 +89,7 @@ workflow GENOMENOTE {
     }
     | set { ch_inputs }
     ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )
+
 
     //
     // MODULE: Uncompress fasta file if needed
@@ -100,11 +105,13 @@ workflow GENOMENOTE {
         ch_fasta    = ch_genome
     }
 
+
     //
     // SUBWORKFLOW: Create contact map matrices from HiC alignment files
     //
     CONTACT_MAPS ( ch_fasta, ch_inputs.hic, ch_bin )
     ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
+
 
     //
     // SUBWORKFLOW: Create genome statistics table
@@ -118,12 +125,14 @@ workflow GENOMENOTE {
 
     GENOME_STATISTICS ( ch_fasta, ch_busco, ch_inputs.pacbio, ch_flagstat )
     ch_versions = ch_versions.mix ( GENOME_STATISTICS.out.versions )
-    
+
+
     //
     // MODULE: Combine different versions.yml
     //
     CUSTOM_DUMPSOFTWAREVERSIONS ( ch_versions.unique().collectFile(name: 'collated_versions.yml') )
 
+/*
     //
     // MODULE: MultiQC
     //
@@ -146,7 +155,9 @@ workflow GENOMENOTE {
         ch_multiqc_logo.toList()
     )
     multiqc_report = MULTIQC.out.report.toList()
+*/
 }
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -163,6 +174,7 @@ workflow.onComplete {
         NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
     }
 }
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
