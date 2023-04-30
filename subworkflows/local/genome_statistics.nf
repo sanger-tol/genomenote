@@ -103,9 +103,16 @@ workflow GENOME_STATISTICS {
     ch_versions = ch_versions.mix ( CREATETABLE.out.versions.first() )
 
 
+    // BUSCO results for MULTIQC
+    BUSCO.out.short_summaries_txt
+    | ifEmpty ( [ [], [] ] )
+    | set { multiqc }
+
     emit:
     summary  = CREATETABLE.out.csv      // channel: [ csv ]
+    multiqc                             // channel: [ meta, summary ]
     versions = ch_versions              // channel: [ versions.yml ]
+
 }
 
 
