@@ -8,19 +8,19 @@
 
 ## Introduction
 
-**sanger-tol/genomenote** is a bioinformatics pipeline that ...
+**sanger-tol/genomenote** is a bioinformatics pipeline that takes aligned HiC reads, creates contact maps and chromosomal grid using Cooler, and display on a [HiGlass server](https://genome-note-higlass.tol.sanger.ac.uk/app). The pipeline also collates (1) assembly information, statistics and chromosome details from NCBI datasets, (2) genome completeness from BUSCO, (3) consensus quality and k-mer completeness from MerquryFK, and (4) HiC primary mapped percentage from samtools flagstat.
 
-<!-- TODO nf-core:
-   Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
-   major pipeline sections and the types of output it produces. You're giving an overview to someone new
-   to nf-core here, in 15-20 seconds. For an example, see https://github.com/nf-core/rnaseq/blob/master/README.md#introduction
--->
+![sanger-tol/genomenote workflow](https://raw.githubusercontent.com/sanger-tol/genomenote/dev/docs/images/sanger-tol-genomenote_workflow.png)
 
-<!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
-     workflows use the "tube map" design for that. See https://nf-co.re/docs/contributing/design_guidelines#examples for examples.   -->
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
-
-1. Present BUSCO for genome assembly ([MultiQC](http://multiqc.info/))
+1. Filter genome index ([`samtools faidx`](https://www.htslib.org/doc/samtools-faidx.html), `filter genome`)
+2. Convert alignment to BED ([`samtools view`](https://www.htslib.org/doc/samtools-view.html), [`bedtools bamtobed`](https://bedtools.readthedocs.io/en/latest/content/tools/bamtobed.html))
+3. Filter BED ([`GNU sort`](https://www.gnu.org/software/coreutils/manual/html_node/sort-invocation.html), [`filter bed`](https://raw.githubusercontent.com/sanger-tol/genomenote/main/bin/filter_bed.sh))
+4. Contact maps ([`Cooler cload`](https://cooler.readthedocs.io/en/latest/cli.html#cooler-cload-pairs), [`Cooler zoomify`](https://cooler.readthedocs.io/en/latest/cli.html#cooler-zoomify), [`Cooler dump`](https://cooler.readthedocs.io/en/latest/cli.html#cooler-dump))
+5. Summary statistics ([`NCBI datasets summary genome accession`](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/reference-docs/command-line/datasets/summary/genome/datasets_summary_genome_accession/))
+6. Genome completeness ([`GoaT API`](https://goat.genomehubs.org/api-docs/), [`BUSCO`](https://busco.ezlab.org))
+7. Consensus quality and k-mer completeness ([`FASTK`](https://github.com/thegenemyers/FASTK), [`MERQURY.FK`](https://github.com/thegenemyers/MERQURY.FK))
+8. Collated summary table ([`createtable`](https://raw.githubusercontent.com/sanger-tol/genomenote/main/bin/create_table.py))
+9. Present results and visualisations ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
 
 ## Usage
 
@@ -29,30 +29,25 @@
 > to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
 > with `-profile test` before running the workflow on actual data.
 
-<!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
-     Explain what rows and columns represent. For instance (please edit as appropriate):
-
 First, prepare a samplesheet with your input data that looks as follows:
 
 `samplesheet.csv`:
 
 ```csv
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
+sample,datatype,datafile
+mMelMel3,hic,/analysis/mMelMel3.2_paternal_haplotype/read_mapping/hic/GCA_922984935.2.unmasked.hic.mMelMel3.cram
+mMelMel3,pacbio,/genomic_data/mMelMel3/pacbio/kmer/k31
 ```
 
-Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
-
--->
+Each row represents an aligned HiC reads file or an unaligned PacBio reads file or a PacBio k-mer database.
 
 Now, you can run the pipeline using:
-
-<!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
 
 ```bash
 nextflow run sanger-tol/genomenote \
    -profile <docker/singularity/.../institute> \
    --input samplesheet.csv \
+   --fasta genome.fasta \
    --outdir <OUTDIR>
 ```
 
@@ -61,30 +56,25 @@ nextflow run sanger-tol/genomenote \
 > provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
 > see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
 
-For more details, please refer to the [usage documentation](https://pipelines.tol.sanger.ac.uk/genomenote/dev/usage) and the [parameter documentation](https://pipelines.tol.sanger.ac.uk/genomenote/dev/parameters).
+For more details, please refer to the [usage documentation](https://pipelines.tol.sanger.ac.uk/genomenote/1.0.0/usage) and the [parameter documentation](https://pipelines.tol.sanger.ac.uk/genomenote/1.0.0/parameters).
 
 ## Credits
 
 sanger-tol/genomenote was originally written by @priyanka-surana.
 
-We thank the following people for their extensive assistance in the development of this pipeline:
+We thank the following people for their assistance in the development of this pipeline:
 
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
-
-- @mcshane and @yumisims for providing software/tool details
+- @mcshane and @yumisims for providing software/tool guidance
 
 ## Contributions and Support
 
-If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
+If you would like to contribute to this pipeline, please see the [contributing guidelines](https://raw.githubusercontent.com/sanger-tol/genomenote/main/.github/CONTRIBUTING.md).
 
 ## Citations
 
-<!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use  sanger-tol/genomenote for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
+If you use sanger-tol/genomenote for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX)
 
-<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
-
-An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
+An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](https://raw.githubusercontent.com/sanger-tol/genomenote/main/CITATIONS.md) file.
 
 This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/master/LICENSE).
 
