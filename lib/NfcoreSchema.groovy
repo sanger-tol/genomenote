@@ -334,6 +334,8 @@ class NfcoreSchema {
     //
     // Loop over nested exceptions and print the causingException
     //
+    private static void printExceptions(ex_json, params_json, log, enums, limit=5) {
+        def causingExceptions = ex_json['causingExceptions']
         if (causingExceptions.length() == 0) {
             def m = ex_json['message'] =~ /required key \[([^\]]+)\] not found/
             // Missing required param

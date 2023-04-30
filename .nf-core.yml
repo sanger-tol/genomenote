@@ -7,6 +7,10 @@ lint:
     - .github/ISSUE_TEMPLATE/config.yml
     - .github/workflows/awstest.yml
     - .github/workflows/awsfulltest.yml
+  files_unchanged:
+    - LICENSE
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - lib/NfcoreTemplate.groovy
   nextflow_config:
     - manifest.name
     - manifest.homePage
