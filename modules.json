@@ -43,12 +43,12 @@
                     },
                     "gnu/sort": {
                         "branch": "master",
-                        "git_sha": "5427d51ca9aaf0b4c5919df6fa6c7a2f718ae2a8",
+                        "git_sha": "88f6e982fb8bd40488d837b3b08a65008e602840",
                         "installed_by": ["modules"]
                     },
                     "gunzip": {
                         "branch": "master",
-                        "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b",
+                        "git_sha": "38b16706fa3a9d4ee2bf46fa5805e7397e275cdd",
                         "installed_by": ["modules"]
                     },
                     "merquryfk/merquryfk": {
