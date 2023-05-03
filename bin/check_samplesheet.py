@@ -9,19 +9,22 @@ import argparse
 
 
 def parse_args(args=None):
-    Description = "Reformat nf-core/readmapping samplesheet file and check its contents."
+    Description = (
+        "Reformat nf-core/readmapping samplesheet file and check its contents."
+    )
     Epilog = "Example usage: python check_samplesheet.py <FILE_IN> <FILE_OUT>"
 
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
     parser.add_argument("FILE_IN", help="Input samplesheet file.")
     parser.add_argument("FILE_OUT", help="Output file.")
-    parser.add_argument('--version', action='version', version='%(prog)s 1.0')
+    parser.add_argument("--version", action="version", version="%(prog)s 1.0")
     return parser.parse_args(args)
 
 
 def make_dir(path):
     if len(path) > 0:
         os.makedirs(path, exist_ok=True)
+
 
 def print_error(error, context="Line", context_str=""):
     error_str = "ERROR: Please check samplesheet -> {}".format(error)
@@ -53,7 +56,11 @@ def check_samplesheet(file_in, file_out):
         HEADER = ["sample", "datatype", "datafile"]
         header = [x.strip('"') for x in fin.readline().strip().split(",")]
         if header[: len(HEADER)] != HEADER:
-            print("ERROR: Please check samplesheet header -> {} != {}".format(",".join(header), ",".join(HEADER)))
+            print(
+                "ERROR: Please check samplesheet header -> {} != {}".format(
+                    ",".join(header), ",".join(HEADER)
+                )
+            )
             sys.exit(1)
 
         ## Check sample entries
@@ -70,7 +77,9 @@ def check_samplesheet(file_in, file_out):
             num_cols = len([x for x in lspl if x])
             if num_cols < MIN_COLS:
                 print_error(
-                    "Invalid number of populated columns (minimum = {})!".format(MIN_COLS),
+                    "Invalid number of populated columns (minimum = {})!".format(
+                        MIN_COLS
+                    ),
                     "Line",
                     line,
                 )
@@ -92,7 +101,9 @@ def check_samplesheet(file_in, file_out):
                     )
             else:
                 print_error(
-                    "Data type has not been specified!. Must be one of {}.".format(",".join(datatypes)),
+                    "Data type has not been specified!. Must be one of {}.".format(
+                        ",".join(datatypes)
+                    ),
                     "Line",
                     line,
                 )
@@ -105,7 +116,11 @@ def check_samplesheet(file_in, file_out):
                         "Line",
                         line,
                     )
-                if datatype == "hic" and not datafile.endswith(".cram") and not datafile.endswith(".bam"):
+                if (
+                    datatype == "hic"
+                    and not datafile.endswith(".cram")
+                    and not datafile.endswith(".bam")
+                ):
                     print_error(
                         "Data file does not have extension '.cram' or '.bam'.",
                         "Line",
@@ -131,7 +146,9 @@ def check_samplesheet(file_in, file_out):
             for sample in sorted(sample_mapping_dict.keys()):
 
                 for idx, val in enumerate(sample_mapping_dict[sample]):
-                    fout.write(",".join(["{}_T{}".format(sample, idx + 1)] + val) + "\n")
+                    fout.write(
+                        ",".join(["{}_T{}".format(sample, idx + 1)] + val) + "\n"
+                    )
     else:
         print_error("No entries to process!", "Samplesheet: {}".format(file_in))
 

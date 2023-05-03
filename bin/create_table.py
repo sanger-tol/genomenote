@@ -7,25 +7,34 @@ import sys
 import csv
 import re
 
+
 def parse_args(args=None):
     Description = "Create a table by parsing json output to extract N50, BUSCO, QV and COMPLETENESS stats."
 
     parser = argparse.ArgumentParser(description=Description)
-    parser.add_argument("--genome", help="Input NCBI genome summary JSON file.", required=True)
-    parser.add_argument("--sequence", help="Input NCBI sequence summary JSON file.", required=True)
+    parser.add_argument(
+        "--genome", help="Input NCBI genome summary JSON file.", required=True
+    )
+    parser.add_argument(
+        "--sequence", help="Input NCBI sequence summary JSON file.", required=True
+    )
     parser.add_argument("--busco", help="Input BUSCO short summary JSON file.")
     parser.add_argument("--pacbio", help="PacBio sample ID used for MerquryFK.")
     parser.add_argument("--qv", help="Input QV TSV file from MERQURYFK.")
-    parser.add_argument("--completeness", help="Input COMPLETENESS stats TSV file from MERQURYFK.")
+    parser.add_argument(
+        "--completeness", help="Input COMPLETENESS stats TSV file from MERQURYFK."
+    )
     parser.add_argument("--hic", help="HiC sample ID used for contact maps.")
     parser.add_argument("--flagstat", help="HiC flagstat file created by Samtools.")
     parser.add_argument("--outcsv", help="Output CSV file.", required=True)
     parser.add_argument("--version", action="version", version="%(prog)s 2.0")
     return parser.parse_args(args)
 
+
 def make_dir(path):
     if len(path) > 0:
         os.makedirs(path, exist_ok=True)
+
 
 def ncbi_stats(genome_in, seq_in, writer):
     with open(genome_in, "r") as fin1:
@@ -44,13 +53,30 @@ def ncbi_stats(genome_in, seq_in, writer):
     if "common_name" in data["organism"]:
         writer.writerow(["Common_Name", data["organism"]["common_name"]])
     writer.writerow(["Organism_Name", data["organism"]["organism_name"]])
-    writer.writerow(["ToL_ID", "".join( pairs["value"] for pairs in attr if pairs["name"] == "tolid" )])
+    writer.writerow(
+        [
+            "ToL_ID",
+            "".join(pairs["value"] for pairs in attr if pairs["name"] == "tolid"),
+        ]
+    )
     writer.writerow(["Taxon_ID", data["organism"]["tax_id"]])
     writer.writerow(["Assembly_Name", info["assembly_name"]])
     writer.writerow(["Assembly_Level", info["assembly_level"]])
-    writer.writerow(["Life_Stage", "".join( pairs["value"] for pairs in attr if pairs["name"] == "life_stage" )])
-    writer.writerow(["Tissue", "".join( pairs["value"] for pairs in attr if pairs["name"] == "tissue" )])
-    writer.writerow(["Sex", "".join( pairs["value"] for pairs in attr if pairs["name"] == "sex" )])
+    writer.writerow(
+        [
+            "Life_Stage",
+            "".join(pairs["value"] for pairs in attr if pairs["name"] == "life_stage"),
+        ]
+    )
+    writer.writerow(
+        [
+            "Tissue",
+            "".join(pairs["value"] for pairs in attr if pairs["name"] == "tissue"),
+        ]
+    )
+    writer.writerow(
+        ["Sex", "".join(pairs["value"] for pairs in attr if pairs["name"] == "sex")]
+    )
     writer.writerow(["##Assembly_Statistics"])
     writer.writerow(["Total_Sequence", stats["total_sequence_length"]])
     if "total_number_of_chromosomes" in stats:
@@ -73,7 +99,14 @@ def ncbi_stats(genome_in, seq_in, writer):
             if not organelle_header:
                 writer.writerow(["##Organelle", "Length", "GC_Percent"])
                 organelle_header = True
-            writer.writerow([mol["assigned_molecule_location_type"], mol["length"], mol["gc_percent"]])
+            writer.writerow(
+                [
+                    mol["assigned_molecule_location_type"],
+                    mol["length"],
+                    mol["gc_percent"],
+                ]
+            )
+
 
 def extract_busco(file_in, writer):
     with open(file_in, "r") as fin:
@@ -83,11 +116,13 @@ def extract_busco(file_in, writer):
     writer.writerow(["Lineage", data["lineage_dataset"]["name"]])
     writer.writerow(["Summary", data["results"]["one_line_summary"]])
 
+
 def extract_qv(file_in, writer):
     with open(file_in, "r") as fin:
         data = csv.DictReader(fin, delimiter="\t")
         for row in data:
             writer.writerow(["QV", row["QV"]])
+
 
 def extract_completeness(file_in, writer):
     with open(file_in, "r") as fin:
@@ -95,12 +130,16 @@ def extract_completeness(file_in, writer):
         for row in data:
             writer.writerow(["Completeness", row["% Covered"]])
 
+
 def extract_mapped(sample, file_in, writer):
     writer.writerow(["##HiC", "_".join(sample.split("_")[:-1])])
     with open(file_in, "r") as fin:
         for line in fin:
             if "primary mapped" in line:
-                writer.writerow(["Primary_Mapped", re.search(r'\((.*?) :', line).group(1)])
+                writer.writerow(
+                    ["Primary_Mapped", re.search(r"\((.*?) :", line).group(1)]
+                )
+
 
 def main(args=None):
     args = parse_args(args)
@@ -117,10 +156,11 @@ def main(args=None):
             writer.writerow(["##MerquryFK", "_".join(args.pacbio.split("_")[:-1])])
         if args.qv is not None:
             extract_qv(args.qv, writer)
-        if args.completeness is not None: 
+        if args.completeness is not None:
             extract_completeness(args.completeness, writer)
         if args.hic is not None:
             extract_mapped(args.hic, args.flagstat, writer)
+
 
 if __name__ == "__main__":
     sys.exit(main())
