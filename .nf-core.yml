@@ -7,10 +7,12 @@ lint:
     - .github/ISSUE_TEMPLATE/config.yml
     - .github/workflows/awstest.yml
     - .github/workflows/awsfulltest.yml
+    - conf/igenomes.config
   files_unchanged:
     - LICENSE
     - .github/ISSUE_TEMPLATE/bug_report.yml
     - lib/NfcoreTemplate.groovy
+    - .github/CONTRIBUTING.md
   nextflow_config:
     - manifest.name
     - manifest.homePage
