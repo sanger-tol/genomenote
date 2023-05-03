@@ -21,7 +21,7 @@ process FILTER_BED {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    filter_bed.sh $bed ${prefix}_filtered.pairs   
+    filter_bed.sh $bed ${prefix}_filtered.pairs
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
