@@ -6,7 +6,9 @@
 
 ## Introduction
 
-The [sanger-tol/genomenote](https://pipelines.tol.sanger.ac.uk/genomenote) pipeline takes aligned HiC reads, creates contact maps and chromosomal grid using Cooler, and display on a [HiGlass server](https://genome-note-higlass.tol.sanger.ac.uk/app). The pipeline also collates (1) assembly information, statistics and chromosome details from NCBI datasets, (2) genome completeness from BUSCO, (3) consensus quality and k-mer completeness from MerquryFK, and (4) HiC primary mapped percentage from samtools flagstat.
+The [sanger-tol/genomenote](https://pipelines.tol.sanger.ac.uk/genomenote) pipeline takes aligned HiC reads to create contact maps and chromosomal grid using Cooler.
+These files can be displayed on a [HiGlass](http://higlass.io) server, like the one use by the [Sanger Institute](https://genome-note-higlass.tol.sanger.ac.uk/app).
+The pipeline also collates (1) assembly information, statistics and chromosome details from NCBI datasets, (2) genome completeness from BUSCO, (3) consensus quality and k-mer completeness from MerquryFK, and (4) HiC primary mapped percentage from samtools flagstat.
 
 ## Samplesheet input
 
