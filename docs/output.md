@@ -17,7 +17,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 ### Contact maps
 
-This pipeline takes aligned HiC reads to create contact maps and chromosomal grid using Cooler for display on a [HiGlass server](https://genome-note-higlass.tol.sanger.ac.uk/app).
+This pipeline takes aligned HiC reads to create contact maps and chromosomal grid using Cooler for display on a [HiGlass server](https://higlass.io/).
 
 <details markdown="1">
 <summary>Output files</summary>
