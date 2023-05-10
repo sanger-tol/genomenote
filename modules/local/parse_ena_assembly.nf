@@ -26,7 +26,7 @@ process PARSE_ENA_ASSEMBLY {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        check_samplesheet.py: \$(check_samplesheet.py --version | cut -d' ' -f2)
+        parse_xml_ena_assembly.py: \$(parse_xml_ena_assembly.py --version | cut -d' ' -f2)
     END_VERSIONS
     """
 }

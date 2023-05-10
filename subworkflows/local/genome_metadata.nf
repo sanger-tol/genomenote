@@ -49,7 +49,9 @@ workflow GENOME_METADATA {
     }
 
     PARSE_ENA_ASSEMBLY ( ch_input.ENA_ASSEMBLY )
-    
+    ch_versions = ch_versions.mix(PARSE_ENA_ASSEMBLY.out.versions.first())
+
+
     emit:
     versions    = ch_versions.ifEmpty(null) // channel: [versions.yml]
 }
