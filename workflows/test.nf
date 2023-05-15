@@ -34,6 +34,7 @@ include { GENOME_METADATA       } from '../subworkflows/local/genome_metadata'
 //
 // MODULE: Installed directly from nf-core/modules
 //
+include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,6 +61,14 @@ workflow GENOMENOTE {
     ch_file_list = Channel.fromPath(params.genome_metadata_file_template)   
 
     GENOME_METADATA ( ch_file_list )
+    ch_versions = ch_versions.mix(GENOME_METADATA.out.versions)
+
+    //
+    // MODULE: Combine different versions.yml
+    //
+    CUSTOM_DUMPSOFTWAREVERSIONS (
+        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    )
 }
 
 
