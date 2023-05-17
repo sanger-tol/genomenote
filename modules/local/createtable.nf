@@ -25,7 +25,6 @@ process CREATETABLE {
     def gen = genome_summary ? "--genome ${genome_summary}" : ""
     def seq = sequence_summary ? "--sequence ${sequence_summary}" : ""
     def bus = busco ? "--busco ${busco}" : ""
-    def pac = qv || completeness ? "--pacbio ${meta2.id}" : ""
     def mqv = qv ? "--qv ${qv}" : ""
     def mco = completeness ? "--completeness ${completeness}" : ""
     def hic = flagstat ? "--hic ${meta3.id}" : ""
@@ -35,7 +34,6 @@ process CREATETABLE {
         $gen \\
         $seq \\
         $bus \\
-        $pac \\
         $mqv \\
         $mco \\
         $hic \\

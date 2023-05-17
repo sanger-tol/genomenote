@@ -98,6 +98,8 @@ workflow GENOME_STATISTICS {
     MERQURYFK_MERQURYFK.out.qv
     | join ( MERQURYFK_MERQURYFK.out.stats )
     | ifEmpty ( [ [], [], [] ] )
+    | map { meta, qv, comp -> [ meta + [ id: "merq" ], qv, comp ] }
+    | groupTuple ()
     | set { ch_merqury }
 
     CREATETABLE ( ch_summary, ch_busco, ch_merqury, flagstat )

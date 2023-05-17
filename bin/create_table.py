@@ -15,9 +15,8 @@ def parse_args(args=None):
     parser.add_argument("--genome", help="Input NCBI genome summary JSON file.", required=True)
     parser.add_argument("--sequence", help="Input NCBI sequence summary JSON file.", required=True)
     parser.add_argument("--busco", help="Input BUSCO short summary JSON file.")
-    parser.add_argument("--pacbio", help="PacBio sample ID used for MerquryFK.")
-    parser.add_argument("--qv", help="Input QV TSV file from MERQURYFK.")
-    parser.add_argument("--completeness", help="Input COMPLETENESS stats TSV file from MERQURYFK.")
+    parser.add_argument("--qv", nargs="*", help="Input QV TSV file from MERQURYFK.")
+    parser.add_argument("--completeness", nargs="*", help="Input COMPLETENESS stats TSV file from MERQURYFK.")
     parser.add_argument("--hic", help="HiC sample ID used for contact maps.")
     parser.add_argument("--flagstat", help="HiC flagstat file created by Samtools.")
     parser.add_argument("--outcsv", help="Output CSV file.", required=True)
@@ -104,27 +103,37 @@ def extract_busco(file_in, writer):
     with open(file_in, "r") as fin:
         data = json.load(fin)
 
-    writer.writerow(["##BUSCO"])
-    writer.writerow(["Lineage", data["lineage_dataset"]["name"]])
+    writer.writerow(["##BUSCO", data["lineage_dataset"]["name"]])
     writer.writerow(["Summary", data["results"]["one_line_summary"]])
 
 
-def extract_qv(file_in, writer):
-    with open(file_in, "r") as fin:
-        data = csv.DictReader(fin, delimiter="\t")
-        for row in data:
-            writer.writerow(["QV", row["QV"]])
+def extract_pacbio(qv, completeness, writer):
+    qval = 0
+    qv_name = ""
+    for f in qv:
+        with open(f, "r") as fin:
+            data = csv.DictReader(fin, delimiter="\t")
+            for row in data:
+                if float(row["QV"]) > qval:
+                    qval = float(row["QV"])
+                    qv_name = f.split("/")[-1].split("_")[0]
 
+    comp = 0
+    for h in completeness:
+        comp_name = h.split("/")[-1].split("_")[0]
+        if comp_name == qv_name:
+            with open(h, "r") as fin:
+                data = csv.DictReader(fin, delimiter="\t")
+                for row in data:
+                    comp = float(row["% Covered"])
 
-def extract_completeness(file_in, writer):
-    with open(file_in, "r") as fin:
-        data = csv.DictReader(fin, delimiter="\t")
-        for row in data:
-            writer.writerow(["Completeness", row["% Covered"]])
+    writer.writerow(["##MerquryFK", qv_name])
+    writer.writerow(["QV", qval])
+    writer.writerow(["Completeness", comp])
 
 
 def extract_mapped(sample, file_in, writer):
-    writer.writerow(["##HiC", "_".join(sample.split("_")[:-1])])
+    writer.writerow(["##HiC", "_".join(sample.split("/")[-1].split("_")[:-1])])
     with open(file_in, "r") as fin:
         for line in fin:
             if "primary mapped" in line:
@@ -142,12 +151,8 @@ def main(args=None):
         ncbi_stats(args.genome, args.sequence, writer)
         if args.busco is not None:
             extract_busco(args.busco, writer)
-        if args.pacbio is not None:
-            writer.writerow(["##MerquryFK", "_".join(args.pacbio.split("_")[:-1])])
-        if args.qv is not None:
-            extract_qv(args.qv, writer)
-        if args.completeness is not None:
-            extract_completeness(args.completeness, writer)
+        if args.qv and args.completeness is not None:
+            extract_pacbio(args.qv, args.completeness, writer)
         if args.hic is not None:
             extract_mapped(args.hic, args.flagstat, writer)
 
