@@ -6,6 +6,7 @@
 
 include { RUN_WGET     }                from '../../modules/local/run_wget'
 include { PARSE_ENA_ASSEMBLY   }        from '../../modules/local/parse_ena_assembly'
+include { PARSE_ENA_BIOPROJECT   }        from '../../modules/local/parse_ena_bioproject'
 include { PARSE_ENA_TAXONOMY   }        from '../../modules/local/parse_ena_taxonomy'
 
 workflow GENOME_METADATA {
@@ -48,6 +49,7 @@ workflow GENOME_METADATA {
     ch_input = RUN_WGET.out.file_path.branch { 
         ENA_ASSEMBLY: it[0].source == "ENA"  && it[0].type == "Assembly"
         ENA_TAXONOMY: it[0].source == "ENA"  && it[0].type == "Taxonomy"
+        ENA_BIOPROJECT: it[0].source == "ENA"  && it[0].type == "Bioproject"
     }
 
     PARSE_ENA_ASSEMBLY ( ch_input.ENA_ASSEMBLY )
@@ -55,6 +57,9 @@ workflow GENOME_METADATA {
 
     PARSE_ENA_TAXONOMY ( ch_input.ENA_TAXONOMY )
     ch_versions = ch_versions.mix(PARSE_ENA_TAXONOMY.out.versions.first())
+
+    PARSE_ENA_BIOPROJECT ( ch_input.ENA_BIOPROJECT )
+    ch_versions = ch_versions.mix(PARSE_ENA_BIOPROJECT.out.versions.first())
 
     emit:
     versions    = ch_versions.ifEmpty(null) // channel: [versions.yml]
