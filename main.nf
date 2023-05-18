@@ -1,23 +1,14 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    nf-core/genomenote
+    sanger-tol/genomenote
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/nf-core/genomenote
-    Website: https://nf-co.re/genomenote
-    Slack  : https://nfcore.slack.com/channels/genomenote
+    Github : https://github.com/sanger-tol/genomenote
+    Website: https://pipelines.tol.sanger.ac.uk/genomenote
 ----------------------------------------------------------------------------------------
 */
 
 nextflow.enable.dsl = 2
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    GENOME PARAMETER VALUES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-params.fasta = WorkflowMain.getGenomeAttribute(params, 'fasta')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,9 +27,9 @@ WorkflowMain.initialise(workflow, params, log)
 include { GENOMENOTE } from './workflows/genomenote'
 
 //
-// WORKFLOW: Run main nf-core/genomenote analysis pipeline
+// WORKFLOW: Run main sanger-tol/genomenote analysis pipeline
 //
-workflow NFCORE_GENOMENOTE {
+workflow SANGERTOL_GENOMENOTE {
     GENOMENOTE ()
 }
 
@@ -53,7 +44,7 @@ workflow NFCORE_GENOMENOTE {
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
-    NFCORE_GENOMENOTE ()
+    SANGERTOL_GENOMENOTE ()
 }
 
 /*
