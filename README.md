@@ -1,5 +1,6 @@
-# ![sanger-tol/genomenote](https://raw.githubusercontent.com/sanger-tol/genomenote/main/docs/images/sanger-tol-genomenote_logo.png)
+# ![sanger-tol/genomenote](docs/images/sanger-tol-genomenote_logo.png)
 
+[![GitHub Actions Linting Status](https://github.com/sanger-tol/genomenote/workflows/nf-core%20linting/badge.svg)](https://github.com/sanger-tol/genomenote/actions?query=workflow%3A%22nf-core+linting%22)
 [![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A523.04.0-23aa62.svg)](https://www.nextflow.io/)
