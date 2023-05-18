@@ -1,7 +1,7 @@
 # ![sanger-tol/genomenote](docs/images/sanger-tol-genomenote_logo.png)
 
 [![GitHub Actions Linting Status](https://github.com/sanger-tol/genomenote/workflows/nf-core%20linting/badge.svg)](https://github.com/sanger-tol/genomenote/actions?query=workflow%3A%22nf-core+linting%22)
-[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
+[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.7949384-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.7949384)
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A523.04.0-23aa62.svg)](https://www.nextflow.io/)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
@@ -65,11 +65,13 @@ For more details, please refer to the [usage documentation](https://pipelines.to
 
 ## Credits
 
-sanger-tol/genomenote was originally written by @priyanka-surana.
+sanger-tol/genomenote was originally written by [Priyanka Surana](https://github.com/priyanka-surana).
 
 We thank the following people for their assistance in the development of this pipeline:
 
-- @mcshane and @yumisims for providing software/tool guidance
+- [Matthieu Muffato](https://github.com/muffato)
+- [Shane McCarthy](https://github.com/mcshane) and [Yumi Sims](https://github.com/yumisims) for providing software and algorithm guidance.
+- [Cibin Sadasivan Baby](https://github.com/cibinsb) and [Beth Yates](https://github.com/BethYates) for providing reviews.
 
 ## Contributions and Support
 
@@ -77,7 +79,7 @@ If you would like to contribute to this pipeline, please see the [contributing g
 
 ## Citations
 
-If you use sanger-tol/genomenote for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX)
+If you use sanger-tol/genomenote for your analysis, please cite it using the following doi: [10.5281/zenodo.7949384](https://doi.org/10.5281/zenodo.7949384)
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](https://raw.githubusercontent.com/sanger-tol/genomenote/main/CITATIONS.md) file.
 
