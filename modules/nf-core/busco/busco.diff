@@ -1,0 +1,12 @@
+Changes in module 'nf-core/busco'
+--- modules/nf-core/busco/main.nf
++++ modules/nf-core/busco/main.nf
+@@ -1,5 +1,5 @@
+ process BUSCO {
+-    tag "$meta.id"
++    tag "${meta.id}_${lineage}"
+     label 'process_medium'
+ 
+     conda "bioconda::busco=5.4.3"
+
+************************************************************

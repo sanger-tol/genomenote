@@ -1,1 +1,20 @@
 repository_type: pipeline
+lint:
+  files_exist:
+    - assets/nf-core-genomenote_logo_light.png
+    - docs/images/nf-core-genomenote_logo_light.png
+    - docs/images/nf-core-genomenote_logo_dark.png
+    - .github/ISSUE_TEMPLATE/config.yml
+    - .github/workflows/awstest.yml
+    - .github/workflows/awsfulltest.yml
+    - conf/igenomes.config
+  files_unchanged:
+    - LICENSE
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - lib/NfcoreTemplate.groovy
+    - .github/CONTRIBUTING.md
+  nextflow_config:
+    - manifest.name
+    - manifest.homePage
+  multiqc_config:
+    - report_comment

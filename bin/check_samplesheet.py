@@ -1,161 +1,250 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
-# This script is based on the example at: https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/samplesheet/samplesheet_test_illumina_amplicon.csv
 
-import os
-import sys
-import errno
+"""Provide a command line tool to validate and transform tabular samplesheets."""
+
+
 import argparse
+import csv
+import logging
+import sys
+from collections import Counter
+from pathlib import Path
+
+logger = logging.getLogger()
 
 
-def parse_args(args=None):
-    Description = (
-        "Reformat nf-core/readmapping samplesheet file and check its contents."
+class RowChecker:
+    """
+    Define a service that can validate and transform each given row.
+
+    Attributes:
+        modified (list): A list of dicts, where each dict corresponds to a previously
+            validated and transformed row. The order of rows is maintained.
+
+    """
+
+    VALID_DATATYPES = (
+        "hic",
+        "pacbio",
     )
-    Epilog = "Example usage: python check_samplesheet.py <FILE_IN> <FILE_OUT>"
 
-    parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
-    parser.add_argument("FILE_IN", help="Input samplesheet file.")
-    parser.add_argument("FILE_OUT", help="Output file.")
-    parser.add_argument("--version", action="version", version="%(prog)s 1.0")
-    return parser.parse_args(args)
+    VALID_FORMATS = (".cram",)
+
+    def __init__(
+        self,
+        sample_col="sample",
+        tech_col="datatype",
+        data_col="datafile",
+        **kwargs,
+    ):
+        """
+        Initialize the row checker with the expected column names.
+
+        Args:
+            sample_col (str): The name of the column that contains the sample name
+                (default "sample").
+            tech_col (str): The name of the column that contains the datatype for
+                the read data (default "datatype").
+            data_col (str): The name of the column that contains the the file path for
+                the read data (default "datafile").
+
+        """
+        super().__init__(**kwargs)
+        self._sample_col = sample_col
+        self._tech_col = tech_col
+        self._data_col = data_col
+        self._seen = set()
+        self.modified = []
+
+    def validate_and_transform(self, row):
+        """
+        Perform all validations on the given row.
+
+        Args:
+            row (dict): A mapping from column headers (keys) to elements of that row
+                (values).
+
+        """
+        self._validate_sample(row)
+        self._validate_tech(row)
+        self._validate_data(row)
+        self._seen.add((row[self._sample_col], row[self._data_col]))
+        self.modified.append(row)
+
+    def _validate_sample(self, row):
+        """Assert that the sample name exists and convert spaces to underscores."""
+        if len(row[self._sample_col]) <= 0:
+            raise AssertionError("Sample input is required.")
+        # Sanitize samples slightly.
+        row[self._sample_col] = row[self._sample_col].replace(" ", "_")
+
+    def _validate_tech(self, row):
+        """Assert that the data type matches expected values."""
+        if not any(row[self._tech_col] for datatype in self.VALID_DATATYPES):
+            raise AssertionError(
+                f"The datatype is unrecognized: {row[self._type_col]}\n"
+                f"It should be one of: {', '.join(self.VALID_DATATYPES)}"
+            )
+
+    def _validate_data(self, row):
+        """Assert that the datafile is non-empty and has the right format."""
+        if len(row[self._data_col]) <= 0:
+            raise AssertionError("Data file or Kmer directory is required.")
+        if row[self._tech_col] == "hic":
+            self._validate_hic_format(row[self._data_col])
+
+    def _validate_hic_format(self, filename):
+        """Assert that a given HiC filename has one of the expected extensions."""
+        if not any(filename.endswith(extension) for extension in self.VALID_FORMATS):
+            raise AssertionError(
+                f"The HiC file has an unrecognized extension: {filename}\n"
+                f"It should be one of: {', '.join(self.VALID_FORMATS)}"
+            )
+
+    def validate_unique_samples(self):
+        """
+        Assert that the combination of sample name and filename is unique.
+
+        In addition to the validation, also rename all samples to have a suffix of _T{n}, where n is the
+        number of times the same sample exist, but with different files, e.g., multiple runs per experiment.
+
+        """
+        if len(self._seen) != len(self.modified):
+            raise AssertionError("The pair of sample and file name must be unique.")
+        seen = Counter()
+        for row in self.modified:
+            sample = row[self._sample_col]
+            seen[sample] += 1
+            row[self._sample_col] = f"{sample}_T{seen[sample]}"
 
 
-def make_dir(path):
-    if len(path) > 0:
-        os.makedirs(path, exist_ok=True)
+def read_head(handle, num_lines=10):
+    """Read the specified number of lines from the current position in the file."""
+    lines = []
+    for idx, line in enumerate(handle):
+        if idx == num_lines:
+            break
+        lines.append(line)
+    return "".join(lines)
 
 
-def print_error(error, context="Line", context_str=""):
-    error_str = "ERROR: Please check samplesheet -> {}".format(error)
-    if context != "" and context_str != "":
-        error_str = "ERROR: Please check samplesheet -> {}\n{}: '{}'".format(
-            error, context.strip(), context_str.strip()
-        )
-    print(error_str)
-    sys.exit(1)
+def sniff_format(handle):
+    """
+    Detect the tabular format.
+
+    Args:
+        handle (text file): A handle to a `text file`_ object. The read position is
+        expected to be at the beginning (index 0).
+
+    Returns:
+        csv.Dialect: The detected tabular format.
+
+    .. _text file:
+        https://docs.python.org/3/glossary.html#term-text-file
+
+    """
+    peek = read_head(handle)
+    handle.seek(0)
+    sniffer = csv.Sniffer()
+    dialect = sniffer.sniff(peek)
+    return dialect
 
 
 def check_samplesheet(file_in, file_out):
     """
-    This function checks that the samplesheet follows the following structure:
+    Check that the tabular samplesheet has the structure expected by nf-core pipelines.
 
-    sample,datatype,datafile
-    sample1,hic,/path/to/file1.cram
-    sample1,pacbio,/path/to/kmer/dir
+    Validate the general shape of the table, expected columns, and each row.
 
-    For an example see:
-    https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/samplesheet/samplesheet_test_illumina_amplicon.csv
+    Args:
+        file_in (pathlib.Path): The given tabular samplesheet. The format can be either
+            CSV, TSV, or any other format automatically recognized by ``csv.Sniffer``.
+        file_out (pathlib.Path): Where the validated and transformed samplesheet should
+            be created; always in CSV format.
+
+    Example:
+        This function checks that the samplesheet follows the following structure,
+        see also the `genome note samplesheet`_::
+
+            sample,datatype,datafile
+            sample1,hic,/path/to/aligned.cram
+            sample2,pacbio,/path/to/kmer/folder
+
+    .. _genome note samplesheet:
+        https://raw.githubusercontent.com/sanger-tol/genomenote/main/assets/samplesheet.csv
+
     """
-
-    sample_mapping_dict = {}
-    with open(file_in, "r") as fin:
-
-        ##* Check header
-        MIN_COLS = 3
-        HEADER = ["sample", "datatype", "datafile"]
-        header = [x.strip('"') for x in fin.readline().strip().split(",")]
-        if header[: len(HEADER)] != HEADER:
-            print(
-                "ERROR: Please check samplesheet header -> {} != {}".format(
-                    ",".join(header), ",".join(HEADER)
-                )
-            )
+    required_columns = {"sample", "datatype", "datafile"}
+    # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
+    with file_in.open(newline="") as in_handle:
+        reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))
+        # Validate the existence of the expected header columns.
+        if not required_columns.issubset(reader.fieldnames):
+            req_cols = ", ".join(required_columns)
+            logger.critical(f"The sample sheet **must** contain these column headers: {req_cols}.")
             sys.exit(1)
-
-        ## Check sample entries
-        for line in fin:
-            lspl = [x.strip().strip('"') for x in line.strip().split(",")]
-
-            # Check valid number of columns per row
-            if len(lspl) < len(HEADER):
-                print_error(
-                    "Invalid number of columns (minimum = {})!".format(len(HEADER)),
-                    "Line",
-                    line,
-                )
-            num_cols = len([x for x in lspl if x])
-            if num_cols < MIN_COLS:
-                print_error(
-                    "Invalid number of populated columns (minimum = {})!".format(
-                        MIN_COLS
-                    ),
-                    "Line",
-                    line,
-                )
-
-            ##* Check sample name entries
-            sample, datatype, datafile = lspl[: len(HEADER)]
-            sample = sample.replace(" ", "_")
-            if not sample:
-                print_error("Sample entry has not been specified!", "Line", line)
-
-            ##* Check datatype name entries
-            datatypes = ["hic", "pacbio"]
-            if datatype:
-                if datatype not in datatypes:
-                    print_error(
-                        "Data type must be one of {}.".format(",".join(datatypes)),
-                        "Line",
-                        line,
-                    )
-            else:
-                print_error(
-                    "Data type has not been specified!. Must be one of {}.".format(
-                        ",".join(datatypes)
-                    ),
-                    "Line",
-                    line,
-                )
-
-            ##* Check data file extension
-            if datafile:
-                if " " in datafile:
-                    print_error(
-                        "Data file contains spaces!",
-                        "Line",
-                        line,
-                    )
-                if (
-                    datatype == "hic"
-                    and not datafile.endswith(".cram")
-                    and not datafile.endswith(".bam")
-                ):
-                    print_error(
-                        "Data file does not have extension '.cram' or '.bam'.",
-                        "Line",
-                        line,
-                    )
-
-            ##* Create sample mapping dictionary = { sample: [ datatype, datafile ] }
-            sample_info = [datatype, datafile]
-            if sample not in sample_mapping_dict:
-                sample_mapping_dict[sample] = [sample_info]
-            else:
-                if sample_info in sample_mapping_dict[sample]:
-                    print_error("Samplesheet contains duplicate rows!", "Line", line)
-                else:
-                    sample_mapping_dict[sample].append(sample_info)
-
-    ##* Write validated samplesheet with appropriate columns
-    if len(sample_mapping_dict) > 0:
-        out_dir = os.path.dirname(file_out)
-        make_dir(out_dir)
-        with open(file_out, "w") as fout:
-            fout.write(",".join(["sample", "datatype", "datafile"]) + "\n")
-            for sample in sorted(sample_mapping_dict.keys()):
-
-                for idx, val in enumerate(sample_mapping_dict[sample]):
-                    fout.write(
-                        ",".join(["{}_T{}".format(sample, idx + 1)] + val) + "\n"
-                    )
-    else:
-        print_error("No entries to process!", "Samplesheet: {}".format(file_in))
+        # Validate each row.
+        checker = RowChecker()
+        for i, row in enumerate(reader):
+            try:
+                checker.validate_and_transform(row)
+            except AssertionError as error:
+                logger.critical(f"{str(error)} On line {i + 2}.")
+                sys.exit(1)
+        checker.validate_unique_samples()
+    header = list(reader.fieldnames)
+    # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
+    with file_out.open(mode="w", newline="") as out_handle:
+        writer = csv.DictWriter(out_handle, header, delimiter=",")
+        writer.writeheader()
+        for row in checker.modified:
+            writer.writerow(row)
 
 
-def main(args=None):
-    args = parse_args(args)
-    check_samplesheet(args.FILE_IN, args.FILE_OUT)
+def parse_args(argv=None):
+    """Define and immediately parse command line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Validate and transform a tabular samplesheet.",
+        epilog="Example: python check_samplesheet.py samplesheet.csv samplesheet.valid.csv",
+    )
+    parser.add_argument(
+        "file_in",
+        metavar="FILE_IN",
+        type=Path,
+        help="Tabular input samplesheet in CSV or TSV format.",
+    )
+    parser.add_argument(
+        "file_out",
+        metavar="FILE_OUT",
+        type=Path,
+        help="Transformed output samplesheet in CSV format.",
+    )
+    parser.add_argument(
+        "-l",
+        "--log-level",
+        help="The desired log level (default WARNING).",
+        choices=("CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"),
+        default="WARNING",
+    )
+    parser.add_argument(
+        "-v",
+        "--version",
+        action="version",
+        version="%(prog)s 1.0",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv=None):
+    """Coordinate argument parsing and program execution."""
+    args = parse_args(argv)
+    logging.basicConfig(level=args.log_level, format="[%(levelname)s] %(message)s")
+    if not args.file_in.is_file():
+        logger.error(f"The given input file {args.file_in} was not found!")
+        sys.exit(2)
+    args.file_out.parent.mkdir(parents=True, exist_ok=True)
+    check_samplesheet(args.file_in, args.file_out)
 
 
 if __name__ == "__main__":

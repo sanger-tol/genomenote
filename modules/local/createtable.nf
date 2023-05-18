@@ -2,10 +2,10 @@ process CREATETABLE {
     tag "$meta.id"
     label 'process_single'
 
-    conda (params.enable_conda ? "python=3.9.1" : null)
+    conda "conda-forge::python=3.10.2"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/python:3.9--1':
-        'quay.io/biocontainers/python:3.9--1' }"
+        'https://depot.galaxyproject.org/singularity/python:3.10.2':
+        'biocontainers/python:3.10.2' }"
 
     input:
     tuple val(meta), path(genome_summary), path(sequence_summary)
@@ -25,7 +25,6 @@ process CREATETABLE {
     def gen = genome_summary ? "--genome ${genome_summary}" : ""
     def seq = sequence_summary ? "--sequence ${sequence_summary}" : ""
     def bus = busco ? "--busco ${busco}" : ""
-    def pac = qv || completeness ? "--pacbio ${meta2.id}" : ""
     def mqv = qv ? "--qv ${qv}" : ""
     def mco = completeness ? "--completeness ${completeness}" : ""
     def hic = flagstat ? "--hic ${meta3.id}" : ""
@@ -35,7 +34,6 @@ process CREATETABLE {
         $gen \\
         $seq \\
         $bus \\
-        $pac \\
         $mqv \\
         $mco \\
         $hic \\
