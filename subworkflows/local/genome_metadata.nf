@@ -9,6 +9,7 @@ include { PARSE_ENA_ASSEMBLY    }       from '../../modules/local/parse_ena_asse
 include { PARSE_ENA_BIOPROJECT  }       from '../../modules/local/parse_ena_bioproject'
 include { PARSE_ENA_BIOSAMPLE   }       from '../../modules/local/parse_ena_biosample'
 include { PARSE_ENA_TAXONOMY    }       from '../../modules/local/parse_ena_taxonomy'
+include { PARSE_NCBI_TAXONOMY   }       from '../../modules/local/parse_ncbi_taxonomy'
 
 workflow GENOME_METADATA {
     take:
@@ -52,6 +53,7 @@ workflow GENOME_METADATA {
         ENA_BIOPROJECT: it[0].source == "ENA"  && it[0].type == "Bioproject"
         ENA_BIOSAMPLE: it[0].source == "ENA"  && it[0].type == "Biosample"
         ENA_TAXONOMY: it[0].source == "ENA"  && it[0].type == "Taxonomy"
+        NCBI_TAXONOMY: it[0].source == "NCBI"  && it[0].type == "Taxonomy"
     }
 
     PARSE_ENA_ASSEMBLY ( ch_input.ENA_ASSEMBLY )
@@ -65,6 +67,9 @@ workflow GENOME_METADATA {
 
     PARSE_ENA_TAXONOMY ( ch_input.ENA_TAXONOMY )
     ch_versions = ch_versions.mix(PARSE_ENA_TAXONOMY.out.versions.first())
+
+    PARSE_NCBI_TAXONOMY ( ch_input.NCBI_TAXONOMY )
+    ch_versions = ch_versions.mix(PARSE_NCBI_TAXONOMY.out.versions.first())
 
     emit:
     versions    = ch_versions.ifEmpty(null) // channel: [versions.yml]
