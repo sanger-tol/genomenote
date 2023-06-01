@@ -129,7 +129,8 @@ def find_element(data, fields, attribs, param_list, index=0):
 
     else:
       # fields either not found or we don't yet handle parsing it
-    pass
+      pass
+
   else:
     if fields[index] in data:
       sub_data = data[fields[index]]
