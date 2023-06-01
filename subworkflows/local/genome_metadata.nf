@@ -9,6 +9,7 @@ include { PARSE_ENA_ASSEMBLY    }       from '../../modules/local/parse_ena_asse
 include { PARSE_ENA_BIOPROJECT  }       from '../../modules/local/parse_ena_bioproject'
 include { PARSE_ENA_BIOSAMPLE   }       from '../../modules/local/parse_ena_biosample'
 include { PARSE_ENA_TAXONOMY    }       from '../../modules/local/parse_ena_taxonomy'
+include { PARSE_NCBI_ASSEMBLY   }       from '../../modules/local/parse_ncbi_assembly'
 include { PARSE_NCBI_TAXONOMY   }       from '../../modules/local/parse_ncbi_taxonomy'
 
 workflow GENOME_METADATA {
@@ -53,6 +54,7 @@ workflow GENOME_METADATA {
         ENA_BIOPROJECT: it[0].source == "ENA"  && it[0].type == "Bioproject"
         ENA_BIOSAMPLE: it[0].source == "ENA"  && it[0].type == "Biosample"
         ENA_TAXONOMY: it[0].source == "ENA"  && it[0].type == "Taxonomy"
+        NCBI_ASSEMBLY: it[0].source == "NCBI"  && it[0].type == "Assembly"
         NCBI_TAXONOMY: it[0].source == "NCBI"  && it[0].type == "Taxonomy"
     }
 
@@ -67,6 +69,9 @@ workflow GENOME_METADATA {
 
     PARSE_ENA_TAXONOMY ( ch_input.ENA_TAXONOMY )
     ch_versions = ch_versions.mix(PARSE_ENA_TAXONOMY.out.versions.first())
+
+    PARSE_NCBI_ASSEMBLY ( ch_input.NCBI_ASSEMBLY )
+    ch_versions = ch_versions.mix(PARSE_NCBI_ASSEMBLY.out.versions.first())
 
     PARSE_NCBI_TAXONOMY ( ch_input.NCBI_TAXONOMY )
     ch_versions = ch_versions.mix(PARSE_NCBI_TAXONOMY.out.versions.first())
