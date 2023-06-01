@@ -24,7 +24,7 @@ WorkflowMain.initialise(workflow, params, log)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { GENOMENOTE } from './workflows/test'
+include { GENOMENOTE } from './workflows/genomenote'
 
 //
 // WORKFLOW: Run main sanger-tol/genomenote analysis pipeline
