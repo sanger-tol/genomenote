@@ -22,7 +22,12 @@ process RUN_WGET {
 
     script:
     """
-        wget -c -O result.${meta.ext} '${url}'
+        if  [[ ${meta.source} == 'GOAT' ]]
+        then
+            wget --no-check-certificate -c -O result.${meta.ext} '${url}'
+        else
+            wget -c -O result.${meta.ext} '${url}'
+        fi
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
