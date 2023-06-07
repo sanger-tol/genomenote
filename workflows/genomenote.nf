@@ -19,6 +19,10 @@ if (params.fasta)     { ch_fasta = Channel.fromPath(params.fasta) } else { exit 
 if (params.binsize)   { ch_bin   = Channel.of(params.binsize)     } else { exit 1, 'Bin size for cooler/cload not specified!' }
 if (params.kmer_size) { ch_kmer  = Channel.of(params.kmer_size)   } else { exit 1, 'Kmer library size for fastk not specified' }
 
+if (params.assembly && params.taxon_id && params.bioproject && params.biosample) { metadata_inputs = [ params.assembly, params.taxon_id, params.bioproject, params.biosample ] }
+else { exit 1, 'Metadata input not specified. Please include an assembly accession, a taxon id, a bioproject accession and a biosample_accession' }
+
+
 // Check optional parameters
 if (params.lineage_db) { ch_busco = Channel.fromPath(params.lineage_db) } else { ch_busco = Channel.empty() }
 
@@ -45,6 +49,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK       } from '../subworkflows/local/input_check'
+include { GENOME_METADATA   } from '../subworkflows/local/genome_metadata'
 include { CONTACT_MAPS      } from '../subworkflows/local/contact_maps'
 include { GENOME_STATISTICS } from '../subworkflows/local/genome_statistics'
 
@@ -76,6 +81,15 @@ workflow GENOMENOTE {
 
     ch_versions = Channel.empty()
 
+    //
+    // SUBWORKFLOW: Read in template of data files to fetch, parse these files and output a list of genome metadata params
+    
+    Channel.of ( metadata_inputs ).set { ch_metdata_input }
+    
+    ch_file_list = Channel.fromPath(params.genome_metadata_file_template)   
+
+    GENOME_METADATA ( ch_file_list )
+    ch_versions = ch_versions.mix(GENOME_METADATA.out.versions)
 
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
