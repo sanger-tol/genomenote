@@ -31,12 +31,13 @@ def print_error(error, context="Line", context_str=""):
     error_str = "ERROR: Please check xml file -> {}".format(error)
     if context != "":
         if context_str != "":
-            error_str = "ERROR: Please check xml file -> {}\n{}: '{}'".format( error, context.strip(), context_str.strip())
+            error_str = "ERROR: Please check xml file -> {}\n{}: '{}'".format(
+                error, context.strip(), context_str.strip()
+            )
         else: 
             error_str = "ERROR: Please check xml file -> {}\n{}".format(error, context.strip())
 
     print(error_str)
-
     sys.exit(1)    
 
 
@@ -51,26 +52,23 @@ def parse_xml(file_in, file_out):
         fn = len(f)
         i = 0
 
-
         for tag in f[1]: 
             i+=1
             r =  r.find(tag) 
-            ## Handle cases where parameter is not available for this PROJECT
-            if r is None: 
+
+            if r is None:
+                ## Handle cases where parameter is not available for this PROJECT 
                 break
 
             if (i == max_depth):
                 ## Handle more complex cases where not just fetching text for an element 
                 if fn == 3:
-
-
                     ## Fetch specific attribute for a given element 
                     if f[2][0] == "attrib":
                         try:
                             param = r.attrib.get(f[2][1])
                         except ValueError:
                             param = None
-
 
                 else: 
                     try:
