@@ -31,13 +31,12 @@ def print_error(error, context="Line", context_str=""):
     error_str = "ERROR: Please check xml file -> {}".format(error)
     if context != "":
         if context_str != "":
-            error_str = "ERROR: Please check xml file -> {}\n{}: '{}'".format(
-                error, context.strip(), context_str.strip()
-          )
+            error_str = "ERROR: Please check xml file -> {}\n{}: '{}'".format( error, context.strip(), context_str.strip())
         else: 
             error_str = "ERROR: Please check xml file -> {}\n{}".format(error, context.strip())
 
     print(error_str)
+
     sys.exit(1)    
 
 
@@ -52,6 +51,7 @@ def parse_xml(file_in, file_out):
         fn = len(f)
         i = 0
 
+
         for tag in f[1]: 
             i+=1
             r =  r.find(tag) 
@@ -63,12 +63,14 @@ def parse_xml(file_in, file_out):
                 ## Handle more complex cases where not just fetching text for an element 
                 if fn == 3:
 
+
                     ## Fetch specific attribute for a given element 
                     if f[2][0] == "attrib":
                         try:
                             param = r.attrib.get(f[2][1])
                         except ValueError:
                             param = None
+
 
                 else: 
                     try:
@@ -85,7 +87,7 @@ def parse_xml(file_in, file_out):
         with open(file_out, "w") as fout:
             fout.write(",".join(["#paramName", "paramValue"]) + "\n")
             for param_pair in param_list:
-              fout.write(",".join(param_pair) + "\n")
+                fout.write(",".join(param_pair) + "\n")
 
     else:
         print_error("No parameters found!", "File: {}".format(file_in))
