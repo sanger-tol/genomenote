@@ -20,7 +20,7 @@ workflow GENOME_METADATA {
 
     main:
     ch_versions = Channel.empty()
-    ch_parsed = Channel.empty()
+    ch_combined = Channel.empty()
 
     // Define channel for RUN_WGET
     ch_file_list
@@ -64,29 +64,40 @@ workflow GENOME_METADATA {
 
     PARSE_ENA_ASSEMBLY ( ch_input.ENA_ASSEMBLY )
     ch_versions = ch_versions.mix(PARSE_ENA_ASSEMBLY.out.versions.first())
-    ch_parsed = ch_parsed.mix(PARSE_ENA_ASSEMBLY.out.file_path)
+    ch_combined = ch_combined.concat(PARSE_ENA_ASSEMBLY.out.file_path)
 
     PARSE_ENA_BIOPROJECT ( ch_input.ENA_BIOPROJECT )
     ch_versions = ch_versions.mix(PARSE_ENA_BIOPROJECT.out.versions.first())
+    ch_combined = ch_combined.concat(PARSE_ENA_BIOPROJECT.out.file_path)
+
 
     PARSE_ENA_BIOSAMPLE ( ch_input.ENA_BIOSAMPLE )
     ch_versions = ch_versions.mix(PARSE_ENA_BIOSAMPLE.out.versions.first())
+    ch_combined = ch_combined.concat(PARSE_ENA_BIOSAMPLE.out.file_path)
+
 
     PARSE_ENA_TAXONOMY ( ch_input.ENA_TAXONOMY )
     ch_versions = ch_versions.mix(PARSE_ENA_TAXONOMY.out.versions.first())
+    ch_combined = ch_combined.concat(PARSE_ENA_TAXONOMY.out.file_path)
+
 
     PARSE_NCBI_ASSEMBLY ( ch_input.NCBI_ASSEMBLY )
     ch_versions = ch_versions.mix(PARSE_NCBI_ASSEMBLY.out.versions.first())
+    ch_combined = ch_combined.concat(PARSE_NCBI_ASSEMBLY.out.file_path)
 
     PARSE_NCBI_TAXONOMY ( ch_input.NCBI_TAXONOMY )
     ch_versions = ch_versions.mix(PARSE_NCBI_TAXONOMY.out.versions.first())
+    ch_combined = ch_combined.concat(PARSE_NCBI_TAXONOMY.out.file_path)
 
     PARSE_GOAT_ASSEMBLY ( ch_input.GOAT_ASSEMBLY)
     ch_versions = ch_versions.mix(PARSE_GOAT_ASSEMBLY.out.versions.first())
+    ch_combined = ch_combined.concat(PARSE_GOAT_ASSEMBLY.out.file_path)
 
 
-    COMBINE_METADATA ( ch_parsed )
+    
+    ch_combined = ch_combined.collect(flat: false)
 
+    COMBINE_METADATA(ch_combined)
 
     emit:
     versions    = ch_versions.ifEmpty(null) // channel: [versions.yml]

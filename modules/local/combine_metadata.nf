@@ -1,5 +1,5 @@
 process COMBINE_METADATA {
-    tag "${meta.ext}|${meta.type}"
+    tag "test"
     label 'process_single'
 
     conda "conda-forge::python=3.9.1"
@@ -8,7 +8,8 @@ process COMBINE_METADATA {
         'quay.io/biocontainers/python:3.9--1' }"
 
     input:
-        tuple val(meta), path(xml)
+        val(test)
+    
 
     output: 
 
@@ -16,9 +17,23 @@ process COMBINE_METADATA {
     when:
     task.ext.when == null || task.ext.when
 
-    script: 
+    script:
+    def args = []
+    for (item in  test){
+        def meta = item[0]
+        def file = item[1]
+        def arg = "--${meta.source}_${meta.type}_file".toLowerCase()
+        args.add(arg)
+        args.add(file)
+    }
+
     """
-    echo "$xml"
+        echo ${args.join(" ")}
+
+        combine_parsed_data.py \\
+        ${args.join(" ")} \\
+        --out combined.csv
+
     """  
 
 }
