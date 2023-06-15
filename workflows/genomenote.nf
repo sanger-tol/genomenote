@@ -86,7 +86,7 @@ workflow GENOMENOTE {
     
     Channel.of ( metadata_inputs ).set { ch_metdata_input }
     
-    ch_file_list = Channel.fromPath(params.genome_metadata_file_template)   
+    ch_file_list = Channel.fromPath(params.metadata_template)   
 
     GENOME_METADATA ( ch_file_list )
     ch_versions = ch_versions.mix(GENOME_METADATA.out.versions)
