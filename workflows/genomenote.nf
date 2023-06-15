@@ -14,14 +14,12 @@ def checkPathParamList = [ params.input, params.multiqc_config, params.lineage_d
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
+if (params.assembly && params.taxon_id && params.bioproject && params.biosample) { metadata_inputs = [ params.assembly, params.taxon_id, params.bioproject, params.biosample ] }
+else { exit 1, 'Metadata input not specified. Please include an assembly accession, a taxon id, a bioproject accession and a biosample_accession' }
 if (params.input)     { ch_input = Channel.fromPath(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 if (params.fasta)     { ch_fasta = Channel.fromPath(params.fasta) } else { exit 1, 'Genome fasta not specified!' }
 if (params.binsize)   { ch_bin   = Channel.of(params.binsize)     } else { exit 1, 'Bin size for cooler/cload not specified!' }
 if (params.kmer_size) { ch_kmer  = Channel.of(params.kmer_size)   } else { exit 1, 'Kmer library size for fastk not specified' }
-
-if (params.assembly && params.taxon_id && params.bioproject && params.biosample) { metadata_inputs = [ params.assembly, params.taxon_id, params.bioproject, params.biosample ] }
-else { exit 1, 'Metadata input not specified. Please include an assembly accession, a taxon id, a bioproject accession and a biosample_accession' }
-
 
 // Check optional parameters
 if (params.lineage_db) { ch_busco = Channel.fromPath(params.lineage_db) } else { ch_busco = Channel.empty() }
