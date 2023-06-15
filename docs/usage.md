@@ -8,7 +8,16 @@
 
 The [sanger-tol/genomenote](https://pipelines.tol.sanger.ac.uk/genomenote) pipeline takes aligned HiC reads to create contact maps and chromosomal grid using Cooler.
 These files can be displayed on a [HiGlass](http://higlass.io) server, like the one use by the [Sanger Institute](https://genome-note-higlass.tol.sanger.ac.uk/app).
-The pipeline also collates (1) assembly information, statistics and chromosome details from NCBI datasets, (2) genome completeness from BUSCO, (3) consensus quality and k-mer completeness from MerquryFK, and (4) HiC primary mapped percentage from samtools flagstat.
+The pipeline also collates (1) assembly metadata from ENA, NCBI and GoaT (2) assembly information, statistics and chromosome details from NCBI datasets, (3) genome completeness from BUSCO, (4) consensus quality and k-mer completeness from MerquryFK, and (5) HiC primary mapped percentage from samtools flagstat.
+
+## Genome metadata input
+
+You will need to supply the assembly accession for the genome you would like to analyse along with the bioproject accession and the biosample acession linked to this genome assembly.
+```bash
+   --assembly '[assembly accession]' 
+   --bioproject '[bioproject accession]' 
+   --biosample '[biosample accession]'
+```
 
 ## Samplesheet input
 
@@ -53,7 +62,7 @@ An [example samplesheet](https://raw.githubusercontent.com/sanger-tol/genomenote
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run sanger-tol/genomenote --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta -profile docker
+nextflow run sanger-tol/genomenote --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta --assembly GCA_922984935.2 --bioproject PRJEB49353 --biosample SAMEA7524400 -profile docker
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -85,6 +94,9 @@ input: './samplesheet.csv'
 outdir: './results/'
 fasta: './genome.fasta'
 input: 'data'
+assembly: 'GCA_922984935.2'
+bioproject: 'PRJEB49353'
+biosample" 'SAMEA7524400'
 <...>
 ```
 
