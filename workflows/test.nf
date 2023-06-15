@@ -58,7 +58,7 @@ workflow GENOMENOTE {
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
 
-    ch_file_list = Channel.fromPath(params.metadata_template)   
+    ch_file_list = Channel.fromPath("${projectDir}/assets/genome_metadata_template.csv")   
 
     GENOME_METADATA ( ch_file_list )
     ch_versions = ch_versions.mix(GENOME_METADATA.out.versions)
