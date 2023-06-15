@@ -17,7 +17,7 @@
 
 <!--![sanger-tol/genomenote workflow](https://raw.githubusercontent.com/sanger-tol/genomenote/main/docs/images/sanger-tol-genomenote_workflow.png)-->
 
-1. Fetches genome metadata from [ENA](https://www.ebi.ac.uk/ena/browser/api/#/ENA_Browser_Data_API), [NCBI](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/reference-docs/rest-api ), and [GoaT](https://goat.genomehubs.org/api-docs/)
+1. Fetches genome metadata from [ENA](https://www.ebi.ac.uk/ena/browser/api/#/ENA_Browser_Data_API), [NCBI](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/reference-docs/rest-api), and [GoaT](https://goat.genomehubs.org/api-docs/)
 2. Filter genome index ([`samtools faidx`](https://www.htslib.org/doc/samtools-faidx.html), `filter genome`)
 3. Convert alignment to BED ([`samtools view`](https://www.htslib.org/doc/samtools-view.html), [`bedtools bamtobed`](https://bedtools.readthedocs.io/en/latest/content/tools/bamtobed.html))
 4. Filter BED ([`GNU sort`](https://www.gnu.org/software/coreutils/manual/html_node/sort-invocation.html), [`filter bed`](https://raw.githubusercontent.com/sanger-tol/genomenote/main/bin/filter_bed.sh))
@@ -34,7 +34,9 @@
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how
 > to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
 > with `-profile test` before running the workflow on actual data.
-                                    bn                                  
+
+                                    bn
+
 First, prepare a samplesheet with your input data that looks as follows:
 
 `samplesheet.csv`:

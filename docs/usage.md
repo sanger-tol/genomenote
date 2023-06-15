@@ -13,9 +13,10 @@ The pipeline also collates (1) assembly metadata from ENA, NCBI and GoaT (2) ass
 ## Genome metadata input
 
 You will need to supply the assembly accession for the genome you would like to analyse along with the bioproject accession and the biosample acession linked to this genome assembly.
+
 ```bash
-   --assembly '[assembly accession]' 
-   --bioproject '[bioproject accession]' 
+   --assembly '[assembly accession]'
+   --bioproject '[bioproject accession]'
    --biosample '[biosample accession]'
 ```
 
