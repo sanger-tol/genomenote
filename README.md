@@ -1,99 +1,96 @@
-# ![nf-core/genomenote](docs/images/sanger-tol-genomenote_logo.png#gh-light-mode-only) ![nf-core/genomenote](docs/images/sanger-tol-genomenote_logo.png#gh-dark-mode-only)
+# ![sanger-tol/genomenote](docs/images/sanger-tol-genomenote_logo.png)
 
-<!-- [![GitHub Actions CI Status](https://github.com/nf-core/genomenote/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/genomenote/actions?query=workflow%3A%22nf-core+CI%22) -->
-<!-- [![GitHub Actions Linting Status](https://github.com/nf-core/genomenote/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/genomenote/actions?query=workflow%3A%22nf-core+linting%22) -->
-<!-- [![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/genomenote/results) -->
+[![GitHub Actions Linting Status](https://github.com/sanger-tol/genomenote/workflows/nf-core%20linting/badge.svg)](https://github.com/sanger-tol/genomenote/actions?query=workflow%3A%22nf-core+linting%22)
+[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.7949384-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.7949384)
 
-[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.6785935-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.6785935)
-
-[![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A522.04.0-23aa62.svg?labelColor=000000)](https://www.nextflow.io/)
+[![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A523.04.1-23aa62.svg)](https://www.nextflow.io/)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
+[![Launch on Nextflow Tower](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Nextflow%20Tower-%234256e7)](https://tower.nf/launch?pipeline=https://github.com/sanger-tol/genomenote)
 
-[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23genomenote-4A154B?labelColor=000000&logo=slack)](https://nfcore.slack.com/channels/genomenote)
-[![Follow on Twitter](http://img.shields.io/badge/twitter-%40nf__core-1DA1F2?labelColor=000000&logo=twitter)](https://twitter.com/nf_core)
-[![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?labelColor=000000&logo=youtube)](https://www.youtube.com/c/nf-core)
+[![Follow on Twitter](http://img.shields.io/badge/twitter-%40SangerToL-1DA1F2?labelColor=000000&logo=twitter)](https://twitter.com/SangerToL)
 
 ## Introduction
 
-**nf-core/genomenote** is a bioinformatics best-practice analysis pipeline for generating contact maps and statistics from aligned HiC reads and a genome fasta.
+**sanger-tol/genomenote** is a bioinformatics pipeline that takes aligned HiC reads, creates contact maps and chromosomal grid using Cooler, and display on a [HiGlass server](https://genome-note-higlass.tol.sanger.ac.uk/app). The pipeline also collates (1) assembly information, statistics and chromosome details from NCBI datasets, (2) genome completeness from BUSCO, (3) consensus quality and k-mer completeness from MerquryFK, and (4) HiC primary mapped percentage from samtools flagstat.
 
-The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
+<!--![sanger-tol/genomenote workflow](https://raw.githubusercontent.com/sanger-tol/genomenote/main/docs/images/sanger-tol-genomenote_workflow.png)-->
 
-Prior to release, automated tests are run on the pipeline using full-sized dataset from a small, medium and large genome on the Wellcome Sanger Institute (WSI) compute farm. This ensures that the pipeline has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources.
+1. Fetches genome metadata from [ENA](https://www.ebi.ac.uk/ena/browser/api/#/ENA_Browser_Data_API), [NCBI](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/reference-docs/rest-api), and [GoaT](https://goat.genomehubs.org/api-docs/)
+2. Filter genome index ([`samtools faidx`](https://www.htslib.org/doc/samtools-faidx.html), `filter genome`)
+3. Convert alignment to BED ([`samtools view`](https://www.htslib.org/doc/samtools-view.html), [`bedtools bamtobed`](https://bedtools.readthedocs.io/en/latest/content/tools/bamtobed.html))
+4. Filter BED ([`GNU sort`](https://www.gnu.org/software/coreutils/manual/html_node/sort-invocation.html), [`filter bed`](https://raw.githubusercontent.com/sanger-tol/genomenote/main/bin/filter_bed.sh))
+5. Contact maps ([`Cooler cload`](https://cooler.readthedocs.io/en/latest/cli.html#cooler-cload-pairs), [`Cooler zoomify`](https://cooler.readthedocs.io/en/latest/cli.html#cooler-zoomify), [`Cooler dump`](https://cooler.readthedocs.io/en/latest/cli.html#cooler-dump))
+6. Summary statistics ([`NCBI datasets summary genome accession`](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/reference-docs/command-line/datasets/summary/genome/datasets_summary_genome_accession/))
+7. Genome completeness ([`GoaT API`](https://goat.genomehubs.org/api-docs/), [`BUSCO`](https://busco.ezlab.org))
+8. Consensus quality and k-mer completeness ([`FASTK`](https://github.com/thegenemyers/FASTK), [`MERQURY.FK`](https://github.com/thegenemyers/MERQURY.FK))
+9. Collated summary table ([`createtable`](https://raw.githubusercontent.com/sanger-tol/genomenote/main/bin/create_table.py))
+10. Present results and visualisations ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
 
-## Pipeline summary
+## Usage
 
-### Genome
+> **Note**
+> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how
+> to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
+> with `-profile test` before running the workflow on actual data.
 
-1. Unmask genome if masked
-2. Create genome index if does not exists ([samtools faidx](https://www.htslib.org/doc/samtools-faidx.html))
-3. Filter genome index
+                                    bn
 
-### Aligned HiC Reads
+First, prepare a samplesheet with your input data that looks as follows:
 
-1. Convert to BAM if in CRAM format
-2. Conver to BED ([bedtools bamtobed](https://bedtools.readthedocs.io/en/latest/content/tools/bamtobed.html))
-3. Sort BED
-4. Filter BED to create pairs
-5. Sort BED pairs
+`samplesheet.csv`:
 
-### Contact maps
+```csv
+sample,datatype,datafile
+mMelMel3,hic,/analysis/mMelMel3.2_paternal_haplotype/read_mapping/hic/GCA_922984935.2.unmasked.hic.mMelMel3.cram
+mMelMel3,pacbio,/genomic_data/mMelMel3/pacbio/kmer/k31
+```
 
-1. `.cool` file using genome index, sorted BED pairs and bin size (default: 1000) ([cooler cload pairs](https://cooler.readthedocs.io/en/latest/cli.html#cooler-cload-pairs))
-2. `.mcool` file using `.cool` map ([cooler zoomify](https://cooler.readthedocs.io/en/latest/cli.html#cooler-zoomify))
+Each row represents an aligned HiC reads file or an unaligned PacBio reads file or a PacBio k-mer database.
 
-## Quick Start
+Now, you can run the pipeline using:
 
-1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=22.04.0`)
+```bash
+nextflow run sanger-tol/genomenote \
+   -profile <docker/singularity/.../institute> \
+   --input samplesheet.csv \
+   --fasta genome.fasta \
+   --assembly GCA_922984935.2 \
+   --bioproject PRJEB49353 \
+   --biosample SAMEA7524400 \
+   --outdir <OUTDIR>
+```
 
-2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) (you can follow [this tutorial](https://singularity-tutorial.github.io/01-installation/)), [`Podman`](https://podman.io/), [`Shifter`](https://nersc.gitlab.io/development/shifter/how-to-use/) or [`Charliecloud`](https://hpc.github.io/charliecloud/) for full pipeline reproducibility _(you can use [`Conda`](https://conda.io/miniconda.html) both to install Nextflow itself and also to manage software within pipelines. Please only use it within pipelines as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_.
+> **Warning:**
+> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
+> provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
+> see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
 
-3. Download the pipeline and test it on a minimal dataset with a single command:
-
-   ```console
-   nextflow run sanger-tol/genomenote -profile test,YOURPROFILE --outdir <OUTDIR>
-   ```
-
-   Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
-
-   > - The pipeline comes with config profiles called `docker`, `singularity`, `podman`, `shifter`, `charliecloud` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
-   > - Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
-   > - If you are using `singularity`, please use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
-   > - If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
-
-4. Start running your own analysis!
-
-   ```console
-   nextflow run sanger-tol/genomenote --input samplesheet.csv --outdir <OUTDIR> --genome /path/to/genome.fasta -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
-   ```
-
-## Documentation
-
-The nf-core/genomenote pipeline comes with documentation about the pipeline [usage](decs/usage.md) and [parameters](decs/parameters.med).
+For more details, please refer to the [usage documentation](https://pipelines.tol.sanger.ac.uk/genomenote/usage) and the [parameter documentation](https://pipelines.tol.sanger.ac.uk/genomenote/parameters).
 
 ## Credits
 
-sanger-tol/genomenote was originally written by @priyanka-surana.
+sanger-tol/genomenote was originally written by [Priyanka Surana](https://github.com/priyanka-surana).
 
-We thank the following people for their extensive assistance in the development of this pipeline:
+We thank the following people for their assistance in the development of this pipeline:
 
-– @mcshane and @yumisims for providing software/tool details
+- [Matthieu Muffato](https://github.com/muffato)
+- [Beth Yates](https://github.com/BethYates)
+- [Shane McCarthy](https://github.com/mcshane) and [Yumi Sims](https://github.com/yumisims) for providing software and algorithm guidance.
+- [Cibin Sadasivan Baby](https://github.com/cibinsb) for providing reviews.
 
 ## Contributions and Support
 
-If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
-
-For further information or help, don't hesitate to get in touch on the [Slack `#genomenote` channel](https://sangertreeoflife.slack.com/channels/pipelines).
+If you would like to contribute to this pipeline, please see the [contributing guidelines](https://raw.githubusercontent.com/sanger-tol/genomenote/main/.github/CONTRIBUTING.md).
 
 ## Citations
 
-If you use sanger-tol/genomenote for your analysis, please cite it using the following doi: [10.5281/zenodo.6785935](https://doi.org/10.5281/zenodo.6785935)
+If you use sanger-tol/genomenote for your analysis, please cite it using the following doi: [10.5281/zenodo.7949384](https://doi.org/10.5281/zenodo.7949384)
 
-An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
+An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](https://raw.githubusercontent.com/sanger-tol/genomenote/main/CITATIONS.md) file.
 
-You can cite the `nf-core` publication as follows:
+This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/master/LICENSE).
 
 > **The nf-core framework for community-curated bioinformatics pipelines.**
 >

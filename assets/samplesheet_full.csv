@@ -1,4 +1,4 @@
 sample,datatype,datafile
-ilYpsSequ1,hic,/lustre/scratch123/tol/teams/tolit/users/ps22/pipelines/gnotes/assets/GCA_934047225.1.unmasked.hic.ilYpsSequ1.cram
-ilYpsSequ1,pacbio_k31,/lustre/scratch124/tol/projects/darwin/data/insects/Ypsolopha_sequella/genomic_data/ilYpsSequ1/pacbio/kmer/k31
-ilYpsSequ2,pacbio_k31,/lustre/scratch124/tol/projects/darwin/data/insects/Ypsolopha_sequella/genomic_data/ilYpsSequ2/pacbio/kmer/k31
+ilYpsSequ1,hic,/lustre/scratch124/tol/projects/darwin/data/insects/Ypsolopha_sequella/analysis/ilYpsSequ2.1/read_mapping/hic/GCA_934047225.1.unmasked.hic.ilYpsSequ1.cram
+ilYpsSequ1,pacbio,/lustre/scratch124/tol/projects/darwin/data/insects/Ypsolopha_sequella/genomic_data/ilYpsSequ1/pacbio/kmer/k31
+ilYpsSequ2,pacbio,/lustre/scratch124/tol/projects/darwin/data/insects/Ypsolopha_sequella/genomic_data/ilYpsSequ2/pacbio/kmer/k31
