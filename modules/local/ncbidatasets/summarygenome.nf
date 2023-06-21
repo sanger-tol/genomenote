@@ -2,8 +2,8 @@ process NCBIDATASETS_SUMMARYGENOME {
     tag "$meta.id"
     label 'process_single'
 
-    conda (params.enable_conda ? "conda-forge::ncbi-datasets-cli=14.2.2" : null)
-    container "biocontainers/ncbi-datasets-cli:14.2.2_cv1"
+    conda "conda-forge::ncbi-datasets-cli=14.2.2"
+    container "docker.io/biocontainers/ncbi-datasets-cli:14.2.2_cv2"
 
     input:
     tuple val(meta), path(fasta)
@@ -29,7 +29,7 @@ process NCBIDATASETS_SUMMARYGENOME {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        ncbi-datasets-cli: \$(datasets --version | sed 's/^.*datasets version: //' )
+        ncbi-datasets-cli: \$(datasets --version | sed 's/^.*datasets version: //')
     END_VERSIONS
     """
 }
