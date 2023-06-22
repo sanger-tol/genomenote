@@ -31,7 +31,7 @@ fetch = [
     ("GENOME_LENGTH", ("record", "attributes", "assembly_span", "value")),
     ("SCAFF_NUMBER", ("record", "attributes", "scaffold_count", "value")),
     ("SCAFF_N50", ("record", "attributes", "scaffold_n50", "value")),
-    ("CHROM_NUMBER", ("record", "attributes", "chromosome_count", "value")),
+    ("CHROMOSOME_NUMBER", ("record", "attributes", "chromosome_count", "value")),
     ("CONTIG_NUMBER", ("record", "attributes", "contig_count", "value")),
     ("CONTIG_N50", ("record", "attributes", "contig_n50", "value")),
 ]
