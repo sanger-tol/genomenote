@@ -1,8 +1,19 @@
 #!/usr/bin/env python3
 
+import csv
 import os
 import sys
 import argparse
+
+files = [
+    ("ENA_ASSEMBLY", "ena_assembly_file"),
+    ("ENA_BIOPROJECT", "ena_bioproject_file"),
+    ("ENA_BIOSAMPLE", "ena_biosample_file"),
+    ("ENA_TAXONOMY", "ena_taxonomy_file"),
+    ("NCBI_ASSEMBLY", "ncbi_assembly_file"),
+    ("NCBI_TAXONOMY", "ncbi_taxonomy_file"),
+    ("GOAT_ASSEMBLY", "goat_assembly_file"),
+]
 
 
 def parse_args(args=None):
@@ -17,7 +28,8 @@ def parse_args(args=None):
     parser.add_argument("--ncbi_assembly_file", help="Input parsed ENA assembly file.", required=False)
     parser.add_argument("--ncbi_taxonomy_file", help="Input parsed ENA assembly file.", required=False)
     parser.add_argument("--goat_assembly_file", help="Input parsed ENA assembly file.", required=False)
-    parser.add_argument("--out", help="Output file.", required=True)
+    parser.add_argument("--out_consistent", help="Output file.", required=True)
+    parser.add_argument("--out_inconsistent", help="Output file.", required=True)
     parser.add_argument("--version", action="version", version="%(prog)s 1.0")
     return parser.parse_args(args)
 
@@ -27,8 +39,64 @@ def make_dir(path):
         os.makedirs(path, exist_ok=True)
 
 
+def process_file(file_in, params):
+    with open(file_in, mode="r") as infile:
+        reader = csv.DictReader(infile)
+        source_dict = {}
+        for row in reader:
+            source_dict[row["#paramName"]] = row["paramValue"]
+            if row["#paramName"] in params:
+                params[row["#paramName"]].append(row["paramValue"])
+            else:
+                params[row["#paramName"]] = [row["paramValue"]]
+
+    return (params, source_dict)
+
+
 def main(args=None):
     args = parse_args(args)
+    params = {}
+    param_sets = {}
+    params_inconsistent = {}
+
+    for file in files:
+        (params, paramDict) = process_file(getattr(args, file[1]), params)
+        param_sets[file[0]] = paramDict
+
+    for key in params.keys():
+        value_set = {v for v in params[key]}
+        if len(value_set) != 1:
+            params_inconsistent[key] = []
+
+            for source in param_sets:
+                if key in param_sets[source]:
+                    params_inconsistent[key].append((source, param_sets[source][key]))
+
+    # Strip inconsitent data from parameter list
+    for i in params_inconsistent.keys():
+        params.pop(i)
+
+    # Write out file where data is consistent across different sources
+    if len(params) > 0:
+        with open(args.out_consistent, "w") as fout:
+            fout.write(",".join(["#paramName", "paramValue"]) + "\n")
+            for key in sorted(params):
+                fout.write(key + "," + params[key][0] + "\n")
+
+    # Write out file where data is inconsistent across different sources
+    if len(params_inconsistent) > 0:
+        with open(args.out_inconsistent, "w") as fout:
+            fout.write(",".join(["#paramName", "source|paramValue"]) + "\n")
+            for key in sorted(params_inconsistent):
+                fout.write(key + ",")
+                pairs = []
+                for value in params_inconsistent[key]:
+                    pair = "|".join(value)
+                    pairs.append(pair)
+
+                fout.write(",".join(pairs) + "\n")
+
+    print(params_inconsistent)
 
 
 if __name__ == "__main__":

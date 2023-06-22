@@ -98,6 +98,8 @@ workflow GENOME_METADATA {
     ch_combined = ch_combined.collect(flat: false)
 
     COMBINE_METADATA(ch_combined)
+    ch_versions = ch_versions.mix(COMBINE_METADATA.out.versions.first())
+
 
     emit:
     versions    = ch_versions.ifEmpty(null) // channel: [versions.yml]
