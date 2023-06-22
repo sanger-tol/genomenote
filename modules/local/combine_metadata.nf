@@ -8,7 +8,6 @@ process COMBINE_METADATA {
 
     input:
         val(test)
-    
 
     output:
     path("consistent.csv") , emit:  file_path_consistent
@@ -41,6 +40,5 @@ process COMBINE_METADATA {
     "${task.process}":
         combine_parsed_data.py: \$(combine_parsed_data.py --version | cut -d' ' -f2)
     END_VERSIONS
-    """  
-
+    """
 }
