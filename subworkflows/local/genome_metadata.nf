@@ -12,11 +12,13 @@ include { PARSE_ENA_TAXONOMY    }       from '../../modules/local/parse_ena_taxo
 include { PARSE_NCBI_ASSEMBLY   }       from '../../modules/local/parse_ncbi_assembly'
 include { PARSE_NCBI_TAXONOMY   }       from '../../modules/local/parse_ncbi_taxonomy'
 include { PARSE_GOAT_ASSEMBLY   }       from '../../modules/local/parse_goat_assembly'
-include { COMBINE_METADATA       }      from '../../modules/local/combine_metadata'    
+include { COMBINE_METADATA      }       from '../../modules/local/combine_metadata'    
+include { POPULATE_TEMPLATE     }       from '../../modules/local/populate_template'
 
 workflow GENOME_METADATA {
     take:
     ch_file_list        // channel: /path/to/genome_metadata_file_template
+    ch_note_template   // channel: /path/to/genome_note_doc_template
 
     main:
     ch_versions = Channel.empty()
@@ -99,7 +101,12 @@ workflow GENOME_METADATA {
 
     COMBINE_METADATA(ch_combined)
     ch_versions = ch_versions.mix(COMBINE_METADATA.out.versions.first())
-
+    COMBINE_METADATA.out.file_path_consistent.set {ch_all_params}
+ 
+    ch_all_params.view()
+    
+    POPULATE_TEMPLATE(ch_all_params, ch_note_template)
+    ch_versions = ch_versions.mix(POPULATE_TEMPLATE.out.versions.first())
 
     emit:
     versions    = ch_versions.ifEmpty(null) // channel: [versions.yml]
