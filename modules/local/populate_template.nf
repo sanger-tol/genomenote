@@ -22,7 +22,7 @@ process POPULATE_TEMPLATE {
         $param_data \\
         $note_template \\
         note.docx
-      
+              
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         populate_genome_note_template.py: \$(populate_genome_note_template.py --version | cut -d' ' -f2)
