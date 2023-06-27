@@ -51,7 +51,7 @@ workflow GENOMENOTE {
     //
     // SUBWORKFLOW: Read in samplesheet/paramters and validate 
     //
-    Channel.of ( inputs ).set { ch_input }
+    Channel.of( inputs ).set{ ch_input }
     // need new module to do this
 
     //

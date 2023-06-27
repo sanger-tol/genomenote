@@ -21,8 +21,9 @@ process RUN_WGET {
     task.ext.when == null || task.ext.when
 
     script:
+    def  no_certificate = (meta.source == 'GOAT') ? '--no-check-certificate' : ''
     """
-        wget -c -O result.${meta.ext} '${url}'
+        wget ${no_certificate} -c -O result.${meta.ext} '${url}'
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":

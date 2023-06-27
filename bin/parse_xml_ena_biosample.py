@@ -41,7 +41,7 @@ fetch = [
 
 def parse_args(args=None):
     Description = "Parse contents of an ENA SAMPLE report and pul out meta data required by a genome note."
-    Epilog = "Example usage: python parse_xml_ena_SAMPLE.py <FILE_IN> <FILE_OUT>"
+    Epilog = "Example usage: python parse_xml_ena_sample.py <FILE_IN> <FILE_OUT>"
 
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
     parser.add_argument("FILE_IN", help="Input XML SAMPLE file.")
