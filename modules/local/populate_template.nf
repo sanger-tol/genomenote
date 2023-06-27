@@ -5,11 +5,11 @@ process POPULATE_TEMPLATE {
     conda "conda-forge::docxtpl=0.11.5"
     container "frostasm/python-docx-template"
 
-    input: 
+    input:
     path(param_data)
     path(note_template)
 
-    output: 
+    output:
     path("note.docx"), emit: file_path_inconsistent
     path "versions.yml", emit: versions
 
@@ -22,7 +22,7 @@ process POPULATE_TEMPLATE {
         $param_data \\
         $note_template \\
         note.docx
-  
+      
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         populate_genome_note_template.py: \$(populate_genome_note_template.py --version | cut -d' ' -f2)
