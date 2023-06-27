@@ -29,13 +29,11 @@ def write_file(template, file_out):
     make_dir(out_dir)
     template.save(os.path.join(out_dir, file_out))
 
-
 def build_param_list(param_file):
-    with open(param_file, "r") as infile:
+    with open(param_file, 'r') as infile:
         reader = csv.reader(infile)
-        mydict = {rows[0]: rows[1] for rows in reader}
+        mydict = {rows[0]:rows[1] for rows in reader}
         return mydict
-
 
 def populate_template(param_file, template_file, file_out):
     context = build_param_list(param_file)
@@ -43,11 +41,9 @@ def populate_template(param_file, template_file, file_out):
     template.render(context)
     write_file(template, file_out)
 
-
 def main(args=None):
     args = parse_args(args)
     populate_template(args.PARAM_FILE, args.TEMPLATE_FILE, args.FILE_OUT)
-
 
 if __name__ == "__main__":
     sys.exit(main())
