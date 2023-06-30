@@ -1,16 +1,17 @@
 process POPULATE_TEMPLATE {
+    tag "$param_data"
     label 'process_single'
 
 
     conda "conda-forge::docxtpl=0.11.5"
-    container "frostasm/python-docx-template"
+    container "quay.io/sanger-tol/python_docx_template:0.11.5-c1"
 
     input:
     path(param_data)
     path(note_template)
 
     output:
-    path("note.docx"), emit: file_path_inconsistent
+    path("note.docx"), emit: genome_note
     path "versions.yml", emit: versions
 
     when:
