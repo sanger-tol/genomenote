@@ -8,7 +8,7 @@ process COMBINE_METADATA {
         'quay.io/biocontainers/python:3.9--1' }"
 
     input:
-        val(test)
+        val(file_list)
 
     output:
     path("consistent.csv") , emit:  file_path_consistent
@@ -20,7 +20,7 @@ process COMBINE_METADATA {
 
     script:
     def args = []
-    for (item in  test){
+    for (item in  file_list){
         def meta = item[0]
         def file = item[1]
         def arg = "--${meta.source}_${meta.type}_file".toLowerCase()
@@ -29,8 +29,6 @@ process COMBINE_METADATA {
     }
 
     """
-    echo ${args.join(" ")}
-
     combine_parsed_data.py \\
     ${args.join(" ")} \\
     --out_consistent consistent.csv \\
