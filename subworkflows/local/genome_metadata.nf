@@ -4,16 +4,16 @@
 // Fetch genome metadata for genome notes
 //
 
-include { RUN_WGET              }       from '../../modules/local/run_wget'
-include { PARSE_ENA_ASSEMBLY    }       from '../../modules/local/parse_ena_assembly'
-include { PARSE_ENA_BIOPROJECT  }       from '../../modules/local/parse_ena_bioproject'
-include { PARSE_ENA_BIOSAMPLE   }       from '../../modules/local/parse_ena_biosample'
-include { PARSE_ENA_TAXONOMY    }       from '../../modules/local/parse_ena_taxonomy'
-include { PARSE_NCBI_ASSEMBLY   }       from '../../modules/local/parse_ncbi_assembly'
-include { PARSE_NCBI_TAXONOMY   }       from '../../modules/local/parse_ncbi_taxonomy'
-include { PARSE_GOAT_ASSEMBLY   }       from '../../modules/local/parse_goat_assembly'
-include { COMBINE_METADATA      }       from '../../modules/local/combine_metadata'    
-include { POPULATE_TEMPLATE     }       from '../../modules/local/populate_template'
+include { RUN_WGET                  }       from '../../modules/local/run_wget'
+include { PARSE_ENA_ASSEMBLY        }       from '../../modules/local/parse_ena_assembly'
+include { PARSE_ENA_BIOPROJECT      }       from '../../modules/local/parse_ena_bioproject'
+include { PARSE_ENA_BIOSAMPLE       }       from '../../modules/local/parse_ena_biosample'
+include { PARSE_ENA_TAXONOMY        }       from '../../modules/local/parse_ena_taxonomy'
+include { PARSE_NCBI_ASSEMBLY       }       from '../../modules/local/parse_ncbi_assembly'
+include { PARSE_NCBI_TAXONOMY       }       from '../../modules/local/parse_ncbi_taxonomy'
+include { PARSE_GOAT_ASSEMBLY       }       from '../../modules/local/parse_goat_assembly'
+include { COMBINE_METADATA          }       from '../../modules/local/combine_metadata'    
+include { POPULATE_TEMPLATE         }       from '../../modules/local/populate_template'
 
 workflow GENOME_METADATA {
     take:
@@ -23,6 +23,13 @@ workflow GENOME_METADATA {
     main:
     ch_versions = Channel.empty()
     ch_combined = Channel.empty()
+
+
+    def meta = [:]
+    meta.id = params.assembly
+    meta.taxon_id = params.taxon_id
+    ch_assembly_metadata = Channel.of ( meta )
+
 
     // Define channel for RUN_WGET
     ch_file_list
@@ -94,20 +101,17 @@ workflow GENOME_METADATA {
     PARSE_GOAT_ASSEMBLY ( ch_input.GOAT_ASSEMBLY)
     ch_versions = ch_versions.mix(PARSE_GOAT_ASSEMBLY.out.versions.first())
     ch_combined = ch_combined.concat(PARSE_GOAT_ASSEMBLY.out.file_path)
-
-
     
     ch_combined = ch_combined.collect(flat: false)
 
     COMBINE_METADATA(ch_combined)
     ch_versions = ch_versions.mix(COMBINE_METADATA.out.versions.first())
     COMBINE_METADATA.out.file_path_consistent.set {ch_all_params}
- 
-    ch_all_params.view()
-    
-    POPULATE_TEMPLATE(ch_all_params, ch_note_template)
+   
+    POPULATE_TEMPLATE( ch_assembly_metadata, ch_all_params, ch_note_template)
     ch_versions = ch_versions.mix(POPULATE_TEMPLATE.out.versions.first())
 
     emit:
+    template    = POPULATE_TEMPLATE.out.genome_note // channel: [ docx ]
     versions    = ch_versions.ifEmpty(null) // channel: [versions.yml]
 }

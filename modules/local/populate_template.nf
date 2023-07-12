@@ -1,5 +1,5 @@
 process POPULATE_TEMPLATE {
-    tag "$param_data"
+    tag "${meta.id}"
     label 'process_single'
 
 
@@ -7,22 +7,25 @@ process POPULATE_TEMPLATE {
     container "quay.io/sanger-tol/python_docx_template:0.11.5-c1"
 
     input:
+    val(meta)
     path(param_data)
     path(note_template)
 
     output:
-    path("note.docx"), emit: genome_note
+    path(filename_out), emit: genome_note
     path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
+    def prefix = task.ext.prefix ?: meta.id
+    filename_out = "${prefix}.docx"
     """
     populate_genome_note_template.py \\
         $param_data \\
         $note_template \\
-        note.docx
+        ${filename_out}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
