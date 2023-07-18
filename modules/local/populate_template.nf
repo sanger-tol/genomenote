@@ -21,8 +21,6 @@ process POPULATE_TEMPLATE {
     def prefix = task.ext.prefix ?: meta.id
 
     """
-    echo "$meta"
-    
     populate_genome_note_template.py \\
         $param_data \\
         $note_template \\
