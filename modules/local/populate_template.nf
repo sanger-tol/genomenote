@@ -12,7 +12,7 @@ process POPULATE_TEMPLATE {
     path(note_template)
 
     output:
-    path(filename_out), emit: genome_note
+    path("*.docx"), emit: genome_note
     path "versions.yml", emit: versions
 
     when:
@@ -20,12 +20,12 @@ process POPULATE_TEMPLATE {
 
     script:
     def prefix = task.ext.prefix ?: meta.id
-    filename_out = "${prefix}.docx"
+
     """
     populate_genome_note_template.py \\
         $param_data \\
         $note_template \\
-        ${filename_out}
+        ${prefix}.docx
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
