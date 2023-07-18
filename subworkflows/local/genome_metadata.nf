@@ -28,8 +28,7 @@ workflow GENOME_METADATA {
     def meta = [:]
     meta.id = params.assembly
     meta.taxon_id = params.taxon_id
-    ch_assembly_metadata = Channel.of ( meta )
-
+    ch_combined_params = Channel.of(meta)
 
     // Define channel for RUN_WGET
     ch_file_list
@@ -54,12 +53,6 @@ workflow GENOME_METADATA {
     RUN_WGET ( file_list ) 
 
     ch_versions = ch_versions.mix(RUN_WGET.out.versions.first())
-
-    // Change this to branch code to manage passing of downloaded files to the appropriate parsing module    
-    //ch_all_files = Channel.empty()
-    //.mix( RUN_WGET.out.file_path)
-
-
 
     ch_input = RUN_WGET.out.file_path.branch { 
         ENA_ASSEMBLY: it[0].source == "ENA"  && it[0].type == "Assembly"
@@ -101,15 +94,15 @@ workflow GENOME_METADATA {
     PARSE_GOAT_ASSEMBLY ( ch_input.GOAT_ASSEMBLY)
     ch_versions = ch_versions.mix(PARSE_GOAT_ASSEMBLY.out.versions.first())
     ch_combined = ch_combined.concat(PARSE_GOAT_ASSEMBLY.out.file_path)
-    
-    ch_combined = ch_combined.collect(flat: false)
 
-    COMBINE_METADATA(ch_combined)
-    ch_versions = ch_versions.mix(COMBINE_METADATA.out.versions.first())
-    COMBINE_METADATA.out.file_path_consistent.set {ch_all_params}
+    ch_combined = ch_combined.collect(flat: false)
+    ch_combined_params = ch_combined_params.concat(ch_combined).collect(flat: false)
+
+    COMBINE_METADATA(ch_combined_params)
+    ch_versions = ch_versions.mix( COMBINE_METADATA.out.versions.first() )
    
-    POPULATE_TEMPLATE( ch_assembly_metadata, ch_all_params, ch_note_template)
-    ch_versions = ch_versions.mix(POPULATE_TEMPLATE.out.versions.first())
+    POPULATE_TEMPLATE( COMBINE_METADATA.out.consistent, ch_note_template )
+    ch_versions = ch_versions.mix( POPULATE_TEMPLATE.out.versions.first() )
 
     emit:
     template    = POPULATE_TEMPLATE.out.genome_note // channel: [ docx ]
