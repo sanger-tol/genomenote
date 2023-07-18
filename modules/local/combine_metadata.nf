@@ -1,5 +1,5 @@
 process COMBINE_METADATA {
-    tag "combine_parsed"
+    tag "${meta.id}|combine_parsed"
     label 'process_single'
 
     conda "conda-forge::python=3.9.1"
