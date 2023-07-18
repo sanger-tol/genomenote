@@ -96,8 +96,6 @@ def main(args=None):
 
                 fout.write(",".join(pairs) + "\n")
 
-    print(params_inconsistent)
-
 
 if __name__ == "__main__":
     sys.exit(main())
