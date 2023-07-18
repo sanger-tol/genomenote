@@ -7,12 +7,11 @@ process POPULATE_TEMPLATE {
     container "quay.io/sanger-tol/python_docx_template:0.11.5-c1"
 
     input:
-    val(meta)
-    path(param_data)
+    tuple val(meta), path(param_data)
     path(note_template)
 
     output:
-    path("*.docx"), emit: genome_note
+    tuple val(meta), path("*.docx"), emit: genome_note
     path "versions.yml", emit: versions
 
     when:
@@ -22,6 +21,8 @@ process POPULATE_TEMPLATE {
     def prefix = task.ext.prefix ?: meta.id
 
     """
+    echo "$meta"
+    
     populate_genome_note_template.py \\
         $param_data \\
         $note_template \\
