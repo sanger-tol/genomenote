@@ -38,7 +38,7 @@ This pipeline collates (1) assembly information, statistics and chromosome detai
 
 - `genome_note/`
   - `<gca_accession>.csv`: collate genome statistics file
-  - `<gca_accession>.docx`A partially completed genome note docx template file
+  - `<gca_accession>.docx`: partially completed genome note docx template file
 
 </details>
 
