@@ -13,6 +13,7 @@ lint:
     - .github/ISSUE_TEMPLATE/bug_report.yml
     - lib/NfcoreTemplate.groovy
     - .github/CONTRIBUTING.md
+    - .github/workflows/linting.yml
   nextflow_config:
     - manifest.name
     - manifest.homePage

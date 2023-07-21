@@ -1,4 +1,5 @@
 process COMBINE_METADATA {
+    tag "${meta.id}|combine_parsed"
     label 'process_single'
 
     conda "conda-forge::python=3.9.1"
@@ -7,11 +8,11 @@ process COMBINE_METADATA {
         'quay.io/biocontainers/python:3.9--1' }"
 
     input:
-        val(test)
+    tuple val(meta), val(file_list)
 
     output:
-    path("consistent.csv") , emit:  file_path_consistent
-    path("inconsistent.csv") , emit:  file_path_inconsistent
+    tuple val (meta), path("consistent.csv") , emit: consistent
+    tuple val (meta), path("inconsistent.csv") , emit: inconsistent
     path "versions.yml", emit: versions
 
     when:
@@ -19,17 +20,15 @@ process COMBINE_METADATA {
 
     script:
     def args = []
-    for (item in  test){
-        def meta = item[0]
+    for (item in  file_list){
+        def meta_file = item[0]
         def file = item[1]
-        def arg = "--${meta.source}_${meta.type}_file".toLowerCase()
+        def arg = "--${meta_file.source}_${meta_file.type}_file".toLowerCase()
         args.add(arg)
         args.add(file)
     }
 
     """
-    echo ${args.join(" ")}
-
     combine_parsed_data.py \\
     ${args.join(" ")} \\
     --out_consistent consistent.csv \\
