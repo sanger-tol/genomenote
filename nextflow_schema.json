@@ -71,13 +71,13 @@
                     "type": "boolean",
                     "description": "URL for Genome Notes Portal API .",
                     "default": false,
-                    "fa_icon": "fas fa-check-square",
+                    "fa_icon": "fas far fa-file-code",
                     "hidden": true
                 },
                 "genome_notes_api": {
                     "type": "string",
                     "description": "URL for Genome Notes Portal API .",
-                    "fa_icon": "fas fa-file-signature"
+                    "fa_icon": "far fa-file-code"
                 }
             }
         },

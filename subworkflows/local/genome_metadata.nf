@@ -111,7 +111,7 @@ workflow GENOME_METADATA {
     POPULATE_TEMPLATE( ch_params_consistent.TEMPLATE, ch_note_template )
     ch_versions = ch_versions.mix( POPULATE_TEMPLATE.out.versions.first() )
 
-    if (params.write_to_portal) {
+    if ( params.write_to_portal ) { 
         ch_api_url = Channel.of(params.genome_notes_api)
         WRITE_TO_GENOME_NOTES_DB( ch_params_consistent.DB, ch_api_url )
         ch_versions = ch_versions.mix( WRITE_TO_GENOME_NOTES_DB.out.versions.first() )
