@@ -81,7 +81,7 @@
                 }
             }
         },
-        
+
         "databases": {
             "title": "Databases",
             "type": "object",
