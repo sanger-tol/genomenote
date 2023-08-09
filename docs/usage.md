@@ -28,10 +28,10 @@ If you wish to run the optional step that writes genome metatdata key value-pair
 ```
 
 You will also need to set a nextflow secret to store the API key belonging to your user.
+
 ```bash
   nextflow secrets set TOL_API_KEY '[API key]'
 ```
-
 
 ## Samplesheet input
 
