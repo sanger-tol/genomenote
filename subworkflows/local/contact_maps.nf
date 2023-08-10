@@ -12,6 +12,8 @@ include { FILTER_BED              } from '../../modules/local/filter/bed'
 include { COOLER_CLOAD            } from '../../modules/nf-core/cooler/cload/main'
 include { COOLER_ZOOMIFY          } from '../../modules/nf-core/cooler/zoomify/main'
 include { COOLER_DUMP             } from '../../modules/nf-core/cooler/dump/main'
+include { COPY_HIGLASS_FILES      } from '../../modules/local/copy_higlass_files'
+include { UPDATE_HIGLASS_SERVER   } from '../../modules/local/update_higlass_server'
 
 
 workflow CONTACT_MAPS {
@@ -23,7 +25,6 @@ workflow CONTACT_MAPS {
 
     main:
     ch_versions = Channel.empty()
-
 
     // Index genome file
     SAMTOOLS_FAIDX ( genome )
@@ -94,6 +95,28 @@ workflow CONTACT_MAPS {
 
     COOLER_DUMP ( ch_dump )
     ch_versions = ch_versions.mix ( COOLER_DUMP.out.versions.first() )
+
+
+    // Optionally add the files to a HiGlass webserver
+    
+    if ( params.update_higlass ) { 
+        
+        COOLER_ZOOMIFY.out.mcool
+        | map { meta, mcool -> [ meta, mcool ] }
+        | set { ch_higlass_files }  
+
+        COOLER_DUMP.out.bedpe
+        | map { meta, bedpe -> [ meta, bedpe ] }
+        | set { ch_bedpe_out }  
+        
+        ch_bedpe_out.view()   
+
+        ch_higlass_files = ch_higlass_files.join(ch_bedpe_out)
+
+        ch_higlass_files.view()   
+
+        UPDATE_HIGLASS_SERVER (ch_higlass_files, params.assembly)
+    } 
 
 
     emit:
