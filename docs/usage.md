@@ -20,6 +20,19 @@ You will need to supply the assembly accession for the genome you would like to 
    --biosample '[biosample accession]'
 ```
 
+If you wish to run the optional step that writes genome metatdata key value-pairs to a genome notes databases you will need to set the parameter "write_to_portal" to true and provide the base url for the REST API that writes to the database.
+
+```bash
+   --write_to_portal_db 'true'
+   --genome_notes_api '[URL for Genome Notes Portal API]'
+```
+
+You will also need to set a nextflow secret to store the API key belonging to your user.
+
+```bash
+  nextflow secrets set TOL_API_KEY '[API key]'
+```
+
 ## Samplesheet input
 
 You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
