@@ -252,7 +252,7 @@
                 "tracedir": {
                     "type": "string",
                     "description": "Directory to keep pipeline Nextflow logs and reports.",
-                    "default": "${params.outdir}/genomenote_info",
+                    "default": "${params.outdir}/pipeline_info/genomenote",
                     "fa_icon": "fas fa-cogs",
                     "hidden": true
                 },
