@@ -33,6 +33,16 @@ You will also need to set a nextflow secret to store the API key belonging to yo
   nextflow secrets set TOL_API_KEY '[API key]'
 ```
 
+If you wish to run the optional step that writes the .mcool and .genome files produced by the contact_maps subworkflow to a kubenetes hosted higlass server you will need to set the parameter "update_higlass" to true and provide the configuration information for the kubernetes deployment.
+
+```bash
+   --update_higlass 'true'
+   --higlass_upload_directory  '[Path to ingress directory for kubernetes]'
+   --higlass_deployment_name '[Name of kubernetes deployment]'
+   --higlass_namespace '[Name of the namespace used in the kubernetes cluster]'
+   --higlass_kubeconfig '[path to kubeconfig file]'
+```
+
 ## Samplesheet input
 
 You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
