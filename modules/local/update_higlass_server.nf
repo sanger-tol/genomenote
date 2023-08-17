@@ -6,7 +6,7 @@ process UPDATE_HIGLASS_SERVER {
     container "bitnami/kubectl:1.27"
 
     input:
-    tuple val(meta), path(mcool) 
+    tuple val(meta), path(mcool)
     tuple val(meta), path(genome)
     val(assembly)
 
@@ -17,7 +17,7 @@ process UPDATE_HIGLASS_SERVER {
     when:
     task.ext.when == null || task.ext.when
 
-    script:       
+    script:
 
     """
     export KUBECONFIG=$params.higlass_kubeconfig
