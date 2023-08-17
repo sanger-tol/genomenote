@@ -107,7 +107,7 @@ workflow CONTACT_MAPS {
         | map { meta, bedpe -> [ meta, bedpe ] }
         | set { ch_genome }  
 
-        UPDATE_HIGLASS_SERVER (ch_mcool, ch_genome )
+        UPDATE_HIGLASS_SERVER (ch_mcool, ch_genome, params.assembly )
     } 
 
 
