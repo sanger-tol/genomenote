@@ -1,4 +1,4 @@
 sample,datatype,datafile
-uoEpiScrs1,pacbio,https://tolit.cog.sanger.ac.uk/test-data/Epithemia_sp._CRS-2021b/genomic_data/uoEpiScrs1/pacbio/m64228e_220617_134154.ccs.bc1015_BAK8B_OA--bc1015_BAK8B_OA.rmdup.bam
-uoEpiScrs1,pacbio,https://tolit.cog.sanger.ac.uk/test-data/Epithemia_sp._CRS-2021b/genomic_data/uoEpiScrs1/pacbio/m64016e_220621_193126.ccs.bc1008_BAK8A_OA--bc1008_BAK8A_OA.rmdup.bam
+uoEpiScrs1,pacbio,https://tolit.cog.sanger.ac.uk/test-data/Epithemia_sp._CRS-2021b/genomic_data/uoEpiScrs1/pacbio/m64228e_220617_134154.ccs.bc1015_BAK8B_OA--bc1015_BAK8B_OA.rmdup.subset.bam
+uoEpiScrs1,pacbio,https://tolit.cog.sanger.ac.uk/test-data/Epithemia_sp._CRS-2021b/genomic_data/uoEpiScrs1/pacbio/m64016e_220621_193126.ccs.bc1008_BAK8A_OA--bc1008_BAK8A_OA.rmdup.subset.bam
 uoEpiScrs1,hic,https://tolit.cog.sanger.ac.uk/test-data/Epithemia_sp._CRS-2021b/analysis/uoEpiScrs1.1/read_mapping/hic/GCA_946965045.1.unmasked.hic.uoEpiScrs1.subsampled.cram
