@@ -9,7 +9,7 @@ jobs:
     if: >
       contains(github.event.comment.html_url, '/pull/') &&
       contains(github.event.comment.body, '@sanger-tolsoft fix linting') &&
-      github.repository == 'sanger-tol/variantcalling'
+      github.repository == 'sanger-tol/genomenote'
     runs-on: ubuntu-latest
     steps:
       # Use the @sanger-tolsoft token to check out so we can push later
