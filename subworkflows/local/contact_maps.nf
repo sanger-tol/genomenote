@@ -99,15 +99,7 @@ workflow CONTACT_MAPS {
     // Optionally add the files to a HiGlass webserver
     
     if ( params.update_higlass ) {        
-        COOLER_ZOOMIFY.out.mcool
-        | map { meta, mcool -> [ meta, mcool ] }
-        | set { ch_mcool }  
-   
-        COOLER_DUMP.out.bedpe
-        | map { meta, bedpe -> [ meta, bedpe ] }
-        | set { ch_genome }  
-
-        UPDATE_HIGLASS_SERVER (ch_mcool, ch_genome, params.assembly )
+        UPDATE_HIGLASS_SERVER (COOLER_ZOOMIFY.out.mcool, COOLER_DUMP.out.bedpe, params.assembly )
     } 
 
 
