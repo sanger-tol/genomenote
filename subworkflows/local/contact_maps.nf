@@ -97,10 +97,10 @@ workflow CONTACT_MAPS {
 
 
     // Optionally add the files to a HiGlass webserver
-    
-    if ( params.update_higlass ) {        
+
+    if ( params.update_higlass ) {
         UPDATE_HIGLASS_SERVER (COOLER_ZOOMIFY.out.mcool, COOLER_DUMP.out.bedpe, params.assembly )
-    } 
+    }
 
 
     emit:
