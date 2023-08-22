@@ -29,7 +29,7 @@ process UPDATE_HIGLASS_SERVER {
     pod_name=\$(kubectl get pod --selector=\$sel2 --output=jsonpath={.items[0].metadata.name})
     echo "\$pod_name"
     echo "Loading .mcool file"
-    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${mcool.getName()} --filetype cooler --datatype matrix --project-name $assembly --name ${assembly}_map
+    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/$mcool.name --filetype cooler --datatype matrix --project-name $assembly --name ${assembly}_map
     echo "Loading .genome file"
     kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${genome.baseName}.genome --filetype chromsizes.tsv --datatype chromsizes --coordSystem ${assembly}_assembly --project-name $params.assembly --name ${assembly}_grid
     echo "done"
