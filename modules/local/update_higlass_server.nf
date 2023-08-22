@@ -7,7 +7,7 @@ process UPDATE_HIGLASS_SERVER {
 
     input:
     tuple val(meta), path(mcool)
-    tuple val(meta), path(genome)
+    tuple val(meta2), path(genome)
     val(assembly)
 
     output:
