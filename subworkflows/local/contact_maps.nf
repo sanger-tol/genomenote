@@ -100,6 +100,7 @@ workflow CONTACT_MAPS {
 
     if ( params.update_higlass ) {
         UPDATE_HIGLASS_SERVER (COOLER_ZOOMIFY.out.mcool, COOLER_DUMP.out.bedpe, params.assembly )
+        ch_versions = ch_versions.mix ( UPDATE_HIGLASS_SERVER.out.versions.first() )
     }
 
 

@@ -13,6 +13,7 @@ process UPDATE_HIGLASS_SERVER {
     output:
     tuple val(meta), path(mcool)
     tuple val(meta), path(genome)
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -33,5 +34,10 @@ process UPDATE_HIGLASS_SERVER {
     echo "Loading .genome file"
     kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${genome.baseName}.genome --filetype chromsizes.tsv --datatype chromsizes --coordSystem ${assembly}_assembly --project-name $params.assembly --name ${assembly}_grid
     echo "done"
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        kubectl: \$(kubectl version --output=json | jq -r ".clientVersion.gitVersion")
+    END_VERSIONS
     """
 }
