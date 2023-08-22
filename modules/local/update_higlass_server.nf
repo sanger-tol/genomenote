@@ -2,7 +2,6 @@ process UPDATE_HIGLASS_SERVER {
     tag "$meta.id"
     label 'process_single'
 
-    conda "conda-forge::coreutils=9.1"
     container "bitnami/kubectl:1.27"
 
     input:
@@ -18,6 +17,10 @@ process UPDATE_HIGLASS_SERVER {
     task.ext.when == null || task.ext.when
 
     script:
+    // Exit if running this module with -profile conda / -profile mamba
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        error "UPDATE_HIGLASS_SERVER modules do not support Conda. Please use Docker / Singularity / Podman instead."
+    }
 
     """
     # Configure kubectl access to the namespace
