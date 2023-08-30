@@ -38,8 +38,8 @@ If you wish to run the optional step that writes the .mcool and .genome files pr
 ```bash
    --update_higlass 'true'
    --higlass_upload_directory  '[Path to ingress directory for kubernetes]'
-   --higlass_deployment_name '[Name of kubernetes deployment]'
-   --higlass_namespace '[Name of the namespace used in the kubernetes cluster]'
+   --higlass_deployment_name '[ Name of Higlass Deployment in kubernetes]'
+   --higlass_namespace '[Name of the namespace used for Higlass Deployment in Kubernetes]'
    --higlass_kubeconfig '[path to kubeconfig file]'
 ```
 
