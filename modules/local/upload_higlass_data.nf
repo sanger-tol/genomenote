@@ -1,4 +1,4 @@
-process UPDATE_HIGLASS_SERVER {
+process UPLOAD_HIGLASS_DATA {
     tag "$meta.id"
     label 'process_single'
 
@@ -19,7 +19,7 @@ process UPDATE_HIGLASS_SERVER {
     script:
     // Exit if running this module with -profile conda / -profile mamba
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        error "UPDATE_HIGLASS_SERVER modules do not support Conda. Please use Docker / Singularity / Podman instead."
+        error "UPLOAD_HIGLASS_DATA modules do not support Conda. Please use Docker / Singularity / Podman instead."
     }
 
     """

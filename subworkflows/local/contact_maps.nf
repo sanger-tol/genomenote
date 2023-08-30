@@ -12,7 +12,7 @@ include { FILTER_BED              } from '../../modules/local/filter/bed'
 include { COOLER_CLOAD            } from '../../modules/nf-core/cooler/cload/main'
 include { COOLER_ZOOMIFY          } from '../../modules/nf-core/cooler/zoomify/main'
 include { COOLER_DUMP             } from '../../modules/nf-core/cooler/dump/main'
-include { UPDATE_HIGLASS_SERVER   } from '../../modules/local/update_higlass_server'
+include { UPLOAD_HIGLASS_DATA     } from '../../modules/local/upload_higlass_data'
 
 
 workflow CONTACT_MAPS {
@@ -98,9 +98,9 @@ workflow CONTACT_MAPS {
 
     // Optionally add the files to a HiGlass webserver
 
-    if ( params.update_higlass ) {
-        UPDATE_HIGLASS_SERVER (COOLER_ZOOMIFY.out.mcool, COOLER_DUMP.out.bedpe, params.assembly, params.higlass_upload_directory )
-        ch_versions = ch_versions.mix ( UPDATE_HIGLASS_SERVER.out.versions.first() )
+    if ( params.upload_higlass_data ) {
+        UPLOAD_HIGLASS_DATA (COOLER_ZOOMIFY.out.mcool, COOLER_DUMP.out.bedpe, params.assembly, params.higlass_upload_directory )
+        ch_versions = ch_versions.mix ( UPLOAD_HIGLASS_DATA.out.versions.first() )
     }
 
 

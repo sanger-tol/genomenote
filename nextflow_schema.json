@@ -79,7 +79,7 @@
                     "description": "URL for Genome Notes Portal API .",
                     "fa_icon": "far fa-file-code"
                 },
-                "update_higlass": {
+                "upload_higlass_data": {
                     "type": "boolean",
                     "description": "flag to control if Higlass server should be updated to add new files",
                     "default": false,
@@ -102,12 +102,12 @@
                 },
                 "higlass_deployment_name": {
                     "type": "string",
-                    "description": "The kubernetes cluster deployment name for the HiGlass server.",
+                    "description": "Name of the kubernetes deployment for the HiGlass server.",
                     "hidden": true
                 },
                 "higlass_namespace": {
                     "type": "string",
-                    "description": "The kubernetes namespace for the HiGlass server.",
+                    "description": "The name for the namespace used in the Kubernetes cluster running the HiGlass server.",
                     "hidden": true
                 }
             }
