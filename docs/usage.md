@@ -33,7 +33,7 @@ You will also need to set a nextflow secret to store the API key belonging to yo
   nextflow secrets set TOL_API_KEY '[API key]'
 ```
 
-If you wish to run the optional step that writes the .mcool and .genome files produced by the contact_maps subworkflow to a kubenetes hosted higlass server you will need to set the parameter "update_higlass" to true and provide the configuration information for the kubernetes deployment.
+If you wish to run the optional step that writes the .mcool and .genome files produced by the contact_maps subworkflow to a kubernetes hosted higlass server you will need to set the parameter "update_higlass" to true and provide the configuration information for the kubernetes deployment.
 
 ```bash
    --update_higlass 'true'
