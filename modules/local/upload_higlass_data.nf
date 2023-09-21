@@ -7,6 +7,8 @@ process UPLOAD_HIGLASS_DATA {
     input:
     tuple val(meta), path(mcool)
     tuple val(meta2), path(genome)
+    val(higlass_data_basedir)
+    val(species)
     val(assembly)
     path(upload_dir)
 
@@ -21,6 +23,7 @@ process UPLOAD_HIGLASS_DATA {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         error "UPLOAD_HIGLASS_DATA modules do not support Conda. Please use Docker / Singularity / Podman instead."
     }
+    
 
     """
     # Configure kubectl access to the namespace
@@ -35,14 +38,15 @@ process UPLOAD_HIGLASS_DATA {
     echo "\$pod_name"
 
     # Copy the files to the upload area
-    cp -f $mcool $upload_dir
-    cp -f $genome $upload_dir/${genome.baseName}.genome
+    mkdir -p $upload_dir${higlass_data_basedir}/${species.replaceAll("\\s","_")}
+    cp -f $mcool $upload_dir${higlass_data_basedir}/${species.replaceAll("\\s","_")}/${assembly}.mcool
+    cp -f $genome $upload_dir/${higlass_data_basedir}/${species.replaceAll("\\s","_")}/${assembly}.genome
 
     # Load them in Kubernetes
     echo "Loading .mcool file"
-    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/$mcool.name --filetype cooler --datatype matrix --project-name $assembly --name ${assembly}_map
+    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${higlass_data_basedir}/${species.replaceAll("\\s","_")}/${assembly}.mcool --filetype cooler --datatype matrix --project-name $assembly --name ${assembly}_map
     echo "Loading .genome file"
-    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${genome.baseName}.genome --filetype chromsizes.tsv --datatype chromsizes --coordSystem ${assembly}_assembly --project-name $assembly --name ${assembly}_grid
+    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${higlass_data_basedir}/${species.replaceAll("\\s","_")}/${assembly}.genome --filetype chromsizes.tsv --datatype chromsizes --coordSystem ${assembly}_assembly --project-name $assembly --name ${assembly}_grid
     echo "done"
 
     cat <<-END_VERSIONS > versions.yml
