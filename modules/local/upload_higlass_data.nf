@@ -23,7 +23,6 @@ process UPLOAD_HIGLASS_DATA {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         error "UPLOAD_HIGLASS_DATA modules do not support Conda. Please use Docker / Singularity / Podman instead."
     }
-    
 
     """
     # Configure kubectl access to the namespace
