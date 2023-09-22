@@ -37,15 +37,15 @@ process UPLOAD_HIGLASS_DATA {
     echo "\$pod_name"
 
     # Copy the files to the upload area
-    mkdir -p $upload_dir${higlass_data_basedir}/${species.replaceAll("\\s","_")}
-    cp -f $mcool $upload_dir${higlass_data_basedir}/${species.replaceAll("\\s","_")}/${assembly}.mcool
-    cp -f $genome $upload_dir/${higlass_data_basedir}/${species.replaceAll("\\s","_")}/${assembly}.genome
+    mkdir -p $upload_dir${higlass_data_basedir}/${species.replaceAll("\\s","_")}/${assembly}
+    cp -f $mcool $upload_dir${higlass_data_basedir}/${species.replaceAll("\\s","_")}/${assembly}/${assembly}.mcool
+    cp -f $genome $upload_dir/${higlass_data_basedir}/${species.replaceAll("\\s","_")}/${assembly}/${assembly}.genome
 
     # Load them in Kubernetes
     echo "Loading .mcool file"
-    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${higlass_data_basedir}/${species.replaceAll("\\s","_")}/${assembly}.mcool --filetype cooler --datatype matrix --project-name $assembly --name ${assembly}_map
+    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${higlass_data_basedir}/${species.replaceAll("\\s","_")}/${assembly}/${assembly}.mcool --filetype cooler --datatype matrix --project-name ${higlass_data_basedir}/${species.replaceAll("\\s","_")}/$assembly --name ${assembly}_map
     echo "Loading .genome file"
-    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${higlass_data_basedir}/${species.replaceAll("\\s","_")}/${assembly}.genome --filetype chromsizes.tsv --datatype chromsizes --coordSystem ${assembly}_assembly --project-name $assembly --name ${assembly}_grid
+    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${higlass_data_basedir}/${species.replaceAll("\\s","_")}/${assembly}/${assembly}.genome --filetype chromsizes.tsv --datatype chromsizes --coordSystem ${assembly}_assembly --project-name ${higlass_data_basedir}/${species.replaceAll("\\s","_")}/$assembly --name ${assembly}_grid
     echo "done"
 
     cat <<-END_VERSIONS > versions.yml
