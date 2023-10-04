@@ -97,7 +97,7 @@
                     "fa_icon": "fas fa-folder-open",
                     "hidden": true
                 },
-                "higlass_data_basedir": {
+                "higlass_data_project_dir": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "Subdirectory struture to use for organising HiGlass data, suggested format is <project_name>/<taxon_group> e.g. '/asg/algae'",
