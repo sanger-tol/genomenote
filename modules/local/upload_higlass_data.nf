@@ -53,7 +53,7 @@ process UPLOAD_HIGLASS_DATA {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-      kubectl: \$(kubectl version --output=json | jq -r ".clientVersion.gitVersion")
+        kubectl: \$(kubectl version --output=json | jq -r ".clientVersion.gitVersion")
     END_VERSIONS
     """
 }
