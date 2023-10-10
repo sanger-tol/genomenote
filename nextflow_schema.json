@@ -36,6 +36,10 @@
                     "type": "string",
                     "description": "The Genbank assembly accession for the assembly, for example: GCA_922984935.2."
                 },
+                "species": {
+                    "type": "string",
+                    "description": "The species name for the assembly with spaces replaced with '_', for example: Epithemia_sp._CRS-2021b."
+                },
                 "taxon_id": {
                     "type": "string",
                     "description": "The NCBI taxonomy ID corresponding to the GCA assembly accession, for example: 9662."
@@ -90,6 +94,13 @@
                     "type": "string",
                     "format": "directory-path",
                     "description": "The ingress directory for the kubernetes cluster running the HiGlass server.",
+                    "fa_icon": "fas fa-folder-open",
+                    "hidden": true
+                },
+                "higlass_data_project_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Subdirectory struture to use for organising HiGlass data, suggested format is <project_name>/<taxon_group> e.g. '/asg/algae'",
                     "fa_icon": "fas fa-folder-open",
                     "hidden": true
                 },

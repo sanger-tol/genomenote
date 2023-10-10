@@ -7,7 +7,9 @@ process UPLOAD_HIGLASS_DATA {
     input:
     tuple val(meta), path(mcool)
     tuple val(meta2), path(genome)
+    val(species)
     val(assembly)
+    val(higlass_data_project_dir)
     path(upload_dir)
 
     output:
@@ -22,6 +24,9 @@ process UPLOAD_HIGLASS_DATA {
         error "UPLOAD_HIGLASS_DATA modules do not support Conda. Please use Docker / Singularity / Podman instead."
     }
 
+    def project_name = "${higlass_data_project_dir}/${species.replaceAll('\\s','_')}/${assembly}"
+    def file_name = "${assembly}_${meta.id}"
+
     """
     # Configure kubectl access to the namespace
     export KUBECONFIG=$params.higlass_kubeconfig
@@ -35,14 +40,15 @@ process UPLOAD_HIGLASS_DATA {
     echo "\$pod_name"
 
     # Copy the files to the upload area
-    cp -f $mcool $upload_dir
-    cp -f $genome $upload_dir/${genome.baseName}.genome
+    mkdir -p ${upload_dir}${project_name}
+    cp -f $mcool ${upload_dir}${project_name}/${file_name}.mcool
+    cp -f $genome ${upload_dir}${project_name}/${file_name}.genome
 
     # Load them in Kubernetes
     echo "Loading .mcool file"
-    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/$mcool.name --filetype cooler --datatype matrix --project-name $assembly --name ${assembly}_map
+    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${project_name}/${file_name}.mcool --filetype cooler --datatype matrix --project-name ${project_name} --name ${file_name}_map
     echo "Loading .genome file"
-    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${genome.baseName}.genome --filetype chromsizes.tsv --datatype chromsizes --coordSystem ${assembly}_assembly --project-name $assembly --name ${assembly}_grid
+    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${project_name}/${file_name}.genome --filetype chromsizes.tsv --datatype chromsizes --coordSystem ${assembly}_assembly --project-name ${project_name} --name ${file_name}_grid
     echo "done"
 
     cat <<-END_VERSIONS > versions.yml
