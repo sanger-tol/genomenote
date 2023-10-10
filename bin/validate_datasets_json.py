@@ -15,7 +15,6 @@ def parse_args(args=None):
 
 
 def check_json(ncbi_summary):
-
     with open(ncbi_summary) as file_in:
         data = json.load(file_in)
 
