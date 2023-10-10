@@ -28,7 +28,6 @@ def make_dir(path):
 
 
 def get_odb(ncbi_summary, lineage_tax_ids, file_out):
-
     # Read the mapping between the BUSCO lineages and their taxon_id
     with open(lineage_tax_ids) as file_in:
         lineage_tax_ids_dict = {}
@@ -43,7 +42,7 @@ def get_odb(ncbi_summary, lineage_tax_ids, file_out):
 
     # Using API, get the taxon_ids of all parents
     response = requests.get(NCBI_TAXONOMY_API % tax_id).json()
-    ancestor_taxon_ids = response['taxonomy_nodes'][0]['taxonomy']['lineage']
+    ancestor_taxon_ids = response["taxonomy_nodes"][0]["taxonomy"]["lineage"]
 
     # Do the intersection to find the ancestors that have a BUSCO lineage
     odb_arr = [lineage_tax_ids_dict[taxon_id] for taxon_id in ancestor_taxon_ids if taxon_id in lineage_tax_ids_dict]
