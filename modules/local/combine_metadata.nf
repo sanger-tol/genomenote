@@ -1,5 +1,5 @@
 process COMBINE_METADATA {
-    tag "${meta.id}|combine_parsed"
+    tag "${meta.id}"
     label 'process_single'
 
     conda "conda-forge::python=3.9.1"
@@ -8,7 +8,7 @@ process COMBINE_METADATA {
         'quay.io/biocontainers/python:3.9--1' }"
 
     input:
-    tuple val(meta), val(file_list)
+    tuple val(meta), path(file_list)
 
     output:
     tuple val (meta), path("consistent.csv") , emit: consistent
@@ -21,10 +21,9 @@ process COMBINE_METADATA {
     script:
     def args = []
     for (item in  file_list){
-        def meta_file = item[0]
-        def file = item[1]
-        def arg = "--${meta_file.source}_${meta_file.type}_file".toLowerCase()
-        args.add(arg)
+        def file = item 
+        def file_name = "--" + item.getSimpleName() + "_file"
+        args.add(file_name)
         args.add(file)
     }
 
