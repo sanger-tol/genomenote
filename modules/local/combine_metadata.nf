@@ -21,7 +21,7 @@ process COMBINE_METADATA {
     script:
     def args = []
     for (item in  file_list){
-        def file = item 
+        def file = item
         def file_name = "--" + item.getSimpleName() + "_file"
         args.add(file_name)
         args.add(file)
