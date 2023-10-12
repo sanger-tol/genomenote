@@ -11,8 +11,8 @@ process COMBINE_METADATA {
     tuple val(meta), path(file_list)
 
     output:
-    tuple val (meta), path("consistent.csv") , emit: consistent
-    tuple val (meta), path("inconsistent.csv") , emit: inconsistent
+    tuple val (meta), path("${meta.id}_consistent.csv") , emit: consistent
+    tuple val (meta), path("${meta.id}_inconsistent.csv") , emit: inconsistent
     path "versions.yml", emit: versions
 
     when:
@@ -20,9 +20,11 @@ process COMBINE_METADATA {
 
     script:
     def args = []
+    def prefix = task.ext.prefix ?: meta.id
     for (item in  file_list){
         def file = item
-        def file_name = "--" + item.getSimpleName() + "_file"
+        def file_ext = item.getExtension()
+        def file_name = "--" + item.getName().minus("${prefix}_").minus(".${file_ext}") + "_file"
         args.add(file_name)
         args.add(file)
     }
@@ -30,8 +32,8 @@ process COMBINE_METADATA {
     """
     combine_parsed_data.py \\
     ${args.join(" ")} \\
-    --out_consistent consistent.csv \\
-    --out_inconsistent inconsistent.csv
+    --out_consistent ${prefix}_consistent.csv \\
+    --out_inconsistent ${prefix}_inconsistent.csv
 
 
     cat <<-END_VERSIONS > versions.yml

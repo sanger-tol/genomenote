@@ -20,8 +20,9 @@ process PARSE_METADATA {
 
 
     script: // This script is bundled with the pipeline, in nf-core/genomenote/bin/
+    def prefix = task.ext.prefix ?: meta.id
     def script_name = "parse_${meta.ext.toLowerCase()}_${meta.source.toLowerCase()}_${meta.type.toLowerCase()}.py"
-    def output_file = "${meta.source.toLowerCase()}_${meta.type.toLowerCase()}.csv"
+    def output_file = "${prefix}_${meta.source.toLowerCase()}_${meta.type.toLowerCase()}.csv"
     """
     $script_name \\
         $json \\
