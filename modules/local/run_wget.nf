@@ -14,7 +14,7 @@ process RUN_WGET {
 
 
     output:
-    tuple val(meta), path("result.${meta.ext}") , emit:  file_path
+    tuple val(meta), path("${meta.id}_${meta.source}_${meta.type}.${meta.ext}") , emit:  file_path
     path "versions.yml"                         , emit: versions
 
     when:
@@ -23,7 +23,7 @@ process RUN_WGET {
     script:
     def  no_certificate = (meta.source == 'GOAT') ? '--no-check-certificate' : ''
     """
-        wget ${no_certificate} -c -O result.${meta.ext} '${url}'
+        wget ${no_certificate} -c -O ${meta.id}_${meta.source}_${meta.type}.${meta.ext} '${url}'
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":

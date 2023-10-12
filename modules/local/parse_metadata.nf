@@ -1,6 +1,6 @@
 
-process PARSE_GOAT_ASSEMBLY {
-    tag "${meta.ext}|${meta.type}"
+process PARSE_METADATA {
+    tag "${meta.ext}|${meta.source}|${meta.type}"
     label 'process_single'
 
     conda "conda-forge::python=3.9.1"
@@ -12,21 +12,25 @@ process PARSE_GOAT_ASSEMBLY {
     tuple val(meta), path(json)
 
     output:
-    tuple val(meta), path("parsed.csv") , emit:  file_path
+    tuple val(meta), path("*.csv") , emit:  file_path
     path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
+
     script: // This script is bundled with the pipeline, in nf-core/genomenote/bin/
+    def prefix = task.ext.prefix ?: meta.id
+    def script_name = "parse_${meta.ext.toLowerCase()}_${meta.source.toLowerCase()}_${meta.type.toLowerCase()}.py"
+    def output_file = "${prefix}_${meta.source.toLowerCase()}_${meta.type.toLowerCase()}.csv"
     """
-    parse_json_goat_assembly.py \\
+    $script_name \\
         $json \\
-        parsed.csv
+        $output_file
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        parse_json_goat_assembly.py: \$(parse_json_goat_assembly.py --version | cut -d' ' -f2)
+        $script_name: \$($script_name --version | cut -d' ' -f2)
     END_VERSIONS
     """
 }
