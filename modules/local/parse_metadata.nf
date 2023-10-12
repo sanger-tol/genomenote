@@ -12,7 +12,7 @@ process PARSE_METADATA {
     tuple val(meta), path(json)
 
     output:
-    tuple val(meta), path("${meta.source.toLowerCase()}_${meta.type.toLowerCase()}.csv") , emit:  file_path
+    tuple val(meta), path("*.csv") , emit:  file_path
     path "versions.yml", emit: versions
 
     when:
