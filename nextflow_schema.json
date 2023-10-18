@@ -64,6 +64,13 @@
                     "format": "directory-path",
                     "description": "Local directory where clade-specific BUSCO lineage datasets are stored.",
                     "fa_icon": "fas fa-folder-open"
+                },
+                "lineage_tax_ids": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Local file that holds a mapping between BUSCO lineages and taxon IDs.",
+                    "help_text": "Initialised from https://busco-data.ezlab.org/v5/data/placement_files/mapping_taxids-busco_dataset_name.eukaryota_odb10.2019-12-16.txt.tar.gz",
+                    "fa_icon": "fas fa-file-code"
                 }
             },
             "fa_icon": "fas fa-database"

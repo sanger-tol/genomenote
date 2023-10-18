@@ -22,7 +22,7 @@
 3. Filter BED ([`GNU sort`](https://www.gnu.org/software/coreutils/manual/html_node/sort-invocation.html), [`filter bed`](https://raw.githubusercontent.com/sanger-tol/genomenote/main/bin/filter_bed.sh))
 4. Contact maps ([`Cooler cload`](https://cooler.readthedocs.io/en/latest/cli.html#cooler-cload-pairs), [`Cooler zoomify`](https://cooler.readthedocs.io/en/latest/cli.html#cooler-zoomify), [`Cooler dump`](https://cooler.readthedocs.io/en/latest/cli.html#cooler-dump))
 5. Summary statistics ([`NCBI datasets summary genome accession`](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/reference-docs/command-line/datasets/summary/genome/datasets_summary_genome_accession/))
-6. Genome completeness ([`GoaT API`](https://goat.genomehubs.org/api-docs/), [`BUSCO`](https://busco.ezlab.org))
+6. Genome completeness ([`NCBI API`](https://www.ncbi.nlm.nih.gov/datasets/docs/v1/reference-docs/rest-api/), [`BUSCO`](https://busco.ezlab.org))
 7. Consensus quality and k-mer completeness ([`FASTK`](https://github.com/thegenemyers/FASTK), [`MERQURY.FK`](https://github.com/thegenemyers/MERQURY.FK))
 8. Collated summary table ([`createtable`](https://raw.githubusercontent.com/sanger-tol/genomenote/main/bin/create_table.py))
 9. Present results and visualisations ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
