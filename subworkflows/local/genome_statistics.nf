@@ -73,7 +73,9 @@ workflow GENOME_STATISTICS {
     | join ( FASTK_FASTK.out.ktab )
     | set { ch_combo }
     
-    ch_grab = GrabFiles ( ch_pacbio.dir )
+    ch_pacbio.dir
+    | map { meta, dir -> [ meta, [dir.listFiles().findAll { it.toString().endsWth(".hist") }], [dir.listFiles().findAll { it.toString().contains(".ktab") }] ] }
+    | set { ch_grab }
     
     ch_combo
     | mix ( ch_grab )
@@ -119,16 +121,3 @@ workflow GENOME_STATISTICS {
 
 }
 
-
-process GrabFiles {
-    tag "${meta.id}"
-    executor 'local'
-
-    input:
-    tuple val(meta), path("in")
-
-    output:
-    tuple val(meta), path("in/*.hist"), path("in/*.ktab*", hidden:true)
-
-    "true"
-}
