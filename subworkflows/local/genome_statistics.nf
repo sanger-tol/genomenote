@@ -80,7 +80,7 @@ workflow GENOME_STATISTICS {
     ch_combo
     | mix ( ch_grab )
     | combine ( genome )
-    | map { meta, hist, ktab, meta2, fasta -> [ meta, hist, ktab, fasta, [] ] }
+    | map { meta, hist, ktab, meta2, fasta -> [ meta + [genome_size: meta2.genome_size], hist, ktab, fasta, [] ] }
     | set { ch_merq }
 
 
