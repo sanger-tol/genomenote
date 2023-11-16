@@ -74,7 +74,7 @@ workflow GENOME_STATISTICS {
     | set { ch_combo }
     
     ch_pacbio.dir
-    | map { meta, dir -> [ meta, [dir.listFiles().findAll { it.toString().endsWth(".hist") }], [dir.listFiles().findAll { it.toString().contains(".ktab") }] ] }
+    | map { meta, dir -> [ meta, [dir.listFiles().findAll { it.toString().endsWith(".hist") }], [dir.listFiles().findAll { it.toString().contains(".ktab") }] ] }
     | set { ch_grab }
     
     ch_combo
