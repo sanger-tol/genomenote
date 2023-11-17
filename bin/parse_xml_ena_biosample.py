@@ -30,6 +30,11 @@ fetch = [
         ["SAMPLE", "SAMPLE_ATTRIBUTES"],
         ("tag", ".//*[TAG='geographic location (region and locality)']//", "VALUE"),
     ),
+    (
+        "COLLECTION_DATE",
+        ["SAMPLE", "SAMPLE_ATTRIBUTES"],
+        ("tag", ".//*[TAG='collection date']//", "VALUE"),
+    ),
     ("LATITUDE", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='geographic location (latitude)']//", "VALUE")),
     ("LONGITUDE", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='geographic location (longitude)']//", "VALUE")),
     ("HABITAT", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='habitat']//", "VALUE")),
