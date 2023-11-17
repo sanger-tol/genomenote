@@ -17,7 +17,7 @@ fetch = [
     ("GENOME_LENGTH", ["ASSEMBLY", "ASSEMBLY_ATTRIBUTES"], ("tag", ".//*[TAG='total-length']//", "VALUE")),
     ("SCAFF_NUMBER", ["ASSEMBLY", "ASSEMBLY_ATTRIBUTES"], ("tag", ".//*[TAG='scaffold-count']//", "VALUE")),
     ("SCAFF_N50", ["ASSEMBLY", "ASSEMBLY_ATTRIBUTES"], ("tag", ".//*[TAG='n50']//", "VALUE")),
-    ("CHROMOSOME_NUMBER", ["ASSEMBLY", "CHROMOSOMES"], ("count", "CHROMOSOME")),
+    ("CHROMOSOME_NUMBER", ["ASSEMBLY", "ASSEMBLY_ATTRIBUTES"], ("tag", ".//*[TAG='replicon-count']//", "VALUE")),
     ("CONTIG_NUMBER", ["ASSEMBLY", "ASSEMBLY_ATTRIBUTES"], ("tag", ".//*[TAG='count-contig']//", "VALUE")),
     ("CONTIG_N50", ["ASSEMBLY", "ASSEMBLY_ATTRIBUTES"], ("tag", ".//*[TAG='contig-n50']//", "VALUE")),
 ]
@@ -102,6 +102,12 @@ def parse_xml(file_in, file_out):
                             param = param.split(".")[0]
                         if f[0] == "ASSEMBLY_ID":
                             param = param.split(" ")[0]
+                        if f[0] == "CHROMOSOME_NUMBER":
+                            ra = root.findall("./ASSEMBLY/ASSEMBLY_ATTRIBUTES/ASSEMBLY_ATTRIBUTE")
+                            for child in ra:
+                                if child.find('TAG').text == "count-non-chromosome-replicon":
+                                    non_chrs = child.find("VALUE").text
+                                    param = str(int(param) - int(non_chrs))
 
                 else:
                     try:
