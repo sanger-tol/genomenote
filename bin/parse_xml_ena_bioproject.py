@@ -6,8 +6,9 @@ import argparse
 import xml.etree.ElementTree as ET
 
 fetch = [
-    ("BIOPROJECT_ACCESSION", ["PROJECT"], ("attrib", "accession")),
-    ("BIOPROJECT_TITLE", ["PROJECT", "TITLE"]),
+    ("ENA_BIOPROJECT_ACCESSION", ["PROJECT"], ("attrib", "accession")),
+    ("ENA_BIOPROJECT_TITLE", ["PROJECT", "TITLE"]),
+    ("ENA_FIRST_PUBLIC", ["PROJECT", "PROJECT_ATTRIBUTES"], ("tag", ".//*[TAG='ENA-FIRST-PUBLIC']//", "VALUE"))
 ]
 
 
@@ -69,6 +70,13 @@ def parse_xml(file_in, file_out):
                             param = r.attrib.get(f[2][1])
                         except ValueError:
                             param = None
+                    
+                    ## Fetch paired tag-value elements from a parent, where tag is specified and value is wanted
+                    if f[2][0] == "tag":
+                        r = r.findall(f[2][1])
+                        for child in r:
+                            if child.tag == f[2][2]:
+                                param = child.text
 
                 else:
                     try:
@@ -77,6 +85,9 @@ def parse_xml(file_in, file_out):
                         param = None
 
         if param is not None:
+            if f[0] == "ENA_FIRST_PUBLIC":
+                param = param.split("-")[0]
+            
             param_list.append([f[0], param])
 
     if len(param_list) > 0:
