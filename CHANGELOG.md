@@ -22,20 +22,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   number of files it creates could otherwise overwhelm a network filesystem.
 - Minimal version of Nextflow downgraded to 23.04 to 22.10. 22.10 is tested as
   part of our continuous integration (CI) pipeline.
-- The "test\_full" profile is now tested automatically when updating the `dev`
+- The "test_full" profile is now tested automatically when updating the `dev`
   and `main` branches.
 
 ### Parameters
 
-| Old parameter | New parameter      |
-| ------------- | ------------------ |
-|               | --lineage\_tax\_ids|
+| Old parameter | New parameter     |
+| ------------- | ----------------- |
+|               | --lineage_tax_ids |
 
 ### Software dependencies
 
-| Dependency  | Old version     | New version     |
-| ----------- | --------------- | --------------- |
-| `datasets`  | 14.2            | 15.12           |
+| Dependency | Old version | New version |
+| ---------- | ----------- | ----------- |
+| `datasets` | 14.2        | 15.12       |
 
 ## [[1.0.0](https://github.com/sanger-tol/genomenote/releases/tag/1.0.0)] - Czechoslovakian Wolfdog - [2023-05-18]
 
