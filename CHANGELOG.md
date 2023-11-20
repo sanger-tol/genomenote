@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `maxRetries` increased to 5 to cope with large datasets.
 - BUSCO now runs in "scratch" mode, i.e. off a temporary directory, as the
   number of files it creates could otherwise overwhelm a network filesystem.
+- `SORT`, `FASTK`, and `MERQURYFK`, now put their temporary files in the work
+  directory rather than `/tmp`.
+- The memory requirement of `SORT` is adjusted to account for some overheads
+  and avoid the job to be killed.
 - Minimal version of Nextflow downgraded to 23.04 to 22.10. 22.10 is tested as
   part of our continuous integration (CI) pipeline.
 - The "test_full" profile is now tested automatically when updating the `dev`
