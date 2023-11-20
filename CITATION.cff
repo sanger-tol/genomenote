@@ -1,0 +1,34 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: sanger-tol/genomenote v1.1.0
+message: >-
+    If you use this software, please cite it using the
+    metadata from this file.
+type: software
+authors:
+    - given-names: Cibin
+      family-names: Sadasivan Baby
+      affiliation: Wellcome Sanger Institute
+      orcid: "https://orcid.org/0000-0002-8538-276X"
+    - given-names: Matthieu
+      family-names: Muffato
+      affiliation: Wellcome Sanger Institute
+      orcid: "https://orcid.org/0000-0002-7860-3560"
+    - given-names: Priyanka
+      family-names: Surana
+      orcid: "https://orcid.org/0000-0002-7167-0875"
+      affiliation: Wellcome Sanger Institute
+    - given-names: Yates
+      family-names: Bethan
+      orcid: "https://orcid.org/0000-0003-1658-1762"
+      affiliation: Wellcome Sanger Institute
+identifiers:
+    - type: doi
+      value: 10.5281/zenodo.7949384
+repository-code: "https://github.com/sanger-tol/genomenote"
+license: MIT
+commit: TODO
+version: 1.1.0
+date-released: "2022-10-07"
