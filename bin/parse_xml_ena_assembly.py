@@ -6,7 +6,6 @@ import argparse
 import xml.etree.ElementTree as ET
 
 fetch = [
-    ("SPECIMEN_ID", ["ASSEMBLY"], ("attrib", "alias")),
     ("ASSEMBLY_ID", ["ASSEMBLY"], ("attrib", "alias")),
     ("BIOPROJECT_ACCESSION", ["ASSEMBLY", "STUDY_REF", "IDENTIFIERS", "PRIMARY_ID"]),
     ("ASSEMBLY_ACCESSION", ["ASSEMBLY", "IDENTIFIERS", "PRIMARY_ID"]),
@@ -59,6 +58,7 @@ def parse_xml(file_in, file_out):
     param_list = []
 
     for f in fetch:
+        param = None
         r = root
         max_depth = len(f[1])
         fn = len(f)

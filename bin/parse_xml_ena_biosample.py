@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ET
 
 fetch = [
     ("GAL", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='GAL']//", "VALUE")),
+    ("SPECIMEN_ID", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='specimen id']//", "VALUE")),
     ("COLLECTORS", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='collected by']//", "VALUE")),
     ("COLLECTOR_INSTITUTE", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='collecting institution']//", "VALUE")),
     (
@@ -80,6 +81,7 @@ def parse_xml(file_in, file_out):
     param_list = []
 
     for f in fetch:
+        param = None
         r = root
         max_depth = len(f[1])
         fn = len(f)
