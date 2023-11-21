@@ -4,6 +4,7 @@ import os
 import sys
 import argparse
 import csv
+import jinja2
 from docxtpl import DocxTemplate
 
 
@@ -38,11 +39,13 @@ def build_param_list(param_file):
 
 
 def populate_template(param_file, template_file, file_out):
+    myenv = jinja2.Environment(undefined=jinja2.DebugUndefined)
     context = build_param_list(param_file)
     template = DocxTemplate(template_file)
-    template.render(context)
-    write_file(template, file_out)
+    template.render(context, myenv)
 
+    write_file(template, file_out)
+    
 
 def main(args=None):
     args = parse_args(args)
