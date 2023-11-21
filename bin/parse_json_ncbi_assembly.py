@@ -7,7 +7,7 @@ import sys
 import string
 
 fetch = [
-    ("TOL_ID", ("assembly_info", "biosample", "attributes"), {"name": "tolid"}),
+    ("TOLID", ("assembly_info", "biosample", "attributes"), {"name": "tolid"}),
     ("ASSEMBLY_ID", ("assembly_info", "assembly_name")),
     ("SPECIMEN_ID", ("assembly_info", "biosample", "attributes"), {"name": "specimen id"}),
     ("BIOPROJECT_ACCESSION", ("assembly_info", "bioproject_accession")),

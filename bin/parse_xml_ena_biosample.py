@@ -41,7 +41,7 @@ fetch = [
     ("HABITAT", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='habitat']//", "VALUE")),
     ("BIOSAMPLE_ACCESSION", ["SAMPLE"], ("attrib", "accession")),
     ("TISSUE_TYPE", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='organism part']//", "VALUE")),
-    ("TOL_ID", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='tolid']//", "VALUE")),
+    ("TOLID", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='tolid']//", "VALUE")),
 ]
 
 
