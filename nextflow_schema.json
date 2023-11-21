@@ -92,6 +92,21 @@
             },
             "required": ["fasta"]
         },
+        "execution": {
+            "title": "Execution",
+            "type": "object",
+            "description": "Control the execution of the pipeline.",
+            "default": "",
+            "properties": {
+                "use_work_dir_as_temp": {
+                    "type": "boolean",
+                    "description": "Set to true to make tools (e.g. sort, FastK, MerquryFK) use the work directory for their temporary files, rather than the system default.",
+                    "fa_icon": "fas fa-arrow-circle-down",
+                    "hidden": true
+                }
+            },
+            "fa_icon": "fas fa-running"
+        },
         "institutional_config_options": {
             "title": "Institutional config options",
             "type": "object",
@@ -289,6 +304,9 @@
         },
         {
             "$ref": "#/definitions/reference_genome_options"
+        },
+        {
+            "$ref": "#/definitions/execution"
         },
         {
             "$ref": "#/definitions/institutional_config_options"
