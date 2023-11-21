@@ -20,8 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `maxRetries` increased to 5 to cope with large datasets.
 - BUSCO now runs in "scratch" mode, i.e. off a temporary directory, as the
   number of files it creates could otherwise overwhelm a network filesystem.
-- `SORT`, `FASTK`, and `MERQURYFK`, now put their temporary files in the work
-  directory rather than `/tmp`.
+- `SORT`, `FASTK`, and `MERQURYFK`, can now put their temporary files in the
+  work directory rather than `/tmp`. Turn that on with the `--use_work_dir_as_temp`
+  flag.
 - The memory requirement of `SORT` is adjusted to account for some overheads
   and avoid the job to be killed.
 - Minimal version of Nextflow downgraded to 23.04 to 22.10. 22.10 is tested as
@@ -31,9 +32,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Parameters
 
-| Old parameter | New parameter     |
-| ------------- | ----------------- |
-|               | --lineage_tax_ids |
+| Old parameter | New parameter          |
+| ------------- | ---------------------- |
+|               | --lineage_tax_ids      |
+|               | --use_work_dir_as_temp |
 
 ### Software dependencies
 
