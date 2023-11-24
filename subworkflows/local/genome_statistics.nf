@@ -73,12 +73,14 @@ workflow GENOME_STATISTICS {
     | join ( FASTK_FASTK.out.ktab )
     | set { ch_combo }
     
-    ch_grab = GrabFiles ( ch_pacbio.dir )
+    ch_pacbio.dir
+    | map { meta, dir -> [ meta, [dir.listFiles().findAll { it.toString().endsWith(".hist") }], [dir.listFiles().findAll { it.toString().contains(".ktab") }] ] }
+    | set { ch_grab }
     
     ch_combo
     | mix ( ch_grab )
     | combine ( genome )
-    | map { meta, hist, ktab, meta2, fasta -> [ meta, hist, ktab, fasta, [] ] }
+    | map { meta, hist, ktab, meta2, fasta -> [ meta + [genome_size: meta2.genome_size], hist, ktab, fasta, [] ] }
     | set { ch_merq }
 
 
@@ -98,9 +100,9 @@ workflow GENOME_STATISTICS {
     
     MERQURYFK_MERQURYFK.out.qv
     | join ( MERQURYFK_MERQURYFK.out.stats )
-    | ifEmpty ( [ [], [], [] ] )
     | map { meta, qv, comp -> [ meta + [ id: "merq" ], qv, comp ] }
     | groupTuple ()
+    | ifEmpty ( [ [], [], [] ] )
     | set { ch_merqury }
 
     CREATETABLE ( ch_summary, ch_busco, ch_merqury, flagstat )
@@ -119,16 +121,3 @@ workflow GENOME_STATISTICS {
 
 }
 
-
-process GrabFiles {
-    tag "${meta.id}"
-    executor 'local'
-
-    input:
-    tuple val(meta), path("in")
-
-    output:
-    tuple val(meta), path("in/*.hist"), path("in/*.ktab*", hidden:true)
-
-    "true"
-}

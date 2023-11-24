@@ -97,15 +97,19 @@ workflow GENOMENOTE {
     // MODULE: Uncompress fasta file if needed
     //
     ch_fasta
-    | map { file -> [ [ 'id': file.baseName.tokenize('.')[0..1].join('.') ], file ] }
+    | map { file -> [ [ 'id': file.baseName ], file ] }
     | set { ch_genome }
 
     if ( params.fasta.endsWith('.gz') ) {
-        ch_fasta    = GUNZIP ( ch_genome ).gunzip
+        ch_unzipped = GUNZIP ( ch_genome ).gunzip
         ch_versions = ch_versions.mix ( GUNZIP.out.versions.first() )
     } else {
-        ch_fasta    = ch_genome
+        ch_unzipped = ch_genome
     }
+
+    ch_unzipped
+    | map { meta, fa -> [ meta + [id: fa.baseName, genome_size: fa.size()], fa] }
+    | set { ch_fasta }
 
 
     //
