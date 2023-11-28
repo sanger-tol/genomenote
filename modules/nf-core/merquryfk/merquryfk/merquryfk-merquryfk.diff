@@ -1,0 +1,25 @@
+Changes in module 'nf-core/merquryfk/merquryfk'
+--- modules/nf-core/merquryfk/merquryfk/main.nf
++++ modules/nf-core/merquryfk/merquryfk/main.nf
+@@ -3,7 +3,7 @@
+     label 'process_medium'
+ 
+     // WARN: Version information not provided by tool on CLI. Please update version string below when bumping container versions.
+-    container 'ghcr.io/nbisweden/fastk_genescopefk_merquryfk:1.2'
++    container 'quay.io/sanger-tol/fastk:1.0.1-c1'
+ 
+     // Exit if running this module with -profile conda / -profile mamba
+     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+@@ -38,8 +38,8 @@
+     script:
+     def args = task.ext.args ?: ''
+     prefix = task.ext.prefix ?: "${meta.id}"
+-    def FASTK_VERSION = 'f18a4e6d2207539f7b84461daebc54530a9559b0' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+-    def MERQURY_VERSION = '8ae344092df5dcaf83cfb7f90f662597a9b1fc61' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
++    def FASTK_VERSION = '427104ea91c78c3b8b8b49f1a7d6bbeaa869ba1c' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
++    def MERQURY_VERSION = 'd00d98157618f4e8d1a9190026b19b471055b22e' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+     """
+     MerquryFK \\
+         $args \\
+
+************************************************************

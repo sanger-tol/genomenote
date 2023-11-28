@@ -39,7 +39,8 @@
                     "fastk/fastk": {
                         "branch": "master",
                         "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/fastk/fastk/fastk-fastk.diff"
                     },
                     "gnu/sort": {
                         "branch": "master",
@@ -54,7 +55,8 @@
                     "merquryfk/merquryfk": {
                         "branch": "master",
                         "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/merquryfk/merquryfk/merquryfk-merquryfk.diff"
                     },
                     "multiqc": {
                         "branch": "master",
