@@ -81,20 +81,21 @@ def ncbi_stats(genome_in, seq_in, writer):
     for mol in seq:
         if "gc_percent" in mol and mol["assembly_unit"] != "non-nuclear":
             if not chromosome_header:
-                writer.writerow(["##Chromosome", "Length", "GC_Percent"])
+                writer.writerow(["##Chromosome", "Length", "GC_Percent", "Accession"])
                 chromosome_header = True
-            writer.writerow([mol["chr_name"], mol["length"], mol["gc_percent"]])
+            writer.writerow([mol["chr_name"], mol["length"], mol["gc_percent"], mol["genbank_accession"]])
     organelle_header = False
     for mol in seq:
         if "gc_percent" in mol and mol["assembly_unit"] == "non-nuclear":
             if not organelle_header:
-                writer.writerow(["##Organelle", "Length", "GC_Percent"])
+                writer.writerow(["##Organelle", "Length", "GC_Percent", "Accession"])
                 organelle_header = True
             writer.writerow(
                 [
                     mol["assigned_molecule_location_type"],
                     mol["length"],
                     mol["gc_percent"],
+                    mol["genbank_accession"],
                 ]
             )
 
