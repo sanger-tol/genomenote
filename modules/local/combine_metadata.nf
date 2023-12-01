@@ -11,8 +11,8 @@ process COMBINE_METADATA {
     tuple val(meta), path(file_list)
 
     output:
-    tuple val (meta), path("${meta.id}_consistent.csv") , emit: consistent
-    tuple val (meta), path("${meta.id}_inconsistent.csv") , emit: inconsistent
+    tuple val (meta), path("${meta.id}_consistent.csv"), emit: consistent
+    tuple val (meta), path("${meta.id}_inconsistent.csv"), emit: inconsistent
     path "versions.yml", emit: versions
 
     when:
