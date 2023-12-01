@@ -59,15 +59,20 @@ def build_param_list(param_file):
             mydict[key] = value
 
         authors = []
+        seen = set()
         if mydict["IDENTIFIER"]:
             for i in mydict["IDENTIFIER"].split(","):
-                authors.append(i)
+                if i not in seen:
+                    authors.append(i)
+                    seen.add(i)
 
-        if mydict["COLLECTOR"]:
-            for c in mydict["COLLECTOR"].split(","):
-                authors.append(c)
+        if mydict["COLLECTORS"]:
+            for c in mydict["COLLECTORS"].split(","):
+                if c not in seen:
+                    authors.append(c)
+                    seen.add(c)
 
-        mydict["AUTHORS"] = authors
+        mydict["AUTHORS"] = ",".join(authors)
 
         return mydict
 
