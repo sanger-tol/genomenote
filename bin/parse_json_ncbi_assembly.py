@@ -41,7 +41,7 @@ fetch = [
     ("TISSUE_TYPE", ("assembly_info", "biosample", "attributes"), {"name": "tissue"}),
     ("GENOME_LENGTH", ("assembly_stats", "total_sequence_length")),
     ("CHROMOSOME_NUMBER", ("assembly_stats", "total_number_of_chromosomes")),
-    ("SCAFFOLD_NUMBER", ("assembly_stats", "number_of_scaffolds")),
+    ("SCAFF_NUMBER", ("assembly_stats", "number_of_scaffolds")),
     ("CONTIG_NUMBER", ("assembly_stats", "number_of_contigs")),
     ("CONTIG_N50", ("assembly_stats", "contig_n50")),
 ]
@@ -93,11 +93,15 @@ def parse_json(file_in, file_out):
         param = find_element(data["reports"][0], f[1], attribs, param_list, index=0)
 
         if param is not None:
+            if f[0] == "GENOME_LENGTH" or f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
+                param = str(round((int(param) * 0.00001),1))
+        
             if type(param) == int:
                 param = str(param)
 
             if any(p in string.punctuation for p in param):
                 param = '"' + param + '"'
+
 
             param_list.append([f[0], param])
 

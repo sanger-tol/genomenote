@@ -4,6 +4,7 @@ import os
 import sys
 import argparse
 import xml.etree.ElementTree as ET
+import string
 
 fetch = [
     ("GAL", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='GAL']//", "VALUE")),
@@ -11,12 +12,12 @@ fetch = [
     ("COLLECTORS", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='collected by']//", "VALUE")),
     ("COLLECTOR_INSTITUTE", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='collecting institution']//", "VALUE")),
     (
-        "COLLECTOR_PLACE",
+        "COLLECTION_LOCATION",
         ["SAMPLE", "SAMPLE_ATTRIBUTES"],
         ("tag", ".//*[TAG='geographic location (region and locality)']//", "VALUE"),
     ),
     (
-        "COLLECTOR_COUNTRY",
+        "COLLECTION_LOCATION",
         ["SAMPLE", "SAMPLE_ATTRIBUTES"],
         ("tag", ".//*[TAG='geographic location (country and/or sea)']//", "VALUE"),
     ),
@@ -27,7 +28,7 @@ fetch = [
     ("NCBI_TAXID", ["SAMPLE", "SAMPLE_NAME", "TAXON_ID"]),
     ("SAMPLE_SEX", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='sex']//", "VALUE")),
     (
-        "COLLECTOR_LOCATION",
+        "COLLECTION_LOCATION",
         ["SAMPLE", "SAMPLE_ATTRIBUTES"],
         ("tag", ".//*[TAG='geographic location (region and locality)']//", "VALUE"),
     ),
@@ -126,6 +127,12 @@ def parse_xml(file_in, file_out):
                         param = None
 
                 if param is not None:
+                    if type(param) == int:
+                        param = str(param)
+
+                    if any(p in string.punctuation for p in param):
+                        param = '"' + param + '"'
+    
                     param_list.append([f[0], param])
 
     if len(param_list) > 0:

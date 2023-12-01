@@ -4,6 +4,7 @@ import os
 import sys
 import argparse
 import xml.etree.ElementTree as ET
+import string
 
 fetch = [
     ("ASSEMBLY_ID", ["ASSEMBLY"], ("attrib", "alias")),
@@ -82,12 +83,6 @@ def parse_xml(file_in, file_out):
                         except ValueError:
                             param = None
 
-                    ## Count child elements with specfic tag
-                    if f[2][0] == "count":
-                        if r is not None:
-                            param = str(len(r.findall(f[2][1]))) if len(r.findall(f[2][1])) != 0 else None
-                        else:
-                            param = None
 
                     ## Fetch paired tag-value elements from a parent, where tag is specified and value is wanted
                     if f[2][0] == "tag":
@@ -108,6 +103,8 @@ def parse_xml(file_in, file_out):
                                 if child.find('TAG').text == "count-non-chromosome-replicon":
                                     non_chrs = child.find("VALUE").text
                                     param = str(int(param) - int(non_chrs))
+                        if f[0] == "GENOME_LENGTH" or f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
+                            param = str(round((int(param) * 0.00001),1))
 
                 else:
                     try:
@@ -116,6 +113,12 @@ def parse_xml(file_in, file_out):
                         param = None
 
         if param is not None:
+            if type(param) == int:
+                param = str(param)
+
+            if any(p in string.punctuation for p in param):
+                param = '"' + param + '"'
+
             param_list.append([f[0], param])
 
     if len(param_list) > 0:

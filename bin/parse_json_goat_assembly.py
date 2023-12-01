@@ -84,6 +84,9 @@ def parse_json(file_in, file_out):
         param = find_element(data["records"][0], f[1], attribs, param_list, index=0)
 
         if param is not None:
+            if f[0] == "GENOME_LENGTH" or f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
+                param = str(round((int(param) * 0.00001),1))
+
             if type(param) == int:
                 param = str(param)
 
