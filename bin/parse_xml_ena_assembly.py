@@ -83,7 +83,6 @@ def parse_xml(file_in, file_out):
                         except ValueError:
                             param = None
 
-
                     ## Fetch paired tag-value elements from a parent, where tag is specified and value is wanted
                     if f[2][0] == "tag":
                         r = r.findall(f[2][1])
@@ -100,11 +99,11 @@ def parse_xml(file_in, file_out):
                         if f[0] == "CHROMOSOME_NUMBER":
                             ra = root.findall("./ASSEMBLY/ASSEMBLY_ATTRIBUTES/ASSEMBLY_ATTRIBUTE")
                             for child in ra:
-                                if child.find('TAG').text == "count-non-chromosome-replicon":
+                                if child.find("TAG").text == "count-non-chromosome-replicon":
                                     non_chrs = child.find("VALUE").text
                                     param = str(int(param) - int(non_chrs))
                         if f[0] == "GENOME_LENGTH" or f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
-                            param = str(round((int(param) * 0.00001),1))
+                            param = str(round((int(param) * 0.00001), 1))
 
                 else:
                     try:

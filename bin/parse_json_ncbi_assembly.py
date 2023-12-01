@@ -94,14 +94,13 @@ def parse_json(file_in, file_out):
 
         if param is not None:
             if f[0] == "GENOME_LENGTH" or f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
-                param = str(round((int(param) * 0.00001),1))
-        
+                param = str(round((int(param) * 0.00001), 1))
+
             if type(param) == int:
                 param = str(param)
 
             if any(p in string.punctuation for p in param):
                 param = '"' + param + '"'
-
 
             param_list.append([f[0], param])
 

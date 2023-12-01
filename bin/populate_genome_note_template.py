@@ -41,7 +41,7 @@ def build_param_list(param_file):
             key = row.pop(0)
             value = row[0]
             if key == "CHR_TABLE":
-                value = ','.join(row)
+                value = ",".join(row)
                 json_chrs = json.loads(value)
                 value = json_chrs
 
@@ -59,13 +59,13 @@ def build_param_list(param_file):
             mydict[key] = value
 
         authors = []
-        if(mydict["IDENTIFIER"]):
+        if mydict["IDENTIFIER"]:
             for i in mydict["IDENTIFIER"].split(","):
                 authors.append(i)
 
-        if(mydict["COLLECTOR"]):
+        if mydict["COLLECTOR"]:
             for c in mydict["COLLECTOR"].split(","):
-                authors.append(c)     
+                authors.append(c)
 
         mydict["AUTHORS"] = authors
 
@@ -79,7 +79,7 @@ def populate_template(param_file, template_file, file_out):
     template.render(context, myenv)
 
     write_file(template, file_out)
-    
+
 
 def main(args=None):
     args = parse_args(args)

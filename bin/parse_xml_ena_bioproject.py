@@ -9,7 +9,7 @@ import string
 fetch = [
     ("ENA_BIOPROJECT_ACCESSION", ["PROJECT"], ("attrib", "accession")),
     ("ENA_BIOPROJECT_TITLE", ["PROJECT", "TITLE"]),
-    ("ENA_FIRST_PUBLIC", ["PROJECT", "PROJECT_ATTRIBUTES"], ("tag", ".//*[TAG='ENA-FIRST-PUBLIC']//", "VALUE"))
+    ("ENA_FIRST_PUBLIC", ["PROJECT", "PROJECT_ATTRIBUTES"], ("tag", ".//*[TAG='ENA-FIRST-PUBLIC']//", "VALUE")),
 ]
 
 
@@ -72,7 +72,7 @@ def parse_xml(file_in, file_out):
                             param = r.attrib.get(f[2][1])
                         except ValueError:
                             param = None
-                    
+
                     ## Fetch paired tag-value elements from a parent, where tag is specified and value is wanted
                     if f[2][0] == "tag":
                         r = r.findall(f[2][1])
@@ -89,13 +89,13 @@ def parse_xml(file_in, file_out):
         if param is not None:
             if f[0] == "ENA_FIRST_PUBLIC":
                 param = param.split("-")[0]
-            
+
             if type(param) == int:
                 param = str(param)
 
             if any(p in string.punctuation for p in param):
                 param = '"' + param + '"'
-            
+
             param_list.append([f[0], param])
 
     if len(param_list) > 0:

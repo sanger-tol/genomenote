@@ -11,6 +11,7 @@ files = [
     ("STATISITCS", "in_statistics"),
 ]
 
+
 def parse_args(args=None):
     Description = "Combined the parsed data file from the genome metadata subworkflow with the parsed data file from the genome statistics subworkflow."
     Epilog = "Example usage: python combine_statistics.py <FILE_IN_CONSISTENT> <FILE_IN_STATISTICS> <FILE_OUT_CONSISTENT> <FILE_OUT_INCONSISTENT>"
@@ -38,12 +39,12 @@ def process_file(file_in, params):
             if row[0] == "#paramName":
                 continue
 
-            key = row.pop(0)    
+            key = row.pop(0)
             value = row[0]
-            
+
             if key == "CHR_TABLE":
                 value = ",".join(row)
-            
+
             elif any(p in string.punctuation for p in value):
                 value = '"' + value + '"'
 
@@ -66,7 +67,6 @@ def main(args=None):
     for file in files:
         (params, paramDict) = process_file(getattr(args, file[1]), params)
         param_sets[file[0]] = paramDict
-        
 
     for key in params.keys():
         value_set = {v for v in params[key]}

@@ -7,26 +7,27 @@ import json
 import sys
 
 param_lookup = {
-  "Accession": "ASSEMBLY_ACCESSION",
-  "Organism_Name": "GENUS_SPECIES", 
-  "ToL_ID": "TOLID",
-  "Taxon_ID": "NCBI_TAXID",
-  "Assembly_Name": "ASSEMBLY_ID",
-  "Life_Stage": "LIFESTAGE",
-  "Tissue": "TISSUE_TYPE",
-  "Sex": "SAMPLE_SEX",
-  "Total_Sequence": "GENOME_LENGTH",
-  "Chromosomes": "CHROMOSOME_NUMBER",
-  "Scaffolds": "SCAFF_NUMBER",
-  "Scaffold_N50": "SCAFF_N50",
-  "Contigs": "CONTIG_NUMBER",
-  "Contig_N50": "CONTIG_N50",
-  "Mitochondrion": "MITO_SIZE",
-  "##BUSCO": "BUSCO_REF",
-  "Summary": "BUSCO_STRING",
-  "QV": "QV",
-  "Completeness": "KMER" 
+    "Accession": "ASSEMBLY_ACCESSION",
+    "Organism_Name": "GENUS_SPECIES",
+    "ToL_ID": "TOLID",
+    "Taxon_ID": "NCBI_TAXID",
+    "Assembly_Name": "ASSEMBLY_ID",
+    "Life_Stage": "LIFESTAGE",
+    "Tissue": "TISSUE_TYPE",
+    "Sex": "SAMPLE_SEX",
+    "Total_Sequence": "GENOME_LENGTH",
+    "Chromosomes": "CHROMOSOME_NUMBER",
+    "Scaffolds": "SCAFF_NUMBER",
+    "Scaffold_N50": "SCAFF_N50",
+    "Contigs": "CONTIG_NUMBER",
+    "Contig_N50": "CONTIG_N50",
+    "Mitochondrion": "MITO_SIZE",
+    "##BUSCO": "BUSCO_REF",
+    "Summary": "BUSCO_STRING",
+    "QV": "QV",
+    "Completeness": "KMER",
 }
+
 
 def parse_args(args=None):
     Description = "Parse contents of the Genome Summary CSV file produced by the Genome Statistics subworkflow and pul out meta data required by a genome note."
@@ -69,19 +70,18 @@ def parse_csv(file_in, file_out):
                 param = row[1]
 
                 if type(param) == int:
-                  param = str(param)
-
+                    param = str(param)
 
                 if key == "BUSCO_STRING":
                     param = '"' + param + '"'
                     busco = param.replace("[", ":").split(":")
                     param_list.append(["BUSCO", busco[1]])
 
-                if key  == "GENOME_LENGTH" or key == "SCAFF_N50" or key == "CONTIG_N50":
-                    param = str(round((int(param) * 0.00001),1))
+                if key == "GENOME_LENGTH" or key == "SCAFF_N50" or key == "CONTIG_N50":
+                    param = str(round((int(param) * 0.00001), 1))
 
-                if key  == "MITO_SIZE":
-                    param = str(round((int(param) * 0.001),1))
+                if key == "MITO_SIZE":
+                    param = str(round((int(param) * 0.001), 1))
 
                 if len(param) != 0:
                     param_list.append([key, param])
@@ -90,24 +90,21 @@ def parse_csv(file_in, file_out):
                 chrs = []
                 chr_list_complete = 0
 
-                while (chr_list_complete < 1):
+                while chr_list_complete < 1:
                     chr_row = reader.__next__()
 
                     if chr_row[0].startswith("##"):
                         chr_list_complete = 1
-                        sorted_chrs = sorted(chrs, key=lambda d: d['Length'], reverse=True)
-                        param_list.append(["LONGEST_SCAFF", sorted_chrs[0].get("Length") ])
+                        sorted_chrs = sorted(chrs, key=lambda d: d["Length"], reverse=True)
+                        param_list.append(["LONGEST_SCAFF", sorted_chrs[0].get("Length")])
                         json_chrs = json.dumps(chrs)
                         param_list.append(["CHR_TABLE", json_chrs])
 
                     else:
-                        chr_length = str(round((int(chr_row[1]) * 0.00001),1))
-                        chrs.append({
-                            "Chromosome": chr_row[0],
-                            "Length": chr_length,
-                            "GC": chr_row[2],
-                            "Accession": chr_row[3]
-                        })
+                        chr_length = str(round((int(chr_row[1]) * 0.00001), 1))
+                        chrs.append(
+                            {"Chromosome": chr_row[0], "Length": chr_length, "GC": chr_row[2], "Accession": chr_row[3]}
+                        )
 
     if len(param_list) > 0:
         out_dir = os.path.dirname(file_out)
@@ -119,6 +116,7 @@ def parse_csv(file_in, file_out):
 
     else:
         print_error("No parameters found!", "File: {}".format(file_in))
+
 
 def main(args=None):
     args = parse_args(args)

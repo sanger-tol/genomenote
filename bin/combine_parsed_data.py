@@ -47,16 +47,16 @@ def process_file(file_in, params):
         for row in reader:
             if row[0] == "#paramName":
                 continue
-            
-            key = row.pop(0)    
+
+            key = row.pop(0)
             value = row[0]
-            
+
             if any(p in string.punctuation for p in value):
                 value = '"' + value + '"'
 
             source_dict[key] = value
 
-            print(key + " | " + value )
+            print(key + " | " + value)
 
             if key in params:
                 params[key].append(value)
