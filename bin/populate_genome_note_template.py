@@ -45,6 +45,9 @@ def build_param_list(param_file):
                 json_chrs = json.loads(value)
                 value = json_chrs
 
+            if key == "TISSUE_TYPE":
+                value = value.lower()
+
             if key == "IDENTIFIER" or key == "IDENTIFIER_INSTITUTE":
                 value = value.replace("|", ",")
                 value = value.lower().title()
@@ -61,18 +64,20 @@ def build_param_list(param_file):
         authors = []
         seen = set()
         if mydict["IDENTIFIER"]:
-            for i in mydict["IDENTIFIER"].split(","):
+            for i in mydict["IDENTIFIER"].split(", "):
+                i = i.rstrip()
                 if i not in seen:
                     authors.append(i)
                     seen.add(i)
 
         if mydict["COLLECTORS"]:
-            for c in mydict["COLLECTORS"].split(","):
+            for c in mydict["COLLECTORS"].split(", "):
+                c = c.rstrip()
                 if c not in seen:
                     authors.append(c)
                     seen.add(c)
 
-        mydict["AUTHORS"] = ",".join(authors)
+        mydict["AUTHORS"] = ", ".join(authors)
 
         return mydict
 
