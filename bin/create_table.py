@@ -133,7 +133,7 @@ def extract_pacbio(qv, completeness, writer):
 
 
 def extract_mapped(sample, file_in, writer):
-    writer.writerow(["##HiC", "_".join(sample.split("/")[-1].split("_")[:-1])])
+    writer.writerow(["##HiC", "_".join(sample.split("_")[:-1])])
     with open(file_in, "r") as fin:
         for line in fin:
             if "primary mapped" in line:
