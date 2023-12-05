@@ -115,7 +115,7 @@ def extract_busco(file_in, writer):
 
 def extract_pacbio(qv, completeness, writer):
     qval = 0
-    qv_name = ""
+    qv_name = None
     for f in qv:
         with open(f, "r") as fin:
             data = csv.DictReader(fin, delimiter="\t")
@@ -123,15 +123,23 @@ def extract_pacbio(qv, completeness, writer):
                 if float(row["QV"]) > qval:
                     qval = float(row["QV"])
                     qv_name = remove_sample_T_suffix(os.path.basename(f).removesuffix(".qv"))
+    assert qv_name is not None, "No QV values found in %s" % qv
 
-    comp = 0
+    # The completeness has to be from the same specimen as the QV value
+    matching_completeness_files = []
     for h in completeness:
         comp_name = remove_sample_T_suffix(os.path.basename(h).removesuffix(".completeness.stats"))
         if comp_name == qv_name:
-            with open(h, "r") as fin:
-                data = csv.DictReader(fin, delimiter="\t")
-                for row in data:
-                    comp = float(row["% Covered"])
+            matching_completeness_files.append(h)
+    assert matching_completeness_files, "No completeness files (%s) match for %s" % (completeness, qv_name)
+
+    comp = None
+    for h in matching_completeness_files:
+        with open(h, "r") as fin:
+            data = csv.DictReader(fin, delimiter="\t")
+            for row in data:
+                comp = float(row["% Covered"])
+    assert comp is not None, "No completeness values found in %s" % matching_completeness_files
 
     writer.writerow(["##MerquryFK", qv_name])
     writer.writerow(["QV", qval])
