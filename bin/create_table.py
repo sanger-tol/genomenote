@@ -29,6 +29,12 @@ def make_dir(path):
         os.makedirs(path, exist_ok=True)
 
 
+# check_samplesheet.py adds a suffix like "_T1", "_T2", etc, to the sample names
+# We usually don't want it in the final output
+def remove_sample_T_suffix(name):
+    return re.sub(r"_T\d+", "", name)
+
+
 def ncbi_stats(genome_in, seq_in, writer):
     with open(genome_in, "r") as fin1:
         data = json.load(fin1)
@@ -116,11 +122,11 @@ def extract_pacbio(qv, completeness, writer):
             for row in data:
                 if float(row["QV"]) > qval:
                     qval = float(row["QV"])
-                    qv_name = os.path.basename(f).removesuffix(".qv").split("_")[0]
+                    qv_name = remove_sample_T_suffix(os.path.basename(f).removesuffix(".qv"))
 
     comp = 0
     for h in completeness:
-        comp_name = os.path.basename(h).removesuffix(".completeness.stats").split("_")[0]
+        comp_name = remove_sample_T_suffix(os.path.basename(h).removesuffix(".completeness.stats"))
         if comp_name == qv_name:
             with open(h, "r") as fin:
                 data = csv.DictReader(fin, delimiter="\t")
@@ -133,7 +139,7 @@ def extract_pacbio(qv, completeness, writer):
 
 
 def extract_mapped(sample, file_in, writer):
-    writer.writerow(["##HiC", "_".join(sample.split("_")[:-1])])
+    writer.writerow(["##HiC", remove_sample_T_suffix(sample)])
     with open(file_in, "r") as fin:
         for line in fin:
             if "primary mapped" in line:
