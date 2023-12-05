@@ -116,11 +116,11 @@ def extract_pacbio(qv, completeness, writer):
             for row in data:
                 if float(row["QV"]) > qval:
                     qval = float(row["QV"])
-                    qv_name = os.path.basename(f).split("_")[0]
+                    qv_name = os.path.basename(f).removesuffix(".qv").split("_")[0]
 
     comp = 0
     for h in completeness:
-        comp_name = os.path.basename(h).split("_")[0]
+        comp_name = os.path.basename(h).removesuffix(".completeness.stats").split("_")[0]
         if comp_name == qv_name:
             with open(h, "r") as fin:
                 data = csv.DictReader(fin, delimiter="\t")

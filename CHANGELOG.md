@@ -30,6 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   possible.
 - Genomes with sequences longer than 2 Gbp are now supported thanks to
   upgrading FastK and MerquryFK.
+- Fixed a bug that was causing the Completeness to be reported as 0 in the
+  statistics CSV file, when the k-mer database was constructed from BAM files.
 - Minimal version of Nextflow downgraded to 23.04 to 22.10. 22.10 is tested as
   part of our continuous integration (CI) pipeline.
 - The "test" profile now runs faster, thanks to tuning some Busco/Metaeuk
