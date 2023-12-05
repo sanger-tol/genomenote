@@ -46,7 +46,7 @@ sample1,pacbio,/path/to/unaligned/bam
 | `datatype` | Type of sequencing data. Must be `hic` or `pacbio`.                                                                                                                                           |
 | `datafile` | Full path to the data location. Can be either `bam` or `cram` aligned reads for `hic` data type. Can be either the FASTK `kmer` directory or the unaligned `bam` files for `pacbio` datatype. |
 
-An [example samplesheet](https://raw.githubusercontent.com/sanger-tol/genomenote/main/assets/samplesheet.csv) has been provided with the pipeline.
+An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
 ## Running the pipeline
 

@@ -24,7 +24,7 @@
 5. Summary statistics ([`NCBI datasets summary genome accession`](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/reference-docs/command-line/datasets/summary/genome/datasets_summary_genome_accession/))
 6. Genome completeness ([`NCBI API`](https://www.ncbi.nlm.nih.gov/datasets/docs/v1/reference-docs/rest-api/), [`BUSCO`](https://busco.ezlab.org))
 7. Consensus quality and k-mer completeness ([`FASTK`](https://github.com/thegenemyers/FASTK), [`MERQURY.FK`](https://github.com/thegenemyers/MERQURY.FK))
-8. Collated summary table ([`createtable`](https://raw.githubusercontent.com/sanger-tol/genomenote/main/bin/create_table.py))
+8. Collated summary table ([`createtable`](bin/create_table.py))
 9. Present results and visualisations ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
 
 ## Usage
@@ -75,13 +75,13 @@ We thank the following people for their assistance in the development of this pi
 
 ## Contributions and Support
 
-If you would like to contribute to this pipeline, please see the [contributing guidelines](https://raw.githubusercontent.com/sanger-tol/genomenote/main/.github/CONTRIBUTING.md).
+If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
 ## Citations
 
 If you use sanger-tol/genomenote for your analysis, please cite it using the following doi: [10.5281/zenodo.7949384](https://doi.org/10.5281/zenodo.7949384)
 
-An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](https://raw.githubusercontent.com/sanger-tol/genomenote/main/CITATIONS.md) file.
+An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
 This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/master/LICENSE).
 

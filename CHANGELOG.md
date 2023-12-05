@@ -3,6 +3,49 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[1.1.0](https://github.com/sanger-tol/genomenote/releases/tag/1.1.0)] - [2023-11-23]
+
+### Enhancements & fixes
+
+- The pipeline now queries the NCBI Taxonomy API rather than
+  [GoaT](https://goat.genomehubs.org/api) to establish the list of lineages on
+  which to run BUSCO. The possible lineages are now defined [in the pipeline
+  configuration](assets/mapping_taxids-busco_dataset_name.eukaryota_odb10.2019-12-16.txt)
+  but can be overridden with the `--lineage_tax_ids` parameter.
+- The pipeline will now immediately fail if the assembly can't be retrieve by
+  the [datasets](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/download-and-install/)
+  command-line tool.
+- Pipeline information is now outputted in `pipeline_info/genomenote/` instead
+  of `genomenote_info/`.
+- `maxRetries` increased to 5 to cope with large datasets.
+- BUSCO now runs in "scratch" mode, i.e. off a temporary directory, as the
+  number of files it creates could otherwise overwhelm a network filesystem.
+- `SORT`, `FASTK`, and `MERQURYFK`, can now put their temporary files in the
+  work directory rather than `/tmp`. Turn that on with the `--use_work_dir_as_temp`
+  flag.
+- The memory requirement of `SORT` is adjusted to account for some overheads
+  and avoid the job to be killed.
+- All resource requirements (memory, time, CPUs) now fit the actual usage. This
+  is achieved by automatically adjusting to the size of the input whenever
+  possible.
+- Minimal version of Nextflow downgraded to 23.04 to 22.10. 22.10 is tested as
+  part of our continuous integration (CI) pipeline.
+- The "test_full" profile is now tested automatically when updating the `dev`
+  and `main` branches.
+
+### Parameters
+
+| Old parameter | New parameter          |
+| ------------- | ---------------------- |
+|               | --lineage_tax_ids      |
+|               | --use_work_dir_as_temp |
+
+### Software dependencies
+
+| Dependency | Old version | New version |
+| ---------- | ----------- | ----------- |
+| `datasets` | 14.2        | 15.12       |
+
 ## [[1.0.0](https://github.com/sanger-tol/genomenote/releases/tag/1.0.0)] - Czechoslovakian Wolfdog - [2023-05-18]
 
 Initial release of sanger-tol/genomenote, created with the [nf-core](https://nf-co.re/) template.
