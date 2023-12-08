@@ -78,10 +78,10 @@ def parse_csv(file_in, file_out):
                     param_list.append(["BUSCO", busco[1]])
 
                 if key == "GENOME_LENGTH" or key == "SCAFF_N50" or key == "CONTIG_N50":
-                    param = str(round((int(param) * 1e-6), 1)) # convert to Mbp
+                    param = str(round((int(param) * 1e-6), 1))  # convert to Mbp
 
                 if key == "MITO_SIZE":
-                    param = str(round((int(param) * 0.001), 1)) # convert to kbp
+                    param = str(round((int(param) * 0.001), 1))  # convert to kbp
 
                 if len(param) != 0:
                     param_list.append([key, param])
