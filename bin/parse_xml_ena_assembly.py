@@ -103,7 +103,7 @@ def parse_xml(file_in, file_out):
                                     non_chrs = child.find("VALUE").text
                                     param = str(int(param) - int(non_chrs))
                         if f[0] == "GENOME_LENGTH" or f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
-                            param = str(round((int(param) * 0.00001), 1))
+                            param = str(round((int(param) * 1e-6), 1)) # convert to Mbp
 
                 else:
                     try:
