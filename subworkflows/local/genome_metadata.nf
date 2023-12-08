@@ -60,7 +60,7 @@ workflow GENOME_METADATA {
     ch_versions = ch_versions.mix( COMBINE_METADATA.out.versions.first() )
 
     emit:
-    consistent    = COMBINE_METADATA.out.consistent // channel: [ csv ]
+    consistent  = COMBINE_METADATA.out.consistent // channel: [ csv ]
     versions    = ch_versions.ifEmpty(null) // channel: [versions.yml]
     
 }
