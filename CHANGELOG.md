@@ -28,8 +28,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All resource requirements (memory, time, CPUs) now fit the actual usage. This
   is achieved by automatically adjusting to the size of the input whenever
   possible.
+- Genomes with sequences longer than 2 Gbp are now supported thanks to
+  upgrading FastK and MerquryFK.
+- Fixed a bug that was causing the Completeness to be reported as 0 in the
+  statistics CSV file, when the k-mer database was constructed from BAM files.
 - Minimal version of Nextflow downgraded to 23.04 to 22.10. 22.10 is tested as
   part of our continuous integration (CI) pipeline.
+- The "test" profile now runs faster, thanks to tuning some Busco/Metaeuk
+  parameters.
 - The "test_full" profile is now tested automatically when updating the `dev`
   and `main` branches.
 
@@ -42,9 +48,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Software dependencies
 
-| Dependency | Old version | New version |
-| ---------- | ----------- | ----------- |
-| `datasets` | 14.2        | 15.12       |
+| Dependency  | Old version                                | New version                                |
+| ----------- | ------------------------------------------ | ------------------------------------------ |
+| `datasets`  | 14.2                                       | 15.12                                      |
+| `FastK`     | `f18a4e6d2207539f7b84461daebc54530a9559b0` | `427104ea91c78c3b8b8b49f1a7d6bbeaa869ba1c` |
+| `MerquryFK` | `8ae344092df5dcaf83cfb7f90f662597a9b1fc61` | `d00d98157618f4e8d1a9190026b19b471055b22e` |
 
 ## [[1.0.0](https://github.com/sanger-tol/genomenote/releases/tag/1.0.0)] - Czechoslovakian Wolfdog - [2023-05-18]
 
