@@ -19,11 +19,12 @@ workflow COMBINE_NOTE_DATA {
     ch_versions = Channel.empty()
 
     ch_summary 
-    | map {  meta, it ->
-        meta.ext = "csv"
-        meta.source = "genome"
-        meta.type = "summary"
-        [ meta, it ]
+    | map {  meta, json ->
+        [ meta + [
+            ext:    "csv",
+            source: "genome",
+            type:   "summary",
+        ], json ]
     }
     | set { ch_summary_meta }
 
@@ -35,20 +36,12 @@ workflow COMBINE_NOTE_DATA {
     COMBINE_STATISTICS_AND_METADATA(ch_params, PARSE_METADATA.out.file_path)
     ch_versions = ch_versions.mix( COMBINE_STATISTICS_AND_METADATA.out.versions.first() )
 
-    COMBINE_STATISTICS_AND_METADATA.out.consistent
-    | multiMap { it ->
-        TEMPLATE: it
-        DB: it
-    }
-    | set { ch_params_consistent }
-
-
-    POPULATE_TEMPLATE( ch_params_consistent.TEMPLATE, ch_note_template )
+    POPULATE_TEMPLATE( COMBINE_STATISTICS_AND_METADATA.out.consistent, ch_note_template )
     ch_versions = ch_versions.mix( POPULATE_TEMPLATE.out.versions.first() )
 
     if ( params.write_to_portal ) { 
         ch_api_url = Channel.of(params.genome_notes_api)
-        WRITE_TO_GENOME_NOTES_DB( ch_params_consistent.DB, ch_api_url )
+        WRITE_TO_GENOME_NOTES_DB( COMBINE_STATISTICS_AND_METADATA.out.consistent, ch_api_url )
         ch_versions = ch_versions.mix( WRITE_TO_GENOME_NOTES_DB.out.versions.first() )
     }
 
