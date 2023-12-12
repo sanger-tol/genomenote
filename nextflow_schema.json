@@ -36,6 +36,10 @@
                     "type": "string",
                     "description": "The Genbank assembly accession for the assembly, for example: GCA_922984935.2."
                 },
+                "species": {
+                    "type": "string",
+                    "description": "The species name for the assembly with spaces replaced with '_', for example: Epithemia_sp._CRS-2021b."
+                },
                 "taxon_id": {
                     "type": "string",
                     "description": "The NCBI taxonomy ID corresponding to the GCA assembly accession, for example: 9662."
@@ -69,7 +73,7 @@
                 },
                 "write_to_portal": {
                     "type": "boolean",
-                    "description": "URL for Genome Notes Portal API .",
+                    "description": "Flag to control if results are written to genome notes portal database .",
                     "default": false,
                     "fa_icon": "fas far fa-file-code",
                     "hidden": true
@@ -78,6 +82,44 @@
                     "type": "string",
                     "description": "URL for Genome Notes Portal API .",
                     "fa_icon": "far fa-file-code"
+                },
+                "upload_higlass_data": {
+                    "type": "boolean",
+                    "description": "flag to control if Higlass server should be updated to add new files",
+                    "default": false,
+                    "fa_icon": "fas far fa-file-code",
+                    "hidden": true
+                },
+                "higlass_upload_directory": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "The ingress directory for the kubernetes cluster running the HiGlass server.",
+                    "fa_icon": "fas fa-folder-open",
+                    "hidden": true
+                },
+                "higlass_data_project_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Subdirectory struture to use for organising HiGlass data, suggested format is <project_name>/<taxon_group> e.g. '/asg/algae'",
+                    "fa_icon": "fas fa-folder-open",
+                    "hidden": true
+                },
+                "higlass_kubeconfig": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "The path to the kubeconfig  for the kubernetes cluster running the HiGlass server.",
+                    "fa_icon": "fas fa-folder-open",
+                    "hidden": true
+                },
+                "higlass_deployment_name": {
+                    "type": "string",
+                    "description": "Name of the kubernetes deployment for the HiGlass server.",
+                    "hidden": true
+                },
+                "higlass_namespace": {
+                    "type": "string",
+                    "description": "The name for the namespace used in the Kubernetes cluster running the HiGlass server.",
+                    "hidden": true
                 }
             }
         },

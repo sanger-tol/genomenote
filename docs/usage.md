@@ -12,10 +12,12 @@ The pipeline also collates (1) assembly metadata from ENA, NCBI and GoaT (2) ass
 
 ## Genome metadata input
 
-You will need to supply the assembly accession for the genome you would like to analyse along with the bioproject accession and the biosample acession linked to this genome assembly.
+You will need to supply the assembly accession for the genome you would like to analyse along with the species name, taxon_id, bioproject accession and the biosample acession linked to this genome assembly.
 
 ```bash
    --assembly '[assembly accession]'
+   --species '[species name]'
+   --taxon_id '[taxon id]'
    --bioproject '[bioproject accession]'
    --biosample '[biosample accession]'
 ```
@@ -31,6 +33,17 @@ You will also need to set a nextflow secret to store the API key belonging to yo
 
 ```bash
   nextflow secrets set TOL_API_KEY '[API key]'
+```
+
+If you wish to run the optional step that writes the .mcool and .genome files produced by the contact_maps subworkflow to a kubernetes hosted higlass server you will need to set the parameter "upload_higlass_data" to true and provide the configuration information for the kubernetes deployment.
+
+```bash
+   --upload_higlass_data 'true'
+   --higlass_upload_directory  '[Path to ingress directory for kubernetes]'
+   --higlass_data_project_dir '[Directory structure to be used for Higlass data, suggestions is to use /<project-name>/<taxon-group>]'
+   --higlass_deployment_name '[ Name of Higlass Deployment in kubernetes]'
+   --higlass_namespace '[Name of the namespace used for Higlass Deployment in Kubernetes]'
+   --higlass_kubeconfig '[path to kubeconfig file]'
 ```
 
 ## Samplesheet input
@@ -76,7 +89,7 @@ An [example samplesheet](https://raw.githubusercontent.com/sanger-tol/genomenote
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run sanger-tol/genomenote --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta --assembly GCA_922984935.2 --bioproject PRJEB49353 --biosample SAMEA7524400 -profile docker
+nextflow run sanger-tol/genomenote --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta --assembly GCA_922984935.2 --species Epithemia_sp._CRS-2021b --taxon_id 2809013 --bioproject PRJEB49353 --biosample SAMEA7524400 -profile docker
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -109,8 +122,10 @@ outdir: './results/'
 fasta: './genome.fasta'
 input: 'data'
 assembly: 'GCA_922984935.2'
+species: 'Epithemia_sp._CRS-2021b'
+taxon_id: '2809013'
 bioproject: 'PRJEB49353'
-biosample" 'SAMEA7524400'
+biosample: 'SAMEA7524400'
 <...>
 ```
 
