@@ -61,6 +61,7 @@ workflow GENOME_METADATA {
 
     emit:
     consistent  = COMBINE_METADATA.out.consistent // channel: [ csv ]
+    inconsistent  = COMBINE_METADATA.out.inconsistent // channel: [ csv ]
     versions    = ch_versions.ifEmpty(null) // channel: [versions.yml]
     
 }

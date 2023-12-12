@@ -9,7 +9,8 @@ process COMBINE_STATISTICS_AND_METADATA {
 
     input:
     tuple val(meta), path(consistent_params)
-    tuple val(meta2), path(statistics_params)
+    tuple val(meta2), path(inconsistent_params)
+    tuple val(meta3), path(statistics_params)
 
     output:
     tuple val (meta), path("${meta.id}_genome_note_consistent.csv") , emit: consistent
@@ -25,6 +26,7 @@ process COMBINE_STATISTICS_AND_METADATA {
     """
     combine_statistics_data.py \\
     --in_consistent $consistent_params \\
+    --in_inconsistent $inconsistent_params \\
     --in_statistics $statistics_params \\
     --out_consistent ${prefix}_genome_note_consistent.csv \\
     --out_inconsistent ${prefix}_genome_note_inconsistent.csv \\

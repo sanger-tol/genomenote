@@ -10,7 +10,8 @@ include { WRITE_TO_GENOME_NOTES_DB          }       from '../../modules/local/wr
 
 workflow COMBINE_NOTE_DATA {
     take:
-    ch_params // channel: /path/to/csv/file/consistent_parameters from GENOME_METADATA subworkflow
+    ch_params_consistent // channel: /path/to/csv/file/consistent_parameters from GENOME_METADATA subworkflow
+    ch_params_inconsistent // channel: /path/to/csv/file/consistent_parameters from GENOME_METADATA subworkflow
     ch_summary // channel: /path/to/csv/summary/file from GENOME_STATISTICS subworkflow 
     ch_note_template   // channel: /path/to/genome_note_doc_template
 
@@ -33,7 +34,7 @@ workflow COMBINE_NOTE_DATA {
 
 
 
-    COMBINE_STATISTICS_AND_METADATA(ch_params, PARSE_METADATA.out.file_path)
+    COMBINE_STATISTICS_AND_METADATA(ch_params_consistent, ch_params_inconsistent, PARSE_METADATA.out.file_path)
     ch_versions = ch_versions.mix( COMBINE_STATISTICS_AND_METADATA.out.versions.first() )
 
     POPULATE_TEMPLATE( COMBINE_STATISTICS_AND_METADATA.out.consistent, ch_note_template )

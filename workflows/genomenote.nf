@@ -141,7 +141,7 @@ workflow GENOMENOTE {
     // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
     //
 
-    COMBINE_NOTE_DATA (GENOME_METADATA.out.consistent, GENOME_STATISTICS.out.summary, ch_note_template)
+    COMBINE_NOTE_DATA (GENOME_METADATA.out.consistent, GENOME_METADATA.out.inconsistent, GENOME_STATISTICS.out.summary, ch_note_template)
     ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
 
 

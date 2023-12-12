@@ -18,6 +18,7 @@ def parse_args(args=None):
 
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
     parser.add_argument("--in_consistent", help="Input consistent params file.", required=True)
+    parser.add_argument("--in_inconsistent", help="Input consistent params file.", required=True)
     parser.add_argument("--in_statistics", help="Input parsed genome statistics params file.", required=True)
     parser.add_argument("--out_consistent", help="Output file.", required=True)
     parser.add_argument("--out_inconsistent", help="Output file.", required=True)
@@ -30,16 +31,25 @@ def make_dir(path):
         os.makedirs(path, exist_ok=True)
 
 
-def process_file(file_in, params):
+def process_file(file_in, file_type, params, param_sets):
     with open(file_in, mode="r") as infile:
         reader = csv.reader(infile)
 
-        source_dict = {}
         for row in reader:
             if row[0] == "#paramName":
                 continue
 
             key = row.pop(0)
+            source_values = []
+
+            if param_sets.get(key):
+                source_values = param_sets.get(key)
+
+            if file_type == "CONSISTENT":
+                sources = row[1].split("|")
+            else:
+                sources = ["STATISICS"]
+
             value = row[0]
 
             if key == "CHR_TABLE":
@@ -48,14 +58,34 @@ def process_file(file_in, params):
             elif any(p in string.punctuation for p in value):
                 value = '"' + value + '"'
 
-            source_dict[key] = value
+            for source in sources:
+                source_values.append([source, value])
+
+            param_sets[key] = source_values
 
             if key in params:
                 params[key].append(value)
             else:
                 params[key] = [value]
 
-    return (params, source_dict)
+    return (params, param_sets)
+
+
+def process_inconsistent_file(file, params, inconsistent, consistent):
+    # Add inconsistent data from metadata_inconsistent_file
+    with open(file, mode="r") as infile:
+        reader = csv.reader(infile)
+
+        for row in reader:
+            if row[0] == "#paramName":
+                continue
+            else:
+                key = row.pop(0)
+
+                if consistent.get(key) is None:
+                    inconsistent[key] = row
+
+    return inconsistent
 
 
 def main(args=None):
@@ -65,21 +95,24 @@ def main(args=None):
     params_inconsistent = {}
 
     for file in files:
-        (params, paramDict) = process_file(getattr(args, file[1]), params)
-        param_sets[file[0]] = paramDict
+        (params, param_sets) = process_file(getattr(args, file[1]), file[0], params, param_sets)
 
     for key in params.keys():
         value_set = {v for v in params[key]}
         if len(value_set) != 1:
             params_inconsistent[key] = []
 
-            for source in param_sets:
-                if key in param_sets[source]:
-                    params_inconsistent[key].append((source, param_sets[source][key]))
+            if key in param_sets:
+                for pair in param_sets[key]:
+                    pair_str = pair[0] + "|" + pair[1]
+                    params_inconsistent[key].append(pair_str)
 
     # Strip inconsitent data from parameter list
     for i in params_inconsistent.keys():
         params.pop(i)
+
+    # combine inconsisent params and add in original data source
+    params_inconsistent = process_inconsistent_file(args.in_inconsistent, param_sets, params_inconsistent, params)
 
     # Write out file where data is consistent across different sources
     if len(params) > 0:
@@ -94,12 +127,7 @@ def main(args=None):
             fout.write(",".join(["#paramName", "source|paramValue"]) + "\n")
             for key in sorted(params_inconsistent):
                 fout.write(key + ",")
-                pairs = []
-                for value in params_inconsistent[key]:
-                    pair = "|".join(value)
-                    pairs.append(pair)
-
-                fout.write(",".join(pairs) + "\n")
+                fout.write(",".join(params_inconsistent[key]) + "\n")
 
 
 if __name__ == "__main__":
