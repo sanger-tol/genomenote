@@ -17,11 +17,6 @@ fetch = [
         ["SAMPLE", "SAMPLE_ATTRIBUTES"],
         ("tag", ".//*[TAG='geographic location (region and locality)']//", "VALUE"),
     ),
-    (
-        "COLLECTION_LOCATION",
-        ["SAMPLE", "SAMPLE_ATTRIBUTES"],
-        ("tag", ".//*[TAG='geographic location (country and/or sea)']//", "VALUE"),
-    ),
     ("IDENTIFIER", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='identified by']//", "VALUE")),
     ("IDENTIFIER_INSTITUTE", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='identifier_affiliation']//", "VALUE")),
     ("COMMON_NAME", ["SAMPLE", "SAMPLE_NAME", "COMMON_NAME"]),

@@ -30,11 +30,6 @@ fetch = [
         ("assembly_info", "biosample", "attributes"),
         {"name": "geographic location (region and locality)"},
     ),
-    (
-        "COLLECTION_LOCATION",
-        ("assembly_info", "biosample", "attributes"),
-        {"name": "geographic location (country and/or sea)"},
-    ),
     ("LATITUDE", ("assembly_info", "biosample", "attributes"), {"name": "geographic location (latitude)"}),
     ("LONGITUDE", ("assembly_info", "biosample", "attributes"), {"name": "geographic location (longitude)"}),
     ("HABITAT", ("assembly_info", "biosample", "attributes"), {"name": "habitat"}),
@@ -87,7 +82,6 @@ def parse_json(file_in, file_out):
         print_error("More than one report found")
 
     for f in fetch:
-        print(f[0])
         attribs = None
         if len(f) == 3:
             attribs = f[2]
