@@ -17,7 +17,7 @@ process UPLOAD_HIGLASS_DATA {
     env grid_uuid, emit: grid_uuid
     tuple val(meta2), path(genome), emit: genome_file
     path "versions.yml", emit: versions
-    
+
     when:
     task.ext.when == null || task.ext.when
 
@@ -52,28 +52,28 @@ process UPLOAD_HIGLASS_DATA {
     echo "Delete .mcool file from server if already exists"
     tilesets=\$(kubectl exec \$pod_name -- python /home/higlass/projects/higlass-server/manage.py list_tilesets | (grep '${file_name}_map' || [ "\$?" == "1" ] ) | awk '{print substr(\$NF, 1, length(\$NF)-1)}')
 
-    for f in \$tilesets; do 
+    for f in \$tilesets; do
         echo "Deleting \$f"
         kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py delete_tileset --uuid \$f
     done
 
     echo "Loading .mcool file"
     kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${project_name}/${file_name}.mcool --filetype cooler --datatype matrix --project-name ${project_name} --name ${file_name}_map
-    
+
     map_uuid=\$(kubectl exec \$pod_name -- python /home/higlass/projects/higlass-server/manage.py list_tilesets | (grep '${file_name}_map' || [ "\$?" == "1" ] ) | awk '{print substr(\$NF, 1, length(\$NF)-1)}')
     echo "uuid of .mcool file is: \$map_uuid"
-    
+
     echo "Delete .genome file from server if already exists"
     tilesets=\$(kubectl exec \$pod_name -- python /home/higlass/projects/higlass-server/manage.py list_tilesets | (grep '${file_name}_grid' || [ "\$?" == "1" ] ) | awk '{print substr(\$NF, 1, length(\$NF)-1)}')
 
-    for f in \$tilesets; do 
+    for f in \$tilesets; do
         echo "Deleting \$f"
         kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py delete_tileset --uuid \$f
     done
 
     echo "Loading .genome file"
     kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${project_name}/${file_name}.genome --filetype chromsizes-tsv --datatype chromsizes --coordSystem ${assembly}_assembly --project-name ${project_name} --name ${file_name}_grid
-   
+
     grid_uuid=\$(kubectl exec \$pod_name -- python /home/higlass/projects/higlass-server/manage.py list_tilesets | (grep '${file_name}_grid' || [ "\$?" == "1" ] ) | awk '{print substr(\$NF, 1, length(\$NF)-1)}')
     echo "uuid of .genome file is: \$grid_uuid"
 
