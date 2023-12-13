@@ -5,6 +5,7 @@ import sys
 import argparse
 import xml.etree.ElementTree as ET
 import string
+import numbers
 
 fetch = [
     ("ASSEMBLY_ID", ["ASSEMBLY"], ("attrib", "alias")),
@@ -112,6 +113,10 @@ def parse_xml(file_in, file_out):
                         param = None
 
         if param is not None:
+            # Convert ints and floats to str to allow for params with punctuation to be quoted
+            if isinstance(param, numbers.Number):
+                param = str(param)
+
             if any(p in string.punctuation for p in param):
                 param = '"' + param + '"'
 

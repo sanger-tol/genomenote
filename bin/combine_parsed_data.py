@@ -5,6 +5,7 @@ import os
 import sys
 import argparse
 import string
+import numbers
 
 files = [
     ("ENA_ASSEMBLY", "ena_assembly_file"),

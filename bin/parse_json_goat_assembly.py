@@ -5,6 +5,7 @@ import os
 import json
 import sys
 import string
+import numbers
 
 fetch = [
     ("BIOPROJECT_ACCESSION", ("record", "attributes", "bioproject", "value"), {"index": 0}),
@@ -86,6 +87,10 @@ def parse_json(file_in, file_out):
         if param is not None:
             if f[0] == "GENOME_LENGTH" or f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
                 param = str(round((int(param) * 1e-6), 1))  # convert to Mbp
+
+            # Convert ints and floats to str to allow for params with punctuation to be quoted
+            if isinstance(param, numbers.Number):
+                param = str(param)
 
             if any(p in string.punctuation for p in param):
                 param = '"' + param + '"'

@@ -5,6 +5,8 @@ import os
 import csv
 import json
 import sys
+import string
+import numbers
 
 param_lookup = {
     "Accession": "ASSEMBLY_ACCESSION",
@@ -79,6 +81,13 @@ def parse_csv(file_in, file_out):
 
                 if key == "MITO_SIZE":
                     param = str(round((int(param) * 0.001), 1))  # convert to kbp
+
+                # Convert ints and floats to str to allow for params with punctuation to be quoted
+                if isinstance(param, numbers.Number):
+                    param = str(param)
+
+                if any(p in string.punctuation for p in param):
+                    param = '"' + param + '"'
 
                 if len(param) != 0:
                     param_list.append([key, param])
