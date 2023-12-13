@@ -112,7 +112,6 @@ def parse_xml(file_in, file_out):
                         param = None
 
         if param is not None:
-
             if any(p in string.punctuation for p in param):
                 param = '"' + param + '"'
 
