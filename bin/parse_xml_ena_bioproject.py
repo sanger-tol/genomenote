@@ -90,9 +90,6 @@ def parse_xml(file_in, file_out):
             if f[0] == "ENA_FIRST_PUBLIC":
                 param = param.split("-")[0]
 
-            if type(param) == int:
-                param = str(param)
-
             if any(p in string.punctuation for p in param):
                 param = '"' + param + '"'
 

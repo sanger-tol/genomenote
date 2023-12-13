@@ -69,9 +69,6 @@ def parse_csv(file_in, file_out):
                 key = param_lookup.get(row[0])
                 param = row[1]
 
-                if type(param) == int:
-                    param = str(param)
-
                 if key == "BUSCO_STRING":
                     param = '"' + param + '"'
                     busco = param.replace("[", ":").split(":")
