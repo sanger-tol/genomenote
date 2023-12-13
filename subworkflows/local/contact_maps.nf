@@ -13,7 +13,7 @@ include { COOLER_CLOAD            } from '../../modules/nf-core/cooler/cload/mai
 include { COOLER_ZOOMIFY          } from '../../modules/nf-core/cooler/zoomify/main'
 include { COOLER_DUMP             } from '../../modules/nf-core/cooler/dump/main'
 include { UPLOAD_HIGLASS_DATA     } from '../../modules/local/upload_higlass_data'
-
+include { GENERATE_HIGLASS_LINK   } from '../../modules/local/generate_higlass_link'
 
 workflow CONTACT_MAPS {
     take:
@@ -101,12 +101,16 @@ workflow CONTACT_MAPS {
     if ( params.upload_higlass_data ) {
         UPLOAD_HIGLASS_DATA (COOLER_ZOOMIFY.out.mcool, COOLER_DUMP.out.bedpe, params.species, params.assembly, params.higlass_data_project_dir, params.higlass_upload_directory )
         ch_versions = ch_versions.mix ( UPLOAD_HIGLASS_DATA.out.versions.first() )
+   
+        GENERATE_HIGLASS_LINK (UPLOAD_HIGLASS_DATA.out.map_uuid, UPLOAD_HIGLASS_DATA.out.grid_uuid, params.higlass_url, UPLOAD_HIGLASS_DATA.out.genome_file)
+        ch_versions = ch_versions.mix ( GENERATE_HIGLASS_LINK.out.versions.first() )
     }
 
 
     emit:
-    cool     = COOLER_CLOAD.out.cool     // tuple val(meta), val(cool_bin), path("*.cool")
-    mcool    = COOLER_ZOOMIFY.out.mcool  // tuple val(meta), path("*.mcool")
-    grid     = COOLER_DUMP.out.bedpe     // tuple val(meta), path("*.bedpe")
-    versions = ch_versions               // channel: [ versions.yml ]
+    cool     = COOLER_CLOAD.out.cool                    // tuple val(meta), val(cool_bin), path("*.cool")
+    mcool    = COOLER_ZOOMIFY.out.mcool                 // tuple val(meta), path("*.mcool")
+    grid     = COOLER_DUMP.out.bedpe                    // tuple val(meta), path("*.bedpe")
+    link     = GENERATE_HIGLASS_LINK.out.higlass_link   // tuple val(meta), path("*.csv")
+    versions = ch_versions                              // channel: [ versions.yml ]
 }
