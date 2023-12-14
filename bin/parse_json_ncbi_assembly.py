@@ -5,9 +5,10 @@ import os
 import json
 import sys
 import string
+import numbers
 
 fetch = [
-    ("TOL_ID", ("assembly_info", "biosample", "attributes"), {"name": "tolid"}),
+    ("TOLID", ("assembly_info", "biosample", "attributes"), {"name": "tolid"}),
     ("ASSEMBLY_ID", ("assembly_info", "assembly_name")),
     ("SPECIMEN_ID", ("assembly_info", "biosample", "attributes"), {"name": "specimen id"}),
     ("BIOPROJECT_ACCESSION", ("assembly_info", "bioproject_accession")),
@@ -29,11 +30,6 @@ fetch = [
         ("assembly_info", "biosample", "attributes"),
         {"name": "geographic location (region and locality)"},
     ),
-    (
-        "COLLECTION_LOCATION",
-        ("assembly_info", "biosample", "attributes"),
-        {"name": "geographic location (country and/or sea)"},
-    ),
     ("LATITUDE", ("assembly_info", "biosample", "attributes"), {"name": "geographic location (latitude)"}),
     ("LONGITUDE", ("assembly_info", "biosample", "attributes"), {"name": "geographic location (longitude)"}),
     ("HABITAT", ("assembly_info", "biosample", "attributes"), {"name": "habitat"}),
@@ -41,7 +37,7 @@ fetch = [
     ("TISSUE_TYPE", ("assembly_info", "biosample", "attributes"), {"name": "tissue"}),
     ("GENOME_LENGTH", ("assembly_stats", "total_sequence_length")),
     ("CHROMOSOME_NUMBER", ("assembly_stats", "total_number_of_chromosomes")),
-    ("SCAFFOLD_NUMBER", ("assembly_stats", "number_of_scaffolds")),
+    ("SCAFF_NUMBER", ("assembly_stats", "number_of_scaffolds")),
     ("CONTIG_NUMBER", ("assembly_stats", "number_of_contigs")),
     ("CONTIG_N50", ("assembly_stats", "contig_n50")),
 ]
@@ -93,7 +89,11 @@ def parse_json(file_in, file_out):
         param = find_element(data["reports"][0], f[1], attribs, param_list, index=0)
 
         if param is not None:
-            if type(param) == int:
+            if f[0] == "GENOME_LENGTH" or f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
+                param = str(round((int(param) * 1e-6), 1))  # convert to Mbp
+
+            # Convert ints and floats to str to allow for params with punctuation to be quoted
+            if isinstance(param, numbers.Number):
                 param = str(param)
 
             if any(p in string.punctuation for p in param):

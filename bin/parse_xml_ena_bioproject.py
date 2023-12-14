@@ -4,10 +4,13 @@ import os
 import sys
 import argparse
 import xml.etree.ElementTree as ET
+import string
+import numbers
 
 fetch = [
-    ("BIOPROJECT_ACCESSION", ["PROJECT"], ("attrib", "accession")),
-    ("BIOPROJECT_TITLE", ["PROJECT", "TITLE"]),
+    ("ENA_BIOPROJECT_ACCESSION", ["PROJECT"], ("attrib", "accession")),
+    ("ENA_BIOPROJECT_TITLE", ["PROJECT", "TITLE"]),
+    ("ENA_FIRST_PUBLIC", ["PROJECT", "PROJECT_ATTRIBUTES"], ("tag", ".//*[TAG='ENA-FIRST-PUBLIC']//", "VALUE")),
 ]
 
 
@@ -47,6 +50,7 @@ def parse_xml(file_in, file_out):
     param_list = []
 
     for f in fetch:
+        param = None
         r = root
         max_depth = len(f[1])
         fn = len(f)
@@ -70,6 +74,13 @@ def parse_xml(file_in, file_out):
                         except ValueError:
                             param = None
 
+                    ## Fetch paired tag-value elements from a parent, where tag is specified and value is wanted
+                    if f[2][0] == "tag":
+                        r = r.findall(f[2][1])
+                        for child in r:
+                            if child.tag == f[2][2]:
+                                param = child.text
+
                 else:
                     try:
                         param = r.text
@@ -77,6 +88,16 @@ def parse_xml(file_in, file_out):
                         param = None
 
         if param is not None:
+            if f[0] == "ENA_FIRST_PUBLIC":
+                param = param.split("-")[0]
+
+            # Convert ints and floats to str to allow for params with punctuation to be quoted
+            if isinstance(param, numbers.Number):
+                param = str(param)
+
+            if any(p in string.punctuation for p in param):
+                param = '"' + param + '"'
+
             param_list.append([f[0], param])
 
     if len(param_list) > 0:

@@ -82,7 +82,8 @@ def parse_xml(file_in, file_out):
         param_list.append(["NCBI_TAXID", taxon_id])
 
     tax_string.reverse()
-    full_taxonomy = ",".join(tax_string)
+    tax_string.pop(0)
+    full_taxonomy = "; ".join(tax_string)
 
     param_list.append(["TAX_STRING", '"' + full_taxonomy + '"'])
 

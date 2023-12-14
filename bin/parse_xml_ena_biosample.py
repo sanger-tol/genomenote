@@ -4,20 +4,18 @@ import os
 import sys
 import argparse
 import xml.etree.ElementTree as ET
+import string
+import numbers
 
 fetch = [
     ("GAL", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='GAL']//", "VALUE")),
+    ("SPECIMEN_ID", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='specimen id']//", "VALUE")),
     ("COLLECTORS", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='collected by']//", "VALUE")),
     ("COLLECTOR_INSTITUTE", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='collecting institution']//", "VALUE")),
     (
-        "COLLECTOR_PLACE",
+        "COLLECTION_LOCATION",
         ["SAMPLE", "SAMPLE_ATTRIBUTES"],
         ("tag", ".//*[TAG='geographic location (region and locality)']//", "VALUE"),
-    ),
-    (
-        "COLLECTOR_COUNTRY",
-        ["SAMPLE", "SAMPLE_ATTRIBUTES"],
-        ("tag", ".//*[TAG='geographic location (country and/or sea)']//", "VALUE"),
     ),
     ("IDENTIFIER", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='identified by']//", "VALUE")),
     ("IDENTIFIER_INSTITUTE", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='identifier_affiliation']//", "VALUE")),
@@ -26,16 +24,21 @@ fetch = [
     ("NCBI_TAXID", ["SAMPLE", "SAMPLE_NAME", "TAXON_ID"]),
     ("SAMPLE_SEX", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='sex']//", "VALUE")),
     (
-        "COLLECTOR_LOCATION",
+        "COLLECTION_LOCATION",
         ["SAMPLE", "SAMPLE_ATTRIBUTES"],
         ("tag", ".//*[TAG='geographic location (region and locality)']//", "VALUE"),
+    ),
+    (
+        "COLLECTION_DATE",
+        ["SAMPLE", "SAMPLE_ATTRIBUTES"],
+        ("tag", ".//*[TAG='collection date']//", "VALUE"),
     ),
     ("LATITUDE", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='geographic location (latitude)']//", "VALUE")),
     ("LONGITUDE", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='geographic location (longitude)']//", "VALUE")),
     ("HABITAT", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='habitat']//", "VALUE")),
     ("BIOSAMPLE_ACCESSION", ["SAMPLE"], ("attrib", "accession")),
     ("TISSUE_TYPE", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='organism part']//", "VALUE")),
-    ("TOL_ID", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='tolid']//", "VALUE")),
+    ("TOLID", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='tolid']//", "VALUE")),
 ]
 
 
@@ -75,6 +78,7 @@ def parse_xml(file_in, file_out):
     param_list = []
 
     for f in fetch:
+        param = None
         r = root
         max_depth = len(f[1])
         fn = len(f)
@@ -119,6 +123,13 @@ def parse_xml(file_in, file_out):
                         param = None
 
                 if param is not None:
+                    # Convert ints and floats to str to allow for params with punctuation to be quoted
+                    if isinstance(param, numbers.Number):
+                        param = str(param)
+
+                    if any(p in string.punctuation for p in param):
+                        param = '"' + param + '"'
+
                     param_list.append([f[0], param])
 
     if len(param_list) > 0:

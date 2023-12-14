@@ -61,6 +61,7 @@ def parse_xml(file_in, file_out):
         max_depth = len(f[1])
         fn = len(f)
         i = 0
+        param = None
 
         for tag in f[1]:
             i += 1
@@ -73,7 +74,7 @@ def parse_xml(file_in, file_out):
             if i == max_depth:
                 ## Handle more complex cases where not just fetching text for an element
                 if fn == 3:
-                    ## Fetch rank and scientific name from a parent taxon, where rank is specified and specified and scientific_name is wanted
+                    ## Fetch rank and scientific name from a parent taxon, where rank is specified and scientific_name is wanted
                     if f[2][0] == "Taxon":
                         rank_found = 0
                         r = r.findall(f[2][0])
@@ -116,7 +117,12 @@ def parse_xml(file_in, file_out):
                 if param is not None:
                     ## format return values
                     if f[0] == "TAX_STRING":
-                        param = '"' + param + '"'
+                        # remove first element from tax string
+                        params = param
+                        params = params.split("; ")
+                        params.pop(0)
+                        tax_str = "; ".join(params)
+                        param = '"' + tax_str + '"'
 
                     param_list.append([f[0], param])
 

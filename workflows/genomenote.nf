@@ -53,6 +53,7 @@ include { INPUT_CHECK       } from '../subworkflows/local/input_check'
 include { GENOME_METADATA   } from '../subworkflows/local/genome_metadata'
 include { CONTACT_MAPS      } from '../subworkflows/local/contact_maps'
 include { GENOME_STATISTICS } from '../subworkflows/local/genome_statistics'
+include { COMBINE_NOTE_DATA } from '../subworkflows/local/combine_note_data'
 
 
 /*
@@ -84,7 +85,7 @@ workflow GENOMENOTE {
 
     //
     // SUBWORKFLOW: Read in template of data files to fetch, parse these files and output a list of genome metadata params
-    GENOME_METADATA ( ch_file_list, ch_note_template )
+    GENOME_METADATA ( ch_file_list )
     ch_versions = ch_versions.mix(GENOME_METADATA.out.versions)
 
     //
@@ -135,6 +136,13 @@ workflow GENOMENOTE {
 
     GENOME_STATISTICS ( ch_fasta, ch_busco, ch_inputs.pacbio, ch_flagstat )
     ch_versions = ch_versions.mix ( GENOME_STATISTICS.out.versions )
+
+    //
+    // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
+    //
+
+    COMBINE_NOTE_DATA (GENOME_METADATA.out.consistent, GENOME_METADATA.out.inconsistent, GENOME_STATISTICS.out.summary, ch_note_template)
+    ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
 
 
     //

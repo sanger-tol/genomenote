@@ -4,9 +4,10 @@ import os
 import sys
 import argparse
 import xml.etree.ElementTree as ET
+import string
+import numbers
 
 fetch = [
-    ("SPECIMEN_ID", ["ASSEMBLY"], ("attrib", "alias")),
     ("ASSEMBLY_ID", ["ASSEMBLY"], ("attrib", "alias")),
     ("BIOPROJECT_ACCESSION", ["ASSEMBLY", "STUDY_REF", "IDENTIFIERS", "PRIMARY_ID"]),
     ("ASSEMBLY_ACCESSION", ["ASSEMBLY", "IDENTIFIERS", "PRIMARY_ID"]),
@@ -17,7 +18,7 @@ fetch = [
     ("GENOME_LENGTH", ["ASSEMBLY", "ASSEMBLY_ATTRIBUTES"], ("tag", ".//*[TAG='total-length']//", "VALUE")),
     ("SCAFF_NUMBER", ["ASSEMBLY", "ASSEMBLY_ATTRIBUTES"], ("tag", ".//*[TAG='scaffold-count']//", "VALUE")),
     ("SCAFF_N50", ["ASSEMBLY", "ASSEMBLY_ATTRIBUTES"], ("tag", ".//*[TAG='n50']//", "VALUE")),
-    ("CHROMOSOME_NUMBER", ["ASSEMBLY", "CHROMOSOMES"], ("count", "CHROMOSOME")),
+    ("CHROMOSOME_NUMBER", ["ASSEMBLY", "ASSEMBLY_ATTRIBUTES"], ("tag", ".//*[TAG='replicon-count']//", "VALUE")),
     ("CONTIG_NUMBER", ["ASSEMBLY", "ASSEMBLY_ATTRIBUTES"], ("tag", ".//*[TAG='count-contig']//", "VALUE")),
     ("CONTIG_N50", ["ASSEMBLY", "ASSEMBLY_ATTRIBUTES"], ("tag", ".//*[TAG='contig-n50']//", "VALUE")),
 ]
@@ -59,6 +60,7 @@ def parse_xml(file_in, file_out):
     param_list = []
 
     for f in fetch:
+        param = None
         r = root
         max_depth = len(f[1])
         fn = len(f)
@@ -82,13 +84,6 @@ def parse_xml(file_in, file_out):
                         except ValueError:
                             param = None
 
-                    ## Count child elements with specfic tag
-                    if f[2][0] == "count":
-                        if r is not None:
-                            param = str(len(r.findall(f[2][1]))) if len(r.findall(f[2][1])) != 0 else None
-                        else:
-                            param = None
-
                     ## Fetch paired tag-value elements from a parent, where tag is specified and value is wanted
                     if f[2][0] == "tag":
                         r = r.findall(f[2][1])
@@ -102,6 +97,14 @@ def parse_xml(file_in, file_out):
                             param = param.split(".")[0]
                         if f[0] == "ASSEMBLY_ID":
                             param = param.split(" ")[0]
+                        if f[0] == "CHROMOSOME_NUMBER":
+                            ra = root.findall("./ASSEMBLY/ASSEMBLY_ATTRIBUTES/ASSEMBLY_ATTRIBUTE")
+                            for child in ra:
+                                if child.find("TAG").text == "count-non-chromosome-replicon":
+                                    non_chrs = child.find("VALUE").text
+                                    param = str(int(param) - int(non_chrs))
+                        if f[0] == "GENOME_LENGTH" or f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
+                            param = str(round((int(param) * 1e-6), 1))  # convert to Mbp
 
                 else:
                     try:
@@ -110,6 +113,13 @@ def parse_xml(file_in, file_out):
                         param = None
 
         if param is not None:
+            # Convert ints and floats to str to allow for params with punctuation to be quoted
+            if isinstance(param, numbers.Number):
+                param = str(param)
+
+            if any(p in string.punctuation for p in param):
+                param = '"' + param + '"'
+
             param_list.append([f[0], param])
 
     if len(param_list) > 0:

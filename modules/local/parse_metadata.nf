@@ -30,7 +30,7 @@ process PARSE_METADATA {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        $script_name: \$($script_name --version | cut -d' ' -f2)
+        python: \$(python --version | sed 's/Python //g')
     END_VERSIONS
     """
 }

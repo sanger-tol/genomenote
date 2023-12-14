@@ -7,13 +7,11 @@
 include { RUN_WGET                  }       from '../../modules/local/run_wget'
 include { PARSE_METADATA            }       from '../../modules/local/parse_metadata'
 include { COMBINE_METADATA          }       from '../../modules/local/combine_metadata'
-include { POPULATE_TEMPLATE         }       from '../../modules/local/populate_template'
-include { WRITE_TO_GENOME_NOTES_DB  }       from '../../modules/local/write_to_database'
 
 workflow GENOME_METADATA {
     take:
     ch_file_list        // channel: /path/to/genome_metadata_file_template
-    ch_note_template   // channel: /path/to/genome_note_doc_template
+
 
     main:
     ch_versions = Channel.empty()
@@ -61,25 +59,9 @@ workflow GENOME_METADATA {
     COMBINE_METADATA(ch_parsed_files)
     ch_versions = ch_versions.mix( COMBINE_METADATA.out.versions.first() )
 
-
-    COMBINE_METADATA.out.consistent
-    | multiMap { it ->
-        TEMPLATE: it
-        DB: it
-    }
-    | set { ch_params_consistent }
-
-    POPULATE_TEMPLATE( ch_params_consistent.TEMPLATE, ch_note_template )
-    ch_versions = ch_versions.mix( POPULATE_TEMPLATE.out.versions.first() )
-
-    if ( params.write_to_portal ) { 
-        ch_api_url = Channel.of(params.genome_notes_api)
-        WRITE_TO_GENOME_NOTES_DB( ch_params_consistent.DB, ch_api_url )
-        ch_versions = ch_versions.mix( WRITE_TO_GENOME_NOTES_DB.out.versions.first() )
-    }
-
     emit:
-    template    = POPULATE_TEMPLATE.out.genome_note // channel: [ docx ]
+    consistent  = COMBINE_METADATA.out.consistent // channel: [ csv ]
+    inconsistent  = COMBINE_METADATA.out.inconsistent // channel: [ csv ]
     versions    = ch_versions.ifEmpty(null) // channel: [versions.yml]
     
 }

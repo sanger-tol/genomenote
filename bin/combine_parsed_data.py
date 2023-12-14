@@ -4,6 +4,8 @@ import csv
 import os
 import sys
 import argparse
+import string
+import numbers
 
 files = [
     ("ENA_ASSEMBLY", "ena_assembly_file"),
@@ -41,14 +43,24 @@ def make_dir(path):
 
 def process_file(file_in, params):
     with open(file_in, mode="r") as infile:
-        reader = csv.DictReader(infile)
+        reader = csv.reader(infile)
         source_dict = {}
         for row in reader:
-            source_dict[row["#paramName"]] = row["paramValue"]
-            if row["#paramName"] in params:
-                params[row["#paramName"]].append(row["paramValue"])
+            if row[0] == "#paramName":
+                continue
+
+            key = row.pop(0)
+            value = row[0]
+
+            if any(p in string.punctuation for p in value):
+                value = '"' + value + '"'
+
+            source_dict[key] = value
+
+            if key in params:
+                params[key].append(value)
             else:
-                params[row["#paramName"]] = [row["paramValue"]]
+                params[key] = [value]
 
     return (params, source_dict)
 
@@ -72,7 +84,7 @@ def main(args=None):
                 if key in param_sets[source]:
                     params_inconsistent[key].append((source, param_sets[source][key]))
 
-    # Strip inconsitent data from parameter list
+    # Strip inconsistent data from parameter list
     for i in params_inconsistent.keys():
         params.pop(i)
 
@@ -80,8 +92,14 @@ def main(args=None):
     if len(params) > 0:
         with open(args.out_consistent, "w") as fout:
             fout.write(",".join(["#paramName", "paramValue"]) + "\n")
+            # add in data source for consistent_params
             for key in sorted(params):
-                fout.write(key + "," + params[key][0] + "\n")
+                key_sources = []
+                for source in param_sets:
+                    if key in param_sets[source]:
+                        key_sources.append(source)
+                source_list = "|".join(key_sources)
+                fout.write(key + "," + params[key][0] + ',"' + source_list + '"\n')
 
     # Write out file where data is inconsistent across different sources
     if len(params_inconsistent) > 0:
