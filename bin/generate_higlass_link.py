@@ -36,7 +36,7 @@ def request_viewconfig(higlass_server, map_uuid, grid_uuid, genome_length):
         "viewconf": {
             "editable": "true",
             "zoomFixed": "false",
-            "trackSourceServers": ["/api/v2", "http://higlass.io/api/v1"],
+            "trackSourceServers": ["/api/v1"],
             "exportViewUrl": "/api/v1/viewconfs/",
             "views": [
                 {
