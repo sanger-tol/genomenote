@@ -39,6 +39,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The "test_full" profile is now tested automatically when updating the `dev`
   and `main` branches.
 - The pipelines now support Hi-C alignment files in the BAM format.
+- The pipeline now generates a contact map for each Hi-C sample (instead of
+  randomly picking one).
 
 ### Parameters
 
