@@ -34,18 +34,30 @@ workflow CONTACT_MAPS {
     FILTER_GENOME ( SAMTOOLS_FAIDX.out.fai )
     ch_versions = ch_versions.mix ( FILTER_GENOME.out.versions.first() )
 
+    // Separate CRAM from BAM
+    reads
+    | branch { meta, file, index ->
+        bam : file.extension == "bam"
+                [meta, file]
+        cram: file.extension == "cram"
+    }
+    | set { ch_reads }
 
     // CRAM to BAM
     genome
     | map { meta, fasta -> fasta }
     | set { ch_fasta }
 
-    SAMTOOLS_VIEW ( reads, ch_fasta, [] )
+    SAMTOOLS_VIEW ( ch_reads.cram, ch_fasta, [] )
     ch_versions = ch_versions.mix ( SAMTOOLS_VIEW.out.versions.first() )
 
+    // BAM reads
+    ch_reads.bam
+    | mix ( SAMTOOLS_VIEW.out.bam )
+    | set { ch_reads_bam }
 
     // BAM to Bed
-    BEDTOOLS_BAMTOBED ( SAMTOOLS_VIEW.out.bam )
+    BEDTOOLS_BAMTOBED ( ch_reads_bam )
     ch_versions = ch_versions.mix ( BEDTOOLS_BAMTOBED.out.versions.first() )
 
 
