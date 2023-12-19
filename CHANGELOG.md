@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   parameters.
 - The "test_full" profile is now tested automatically when updating the `dev`
   and `main` branches.
+- The pipelines now support Hi-C alignment files in the BAM format.
 
 ### Parameters
 
