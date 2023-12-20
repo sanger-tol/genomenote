@@ -40,11 +40,11 @@ sample1,hic,/path/to/aligned/cram
 sample1,pacbio,/path/to/unaligned/bam
 ```
 
-| Column     | Description                                                                                                                                                                                   |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`   | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`).        |
-| `datatype` | Type of sequencing data. Must be `hic` or `pacbio`.                                                                                                                                           |
-| `datafile` | Full path to the data location. Can be either `bam` or `cram` aligned reads for `hic` data type. Can be either the FASTK `kmer` directory or the unaligned `bam` files for `pacbio` datatype. |
+| Column     | Description                                                                                                                                                                                         |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`   | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`).              |
+| `datatype` | Type of sequencing data. Must be `hic`, `pacbio`, or `10x`.                                                                                                                                         |
+| `datafile` | Full path to the data location. Can be either `bam` or `cram` aligned reads for `hic` data type. Can be either the FASTK `kmer` directory or the unaligned `bam` files for `pacbio`/`10x` datatype. |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 

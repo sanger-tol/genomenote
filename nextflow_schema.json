@@ -30,7 +30,7 @@
                 "kmer_size": {
                     "type": "integer",
                     "default": 31,
-                    "description": "Size for Fastk to create the PacBio k-mer library"
+                    "description": "Size for Fastk to create the k-mer library"
                 },
                 "outdir": {
                     "type": "string",
