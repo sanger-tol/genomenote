@@ -123,8 +123,8 @@ workflow GENOMENOTE {
     // SUBWORKFLOW: Create genome statistics table
     //
     ch_inputs.hic
-    | map{ meta, cram, blank ->
-        flagstat = file( cram.resolveSibling( cram.baseName + ".flagstat" ), checkIfExists: true )
+    | map{ meta, reads, blank ->
+        flagstat = file( reads.resolveSibling( reads.baseName + ".flagstat" ), checkIfExists: true )
         [ meta, flagstat ]
     }
     | set { ch_flagstat }

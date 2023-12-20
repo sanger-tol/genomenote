@@ -29,7 +29,7 @@ class RowChecker:
         "pacbio",
     )
 
-    VALID_FORMATS = (".cram",)
+    VALID_FORMATS = (".cram", ".bam")
 
     def __init__(
         self,
