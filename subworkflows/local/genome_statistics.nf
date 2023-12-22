@@ -109,7 +109,11 @@ workflow GENOME_STATISTICS {
     | ifEmpty ( [ [], [], [] ] )
     | set { ch_merqury }
 
-    CREATETABLE ( ch_summary, ch_busco, ch_merqury, flagstat )
+    flagstat
+    | ifEmpty ( [ [], [] ] )
+    | set { ch_flagstat }
+
+    CREATETABLE ( ch_summary, ch_busco, ch_merqury, ch_flagstat )
     ch_versions = ch_versions.mix ( CREATETABLE.out.versions.first() )
 
 

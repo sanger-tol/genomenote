@@ -44,7 +44,7 @@ mMelMel3,hic,/analysis/mMelMel3.2_paternal_haplotype/read_mapping/hic/GCA_922984
 mMelMel3,pacbio,/genomic_data/mMelMel3/pacbio/kmer/k31
 ```
 
-Each row represents an aligned HiC reads file or an unaligned PacBio reads file or a PacBio k-mer database.
+Each row represents an aligned HiC reads file, an unaligned PacBio/10X reads file, or a PacBio/10X k-mer database.
 
 Now, you can run the pipeline using:
 

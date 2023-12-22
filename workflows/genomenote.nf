@@ -86,7 +86,7 @@ workflow GENOMENOTE {
     | branch { meta, file ->
         hic : meta.datatype == 'hic'
             return [ meta, file, [] ]
-        pacbio : meta.datatype == 'pacbio'
+        pacbio : meta.datatype == 'pacbio' || meta.datatype == '10x'
             return [ meta, file ]
     }
     | set { ch_inputs }
