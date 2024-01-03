@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [[1.1.0](https://github.com/sanger-tol/genomenote/releases/tag/1.1.0)] - [2024-01-03]
+## [[1.1.0](https://github.com/sanger-tol/genomenote/releases/tag/1.1.0)] - Golden Retriever - [2024-01-03]
 
 ### Enhancements & fixes
 
