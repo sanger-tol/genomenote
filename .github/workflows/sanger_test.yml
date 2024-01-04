@@ -18,6 +18,7 @@ jobs:
           parameters: |
             {
               "outdir": "${{ secrets.TOWER_WORKDIR_PARENT }}/results/${{ github.repository }}/results-${{ github.sha }}",
+              "use_work_dir_as_temp": true,
             }
           profiles: test,sanger,singularity,cleanup
 
