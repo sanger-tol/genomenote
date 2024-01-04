@@ -24,6 +24,10 @@
 
   > Abdennur, Nezar, and Leonid A Mirny. “Cooler: Scalable Storage for Hi-C Data and Other Genomically Labeled Arrays.” Bioinformatics, vol. 36, no. 1, 2019, pp. 311–316., https://doi.org/10.1093/bioinformatics/btz540.
 
+- [Crumble](https://github.com/jkbonfield/crumble)
+
+  > James K Bonfield, Shane A McCarthy, and Richard Durbin. "Crumble: reference free lossy compression of sequence quality values" Bioinformatics, Volume 35, Issue 2, January 2019, Pages 337–339, https://doi.org/10.1093/bioinformatics/bty608
+
 - [FastK](https://github.com/thegenemyers/FASTK)
 
 - [MerquryFK](https://github.com/thegenemyers/MERQURY.FK)

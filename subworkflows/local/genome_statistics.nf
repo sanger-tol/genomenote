@@ -4,7 +4,7 @@
 
 include { NCBIDATASETS_SUMMARYGENOME as SUMMARYGENOME   } from '../../modules/local/ncbidatasets/summarygenome'
 include { NCBIDATASETS_SUMMARYGENOME as SUMMARYSEQUENCE } from '../../modules/local/ncbidatasets/summarygenome'
-include { GOAT_ODB                                      } from '../../modules/local/goat/odb'
+include { NCBI_GET_ODB                                  } from '../../modules/local/ncbidatasets/get_odb'
 include { BUSCO                                         } from '../../modules/nf-core/busco/main'
 include { FASTK_FASTK                                   } from '../../modules/nf-core/fastk/fastk/main'
 include { MERQURYFK_MERQURYFK                           } from '../../modules/nf-core/merquryfk/merquryfk/main'
@@ -14,6 +14,7 @@ include { CREATETABLE                                   } from '../../modules/lo
 workflow GENOME_STATISTICS {
     take:
     genome                 // channel: [ meta, fasta ]
+    lineage_tax_ids        // channel: /path/to/lineage_tax_ids
     lineage_db             // channel: /path/to/buscoDB
     pacbio                 // channel: [ meta, kmer_db or reads ]
     flagstat               // channel: [ meta, flagstat ]
@@ -34,12 +35,12 @@ workflow GENOME_STATISTICS {
 
 
     // Get ODB lineage value
-    GOAT_ODB ( genome )
-    ch_versions = ch_versions.mix ( GOAT_ODB.out.versions.first() )
+    NCBI_GET_ODB ( SUMMARYGENOME.out.summary, lineage_tax_ids )
+    ch_versions = ch_versions.mix ( NCBI_GET_ODB.out.versions.first() )
 
 
     // BUSCO
-    GOAT_ODB.out.csv
+    NCBI_GET_ODB.out.csv
     | map { meta, csv -> csv }
     | splitCsv()
     | map { row -> row[1] }
@@ -72,12 +73,18 @@ workflow GENOME_STATISTICS {
     | join ( FASTK_FASTK.out.ktab )
     | set { ch_combo }
     
-    ch_grab = GrabFiles ( ch_pacbio.dir )
+    ch_pacbio.dir
+    | map { meta, dir -> [
+        meta,
+        dir.listFiles().findAll { it.toString().endsWith(".hist") } .collect(),
+        dir.listFiles().findAll { it.toString().contains(".ktab") } .collect(),
+      ] }
+    | set { ch_grab }
     
     ch_combo
     | mix ( ch_grab )
     | combine ( genome )
-    | map { meta, hist, ktab, meta2, fasta -> [ meta, hist, ktab, fasta, [] ] }
+    | map { meta, hist, ktab, meta2, fasta -> [ meta + [genome_size: meta2.genome_size], hist, ktab, fasta, [] ] }
     | set { ch_merq }
 
 
@@ -97,12 +104,16 @@ workflow GENOME_STATISTICS {
     
     MERQURYFK_MERQURYFK.out.qv
     | join ( MERQURYFK_MERQURYFK.out.stats )
-    | ifEmpty ( [ [], [], [] ] )
     | map { meta, qv, comp -> [ meta + [ id: "merq" ], qv, comp ] }
     | groupTuple ()
+    | ifEmpty ( [ [], [], [] ] )
     | set { ch_merqury }
 
-    CREATETABLE ( ch_summary, ch_busco, ch_merqury, flagstat )
+    flagstat
+    | ifEmpty ( [ [], [] ] )
+    | set { ch_flagstat }
+
+    CREATETABLE ( ch_summary, ch_busco, ch_merqury, ch_flagstat )
     ch_versions = ch_versions.mix ( CREATETABLE.out.versions.first() )
 
 
@@ -118,16 +129,3 @@ workflow GENOME_STATISTICS {
 
 }
 
-
-process GrabFiles {
-    tag "${meta.id}"
-    executor 'local'
-
-    input:
-    tuple val(meta), path("in")
-
-    output:
-    tuple val(meta), path("in/*.hist"), path("in/*.ktab*", hidden:true)
-
-    "true"
-}

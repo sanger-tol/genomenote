@@ -1,4 +1,4 @@
-process GOAT_ODB {
+process NCBI_GET_ODB {
     tag "$meta.id"
     label 'process_single'
 
@@ -8,7 +8,8 @@ process GOAT_ODB {
         'biocontainers/requests:2.26.0' }"
 
     input:
-    tuple val(meta), path(fasta)
+    tuple val(meta), path(ncbi_summary)
+    path lineage_tax_ids
 
     output:
     tuple val(meta), path("*.busco_odb.csv"), emit: csv
@@ -21,7 +22,7 @@ process GOAT_ODB {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    get_odb.py ${prefix} ${prefix}.busco_odb.csv
+    get_odb.py $ncbi_summary $lineage_tax_ids ${prefix}.busco_odb.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

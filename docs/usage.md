@@ -6,9 +6,14 @@
 
 ## Introduction
 
-The [sanger-tol/genomenote](https://pipelines.tol.sanger.ac.uk/genomenote) pipeline takes aligned HiC reads to create contact maps and chromosomal grid using Cooler.
-These files can be displayed on a [HiGlass](http://higlass.io) server, like the one use by the [Sanger Institute](https://genome-note-higlass.tol.sanger.ac.uk/app).
-The pipeline also collates (1) assembly information, statistics and chromosome details from NCBI datasets, (2) genome completeness from BUSCO, (3) consensus quality and k-mer completeness from MerquryFK, and (4) HiC primary mapped percentage from samtools flagstat.
+The [sanger-tol/genomenote](https://pipelines.tol.sanger.ac.uk/genomenote) pipeline collates various sources of assembly statistics and information to support the publication of a Genome Note.
+
+These typically include:
+
+1. Assembly information, statistics and chromosome details from NCBI datasets.
+2. Genome completeness from BUSCO.
+3. Consensus quality and k-mer completeness from MerquryFK - when high-quality reads are available.
+4. Hi-C contact map and chromosomal grid using Cooler, as well as primary mapped percentage from samtools flagstat - when Hi-C reads are provided. These files can be displayed on a [HiGlass](http://higlass.io) server, like the one use by the [Sanger Institute](https://genome-note-higlass.tol.sanger.ac.uk/app).
 
 ## Samplesheet input
 
@@ -40,13 +45,13 @@ sample1,hic,/path/to/aligned/cram
 sample1,pacbio,/path/to/unaligned/bam
 ```
 
-| Column     | Description                                                                                                                                                                                   |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`   | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`).        |
-| `datatype` | Type of sequencing data. Must be `hic` or `pacbio`.                                                                                                                                           |
-| `datafile` | Full path to the data location. Can be either `bam` or `cram` aligned reads for `hic` data type. Can be either the FASTK `kmer` directory or the unaligned `bam` files for `pacbio` datatype. |
+| Column     | Description                                                                                                                                                                                         |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`   | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`).              |
+| `datatype` | Type of sequencing data. Must be `hic`, `pacbio`, or `10x`.                                                                                                                                         |
+| `datafile` | Full path to the data location. Can be either `bam` or `cram` aligned reads for `hic` data type. Can be either the FASTK `kmer` directory or the unaligned `bam` files for `pacbio`/`10x` datatype. |
 
-An [example samplesheet](https://raw.githubusercontent.com/sanger-tol/genomenote/main/assets/samplesheet.csv) has been provided with the pipeline.
+An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
 ## Running the pipeline
 
