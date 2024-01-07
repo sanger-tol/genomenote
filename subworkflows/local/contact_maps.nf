@@ -19,6 +19,7 @@ workflow CONTACT_MAPS {
     genome                                    // channel: [ meta, fasta ]
     reads                                     // channel: [ meta, reads, [] ]
     cool_bin                                  // channel: val(cooler_bins)
+    cool_order                                // path: /path/to/file
 
 
     main:
@@ -31,7 +32,7 @@ workflow CONTACT_MAPS {
 
 
     // Filter the genome index file
-    FILTER_GENOME ( SAMTOOLS_FAIDX.out.fai )
+    FILTER_GENOME ( SAMTOOLS_FAIDX.out.fai, cool_order )
     ch_versions = ch_versions.mix ( FILTER_GENOME.out.versions.first() )
 
 
