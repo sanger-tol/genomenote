@@ -9,9 +9,10 @@ process FILTER_GENOME {
 
     input:
     tuple val(meta), path(fai)
+    path ord
 
     output:
-    tuple val(meta), path("*.list"), emit: list
+    tuple val(meta), path("*_filtered.list"), emit: list
     path "versions.yml"            , emit: versions
 
     when:
@@ -21,7 +22,7 @@ process FILTER_GENOME {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    cut -f1,2 $fai | sed 's/-/_/g' | sort -k2,2 -nr > ${prefix}_filtered.list
+    filter_genome.sh $fai ${prefix}_filtered.list $ord
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

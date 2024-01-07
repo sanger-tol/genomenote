@@ -23,6 +23,7 @@ if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.linea
 
 // Check optional parameters
 if (params.lineage_db) { ch_lineage_db = Channel.fromPath(params.lineage_db) } else { ch_lineage_db = Channel.empty() }
+if (params.cool_order) { ch_cool_order = Channel.fromPath(params.cool_order) } else { ch_cool_order = Channel.empty() }
 
 
 /*
@@ -115,7 +116,7 @@ workflow GENOMENOTE {
     //
     // SUBWORKFLOW: Create contact map matrices from HiC alignment files
     //
-    CONTACT_MAPS ( ch_fasta, ch_inputs.hic, ch_bin )
+    CONTACT_MAPS ( ch_fasta, ch_inputs.hic, ch_bin, ch_cool_order )
     ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
 
 
