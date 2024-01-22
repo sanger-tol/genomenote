@@ -1,4 +1,3 @@
 sample,datatype,datafile
-uoEpiScrs1,pacbio,https://tolit.cog.sanger.ac.uk/test-data/Epithemia_sp._CRS-2021b/genomic_data/uoEpiScrs1/pacbio/m64228e_220617_134154.ccs.bc1015_BAK8B_OA--bc1015_BAK8B_OA.rmdup.bam
-uoEpiScrs1,pacbio,https://tolit.cog.sanger.ac.uk/test-data/Epithemia_sp._CRS-2021b/genomic_data/uoEpiScrs1/pacbio/m64016e_220621_193126.ccs.bc1008_BAK8A_OA--bc1008_BAK8A_OA.rmdup.bam
-uoEpiScrs1,hic,https://tolit.cog.sanger.ac.uk/test-data/Epithemia_sp._CRS-2021b/analysis/uoEpiScrs1.1/read_mapping/hic/GCA_946965045.1.unmasked.hic.uoEpiScrs1.subsampled.cram
+ieCloDipt1,pacbio,https://tolit.cog.sanger.ac.uk/test-data/Cloeon_dipterum/genomic_data/ieCloDipt1/pacbio/m64094_200901_101741.ccs.bc1001_BAK8A_OA--bc1001_BAK8A_OA.rmdup.bam
+ieCloDipt1,hic,https://tolit.cog.sanger.ac.uk/test-data/Cloeon_dipterum/analysis/ieCloDipt1.1/read_mapping/hic/GCA_949628265.1.unmasked.hic.ieCloDipt1.subsampled.cram
