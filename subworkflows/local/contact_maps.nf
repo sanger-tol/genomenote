@@ -84,6 +84,7 @@ workflow CONTACT_MAPS {
 
     FILTER_GENOME.out.list
     | map { meta, list -> list }
+    | first
     | set { ch_chromsizes }    
 
     COOLER_CLOAD ( ch_cooler, ch_chromsizes )
