@@ -102,7 +102,7 @@ workflow CONTACT_MAPS {
         UPLOAD_HIGLASS_DATA (COOLER_ZOOMIFY.out.mcool, COOLER_DUMP.out.bedpe, params.species, params.assembly, params.higlass_data_project_dir, params.higlass_upload_directory )
         ch_versions = ch_versions.mix ( UPLOAD_HIGLASS_DATA.out.versions.first() )
    
-        GENERATE_HIGLASS_LINK (UPLOAD_HIGLASS_DATA.out.map_uuid, UPLOAD_HIGLASS_DATA.out.grid_uuid, params.higlass_url, UPLOAD_HIGLASS_DATA.out.genome_file)
+        GENERATE_HIGLASS_LINK (UPLOAD_HIGLASS_DATA.out.file_name, UPLOAD_HIGLASS_DATA.out.map_uuid, UPLOAD_HIGLASS_DATA.out.grid_uuid, params.higlass_url, UPLOAD_HIGLASS_DATA.out.genome_file)
         ch_versions = ch_versions.mix ( GENERATE_HIGLASS_LINK.out.versions.first() )
     }
 
@@ -111,6 +111,5 @@ workflow CONTACT_MAPS {
     cool     = COOLER_CLOAD.out.cool                    // tuple val(meta), val(cool_bin), path("*.cool")
     mcool    = COOLER_ZOOMIFY.out.mcool                 // tuple val(meta), path("*.mcool")
     grid     = COOLER_DUMP.out.bedpe                    // tuple val(meta), path("*.bedpe")
-    link     = GENERATE_HIGLASS_LINK.out.higlass_link   // tuple val(meta), path("*.csv")
     versions = ch_versions                              // channel: [ versions.yml ]
 }

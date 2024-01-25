@@ -8,6 +8,7 @@ process GENERATE_HIGLASS_LINK {
         'biocontainers/requests:2.26.0' }"
 
     input:
+    val(file_name)
     val(map_uuid)
     val(grid_uuid)
     val(server)
@@ -24,6 +25,7 @@ process GENERATE_HIGLASS_LINK {
     def prefix = task.ext.prefix ?: meta.id
     """
     generate_higlass_link.py \\
+        $file_name \\
         $map_uuid \\
         $grid_uuid \\
         $server \\

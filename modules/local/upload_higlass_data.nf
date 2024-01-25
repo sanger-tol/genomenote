@@ -15,6 +15,7 @@ process UPLOAD_HIGLASS_DATA {
     output:
     env map_uuid, emit: map_uuid
     env grid_uuid, emit: grid_uuid
+    env file_name, emit: file_name
     tuple val(meta2), path(genome), emit: genome_file
     path "versions.yml", emit: versions
 
@@ -58,7 +59,7 @@ process UPLOAD_HIGLASS_DATA {
     done
 
     echo "Loading .mcool file"
-    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${project_name}/${file_name}.mcool --filetype cooler --datatype matrix --project-name ${project_name} --name ${file_name}_map
+    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${project_name}/${file_name}.mcool --filetype cooler --datatype matrix --project-name ${project_name} --name ${file_name}_map --uid ${file_name}_map
 
     map_uuid=\$(kubectl exec \$pod_name -- python /home/higlass/projects/higlass-server/manage.py list_tilesets | (grep '${file_name}_map' || [ "\$?" == "1" ] ) | awk '{print substr(\$NF, 1, length(\$NF)-1)}')
     echo "uuid of .mcool file is: \$map_uuid"
@@ -72,10 +73,12 @@ process UPLOAD_HIGLASS_DATA {
     done
 
     echo "Loading .genome file"
-    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${project_name}/${file_name}.genome --filetype chromsizes-tsv --datatype chromsizes --coordSystem ${assembly}_assembly --project-name ${project_name} --name ${file_name}_grid
+    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${project_name}/${file_name}.genome --filetype chromsizes-tsv --datatype chromsizes --coordSystem ${assembly}_assembly --project-name ${project_name} --name ${file_name}_grid --uid ${file_name}_grid
 
     grid_uuid=\$(kubectl exec \$pod_name -- python /home/higlass/projects/higlass-server/manage.py list_tilesets | (grep '${file_name}_grid' || [ "\$?" == "1" ] ) | awk '{print substr(\$NF, 1, length(\$NF)-1)}')
     echo "uuid of .genome file is: \$grid_uuid"
+
+    file_name=${file_name}
 
     echo "done"
 

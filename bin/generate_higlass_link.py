@@ -9,9 +9,10 @@ import requests
 
 def parse_args(args=None):
     Description = "Parse contents of an ENA Assembly report and pul out meta data required by a genome note."
-    Epilog = "Example usage: python generate_higlass_link.py <MAP_UUID> <GRID_UUID> <GENOME_FILE>"
+    Epilog = "Example usage: python generate_higlass_link.py <FILE_NAME> <MAP_UUID> <GRID_UUID> <GENOME_FILE>"
 
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
+    parser.add_argument("FILE_NAME", help="Prefix file name for the project.")
     parser.add_argument("MAP_UUID", help="UUID for the .mcool file tileset.")
     parser.add_argument("GRID_UUID", help="UUID for the .genome file tileset.")
     parser.add_argument("HIGLASS_SERVER", help="Higlass server url")
@@ -30,9 +31,20 @@ def calculate_genome_size(file_in):
 
     return genome_length
 
+def check_viewconfig_exists(higlass_server, file_name):
+    headers = {"Content-Type": "application/json"}
+    params = {
+        "d": file_name
+    }
+    response = requests.get(f"{higlass_server}/api/v1/viewconfs/l/", params=params, headers=headers)
+    if response:
+        return True
+    return False 
+    
 
-def request_viewconfig(higlass_server, map_uuid, grid_uuid, genome_length):
+def request_viewconfig(higlass_server, file_name, map_uuid, grid_uuid, genome_length):
     request_data = {
+        "uid": file_name,
         "viewconf": {
             "editable": "true",
             "zoomFixed": "false",
@@ -75,8 +87,7 @@ def request_viewconfig(higlass_server, map_uuid, grid_uuid, genome_length):
                     },
                     "initialXDomain": [0, genome_length],
                     "initialYDomain": [0, genome_length],
-                    "layout": {"w": 12, "h": 12, "x": 0, "y": 0, "i": "", "moved": "false", "static": "false"},
-                    "uid": "",
+                    "layout": {"w": 12, "h": 12, "x": 0, "y": 0, "i": "", "moved": "false", "static": "false"}
                 }
             ],
             "zoomLocks": {"locksByViewUid": {}, "locksDict": {}},
@@ -86,9 +97,10 @@ def request_viewconfig(higlass_server, map_uuid, grid_uuid, genome_length):
     }
 
     headers = {"Content-Type": "application/json"}
+
     response = requests.post(f"{higlass_server}/api/v1/viewconfs/", json=request_data, headers=headers)
+ 
     if response:
-        print(response.json())
         viewconf_uid = response.json()["uid"]
         url = f"{higlass_server}/l/?d=" + viewconf_uid
         return url
@@ -113,7 +125,12 @@ def print_output(url, file_out):
 def main(args=None):
     args = parse_args(args)
     length = calculate_genome_size(args.GENOME_FILE)
-    url = request_viewconfig(args.HIGLASS_SERVER, args.MAP_UUID, args.GRID_UUID, length)
+    exists = check_viewconfig_exists(args.HIGLASS_SERVER, args.FILE_NAME)
+    if  exists:
+        url = f"{args.HIGLASS_SERVER}/l/?d={args.FILE_NAME}" 
+    else:
+        url = request_viewconfig(exists, args.HIGLASS_SERVER, args.FILE_NAME,args.MAP_UUID, args.GRID_UUID, length)
+    
     print_output(url, args.OUTPUT_FILE)
 
 
