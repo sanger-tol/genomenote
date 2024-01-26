@@ -42,6 +42,7 @@ def check_viewconfig_exists(higlass_server, file_name):
 
 
 def request_viewconfig(higlass_server, file_name, map_uuid, grid_uuid, genome_length):
+
     request_data = {
         "uid": file_name,
         "viewconf": {
@@ -124,11 +125,13 @@ def print_output(url, file_out):
 def main(args=None):
     args = parse_args(args)
     length = calculate_genome_size(args.GENOME_FILE)
-    exists = check_viewconfig_exists(args.HIGLASS_SERVER, args.FILE_NAME)
+    file_name = args.FILE_NAME.replace(".", "_")
+
+    exists = check_viewconfig_exists(args.HIGLASS_SERVER, file_name)
     if exists:
-        url = f"{args.HIGLASS_SERVER}/l/?d={args.FILE_NAME}"
+        url = f"{args.HIGLASS_SERVER}/l/?d={file_name}"
     else:
-        url = request_viewconfig(args.HIGLASS_SERVER, args.FILE_NAME, args.MAP_UUID, args.GRID_UUID, length)
+        url = request_viewconfig(args.HIGLASS_SERVER, file_name, args.MAP_UUID, args.GRID_UUID, length)
 
     print_output(url, args.OUTPUT_FILE)
 

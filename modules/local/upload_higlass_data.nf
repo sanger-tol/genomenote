@@ -30,6 +30,7 @@ process UPLOAD_HIGLASS_DATA {
 
     def project_name = "${higlass_data_project_dir}/${species.replaceAll('\\s','_')}/${assembly}"
     def file_name = "${assembly}_${meta.id}"
+    def uid = "${file_name.replaceAll('\\.','_')}"
 
     """
     # Configure kubectl access to the namespace
@@ -59,7 +60,7 @@ process UPLOAD_HIGLASS_DATA {
     done
 
     echo "Loading .mcool file"
-    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${project_name}/${file_name}.mcool --filetype cooler --datatype matrix --project-name ${project_name} --name ${file_name}_map --uid ${file_name}_map
+    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${project_name}/${file_name}.mcool --filetype cooler --datatype matrix --project-name ${project_name} --name ${file_name}_map --uid ${uid}_map
 
     map_uuid=\$(kubectl exec \$pod_name -- python /home/higlass/projects/higlass-server/manage.py list_tilesets | (grep '${file_name}_map' || [ "\$?" == "1" ] ) | awk '{print substr(\$NF, 1, length(\$NF)-1)}')
     echo "uuid of .mcool file is: \$map_uuid"
@@ -73,7 +74,7 @@ process UPLOAD_HIGLASS_DATA {
     done
 
     echo "Loading .genome file"
-    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${project_name}/${file_name}.genome --filetype chromsizes-tsv --datatype chromsizes --coordSystem ${assembly}_assembly --project-name ${project_name} --name ${file_name}_grid --uid ${file_name}_grid
+    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${project_name}/${file_name}.genome --filetype chromsizes-tsv --datatype chromsizes --coordSystem ${assembly}_assembly --project-name ${project_name} --name ${file_name}_grid --uid ${uid}_grid
 
     grid_uuid=\$(kubectl exec \$pod_name -- python /home/higlass/projects/higlass-server/manage.py list_tilesets | (grep '${file_name}_grid' || [ "\$?" == "1" ] ) | awk '{print substr(\$NF, 1, length(\$NF)-1)}')
     echo "uuid of .genome file is: \$grid_uuid"
