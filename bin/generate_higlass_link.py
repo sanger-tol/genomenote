@@ -128,7 +128,7 @@ def main(args=None):
     if exists:
         url = f"{args.HIGLASS_SERVER}/l/?d={args.FILE_NAME}"
     else:
-        url = request_viewconfig(exists, args.HIGLASS_SERVER, args.FILE_NAME, args.MAP_UUID, args.GRID_UUID, length)
+        url = request_viewconfig(args.HIGLASS_SERVER, args.FILE_NAME, args.MAP_UUID, args.GRID_UUID, length)
 
     print_output(url, args.OUTPUT_FILE)
 
