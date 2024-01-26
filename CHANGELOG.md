@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [[1.2.0](https://github.com/sanger-tol/genomenote/releases/tag/1.2.0)] [2024-05-10]
 
+### Enhancements & fixes
+
+- Updated the MerquryFK resources to cope with mistletoe (the pipeline as a whole is not yet fully compatible with mistletoe, though).
+
 ## [[1.1.2](https://github.com/sanger-tol/genomenote/releases/tag/1.1.2)] [2024-04-29]
 
 ### Enhancements & fixes
