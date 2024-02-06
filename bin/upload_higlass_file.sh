@@ -1,5 +1,5 @@
-#!/usr/bin/env bash   
-   
+#!/usr/bin/env bash
+
 pod_name=$1
 project_name=$2
 file_name=$3
@@ -25,7 +25,7 @@ done
 echo "Loading ${file_upload}${file_ext} file"
 
 if [[ $file_ext == '.mcool' ]]
-then 
+then
     kubectl exec $pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${project_name}/${file_name}.mcool --filetype cooler --datatype matrix --project-name ${project_name} --name ${file_upload} --uid ${uid}
 elif [[ $file_ext == '.genome' ]]
 then

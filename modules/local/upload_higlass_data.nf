@@ -68,15 +68,15 @@ process UPLOAD_HIGLASS_DATA {
         elif [[ \$file_ext == '.genome' ]]
         then
             file_type="grid"
-            grid_uuid=${uid}_\${file_type}    
+            grid_uuid=${uid}_\${file_type}
         fi
 
         # Call the bash script to handle upload of file to higlass server
 
         upload_higlass_file.sh \$pod_name ${project_name} ${file_name} \$file_type \$file_ext ${uid} ${assembly}
-    
-        echo "\$file_ext loaded" 
-    done 
+
+        echo "\$file_ext loaded"
+    done
 
     # Set file name to pass through to view config creation
     file_name=${file_name}
