@@ -44,8 +44,7 @@ def check_viewconfig_exists(higlass_server, file_name):
 
 
 def request_viewconfig(higlass_server, file_name, map_uuid, grid_uuid, genome_length):
-    
-    # define viewconfig, "contents" array should contain a section for each filetype. 
+    # define viewconfig, "contents" array should contain a section for each filetype.
     # uid of viewconfig should match the file_name
     request_data = {
         "uid": file_name,
@@ -129,7 +128,7 @@ def print_output(url, file_out):
 def main(args=None):
     args = parse_args(args)
 
-    # total genome length is required when creating viewconfig 
+    # total genome length is required when creating viewconfig
     length = calculate_genome_size(args.GENOME_FILE)
 
     # file name is used as the uid for the view config, it can't contain a "."
