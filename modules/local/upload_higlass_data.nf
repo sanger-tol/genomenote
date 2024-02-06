@@ -79,7 +79,7 @@ process UPLOAD_HIGLASS_DATA {
     done 
 
     # Set file name to pass through to view config creation
-    file_name=${file_name}_test
+    file_name=${file_name}
 
     echo "done"
 
