@@ -23,6 +23,7 @@ def parse_args(args=None):
 
 
 def calculate_genome_size(file_in):
+    # calculate total genome length by adding all contig/scaffold lengths in the .genome file
     genome_length = 0
     with open(file_in) as csvfile:
         reader = csv.reader(csvfile, delimiter="\t")
@@ -33,6 +34,7 @@ def calculate_genome_size(file_in):
 
 
 def check_viewconfig_exists(higlass_server, file_name):
+    # Use HiGlass API to see if a viewconfig matching the file_name already exists on the server
     headers = {"Content-Type": "application/json"}
     params = {"d": file_name}
     response = requests.get(f"{higlass_server}/api/v1/viewconfs/l/", params=params, headers=headers)
@@ -42,7 +44,9 @@ def check_viewconfig_exists(higlass_server, file_name):
 
 
 def request_viewconfig(higlass_server, file_name, map_uuid, grid_uuid, genome_length):
-
+    
+    # define viewconfig, "contents" array should contain a section for each filetype. 
+    # uid of viewconfig should match the file_name
     request_data = {
         "uid": file_name,
         "viewconf": {
@@ -124,13 +128,20 @@ def print_output(url, file_out):
 
 def main(args=None):
     args = parse_args(args)
+
+    # total genome length is required when creating viewconfig 
     length = calculate_genome_size(args.GENOME_FILE)
+
+    # file name is used as the uid for the view config, it can't contain a "."
     file_name = args.FILE_NAME.replace(".", "_")
 
+    # check if already have a viewconfig matching the file name
     exists = check_viewconfig_exists(args.HIGLASS_SERVER, file_name)
     if exists:
+        # return existing viewconfig url
         url = f"{args.HIGLASS_SERVER}/l/?d={file_name}"
     else:
+        # create a new viewconfig and return the url
         url = request_viewconfig(args.HIGLASS_SERVER, file_name, args.MAP_UUID, args.GRID_UUID, length)
 
     print_output(url, args.OUTPUT_FILE)
