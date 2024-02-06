@@ -30,6 +30,7 @@ process UPLOAD_HIGLASS_DATA {
 
     def project_name = "${higlass_data_project_dir}/${species.replaceAll('\\s','_')}/${assembly}"
     def file_name = "${assembly}_${meta.id}"
+    // uid cannot contain a "."
     def uid = "${file_name.replaceAll('\\.','_')}"
 
     """
@@ -49,37 +50,36 @@ process UPLOAD_HIGLASS_DATA {
     cp -f $mcool ${upload_dir}${project_name}/${file_name}.mcool
     cp -f $genome ${upload_dir}${project_name}/${file_name}.genome
 
-    # Load them in Kubernetes
 
-    echo "Delete .mcool file from server if already exists"
-    tilesets=\$(kubectl exec \$pod_name -- python /home/higlass/projects/higlass-server/manage.py list_tilesets | (grep '${file_name}_map' || [ "\$?" == "1" ] ) | awk '{print substr(\$NF, 1, length(\$NF)-1)}')
+    # Loop over files to load them in Kubernetes
 
-    for f in \$tilesets; do
-        echo "Deleting \$f"
-        kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py delete_tileset --uuid \$f
-    done
+    files_to_upload=(".mcool" ".genome")
 
-    echo "Loading .mcool file"
-    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${project_name}/${file_name}.mcool --filetype cooler --datatype matrix --project-name ${project_name} --name ${file_name}_map --uid ${uid}_map
+    for file_ext in \${files_to_upload[@]}; do
+        echo "loading \$file_ext file"
 
-    map_uuid=\$(kubectl exec \$pod_name -- python /home/higlass/projects/higlass-server/manage.py list_tilesets | (grep '${file_name}_map' || [ "\$?" == "1" ] ) | awk '{print substr(\$NF, 1, length(\$NF)-1)}')
-    echo "uuid of .mcool file is: \$map_uuid"
+        # Set file type and uuid to use for tileset. This uuid is needed for creating viewconfig.
 
-    echo "Delete .genome file from server if already exists"
-    tilesets=\$(kubectl exec \$pod_name -- python /home/higlass/projects/higlass-server/manage.py list_tilesets | (grep '${file_name}_grid' || [ "\$?" == "1" ] ) | awk '{print substr(\$NF, 1, length(\$NF)-1)}')
+        if [[ \$file_ext == ".mcool" ]]
+        then
+            file_type="map"
+            map_uuid=${uid}_\${file_type}
 
-    for f in \$tilesets; do
-        echo "Deleting \$f"
-        kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py delete_tileset --uuid \$f
-    done
+        elif [[ \$file_ext == '.genome' ]]
+        then
+            file_type="grid"
+            grid_uuid=${uid}_\${file_type}    
+        fi
 
-    echo "Loading .genome file"
-    kubectl exec \$pod_name --  python /home/higlass/projects/higlass-server/manage.py ingest_tileset --filename /higlass-temp/${project_name}/${file_name}.genome --filetype chromsizes-tsv --datatype chromsizes --coordSystem ${assembly}_assembly --project-name ${project_name} --name ${file_name}_grid --uid ${uid}_grid
+        # Call the bash script to handle upload of file to higlass server
 
-    grid_uuid=\$(kubectl exec \$pod_name -- python /home/higlass/projects/higlass-server/manage.py list_tilesets | (grep '${file_name}_grid' || [ "\$?" == "1" ] ) | awk '{print substr(\$NF, 1, length(\$NF)-1)}')
-    echo "uuid of .genome file is: \$grid_uuid"
+        upload_higlass_file.sh \$pod_name ${project_name} ${file_name} \$file_type \$file_ext ${uid} ${assembly}
+    
+        echo "\$file_ext loaded" 
+    done 
 
-    file_name=${file_name}
+    # Set file name to pass through to view config creation
+    file_name=${file_name}_test
 
     echo "done"
 
