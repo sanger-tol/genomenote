@@ -122,9 +122,9 @@ def main(args=None):
                 fout.write(key + "," + params[key][0] + "\n")
 
     # Write out file where data is inconsistent across different sources
-    if len(params_inconsistent) > 0:
-        with open(args.out_inconsistent, "w") as fout:
-            fout.write(",".join(["#paramName", "source|paramValue"]) + "\n")
+    with open(args.out_inconsistent, "w") as fout:
+        fout.write(",".join(["#paramName", "source|paramValue"]) + "\n")
+        if len(params_inconsistent) > 0:
             for key in sorted(params_inconsistent):
                 fout.write(key + ",")
                 fout.write(",".join(params_inconsistent[key]) + "\n")
