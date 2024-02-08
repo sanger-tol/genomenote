@@ -26,6 +26,7 @@ This pipeline takes aligned HiC reads to create contact maps and chromosomal gri
   - `<sample>.bedpe`: chromosomal grid created from the `.cool` file
   - `<sample>.cool`: initial contact matrix created
   - `<sample>.mcool`: final contact matrix for upload
+  - `<assembly>_higlass_link.csv`: file with url for higlass map
 
 </details>
 

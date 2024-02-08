@@ -90,6 +90,11 @@
                     "fa_icon": "fas far fa-file-code",
                     "hidden": true
                 },
+                "higlass_url": {
+                    "type": "string",
+                    "description": "URL for the Higlass server",
+                    "hidden": true
+                },
                 "higlass_upload_directory": {
                     "type": "string",
                     "format": "directory-path",
