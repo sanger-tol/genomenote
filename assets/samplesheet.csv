@@ -1,3 +1,3 @@
 sample,datatype,datafile
-ieCloDipt1,pacbio,https://tolit.cog.sanger.ac.uk/test-data/Cloeon_dipterum/genomic_data/ieCloDipt1/pacbio/m64094_200901_101741.ccs.bc1001_BAK8A_OA--bc1001_BAK8A_OA.bam
+ieCloDipt1,pacbio,https://tolit.cog.sanger.ac.uk/test-data/Cloeon_dipterum/genomic_data/ieCloDipt1/pacbio/m64094_200901_101741.ccs.bc1001_BAK8A_OA--bc1001_BAK8A_OA.subsampled.bam
 ieCloDipt1,hic,https://tolit.cog.sanger.ac.uk/test-data/Cloeon_dipterum/analysis/ieCloDipt1.1/read_mapping/hic/GCA_949628265.1.unmasked.hic.ieCloDipt1.subsampled.cram
