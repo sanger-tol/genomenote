@@ -10,7 +10,7 @@ def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 WorkflowGenomenote.initialise(params, log)
 
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.lineage_db, params.fasta ]
+def checkPathParamList = [ params.input, params.multiqc_config, params.lineage_db, params.fasta, params.lineage_tax_ids ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
@@ -21,8 +21,10 @@ if (params.fasta)     { ch_fasta = Channel.fromPath(params.fasta) } else { exit 
 if (params.binsize)   { ch_bin   = Channel.of(params.binsize)     } else { exit 1, 'Bin size for cooler/cload not specified!' }
 if (params.kmer_size) { ch_kmer  = Channel.of(params.kmer_size)   } else { exit 1, 'Kmer library size for fastk not specified' }
 
+if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.lineage_tax_ids) } else { exit 1, 'Mapping BUSCO lineage <-> taxon_ids not specified' }
+
 // Check optional parameters
-if (params.lineage_db) { ch_busco = Channel.fromPath(params.lineage_db) } else { ch_busco = Channel.empty() }
+if (params.lineage_db) { ch_lineage_db = Channel.fromPath(params.lineage_db) } else { ch_lineage_db = Channel.empty() }
 
 
 /*
@@ -95,7 +97,7 @@ workflow GENOMENOTE {
     | branch { meta, file ->
         hic : meta.datatype == 'hic'
             return [ meta, file, [] ]
-        pacbio : meta.datatype == 'pacbio'
+        pacbio : meta.datatype == 'pacbio' || meta.datatype == '10x'
             return [ meta, file ]
     }
     | set { ch_inputs }
@@ -106,15 +108,19 @@ workflow GENOMENOTE {
     // MODULE: Uncompress fasta file if needed
     //
     ch_fasta
-    | map { file -> [ [ 'id': file.baseName.tokenize('.')[0..1].join('.') ], file ] }
+    | map { file -> [ [ 'id': file.baseName ], file ] }
     | set { ch_genome }
 
     if ( params.fasta.endsWith('.gz') ) {
-        ch_fasta    = GUNZIP ( ch_genome ).gunzip
+        ch_unzipped = GUNZIP ( ch_genome ).gunzip
         ch_versions = ch_versions.mix ( GUNZIP.out.versions.first() )
     } else {
-        ch_fasta    = ch_genome
+        ch_unzipped = ch_genome
     }
+
+    ch_unzipped
+    | map { meta, fa -> [ meta + [id: fa.baseName, genome_size: fa.size()], fa] }
+    | set { ch_fasta }
 
 
     //
@@ -128,13 +134,13 @@ workflow GENOMENOTE {
     // SUBWORKFLOW: Create genome statistics table
     //
     ch_inputs.hic
-    | map{ meta, cram, blank ->
-        flagstat = file( cram.resolveSibling( cram.baseName + ".flagstat" ), checkIfExists: true )
+    | map{ meta, reads, blank ->
+        flagstat = file( reads.resolveSibling( reads.baseName + ".flagstat" ), checkIfExists: true )
         [ meta, flagstat ]
     }
     | set { ch_flagstat }
 
-    GENOME_STATISTICS ( ch_fasta, ch_busco, ch_inputs.pacbio, ch_flagstat )
+    GENOME_STATISTICS ( ch_fasta, ch_lineage_tax_ids, ch_lineage_db, ch_inputs.pacbio, ch_flagstat )
     ch_versions = ch_versions.mix ( GENOME_STATISTICS.out.versions )
 
     //

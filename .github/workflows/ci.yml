@@ -1,7 +1,12 @@
 name: nf-core CI
 # This workflow runs the pipeline with the minimal test dataset to check that it completes without any syntax errors
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - dev
+  pull_request:
+  release:
+    types: [published]
 
 env:
   NXF_ANSI_LOG: false
@@ -19,7 +24,7 @@ jobs:
     strategy:
       matrix:
         NXF_VER:
-          - "23.04.1"
+          - "22.10.1"
           - "latest-everything"
     steps:
       - name: Check out pipeline code

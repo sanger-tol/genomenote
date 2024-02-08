@@ -30,7 +30,7 @@
                 "kmer_size": {
                     "type": "integer",
                     "default": 31,
-                    "description": "Size for Fastk to create the PacBio k-mer library"
+                    "description": "Size for Fastk to create the k-mer library"
                 },
                 "assembly": {
                     "type": "string",
@@ -135,6 +135,13 @@
                     "format": "directory-path",
                     "description": "Local directory where clade-specific BUSCO lineage datasets are stored.",
                     "fa_icon": "fas fa-folder-open"
+                },
+                "lineage_tax_ids": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Local file that holds a mapping between BUSCO lineages and taxon IDs.",
+                    "help_text": "Initialised from https://busco-data.ezlab.org/v5/data/placement_files/mapping_taxids-busco_dataset_name.eukaryota_odb10.2019-12-16.txt.tar.gz",
+                    "fa_icon": "fas fa-file-code"
                 }
             },
             "fa_icon": "fas fa-database"
@@ -155,6 +162,21 @@
                 }
             },
             "required": ["fasta"]
+        },
+        "execution": {
+            "title": "Execution",
+            "type": "object",
+            "description": "Control the execution of the pipeline.",
+            "default": "",
+            "properties": {
+                "use_work_dir_as_temp": {
+                    "type": "boolean",
+                    "description": "Set to true to make tools (e.g. sort, FastK, MerquryFK) use the work directory for their temporary files, rather than the system default.",
+                    "fa_icon": "fas fa-arrow-circle-down",
+                    "hidden": true
+                }
+            },
+            "fa_icon": "fas fa-running"
         },
         "institutional_config_options": {
             "title": "Institutional config options",
@@ -323,7 +345,7 @@
                 "tracedir": {
                     "type": "string",
                     "description": "Directory to keep pipeline Nextflow logs and reports.",
-                    "default": "${params.outdir}/genomenote_info",
+                    "default": "${params.outdir}/pipeline_info/genomenote",
                     "fa_icon": "fas fa-cogs",
                     "hidden": true
                 },
@@ -353,6 +375,9 @@
         },
         {
             "$ref": "#/definitions/reference_genome_options"
+        },
+        {
+            "$ref": "#/definitions/execution"
         },
         {
             "$ref": "#/definitions/institutional_config_options"

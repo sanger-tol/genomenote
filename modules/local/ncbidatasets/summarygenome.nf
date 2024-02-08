@@ -27,6 +27,8 @@ process NCBIDATASETS_SUMMARYGENOME {
         ${args} \\
         > ${prefix}.json
 
+    validate_datasets_json.py ${prefix}.json
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         ncbi-datasets-cli: \$(datasets --version | sed 's/^.*datasets version: //')

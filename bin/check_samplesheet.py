@@ -27,9 +27,10 @@ class RowChecker:
     VALID_DATATYPES = (
         "hic",
         "pacbio",
+        "10x",
     )
 
-    VALID_FORMATS = (".cram",)
+    VALID_FORMATS = (".cram", ".bam")
 
     def __init__(
         self,
