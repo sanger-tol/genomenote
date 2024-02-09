@@ -28,8 +28,8 @@ process UPLOAD_HIGLASS_DATA {
         error "UPLOAD_HIGLASS_DATA modules do not support Conda. Please use Docker / Singularity / Podman instead."
     }
 
-    def project_name = "${higlass_data_project_dir}/${species.replaceAll('\\s','_')}/${assembly}"
-    def file_name = "${assembly}_${meta.id}"
+    def project_name = "/${workflow.userName}${higlass_data_project_dir}/${species.replaceAll('\\s','_')}/${assembly}"
+    def file_name = "${workflow.userName}_${assembly}_${meta.id}"
     // uid cannot contain a "."
     def uid = "${file_name.replaceAll('\\.','_')}"
 
