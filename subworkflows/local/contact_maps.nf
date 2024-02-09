@@ -49,17 +49,18 @@ workflow CONTACT_MAPS {
     ch_versions = ch_versions.mix ( BEDTOOLS_BAMTOBED.out.versions.first() )
 
 
-    // Sort the bed file
+    // Sort the bed file by read name
     BED_SORT ( BEDTOOLS_BAMTOBED.out.bed )
     ch_versions = ch_versions.mix ( BED_SORT.out.versions.first() )
 
 
     // Filter the bed file
+    // Pair the consecutive rows
     FILTER_BED ( BED_SORT.out.sorted )
     ch_versions = ch_versions.mix ( FILTER_BED.out.versions.first() )
 
 
-    // Sort the filtered bed
+    // Sort the filtered bed by chromosome name
     FILTER_SORT ( FILTER_BED.out.pairs )
     ch_versions = ch_versions.mix ( FILTER_SORT.out.versions.first() )
 
