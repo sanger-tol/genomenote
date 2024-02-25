@@ -47,10 +47,8 @@ def get_odb(ncbi_summary, lineage_tax_ids, file_out):
     # Do the intersection to find the ancestors that have a BUSCO lineage
     odb_arr = [lineage_tax_ids_dict[taxon_id] for taxon_id in ancestor_taxon_ids if taxon_id in lineage_tax_ids_dict]
 
-    # The most recent [-1] OBD10 lineage is selected, unless one of the lineage values is "eutheria", then choose "eutheria"
-    # NOTE: this rule is a guess that hasn't been confirmed by Karen
-    odb_val = "eutheria_odb10" if "eutheria_odb10" in odb_arr else odb_arr[-1]
-
+    # The most recent [-1] OBD10 lineage is selected
+    odb_val = odb_arr[-1]
     out_dir = os.path.dirname(file_out)
     make_dir(out_dir)
 
