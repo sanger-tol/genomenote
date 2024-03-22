@@ -83,6 +83,13 @@
                     "description": "URL for Genome Notes Portal API .",
                     "fa_icon": "far fa-file-code"
                 },
+                "note_template": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "The path to a genome note template file.",
+                    "help_text": "Set this parameter if you have a genome note template file that you wish to populate. Templates may be docx or xml files",
+                    "fa_icon": "fas fa-folder-open"
+                },
                 "upload_higlass_data": {
                     "type": "boolean",
                     "description": "flag to control if Higlass server should be updated to add new files",
