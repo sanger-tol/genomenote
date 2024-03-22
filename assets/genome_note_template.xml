@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE article>
 <article>
-    <body> 
+    <body>
         <sec>
             <title>Species taxonomy</title>
-            <p>{{ TAX_STRING }}; 
-                <italic>{{ GENUS }}</italic>; 
-                <italic>{{ GENUS_SPECIES }}</italic> ($TAXONOMY_AUTHORITY) (NCBI:txid{{ NCBI_TAXID }}).</p>
+            <p>{{ TAX_STRING }};
+                <italic>{{ GENUS }}</italic>;
+                <italic>{{ GENUS_SPECIES }}</italic> ($TAXONOMY_AUTHORITY) (NCBI:txid{{ NCBI_TAXID }}).
+            </p>
         </sec>
         <sec>
             <table>
