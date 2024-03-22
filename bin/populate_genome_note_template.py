@@ -97,7 +97,7 @@ def populate_template(param_file, template_file, template_type, file_out):
     else:
         with open(template_file, "r") as file:
             data = file.read()
-        
+
         template = myenv.from_string(data)
         content = template.render(context)
         write_file(content, template_type, file_out)
