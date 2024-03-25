@@ -5,7 +5,7 @@
             <title>Species taxonomy</title>
             <p>{{ TAX_STRING }};
                 <italic>{{ GENUS }}</italic>;
-                <italic>{{ GENUS_SPECIES }}</italic> ($TAXONOMY_AUTHORITY) (NCBI:txid{{ NCBI_TAXID }}).
+                <italic>{{ GENUS_SPECIES }}</italic> ($TAXONOMY_AUTHORITY) (NCBI:txid{{ NCBI_TAXID }}) {{ TEST_NOT_REPLACED }}.
             </p>
         </sec>
         <sec>
