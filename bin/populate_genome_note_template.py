@@ -15,9 +15,10 @@ def parse_args(args=None):
 
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
     parser.add_argument("PARAM_FILE", help="Input parameters CSV file.")
-    parser.add_argument("TEMPLATE_FILE", help="Input Genome Note Template Doc file.")
+    parser.add_argument("TEMPLATE_FILE", help="Input Genome Note Template file.")
+    parser.add_argument("TEMPLATE_TYPE", help="Input Genome Note Template file type.")
     parser.add_argument("FILE_OUT", help="Output file.")
-    parser.add_argument("--version", action="version", version="%(prog)s 1.0")
+    parser.add_argument("--version", action="version", version="%(prog)s 1.1")
     return parser.parse_args(args)
 
 
@@ -26,10 +27,14 @@ def make_dir(path):
         os.makedirs(path, exist_ok=True)
 
 
-def write_file(template, file_out):
+def write_file(template, type, file_out):
     out_dir = os.path.dirname(file_out)
     make_dir(out_dir)
-    template.save(os.path.join(out_dir, file_out))
+    if type == "docx":
+        template.save(os.path.join(out_dir, file_out))
+    else:
+        with open(file_out, "w") as fout:
+            fout.write(template)
 
 
 def build_param_list(param_file):
@@ -82,18 +87,25 @@ def build_param_list(param_file):
         return mydict
 
 
-def populate_template(param_file, template_file, file_out):
+def populate_template(param_file, template_file, template_type, file_out):
     myenv = jinja2.Environment(undefined=jinja2.DebugUndefined)
     context = build_param_list(param_file)
-    template = DocxTemplate(template_file)
-    template.render(context, myenv)
+    if template_type == "docx":
+        template = DocxTemplate(template_file)
+        template.render(context, myenv)
+        write_file(template, template_type, file_out)
+    else:
+        with open(template_file, "r") as file:
+            data = file.read()
 
-    write_file(template, file_out)
+        template = myenv.from_string(data)
+        content = template.render(context)
+        write_file(content, template_type, file_out)
 
 
 def main(args=None):
     args = parse_args(args)
-    populate_template(args.PARAM_FILE, args.TEMPLATE_FILE, args.FILE_OUT)
+    populate_template(args.PARAM_FILE, args.TEMPLATE_FILE, args.TEMPLATE_TYPE, args.FILE_OUT)
 
 
 if __name__ == "__main__":
