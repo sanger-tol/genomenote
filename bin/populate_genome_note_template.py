@@ -18,7 +18,7 @@ def parse_args(args=None):
     parser.add_argument("TEMPLATE_FILE", help="Input Genome Note Template file.")
     parser.add_argument("TEMPLATE_TYPE", help="Input Genome Note Template file type.")
     parser.add_argument("FILE_OUT", help="Output file.")
-    parser.add_argument("--version", action="version", version="%(prog)s 1.0")
+    parser.add_argument("--version", action="version", version="%(prog)s 1.1")
     return parser.parse_args(args)
 
 
