@@ -46,7 +46,7 @@ workflow GENOME_STATISTICS {
     | map { row -> row[1] }
     | set { ch_lineage }
     
-    BUSCO ( genome, ch_lineage, lineage_db.ifEmpty([]), [] )
+    BUSCO ( genome, "genome", ch_lineage, lineage_db.ifEmpty([]), [] )
     ch_versions = ch_versions.mix ( BUSCO.out.versions.first() )
 
 
