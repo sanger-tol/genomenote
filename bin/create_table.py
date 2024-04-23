@@ -99,7 +99,7 @@ def ncbi_stats(genome_in, seq_in, writer):
             writer.writerow(
                 [
                     mol["assigned_molecule_location_type"],
-                    mol["length"],
+                    round(mol["length"] / 1000000, 2),
                     mol["gc_percent"],
                 ]
             )

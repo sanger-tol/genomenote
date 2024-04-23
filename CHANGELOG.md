@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Enhancements & fixes
 
 - Updated the MerquryFK resources to cope with mistletoe (the pipeline as a whole is not yet fully compatible with mistletoe, though).
+- Round the chromosome lengths to 2 decimal points.
 
 ## [[1.1.2](https://github.com/sanger-tol/genomenote/releases/tag/1.1.2)] [2024-04-29]
 
