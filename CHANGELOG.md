@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated the Busco resources to better deal with large genomes.
 - Round the chromosome lengths to 2 decimal points.
 - The pipeline is now publishing the Busco output directories.
+- The pipeline now generates a contact map for each Hi-C sample (instead of
+  randomly picking one) and reports them all in the CSV.
 
 ### Software dependencies
 

@@ -38,6 +38,7 @@ workflow CONTACT_MAPS {
     // CRAM to BAM
     genome
     | map { meta, fasta -> fasta }
+    | first
     | set { ch_fasta }
 
     SAMTOOLS_VIEW ( reads, ch_fasta, [] )
@@ -73,6 +74,7 @@ workflow CONTACT_MAPS {
 
     FILTER_GENOME.out.list
     | map { meta, list -> list }
+    | first
     | set { ch_chromsizes }    
 
     COOLER_CLOAD ( ch_cooler, ch_chromsizes )

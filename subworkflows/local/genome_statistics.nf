@@ -125,7 +125,14 @@ workflow GENOME_STATISTICS {
     | set { ch_merqury }
 
     flagstat
-    | ifEmpty ( [ [], [] ] )
+    // Queue channel of tuple(meta, file)
+    | toList
+    // Value channel of list(tuple(meta, file))
+    | map { lmf -> [
+            lmf.collect { it[0] },
+            lmf.collect { it[1] },
+        ] }
+    // Now channel of tuple(list(meta), list(file))
     | set { ch_flagstat }
 
     CREATETABLE ( ch_summary, ch_busco, ch_merqury, ch_flagstat )

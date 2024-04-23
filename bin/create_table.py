@@ -17,10 +17,10 @@ def parse_args(args=None):
     parser.add_argument("--busco", help="Input BUSCO short summary JSON file.")
     parser.add_argument("--qv", nargs="*", help="Input QV TSV file from MERQURYFK.")
     parser.add_argument("--completeness", nargs="*", help="Input COMPLETENESS stats TSV file from MERQURYFK.")
-    parser.add_argument("--hic", help="HiC sample ID used for contact maps.")
-    parser.add_argument("--flagstat", help="HiC flagstat file created by Samtools.")
+    parser.add_argument("--hic", action="append", help="HiC sample ID used for contact maps.")
+    parser.add_argument("--flagstat", action="append", help="HiC flagstat file created by Samtools.")
     parser.add_argument("--outcsv", help="Output CSV file.", required=True)
-    parser.add_argument("--version", action="version", version="%(prog)s 2.0")
+    parser.add_argument("--version", action="version", version="%(prog)s 3.0")
     return parser.parse_args(args)
 
 
@@ -168,7 +168,8 @@ def main(args=None):
         if args.qv and args.completeness is not None:
             extract_pacbio(args.qv, args.completeness, writer)
         if args.hic is not None:
-            extract_mapped(args.hic, args.flagstat, writer)
+            for hic, flagstat in zip(args.hic, args.flagstat):
+                extract_mapped(hic, flagstat, writer)
 
 
 if __name__ == "__main__":
