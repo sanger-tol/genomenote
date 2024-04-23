@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated the MerquryFK resources to cope with mistletoe (the pipeline as a whole is not yet fully compatible with mistletoe, though).
 - Updated the Busco resources to better deal with large genomes.
 - Round the chromosome lengths to 2 decimal points.
+- The pipeline is now publishing the Busco output directories.
 
 ### Software dependencies
 
