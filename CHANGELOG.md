@@ -7,12 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Enhancements & fixes
 
-- Updated the MerquryFK resources to cope with mistletoe (the pipeline as a whole is not yet fully compatible with mistletoe, though).
+- Updated the MerquryFK resources to cope with mistletoe (the pipeline as a
+  whole is not yet fully compatible with mistletoe, though).
 - Updated the Busco resources to better deal with large genomes.
 - Round the chromosome lengths to 2 decimal points.
 - The pipeline is now publishing the Busco output directories.
 - The pipeline now generates a contact map for each Hi-C sample (instead of
   randomly picking one) and reports them all in the CSV.
+- The Hi-C contact map is now ordered according to the karyotype (as defined in
+  the assembly record) by default, and added the `--cool_order` option to
+  override it.
 
 ### Software dependencies
 
@@ -23,6 +27,12 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | busco      | 5.4.3       | 5.5.0       |
 
 > **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
+
+### Parameters
+
+| Old parameter | New parameter |
+| ------------- | ------------- |
+|               | --cool_order  |
 
 ## [[1.1.2](https://github.com/sanger-tol/genomenote/releases/tag/1.1.2)] [2024-04-29]
 
