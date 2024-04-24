@@ -27,7 +27,7 @@ workflow CONTACT_MAPS {
 
 
     // Extract the ordered chromosome list
-    GET_CHROMLIST ( summary_seq, cool_order )
+    GET_CHROMLIST ( summary_seq, cool_order.ifEmpty([]) )
     ch_versions = ch_versions.mix ( GET_CHROMLIST.out.versions.first() )
 
 

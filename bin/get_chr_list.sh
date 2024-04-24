@@ -11,16 +11,17 @@ if [[ -n "$ord_list" ]]; then
     new_lst="new_filter.lst"
 
     while read -r line; do
-        grep "$line" "$filter_lst" >> "$new_lst"
-    done < "$ord_list"
+        grep -F "$line" "$filter_lst"
+    done < "$ord_list" > "$new_lst"
 
-    grep -v -f "$ord_list" "$filter_lst" >> "$new_lst"
+    grep -v -F -f "$ord_list" "$filter_lst" >> "$new_lst"
 
     c1=$(wc -l < "$filter_lst")
     c2=$(wc -l < "$new_lst")
 
     if [ "$c1" -ne "$c2" ]; then
         echo "The old and new files have a different number of rows."
+        exit 1
     fi
 
     cp "$new_lst" "$filter_lst"
