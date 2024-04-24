@@ -1,18 +1,18 @@
-process FILTER_GENOME {
+process GET_CHROMLIST {
     tag "$meta.id"
     label 'process_single'
 
-    conda "bioconda::coreutils=8.25"
+    conda "conda-forge::jq=1.6"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/coreutils:8.25--1' :
-        'biocontainers/coreutils:8.25--1' }"
+        'https://depot.galaxyproject.org/singularity/jq:1.6' :
+        'biocontainers/jq:1.6' }"
 
     input:
-    tuple val(meta), path(fai)
+    tuple val(meta), path(json)
     path ord
 
     output:
-    tuple val(meta), path("*_filtered.list"), emit: list
+    tuple val(meta), path("*_chrom.list"), emit: list
     path "versions.yml"            , emit: versions
 
     when:
@@ -22,7 +22,7 @@ process FILTER_GENOME {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    filter_genome.sh $fai ${prefix}_filtered.list $ord
+    get_chr_list.sh $json ${prefix}_chrom.list $ord
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

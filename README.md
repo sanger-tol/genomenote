@@ -17,15 +17,14 @@
 
 <!--![sanger-tol/genomenote workflow](https://raw.githubusercontent.com/sanger-tol/genomenote/main/docs/images/sanger-tol-genomenote_workflow.png)-->
 
-1. Filter genome index ([`samtools faidx`](https://www.htslib.org/doc/samtools-faidx.html), `filter genome`)
+1. Summary statistics ([`NCBI datasets summary genome accession`](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/reference-docs/command-line/datasets/summary/genome/datasets_summary_genome_accession/))
 2. Convert alignment to BED ([`samtools view`](https://www.htslib.org/doc/samtools-view.html), [`bedtools bamtobed`](https://bedtools.readthedocs.io/en/latest/content/tools/bamtobed.html))
 3. Filter BED ([`GNU sort`](https://www.gnu.org/software/coreutils/manual/html_node/sort-invocation.html), [`filter bed`](https://raw.githubusercontent.com/sanger-tol/genomenote/main/bin/filter_bed.sh))
 4. Contact maps ([`Cooler cload`](https://cooler.readthedocs.io/en/latest/cli.html#cooler-cload-pairs), [`Cooler zoomify`](https://cooler.readthedocs.io/en/latest/cli.html#cooler-zoomify), [`Cooler dump`](https://cooler.readthedocs.io/en/latest/cli.html#cooler-dump))
-5. Summary statistics ([`NCBI datasets summary genome accession`](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/reference-docs/command-line/datasets/summary/genome/datasets_summary_genome_accession/))
-6. Genome completeness ([`NCBI API`](https://www.ncbi.nlm.nih.gov/datasets/docs/v1/reference-docs/rest-api/), [`BUSCO`](https://busco.ezlab.org))
-7. Consensus quality and k-mer completeness ([`FASTK`](https://github.com/thegenemyers/FASTK), [`MERQURY.FK`](https://github.com/thegenemyers/MERQURY.FK))
-8. Collated summary table ([`createtable`](bin/create_table.py))
-9. Present results and visualisations ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
+5. Genome completeness ([`NCBI API`](https://www.ncbi.nlm.nih.gov/datasets/docs/v1/reference-docs/rest-api/), [`BUSCO`](https://busco.ezlab.org))
+6. Consensus quality and k-mer completeness ([`FASTK`](https://github.com/thegenemyers/FASTK), [`MERQURY.FK`](https://github.com/thegenemyers/MERQURY.FK))
+7. Collated summary table ([`createtable`](bin/create_table.py))
+8. Present results and visualisations ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
 
 ## Usage
 

@@ -4,7 +4,7 @@ infile=$1
 filter_lst=$2
 ord_list=$3
 
-cut -f1,2 "$infile" | sed 's/-/_/g' | sort -k2,2 -nr > "$filter_lst"
+jq -r '.reports[] | [.genbank_accession, .length] | @tsv' < "$infile" | sort -k2,2 -nr > "$filter_lst"
 
 if [[ -n "$ord_list" ]]; then
     echo "Working with ordered list"

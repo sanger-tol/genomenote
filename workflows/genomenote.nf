@@ -114,13 +114,6 @@ workflow GENOMENOTE {
 
 
     //
-    // SUBWORKFLOW: Create contact map matrices from HiC alignment files
-    //
-    CONTACT_MAPS ( ch_fasta, ch_inputs.hic, ch_bin, ch_cool_order )
-    ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
-
-
-    //
     // SUBWORKFLOW: Create genome statistics table
     //
     ch_inputs.hic
@@ -132,6 +125,13 @@ workflow GENOMENOTE {
 
     GENOME_STATISTICS ( ch_fasta, ch_lineage_tax_ids, ch_lineage_db, ch_inputs.pacbio, ch_flagstat )
     ch_versions = ch_versions.mix ( GENOME_STATISTICS.out.versions )
+
+
+    //
+    // SUBWORKFLOW: Create contact map matrices from HiC alignment files
+    //
+    CONTACT_MAPS ( ch_fasta, ch_inputs.hic, GENOME_STATISTICS.out.summary_seq, ch_bin, ch_cool_order )
+    ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
 
 
     //
