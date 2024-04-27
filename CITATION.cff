@@ -2,7 +2,7 @@
 # Visit https://bit.ly/cffinit to generate yours today!
 
 cff-version: 1.2.0
-title: sanger-tol/genomenote v1.1.0
+title: sanger-tol/genomenote v1.1.1
 message: >-
     If you use this software, please cite it using the
     metadata from this file.
@@ -34,5 +34,5 @@ identifiers:
 repository-code: "https://github.com/sanger-tol/genomenote"
 license: MIT
 commit: TODO
-version: 1.1.0
+version: 1.1.1
 date-released: "2022-10-07"

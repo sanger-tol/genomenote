@@ -3,6 +3,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[1.1.1](https://github.com/sanger-tol/genomenote/releases/tag/1.1.1)] [2024-02-26]
+
+### Enhancements & fixes
+
+- Stopped forcing the `eutheria_odb10` BUSCO lineage to be used for all mammals.
+  This to synchronise this pipeline with the [BlobToolKit pipeline](https://github.com/sanger-tol/blobtoolkit).
+
 ## [[1.1.0](https://github.com/sanger-tol/genomenote/releases/tag/1.1.0)] - Golden Retriever - [2024-01-04]
 
 ### Enhancements & fixes
