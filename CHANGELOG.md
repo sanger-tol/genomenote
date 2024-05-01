@@ -3,6 +3,12 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[1.1.2](https://github.com/sanger-tol/genomenote/releases/tag/1.1.2)] [2024-04-29]
+
+### Enhancements & fixes
+
+- Bugfix: the BAM still needs to be filtered with `-F0x400`
+
 ## [[1.1.1](https://github.com/sanger-tol/genomenote/releases/tag/1.1.1)] [2024-02-26]
 
 ### Enhancements & fixes
