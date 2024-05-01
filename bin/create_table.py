@@ -20,7 +20,7 @@ def parse_args(args=None):
     parser.add_argument("--hic", action="append", help="HiC sample ID used for contact maps.")
     parser.add_argument("--flagstat", action="append", help="HiC flagstat file created by Samtools.")
     parser.add_argument("--outcsv", help="Output CSV file.", required=True)
-    parser.add_argument("--version", action="version", version="%(prog)s 3.0")
+    parser.add_argument("--version", action="version", version="%(prog)s 3.1")
     return parser.parse_args(args)
 
 
@@ -89,7 +89,13 @@ def ncbi_stats(genome_in, seq_in, writer):
             if not chromosome_header:
                 writer.writerow(["##Chromosome", "Length", "GC_Percent"])
                 chromosome_header = True
-            writer.writerow([mol["chr_name"], mol["length"], mol["gc_percent"]])
+            writer.writerow(
+                [
+                    mol["chr_name"],
+                    round(mol["length"] / 1000000, 2),
+                    mol["gc_percent"],
+                ]
+            )
     organelle_header = False
     for mol in seq:
         if "gc_percent" in mol and mol["assembly_unit"] == "non-nuclear":
