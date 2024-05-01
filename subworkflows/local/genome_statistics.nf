@@ -6,6 +6,7 @@ include { NCBIDATASETS_SUMMARYGENOME as SUMMARYGENOME   } from '../../modules/lo
 include { NCBIDATASETS_SUMMARYGENOME as SUMMARYSEQUENCE } from '../../modules/local/ncbidatasets/summarygenome'
 include { NCBI_GET_ODB                                  } from '../../modules/local/ncbidatasets/get_odb'
 include { BUSCO                                         } from '../../modules/nf-core/busco/main'
+include { RESTRUCTUREBUSCODIR                           } from '../../modules/local/restructurebuscodir'
 include { FASTK_FASTK                                   } from '../../modules/nf-core/fastk/fastk/main'
 include { MERQURYFK_MERQURYFK                           } from '../../modules/nf-core/merquryfk/merquryfk/main'
 include { CREATETABLE                                   } from '../../modules/local/createtable'
@@ -46,8 +47,22 @@ workflow GENOME_STATISTICS {
     | map { row -> row[1] }
     | set { ch_lineage }
     
-    BUSCO ( genome, ch_lineage, lineage_db.ifEmpty([]), [] )
+    BUSCO ( genome, "genome", ch_lineage, lineage_db.ifEmpty([]), [] )
     ch_versions = ch_versions.mix ( BUSCO.out.versions.first() )
+
+
+    //
+    // Tidy up the BUSCO output directories before publication
+    //
+    RESTRUCTUREBUSCODIR(
+        BUSCO.out.batch_summary
+        | combine ( ch_lineage )
+        | join ( BUSCO.out.short_summaries_txt, remainder: true )
+        | join ( BUSCO.out.short_summaries_json, remainder: true )
+        | join ( BUSCO.out.busco_dir )
+        | map { meta, batch_summary, lineage, short_summaries_txt, short_summaries_json, busco_dir -> [meta, lineage, batch_summary, short_summaries_txt ?: [], short_summaries_json ?: [], busco_dir] }
+    )
+    ch_versions = ch_versions.mix ( RESTRUCTUREBUSCODIR.out.versions.first() )
 
 
     // FastK
@@ -110,7 +125,14 @@ workflow GENOME_STATISTICS {
     | set { ch_merqury }
 
     flagstat
-    | ifEmpty ( [ [], [] ] )
+    // Queue channel of tuple(meta, file)
+    | toList
+    // Value channel of list(tuple(meta, file))
+    | map { lmf -> [
+            lmf.collect { it[0] },
+            lmf.collect { it[1] },
+        ] }
+    // Now channel of tuple(list(meta), list(file))
     | set { ch_flagstat }
 
     CREATETABLE ( ch_summary, ch_busco, ch_merqury, ch_flagstat )
@@ -123,6 +145,7 @@ workflow GENOME_STATISTICS {
     | set { multiqc }
 
     emit:
+    summary_seq = SUMMARYSEQUENCE.out.summary   // channel: [ meta, summary ]
     summary  = CREATETABLE.out.csv      // channel: [ csv ]
     multiqc                             // channel: [ meta, summary ]
     versions = ch_versions              // channel: [ versions.yml ]

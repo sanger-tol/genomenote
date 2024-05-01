@@ -11,7 +11,7 @@ process CREATETABLE {
     tuple val(meta), path(genome_summary), path(sequence_summary)
     tuple val(meta1), path(busco)
     tuple val(meta2), path(qv), path(completeness)
-    tuple val(meta3), path(flagstat)
+    tuple val(meta3s), path(flagstats, stageAs: "?/*")
 
     output:
     tuple val(meta), path("*.csv"), emit: csv
@@ -27,8 +27,8 @@ process CREATETABLE {
     def bus = busco ? "--busco ${busco}" : ""
     def mqv = qv ? "--qv ${qv}" : ""
     def mco = completeness ? "--completeness ${completeness}" : ""
-    def hic = flagstat ? "--hic ${meta3.id}" : ""
-    def fst = flagstat ? "--flagstat ${flagstat}" : ""
+    def hic = meta3s.collect { "--hic " + it.id } .join(' ')
+    def fst = (flagstats instanceof List ? flagstats : [flagstats]).collect { "--flagstat " + it } .join(' ')
     """
     create_table.py \\
         $gen \\

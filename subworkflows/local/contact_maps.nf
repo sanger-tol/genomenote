@@ -2,8 +2,7 @@
 // Prepare contact maps using aligned reads
 //
 
-include { SAMTOOLS_FAIDX          } from '../../modules/nf-core/samtools/faidx/main'
-include { FILTER_GENOME           } from '../../modules/local/filter/genome'
+include { GET_CHROMLIST           } from '../../modules/local/ncbidatasets/get_chromlist'
 include { SAMTOOLS_VIEW           } from '../../modules/nf-core/samtools/view/main'
 include { BEDTOOLS_BAMTOBED       } from '../../modules/nf-core/bedtools/bamtobed/main'
 include { GNU_SORT as BED_SORT    } from '../../modules/nf-core/gnu/sort/main'
@@ -18,26 +17,24 @@ workflow CONTACT_MAPS {
     take:
     genome                                    // channel: [ meta, fasta ]
     reads                                     // channel: [ meta, reads, [] ]
+    summary_seq                               // channel: [ meta, summary ]
     cool_bin                                  // channel: val(cooler_bins)
+    cool_order                                // path: /path/to/file
 
 
     main:
     ch_versions = Channel.empty()
 
 
-    // Index genome file
-    SAMTOOLS_FAIDX ( genome )
-    ch_versions = ch_versions.mix ( SAMTOOLS_FAIDX.out.versions.first() )
-
-
-    // Filter the genome index file
-    FILTER_GENOME ( SAMTOOLS_FAIDX.out.fai )
-    ch_versions = ch_versions.mix ( FILTER_GENOME.out.versions.first() )
+    // Extract the ordered chromosome list
+    GET_CHROMLIST ( summary_seq, cool_order.ifEmpty([]) )
+    ch_versions = ch_versions.mix ( GET_CHROMLIST.out.versions.first() )
 
 
     // CRAM to BAM
     genome
     | map { meta, fasta -> fasta }
+    | first
     | set { ch_fasta }
 
     SAMTOOLS_VIEW ( reads, ch_fasta, [] )
@@ -49,17 +46,18 @@ workflow CONTACT_MAPS {
     ch_versions = ch_versions.mix ( BEDTOOLS_BAMTOBED.out.versions.first() )
 
 
-    // Sort the bed file
+    // Sort the bed file by read name
     BED_SORT ( BEDTOOLS_BAMTOBED.out.bed )
     ch_versions = ch_versions.mix ( BED_SORT.out.versions.first() )
 
 
     // Filter the bed file
+    // Pair the consecutive rows
     FILTER_BED ( BED_SORT.out.sorted )
     ch_versions = ch_versions.mix ( FILTER_BED.out.versions.first() )
 
 
-    // Sort the filtered bed
+    // Sort the filtered bed by chromosome name
     FILTER_SORT ( FILTER_BED.out.pairs )
     ch_versions = ch_versions.mix ( FILTER_SORT.out.versions.first() )
 
@@ -70,8 +68,9 @@ workflow CONTACT_MAPS {
     | map { meta, bed, bin -> [ meta, bed, [], bin ] }
     | set { ch_cooler }
 
-    FILTER_GENOME.out.list
+    GET_CHROMLIST.out.list
     | map { meta, list -> list }
+    | first
     | set { ch_chromsizes }    
 
     COOLER_CLOAD ( ch_cooler, ch_chromsizes )
