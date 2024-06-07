@@ -70,7 +70,7 @@
                     },
                     "wgsim": {
                         "branch": "master",
-                        "git_sha": "276cd876a7d0762d423c39fb399859e0aac41b26",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": ["modules"]
                     }
                 }
