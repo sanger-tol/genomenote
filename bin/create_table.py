@@ -75,14 +75,27 @@ def ncbi_stats(genome_in, seq_in, writer):
     )
     writer.writerow(["Sex", "".join(pairs["value"] for pairs in attr if pairs["name"] == "sex")])
     writer.writerow(["##Assembly_Statistics"])
-    writer.writerow(["Total_Sequence", stats["total_sequence_length"]])
-    if "total_number_of_chromosomes" in stats:
-        writer.writerow(["Chromosomes", stats["total_number_of_chromosomes"]])
-    writer.writerow(["Scaffolds", stats["number_of_scaffolds"]])
-    writer.writerow(["Scaffold_N50", stats["scaffold_n50"]])
-    writer.writerow(["Contigs", stats["number_of_contigs"]])
-    writer.writerow(["Contig_N50", stats["contig_n50"]])
-    writer.writerow(["GC_Percent", stats["gc_percent"]])
+    stats.get("total_sequence_length") and writer.writerow(
+        ["Total_Sequence", stats["total_sequence_length"]]
+    )
+    stats.get("total_number_of_chromosomes") and writer.writerow(
+        ["Chromosomes", stats["total_number_of_chromosomes"]]
+    )
+    stats.get("number_of_scaffolds") and writer.writerow(
+        ["Scaffolds", stats["number_of_scaffolds"]]
+    )
+    stats.get("scaffold_n50") and writer.writerow(
+        ["Scaffold_N50", stats["scaffold_n50"]]
+    )
+    stats.get("number_of_contigs") and writer.writerow(
+        ["Contigs", stats["number_of_contigs"]]
+    )
+    stats.get("contig_n50") and writer.writerow(
+        ["Contig_N50", stats["contig_n50"]]
+    )
+    stats.get("gc_percent") and writer.writerow(
+        ["GC_Percent", stats["gc_percent"]]
+    )
     chromosome_header = False
     for mol in seq:
         if "gc_percent" in mol and mol["assembly_unit"] != "non-nuclear":
