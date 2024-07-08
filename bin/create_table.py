@@ -6,6 +6,7 @@ import json
 import sys
 import csv
 import re
+import math
 
 
 def parse_args(args=None):
@@ -87,90 +88,96 @@ def ncbi_stats(genome_in, seq_in, writer):
     """
     with open(genome_in, "r") as fin1:
         data = json.load(fin1)
+    data = data.get("reports", [{}])[0]
+
     with open(seq_in, "r") as fin2:
-        seq = json.load(fin2)
+        seq = json.load(fin2).get("reports", [])
 
-    data = data["reports"][0]
-    info = data["assembly_info"]
-    attr = info["biosample"]["attributes"]
-    stats = data["assembly_stats"]
-    seq = seq["reports"]
+    info = data.get("assembly_info", {})
+    attr = info.get("biosample", {}).get("attributes", [])
+    stats = data.get("assembly_stats", {})
+    organism = data.get("organism", {})
 
+    # Write assembly information
     writer.writerow(["##Assembly_Information"])
-    writer.writerow(["Accession", data["accession"]])
-    if "common_name" in data["organism"]:
-        writer.writerow(["Common_Name", data["organism"]["common_name"]])
-    writer.writerow(["Organism_Name", data["organism"]["organism_name"]])
-    writer.writerow(
-        [
-            "ToL_ID",
-            "".join(pairs["value"] for pairs in attr if pairs["name"] == "tolid"),
-        ]
+    writer.writerow(["Accession", data.get("accession", math.nan)])
+    writer.writerow(["Common_Name", organism.get("common_name", math.nan)])
+    writer.writerow(["Organism_Name", organism.get("organism_name", math.nan)])
+    tol_id = "".join(
+        pairs.get("value", "")
+        for pairs in attr if pairs.get("name") == "tolid"
     )
-    writer.writerow(["Taxon_ID", data["organism"]["tax_id"]])
-    writer.writerow(["Assembly_Name", info["assembly_name"]])
-    writer.writerow(["Assembly_Level", info["assembly_level"]])
-    writer.writerow(
-        [
-            "Life_Stage",
-            "".join(pairs["value"] for pairs in attr if pairs["name"] == "life_stage"),
-        ]
+    writer.writerow(["ToL_ID", tol_id if tol_id else math.nan])
+    writer.writerow(["Taxon_ID", organism.get("tax_id", math.nan)])
+    writer.writerow(["Assembly_Name", info.get("assembly_name", math.nan)])
+    writer.writerow(["Assembly_Level", info.get("assembly_level", math.nan)])
+    life_stage = "".join(
+        pairs.get("value", "")
+        for pairs in attr if pairs.get("name") == "life_stage"
     )
-    writer.writerow(
-        [
-            "Tissue",
-            "".join(pairs["value"] for pairs in attr if pairs["name"] == "tissue"),
-        ]
+    writer.writerow(["Life_Stage", life_stage if life_stage else math.nan])
+    tissue = "".join(
+        pairs.get("value", "")
+        for pairs in attr if pairs.get("name") == "tissue"
     )
-    writer.writerow(["Sex", "".join(pairs["value"] for pairs in attr if pairs["name"] == "sex")])
+    writer.writerow(["Tissue", tissue if tissue else math.nan])
+    sex = "".join(
+        pairs.get("value", "")
+        for pairs in attr if pairs.get("name") == "sex"
+    )
+    writer.writerow(["Sex", sex if sex else math.nan])
+
+    # Write assembly statistics
     writer.writerow(["##Assembly_Statistics"])
-    stats.get("total_sequence_length") and writer.writerow(
-        ["Total_Sequence", stats["total_sequence_length"]]
-    )
-    stats.get("total_number_of_chromosomes") and writer.writerow(
-        ["Chromosomes", stats["total_number_of_chromosomes"]]
-    )
-    stats.get("number_of_scaffolds") and writer.writerow(
-        ["Scaffolds", stats["number_of_scaffolds"]]
-    )
-    stats.get("scaffold_n50") and writer.writerow(
-        ["Scaffold_N50", stats["scaffold_n50"]]
-    )
-    stats.get("number_of_contigs") and writer.writerow(
-        ["Contigs", stats["number_of_contigs"]]
-    )
-    stats.get("contig_n50") and writer.writerow(
-        ["Contig_N50", stats["contig_n50"]]
-    )
-    stats.get("gc_percent") and writer.writerow(
-        ["GC_Percent", stats["gc_percent"]]
-    )
+    writer.writerow([
+        "Total_Sequence", stats.get("total_sequence_length", math.nan)
+    ])
+    writer.writerow([
+        "Chromosomes", stats.get("total_number_of_chromosomes", math.nan)
+    ])
+    writer.writerow([
+        "Scaffolds", stats.get("number_of_scaffolds", math.nan)
+    ])
+    writer.writerow([
+        "Scaffold_N50", stats.get("scaffold_n50", math.nan)
+    ])
+    writer.writerow([
+        "Contigs", stats.get("number_of_contigs", math.nan)
+    ])
+    writer.writerow([
+        "Contig_N50", stats.get("contig_n50", math.nan)
+    ])
+    writer.writerow([
+        "GC_Percent", stats.get("gc_percent", math.nan)
+    ])
+
     chromosome_header = False
     for mol in seq:
-        if "gc_percent" in mol and mol["assembly_unit"] != "non-nuclear":
+        if mol.get("gc_percent") is not None and \
+                mol.get("assembly_unit") != "non-nuclear":
             if not chromosome_header:
                 writer.writerow(["##Chromosome", "Length", "GC_Percent"])
                 chromosome_header = True
-            writer.writerow(
-                [
-                    mol["chr_name"],
-                    round(mol["length"] / 1000000, 2),
-                    mol["gc_percent"],
-                ]
-            )
+            writer.writerow([
+                mol.get("chr_name", math.nan),
+                round(mol.get("length", 0) / 1000000, 2)
+                if mol.get("length") is not None else math.nan,
+                mol.get("gc_percent", math.nan),
+            ])
+
     organelle_header = False
     for mol in seq:
-        if "gc_percent" in mol and mol["assembly_unit"] == "non-nuclear":
+        if mol.get("gc_percent") is not None and \
+                mol.get("assembly_unit") == "non-nuclear":
             if not organelle_header:
                 writer.writerow(["##Organelle", "Length", "GC_Percent"])
                 organelle_header = True
-            writer.writerow(
-                [
-                    mol["assigned_molecule_location_type"],
-                    round(mol["length"] / 1000000, 2),
-                    mol["gc_percent"],
-                ]
-            )
+            writer.writerow([
+                mol.get("assigned_molecule_location_type", math.nan),
+                round(mol.get("length", 0) / 1000000, 2)
+                if mol.get("length") is not None else math.nan,
+                mol.get("gc_percent", math.nan),
+            ])
 
 
 def extract_busco(file_in, writer):
@@ -184,11 +191,13 @@ def extract_busco(file_in, writer):
     with open(file_in, "r") as fin:
         data = json.load(fin)
 
-    lineage_dataset_name = data.get("lineage_dataset", {}).get("name")
-    results_summary = data.get("results", {}).get("one_line_summary")
+    lineage_dataset_name = data.get(
+        "lineage_dataset", {}
+    ).get("name", math.nan)
+    results_summary = data.get("results", {}).get("one_line_summary", math.nan)
 
-    lineage_dataset_name and writer.writerow(["##BUSCO", lineage_dataset_name])
-    results_summary and writer.writerow(["Summary", results_summary])
+    writer.writerow(["##BUSCO", lineage_dataset_name])
+    writer.writerow(["Summary", results_summary])
 
 
 def extract_pacbio(qv, completeness, writer):
