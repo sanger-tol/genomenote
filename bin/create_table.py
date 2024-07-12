@@ -10,7 +10,7 @@ import math
 
 
 def parse_args(args=None):
-    Description = "Create a table by parsing json output to extract N50, " "BUSCO, QV and COMPLETENESS stats."
+    Description = "Create a table by parsing json output to extract N50, BUSCO, QV and COMPLETENESS stats."
 
     parser = argparse.ArgumentParser(description=Description)
     parser.add_argument("--genome", required=True, help="Input NCBI genome summary JSON file.")
