@@ -55,7 +55,10 @@ def process_file(file_in, params):
             if any(p in string.punctuation for p in value):
                 value = '"' + value + '"'
 
-            source_dict[key] = value
+            if key in source_dict:
+                source_dict[key].append(value)
+            else:
+                source_dict[key] = [value]
 
             if key in params:
                 params[key].append(value)
@@ -72,8 +75,18 @@ def main(args=None):
     params_inconsistent = {}
 
     for file in files:
-        (params, paramDict) = process_file(getattr(args, file[1]), params)
-        param_sets[file[0]] = paramDict
+        file_list = getattr(args, file[1])
+        if file_list:
+            for single_file in file_list.split(','):
+                (params, paramDict) = process_file(single_file, params)
+                if file[0] not in param_sets:
+                    param_sets[file[0]] = paramDict
+                else:
+                    for key, values in paramDict.items():
+                        if key in param_sets[file[0]]:
+                            param_sets[file[0]][key].extend(values)
+                        else:
+                            param_sets[file[0]][key] = values
 
     for key in params.keys():
         value_set = {v for v in params[key]}
@@ -82,7 +95,8 @@ def main(args=None):
 
             for source in param_sets:
                 if key in param_sets[source]:
-                    params_inconsistent[key].append((source, param_sets[source][key]))
+                    for val in param_sets[source][key]:
+                        params_inconsistent[key].append((source, val))
 
     # Strip inconsistent data from parameter list
     for i in params_inconsistent.keys():

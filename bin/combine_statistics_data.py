@@ -82,7 +82,11 @@ def process_inconsistent_file(file, params, inconsistent, consistent):
             else:
                 key = row.pop(0)
 
-                if consistent.get(key) is None:
+                if key in inconsistent:
+                    # Append to existing inconsistent values
+                    inconsistent[key].extend(row)
+                else:
+                    # Add new inconsistent values
                     inconsistent[key] = row
 
     return inconsistent

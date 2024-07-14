@@ -21,12 +21,24 @@ process COMBINE_METADATA {
     script:
     def args = []
     def prefix = task.ext.prefix ?: meta.id
+    def biosample_files = []
+
     for (item in  file_list){
         def file = item
         def file_ext = item.getExtension()
         def file_name = "--" + item.getName().minus("${prefix}_").minus(".${file_ext}") + "_file"
-        args.add(file_name)
-        args.add(file)
+        
+        if (file_name.contains("biosample")) {
+                biosample_files.add(file)
+        } else {
+            args.add(file_name)
+            args.add(file)
+        }
+    }
+    
+    if (!biosample_files.isEmpty()) {
+        args.add("--ena_biosample_file")
+        args.add(biosample_files.join(","))
     }
 
     """
