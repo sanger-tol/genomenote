@@ -15,6 +15,9 @@ process OtherFeatureStats {
     output:
     tuple val(meta), path("*.txt"), emit: other_feature_stats_txt
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
