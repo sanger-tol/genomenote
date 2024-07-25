@@ -15,6 +15,9 @@ process BasicFeatureStats {
 
     output:
     tuple val(meta), path("*.txt"), emit: basic_feature_stats_txt
+
+    when:
+    task.ext.when == null || task.ext.when
      
     script:
     def args = task.ext.args ?: ''
