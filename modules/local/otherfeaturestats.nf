@@ -1,3 +1,4 @@
+// Provide other feature stats including the intron size, exon size, CDS length, etc
 process OtherFeatureStats {
 
     publishDir "${params.outdir}/annotation_stats", mode: 'copy'
