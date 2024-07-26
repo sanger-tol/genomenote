@@ -1,6 +1,8 @@
+// Obtain the basic feature statistics for example: Number og genes, CDS, exons, mRNA from the annotation file (gff3)
+
 process BasicFeatureStats {
     
-
+    // Specificying the output directory for annotation statistics files created
     publishDir "${params.outdir}/annotation_stats", mode: 'copy'
     tag "$meta.id"
     label 'process_low'
