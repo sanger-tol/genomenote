@@ -30,7 +30,7 @@ process OtherFeatureStats {
 
    cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        agat : \$(agat --version | sed 's/agat //g')
+       agat : \$(agat --version | cut -d' ' -f2)
     END_VERSIONS
    """
 
