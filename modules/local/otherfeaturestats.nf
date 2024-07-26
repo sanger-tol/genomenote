@@ -14,6 +14,7 @@ process OtherFeatureStats {
 
     output:
     tuple val(meta), path("*.txt"), emit: other_feature_stats_txt
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -26,6 +27,11 @@ process OtherFeatureStats {
         --gff $gff \\
         --output ${prefix}.other_feature_stats.txt \\
         $args
+
+   cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        agat : \$(agat --version | sed 's/agat //g')
+    END_VERSIONS
    """
 
 }
