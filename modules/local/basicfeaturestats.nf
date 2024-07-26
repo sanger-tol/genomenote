@@ -15,6 +15,7 @@ process BasicFeatureStats {
 
     output:
     tuple val(meta), path("*.txt"), emit: basic_feature_stats_txt
+    path "versions.yml"                , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -28,5 +29,10 @@ process BasicFeatureStats {
         -i $gff \\
         --output ${prefix}.basic_feature_stats.txt \\
         $args
+
+   cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        agat : \$(agat --version | cut -d' ' -f2)
+    END_VERSIONS
     """
 }
