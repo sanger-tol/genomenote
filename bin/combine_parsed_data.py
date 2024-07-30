@@ -12,7 +12,7 @@ files = [
     ("ENA_BIOPROJECT", "ena_bioproject_file"),
     ("ENA_BIOSAMPLE", "ena_biosample_wgs_file"),
     ("ENA_BIOSAMPLE_HIC", "ena_biosample_hic_file"),
-    ("ENA_BIOSAMPLE_RNA", "ena_biosample_rna_file"), 
+    ("ENA_BIOSAMPLE_RNA", "ena_biosample_rna_file"),
     ("ENA_TAXONOMY", "ena_taxonomy_file"),
     ("NCBI_ASSEMBLY", "ncbi_assembly_file"),
     ("NCBI_TAXONOMY", "ncbi_taxonomy_file"),
