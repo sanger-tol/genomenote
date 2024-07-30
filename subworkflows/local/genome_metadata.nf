@@ -15,37 +15,68 @@ workflow GENOME_METADATA {
 
     main:
     ch_versions = Channel.empty()
- 
+
     // Define channel for RUN_WGET
     ch_file_list
     | splitCsv(header: ['source', 'type', 'url', 'ext'], skip: 1)
-    | map { row -> 
-        [   
-            // meta
-            [   id: params.assembly,
-                taxon_id: params.taxon_id,
-                source: row.source, 
-                type: row.type, 
-                ext: row.ext, 
-            ],
-            // url 
-            row.url
-                .replaceAll(/ASSEMBLY_ACCESSION/, params.assembly)
-                .replaceAll(/TAXONOMY_ID/, params.taxon_id)
-                .replaceAll(/BIOPROJECT_ACCESSION/, params.bioproject)
-                .replaceAll(/BIOSAMPLE_ACCESSION/, params.biosample)
+    | flatMap { row ->
+        // Create a list to hold the final entries
+        def entries = []
+
+        // Common metadata
+        def metadata = [
+            id: params.assembly,
+            taxon_id: params.taxon_id,
+            source: row.source,
+            type: row.type,
+            ext: row.ext
         ]
+
+        // Define biosamples with their types
+        def biosamples = [
+            ["WGS", params.biosample_wgs],
+            ["HIC", params.biosample_hic],
+            ["RNA", params.biosample_rna]
+        ]
+
+        // Process each biosample
+        biosamples.each { biosampleType, biosampleID ->
+            if ( biosampleID != null ) {
+                // Skip if biosampleID is null}
+                def url = row.url
+                    .replaceAll(/ASSEMBLY_ACCESSION/, params.assembly)
+                    .replaceAll(/TAXONOMY_ID/, params.taxon_id)
+                    .replaceAll(/BIOPROJECT_ACCESSION/, params.bioproject)
+                    .replaceAll(/BIOSAMPLE_ACCESSION/, biosampleID)
+
+                if (row.type == 'Biosample') {
+                    // Add entry with biosample type in metadata for Biosample type
+                    entries << [
+                        metadata + [biosample_type: biosampleType],
+                        url
+                    ]
+                } else {
+                    // Add entry without biosample type in metadata for other types
+                    entries << [
+                        metadata + [biosample_type: ''],
+                        url
+                    ]
+                }
+            }
+        }
+        return entries
     }
+    | unique()
     | set { file_list }
 
     // Fetch files
     RUN_WGET ( file_list )
-    ch_versions = ch_versions.mix( RUN_WGET.out.versions.first() ) 
+    ch_versions = ch_versions.mix( RUN_WGET.out.versions.first() )
 
     PARSE_METADATA(RUN_WGET.out.file_path)
     ch_versions = ch_versions.mix( PARSE_METADATA.out.versions.first() )
     
-    PARSE_METADATA.out.file_path 
+    PARSE_METADATA.out.file_path
     | map { it -> tuple( it[1] )}
     | collect  
     | map { it ->

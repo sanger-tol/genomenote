@@ -14,7 +14,7 @@ process RUN_WGET {
 
 
     output:
-    tuple val(meta), path("${meta.id}_${meta.source}_${meta.type}.${meta.ext}") , emit:  file_path
+    tuple val(meta), path("${meta.id}_${meta.source}_${meta.type}*.${meta.ext}") , emit:  file_path
     path "versions.yml"                         , emit: versions
 
     when:
@@ -22,8 +22,10 @@ process RUN_WGET {
 
     script:
     def  no_certificate = (meta.source == 'GOAT') ? '--no-check-certificate' : ''
+    def is_biosample = (meta.biosample_type == "WGS" || meta.biosample_type == "HIC" || meta.biosample_type == "RNA") ? "_${meta.biosample_type}" : ""
+    def output = "${meta.id}_${meta.source}_${meta.type}${is_biosample}.${meta.ext}".strip('_')
     """
-        wget ${no_certificate} -c -O ${meta.id}_${meta.source}_${meta.type}.${meta.ext} '${url}'
+        wget ${no_certificate} -c -O ${output} '${url}'
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":

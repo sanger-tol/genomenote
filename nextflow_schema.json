@@ -48,9 +48,17 @@
                     "type": "string",
                     "description": "The bioproject accesion linked to the genome assembly, for example: PRJEB49353."
                 },
-                "biosample": {
+                "biosample_wgs": {
                     "type": "string",
-                    "description": "The biosample accesion(s) linked to the samples in the experiment, for example: SAMEA7524400."
+                    "description": "The biosample accesion(s) linked to the WGS samples in the experiment, for example: SAMEA7520803."
+                },
+                "biosample_rna": {
+                    "type": "string",
+                    "description": "The biosample accesion(s) linked to the RNA samples in the experiment, for example: SAMEA7521081."
+                },
+                "biosample_hic": {
+                    "type": "string",
+                    "description": "The biosample accesion(s) linked to the Hi-C samples in the experiment, for example: SAMEA7520846."
                 },
                 "outdir": {
                     "type": "string",

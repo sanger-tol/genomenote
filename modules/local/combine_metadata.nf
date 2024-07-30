@@ -24,7 +24,7 @@ process COMBINE_METADATA {
     for (item in  file_list){
         def file = item
         def file_ext = item.getExtension()
-        def file_name = "--" + item.getName().minus("${prefix}_").minus(".${file_ext}") + "_file"
+        def file_name = "--" + item.getName().minus("${prefix}_").minus(".${file_ext}").toLowerCase() + "_file"
         args.add(file_name)
         args.add(file)
     }

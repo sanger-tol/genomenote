@@ -10,7 +10,9 @@ import numbers
 files = [
     ("ENA_ASSEMBLY", "ena_assembly_file"),
     ("ENA_BIOPROJECT", "ena_bioproject_file"),
-    ("ENA_BIOSAMPLE", "ena_biosample_file"),
+    ("ENA_BIOSAMPLE", "ena_biosample_wgs_file"),
+    ("ENA_BIOSAMPLE_HIC", "ena_biosample_hic_file"),
+    ("ENA_BIOSAMPLE_RNA", "ena_biosample_rna_file"),
     ("ENA_TAXONOMY", "ena_taxonomy_file"),
     ("NCBI_ASSEMBLY", "ncbi_assembly_file"),
     ("NCBI_TAXONOMY", "ncbi_taxonomy_file"),
@@ -25,7 +27,9 @@ def parse_args(args=None):
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
     parser.add_argument("--ena_assembly_file", help="Input parsed ENA assembly file.", required=False)
     parser.add_argument("--ena_bioproject_file", help="Input parsed ENA assembly file.", required=False)
-    parser.add_argument("--ena_biosample_file", help="Input parsed ENA assembly file.", required=False)
+    parser.add_argument("--ena_biosample_wgs_file", help="Input parsed ENA genomic biosample file.", required=False)
+    parser.add_argument("--ena_biosample_hic_file", help="Input parsed ENA HiC biosample file.", required=False)
+    parser.add_argument("--ena_biosample_rna_file", help="Input parsed ENA RNASeq biosample file.", required=False)
     parser.add_argument("--ena_taxonomy_file", help="Input parsed ENA assembly file.", required=False)
     parser.add_argument("--ncbi_assembly_file", help="Input parsed ENA assembly file.", required=False)
     parser.add_argument("--ncbi_taxonomy_file", help="Input parsed ENA assembly file.", required=False)
