@@ -32,34 +32,42 @@ workflow GENOME_METADATA {
             ext: row.ext
         ]
 
-        // Process each biosample
-        params.biosample.split(',').each { biosample ->
-            def url = row.url
-                .replaceAll(/ASSEMBLY_ACCESSION/, params.assembly)
-                .replaceAll(/TAXONOMY_ID/, params.taxon_id)
-                .replaceAll(/BIOPROJECT_ACCESSION/, params.bioproject)
-                .replaceAll(/BIOSAMPLE_ACCESSION/, biosample.trim())
+        // Define biosamples with their types
+        def biosamples = [
+            ["WGS", params.biosample_wgs],
+            ["HIC", params.biosample_hic],
+            ["RNA", params.biosample_rna]
+        ]
 
-            if (row.type == 'Biosample') {
-                // Add entry with biosample in metadata for Biosample type
-                entries << [
-                    metadata + [biosample: biosample.trim()],
-                    url
-                ]
-            } else {
-                // Add entry without biosample in metadata for other types
-                entries << [
-                    metadata + [biosample: ''],
-                    url
-                ]
+        // Process each biosample
+        biosamples.each { biosampleType, biosampleID ->
+            if ( biosampleID != null ) {
+                // Skip if biosampleID is null}
+                def url = row.url
+                    .replaceAll(/ASSEMBLY_ACCESSION/, params.assembly)
+                    .replaceAll(/TAXONOMY_ID/, params.taxon_id)
+                    .replaceAll(/BIOPROJECT_ACCESSION/, params.bioproject)
+                    .replaceAll(/BIOSAMPLE_ACCESSION/, biosampleID)
+
+                if (row.type == 'Biosample') {
+                    // Add entry with biosample type in metadata for Biosample type
+                    entries << [
+                        metadata + [biosample_type: biosampleType],
+                        url
+                    ]
+                } else {
+                    // Add entry without biosample type in metadata for other types
+                    entries << [
+                        metadata + [biosample_type: ''],
+                        url
+                    ]
+                }
             }
         }
-
         return entries
     }
     | unique()
     | set { file_list }
-    file_list.view()
 
     // Fetch files
     RUN_WGET ( file_list )

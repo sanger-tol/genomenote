@@ -22,7 +22,8 @@ process RUN_WGET {
 
     script:
     def  no_certificate = (meta.source == 'GOAT') ? '--no-check-certificate' : ''
-    def output = "${meta.id}_${meta.source}_${meta.type}${meta.biosample}.${meta.ext}".strip('_')
+    def is_biosample = (meta.biosample_type == "WGS" || meta.biosample_type == "HIC" || meta.biosample_type == "RNA") ? "_${meta.biosample_type}" : ""
+    def output = "${meta.id}_${meta.source}_${meta.type}${is_biosample}.${meta.ext}".strip('_')
     """
         wget ${no_certificate} -c -O ${output} '${url}'
 

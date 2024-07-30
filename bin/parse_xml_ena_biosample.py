@@ -43,7 +43,7 @@ fetch = [
 
 
 def parse_args(args=None):
-    Description = "Parse contents of an ENA SAMPLE report and pul out meta data required by a genome note."
+    Description = "Parse contents of an ENA SAMPLE report and pull out meta data required by a genome note."
     Epilog = "Example usage: python parse_xml_ena_sample.py <FILE_IN> <FILE_OUT>"
 
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
@@ -77,6 +77,13 @@ def parse_xml(file_in, file_out):
     root = tree.getroot()
     param_list = []
 
+    # Extract biosample type from FILE_OUT
+    biosample_type = None
+    if "HIC" in file_out.upper():
+        biosample_type = "HIC"
+    elif "RNA" in file_out.upper():
+        biosample_type = "RNA"
+
     for f in fetch:
         param = None
         r = root
@@ -101,8 +108,7 @@ def parse_xml(file_in, file_out):
                             param = r.attrib.get(f[2][1])
                         except ValueError:
                             param = None
-
-                    ## Count child elements with specfic tag
+                    ## Count child elements with specific tag
                     if f[2][0] == "count":
                         if r is not None:
                             param = str(len(r.findall(f[2][1]))) if len(r.findall(f[2][1])) != 0 else None
@@ -129,8 +135,11 @@ def parse_xml(file_in, file_out):
 
                     if any(p in string.punctuation for p in param):
                         param = '"' + param + '"'
-
-                    param_list.append([f[0], param])
+                    # Prefix parameter name if biosample type is HiC or RNA
+                    param_name = f[0]
+                    if biosample_type in ["HIC", "RNA"]:
+                        param_name = f"{biosample_type}_{param_name}"
+                    param_list.append([param_name, param])
 
     if len(param_list) > 0:
         out_dir = os.path.dirname(file_out)

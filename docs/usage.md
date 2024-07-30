@@ -25,7 +25,9 @@ You will need to supply the assembly accession for the genome you would like to 
    --species '[species name]'
    --taxon_id '[taxon id]'
    --bioproject '[bioproject accession]'
-   --biosample '[biosample accession]'
+   --biosample_wgs '[biosample accession of the biosample used to produce the genomic sequence]'
+   --biosample_hic '[biosample accession of the biosample used to produce the HiC data]'
+   --biosample_rna '[biosample accession of the biosample used to produce the RNASeq data]
 ```
 
 If you wish to run the optional step that writes genome metatdata key value-pairs to a genome notes databases you will need to set the parameter "write_to_portal" to true and provide the base url for the REST API that writes to the database.
@@ -101,7 +103,7 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run sanger-tol/genomenote --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta --assembly GCA_922984935.2 --species Epithemia_sp._CRS-2021b --taxon_id 2809013 --bioproject PRJEB49353 --biosample SAMEA7524400 -profile docker
+nextflow run sanger-tol/genomenote --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta --assembly GCA_922984935.2 --species Epithemia_sp._CRS-2021b --taxon_id 2809013 --bioproject PRJEB49353 --biosample_wgs SAMEA7524400 -profile docker
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -137,7 +139,7 @@ assembly: 'GCA_922984935.2'
 species: 'Epithemia_sp._CRS-2021b'
 taxon_id: '2809013'
 bioproject: 'PRJEB49353'
-biosample: 'SAMEA7524400'
+biosample_wgs: 'SAMEA7524400'
 <...>
 ```
 

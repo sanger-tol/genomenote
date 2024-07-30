@@ -10,7 +10,9 @@ import numbers
 files = [
     ("ENA_ASSEMBLY", "ena_assembly_file"),
     ("ENA_BIOPROJECT", "ena_bioproject_file"),
-    ("ENA_BIOSAMPLE", "ena_biosample_file"),
+    ("ENA_BIOSAMPLE", "ena_biosample_wgs_file"),
+    ("ENA_BIOSAMPLE_HIC", "ena_biosample_hic_file"),
+    ("ENA_BIOSAMPLE_RNA", "ena_biosample_rna_file"), 
     ("ENA_TAXONOMY", "ena_taxonomy_file"),
     ("NCBI_ASSEMBLY", "ncbi_assembly_file"),
     ("NCBI_TAXONOMY", "ncbi_taxonomy_file"),
@@ -25,7 +27,9 @@ def parse_args(args=None):
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
     parser.add_argument("--ena_assembly_file", help="Input parsed ENA assembly file.", required=False)
     parser.add_argument("--ena_bioproject_file", help="Input parsed ENA assembly file.", required=False)
-    parser.add_argument("--ena_biosample_file", help="Input parsed ENA assembly file.", required=False)
+    parser.add_argument("--ena_biosample_wgs_file", help="Input parsed ENA genomic biosample file.", required=False)
+    parser.add_argument("--ena_biosample_hic_file", help="Input parsed ENA HiC biosample file.", required=False)
+    parser.add_argument("--ena_biosample_rna_file", help="Input parsed ENA RNASeq biosample file.", required=False)
     parser.add_argument("--ena_taxonomy_file", help="Input parsed ENA assembly file.", required=False)
     parser.add_argument("--ncbi_assembly_file", help="Input parsed ENA assembly file.", required=False)
     parser.add_argument("--ncbi_taxonomy_file", help="Input parsed ENA assembly file.", required=False)
@@ -55,10 +59,7 @@ def process_file(file_in, params):
             if any(p in string.punctuation for p in value):
                 value = '"' + value + '"'
 
-            if key in source_dict:
-                source_dict[key].append(value)
-            else:
-                source_dict[key] = [value]
+            source_dict[key] = value
 
             if key in params:
                 params[key].append(value)
@@ -75,18 +76,8 @@ def main(args=None):
     params_inconsistent = {}
 
     for file in files:
-        file_list = getattr(args, file[1])
-        if file_list:
-            for single_file in file_list.split(','):
-                (params, paramDict) = process_file(single_file, params)
-                if file[0] not in param_sets:
-                    param_sets[file[0]] = paramDict
-                else:
-                    for key, values in paramDict.items():
-                        if key in param_sets[file[0]]:
-                            param_sets[file[0]][key].extend(values)
-                        else:
-                            param_sets[file[0]][key] = values
+        (params, paramDict) = process_file(getattr(args, file[1]), params)
+        param_sets[file[0]] = paramDict
 
     for key in params.keys():
         value_set = {v for v in params[key]}
@@ -95,8 +86,7 @@ def main(args=None):
 
             for source in param_sets:
                 if key in param_sets[source]:
-                    for val in param_sets[source][key]:
-                        params_inconsistent[key].append((source, val))
+                    params_inconsistent[key].append((source, param_sets[source][key]))
 
     # Strip inconsistent data from parameter list
     for i in params_inconsistent.keys():
