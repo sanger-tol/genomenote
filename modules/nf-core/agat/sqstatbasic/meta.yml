@@ -1,4 +1,3 @@
-
 name: agat_sqstatbasic
 description: |
   Provides basic statistics in text format from a GFF/GTF annotation file
