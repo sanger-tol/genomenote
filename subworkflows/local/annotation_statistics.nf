@@ -1,6 +1,5 @@
-// include modules from nf-core and local
-include { BasicFeatureStats} from '../../modules/local/basicfeaturestats.nf'
-include {OtherFeatureStats} from '../../modules/local/otherfeaturestats.nf'
+// include modules from nf-core 
+
 include { AGAT_SQSTATBASIC } from '../../modules/nf-core/agat/sqstatbasic/main.nf'
 include { AGAT_SPSTATISTICS } from '../../modules/nf-core/agat/spstatistics/main.nf'
 include { GUNZIP } from '../../modules/nf-core/gunzip/main.nf'
@@ -24,9 +23,9 @@ workflow {
 
     // Obtain the basic summary statistics from the GFF3 file
     AGAT_SQSTATBASIC(ch_unzipped)
-    BasicFeatureStats (ch_unzipped)
-
+   
+    // Obtain other feature stats e.g intron count & length etc
     AGAT_SPSTATISTICS(ch_unzipped)
-    OtherFeatureStats(ch_unzipped)
+    
 
 }

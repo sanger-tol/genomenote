@@ -64,6 +64,8 @@ include { GENOME_STATISTICS } from '../subworkflows/local/genome_statistics'
 include { GUNZIP                      } from '../modules/nf-core/gunzip/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
+include { AGAT_SPSTATISTICS           } from '../modules/nf_core/agat/spstatistics/main'
+include { AGTA_SQBASICSTAT	      } from '../modules/nf_core/agat/sqbasicstat/main'
 
 
 /*
@@ -132,7 +134,10 @@ workflow GENOMENOTE {
     //
     CONTACT_MAPS ( ch_fasta, ch_inputs.hic, GENOME_STATISTICS.out.summary_seq, ch_bin, ch_cool_order )
     ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
-
+   
+    // 
+    // SUBWORKFLOW : Obtain feature statistics from the annotation file : GFF3
+    
 
     //
     // MODULE: Combine different versions.yml
