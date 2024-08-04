@@ -8,23 +8,26 @@ include { GUNZIP } from '../../modules/nf-core/gunzip/main.nf'
 workflow {
 
     // Create a channel from the input file
-    gff_ch = Channel.fromPath(params.annotation_set)
+    ch_gff3 = Channel.fromPath(params.annotation_set)
 
     // Map the GFF channel to create a tuple with metadata and the file
-    gff_tuple_ch = gff_ch
-        .map { file -> [ [ 'id': file.baseName ], file ] }
+    
+    ch_gff3
+    | map { file -> [ [ 'id': file.baseName ], file ] }	
+    | set {ch_gff3_tupple} 
 
-    // Handle gzipped files
+    // Compress the gff3 files if needed
+
     if (params.annotation_set.endsWith('.gz')) {
-        ch_unzipped = GUNZIP(gff_tuple_ch).gunzip
+        ch_unzipped = GUNZIP(ch_gff3_tupple).gunzip
     } else {
-        ch_unzipped = gff_tuple_ch
+        ch_unzipped = ch_gff3_tupple
     }
 
-    // Obtain the basic summary statistics from the GFF3 file
+    // Basic Annotation summary statistics
     AGAT_SQSTATBASIC(ch_unzipped)
    
-    // Obtain other feature stats e.g intron count & length etc
+    // Other feature stats e.g intron count & length etc
     AGAT_SPSTATISTICS(ch_unzipped)
     
 
