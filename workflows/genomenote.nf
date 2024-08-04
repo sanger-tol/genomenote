@@ -64,8 +64,6 @@ include { GENOME_STATISTICS } from '../subworkflows/local/genome_statistics'
 include { GUNZIP                      } from '../modules/nf-core/gunzip/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
-include { AGAT_SPSTATISTICS           } from '../modules/nf_core/agat/spstatistics/main'
-include { AGTA_SQBASICSTAT	      } from '../modules/nf_core/agat/sqbasicstat/main'
 
 
 /*
