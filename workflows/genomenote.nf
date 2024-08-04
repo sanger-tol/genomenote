@@ -24,7 +24,7 @@ if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.linea
 // Check optional parameters
 if (params.lineage_db) { ch_lineage_db = Channel.fromPath(params.lineage_db) } else { ch_lineage_db = Channel.empty() }
 if (params.cool_order) { ch_cool_order = Channel.fromPath(params.cool_order) } else { ch_cool_order = Channel.empty() }
-
+if (params.annotation_set) { ch_gff3 = Channel.fromPath(params.annotation_set) } else { ch_gff3 = Channel.empty() }
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,7 +64,8 @@ include { GENOME_STATISTICS } from '../subworkflows/local/genome_statistics'
 include { GUNZIP                      } from '../modules/nf-core/gunzip/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
-
+include { AGAT_SQSTATBASIC            } from '../../modules/nf-core/agat/sqstatbasic/main'
+include { AGAT_SPSTATISTICS           } from '../../modules/nf-core/agat/spstatistics/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -135,7 +136,8 @@ workflow GENOMENOTE {
    
     // 
     // SUBWORKFLOW : Obtain feature statistics from the annotation file : GFF3
-    
+    ANNOTATION_STATS (ch_gff3)
+    ch_versions = ch_versions.mix ( ANNOTATION_STATS.out.versions )
 
     //
     // MODULE: Combine different versions.yml
