@@ -5,7 +5,7 @@ include { AGAT_SPSTATISTICS } from '../../modules/nf-core/agat/spstatistics/main
 include { GUNZIP } from '../../modules/nf-core/gunzip/main.nf'
 
 
-workflow {
+workflow ANNOTATION_STATS {
 
     // Create a channel from the input file
     ch_gff3 = Channel.fromPath(params.annotation_set)
