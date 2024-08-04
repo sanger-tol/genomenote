@@ -66,8 +66,8 @@ include { ANNOTATION_STATS } from '../subworkflows/local/annotation_statistics'
 include { GUNZIP                      } from '../modules/nf-core/gunzip/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
-include { AGAT_SQSTATBASIC            } from '../modules/nf-core/agat/sqstatbasic/main.nf'
-include { AGAT_SPSTATISTICS           } from '../modules/nf-core/agat/spstatistics/main.nf'
+include { AGAT_SQSTATBASIC            } from '../modules/nf-core/agat/sqstatbasic/main'
+include { AGAT_SPSTATISTICS           } from '../modules/nf-core/agat/spstatistics/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -138,6 +138,9 @@ workflow GENOMENOTE {
    
     // 
     // SUBWORKFLOW : Obtain feature statistics from the annotation file : GFF3
+
+    ch_gff3 = Channel.fromPath(params.annotation_set
+
     ANNOTATION_STATS (ch_gff3)
     ch_versions = ch_versions.mix ( ANNOTATION_STATS.out.versions )
 
