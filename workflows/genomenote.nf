@@ -66,8 +66,6 @@ include { ANNOTATION_STATS } from '../subworkflows/local/annotation_statistics'
 include { GUNZIP                      } from '../modules/nf-core/gunzip/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
-include { AGAT_SQSTATBASIC            } from '../modules/nf-core/agat/sqstatbasic/main'
-include { AGAT_SPSTATISTICS           } from '../modules/nf-core/agat/spstatistics/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
