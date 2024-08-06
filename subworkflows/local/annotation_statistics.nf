@@ -38,8 +38,8 @@ workflow ANNOTATION_STATS {
 
 
     emit:
-    basic_features = AGAT_SQSTATBASIC.out        // channel: [ stats.txt]
-    other_features = AGAT_SPSTATISTICS.out       // channel: [ stats.txt]
+    basic_features = AGAT_SQSTATBASIC.out.txt        // channel: [ stats.txt]
+    other_features = AGAT_SPSTATISTICS.out.txt       // channel: [ stats.txt]
     versions = ch_versions                       // channel: [ versions.yml ]
         
 }
