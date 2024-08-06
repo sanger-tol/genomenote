@@ -58,6 +58,15 @@
                     "description": "Path to a file that contains the sequence names in the order you want to represent them on the contact-map.",
                     "help_text": "If not specified, the pipeline will use the sequences in the same order they are listed by the NCI, which follows the karyotype.",
                     "fa_icon": "fas fa-file-lines"
+                },
+                "annotation_set": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.(gff3|gff\\.gz)$",
+                    "description": "Path to annotation file :gff3.",
+                    "help_text": "You will need to specify the path to the annotation file as eith gff3 or gff3.gz.",
+                    "fa_icon": "fas fa-file-code"
                 }
             }
         },
