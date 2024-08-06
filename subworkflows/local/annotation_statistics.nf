@@ -11,7 +11,7 @@ workflow ANNOTATION_STATS {
 
     main:
         // Map the GFF channel to create a tuple with metadata and the file
-        ch_gff3
+        gff3
         | map { file -> [ [ 'id': file.baseName ], file ] }	
         | set {ch_gff3_tupple} 
 
