@@ -63,7 +63,7 @@
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/plain",
-                    "pattern": "^(?:[\\w/]+/)?\\S+\\.(gff3|gff\\.gz)$",
+                    "pattern": "pattern": "^(?:[\\w/]+/)?\\S+\\.gff3(?:\\.gz)?$",
                     "description": "Path to annotation file :gff3.",
                     "help_text": "You will need to specify the path to the annotation file as eith gff3 or gff3.gz.",
                     "fa_icon": "fas fa-file-code"
