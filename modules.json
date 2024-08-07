@@ -67,6 +67,16 @@
                         "branch": "master",
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
                         "installed_by": ["modules"]
+                    },
+                    "agat/sqstatbasic": {
+                        "branch": "master",
+                        "git_sha": "bcf129e0ca254285a8c4ba3dffface4f0c7f74dd",
+                        "installed_by": ["modules"]
+                    },
+                    "agat/spstatistics": {
+                        "branch": "master",
+                        "git_sha": "bcf129e0ca254285a8c4ba3dffface4f0c7f74dd",
+                        "installed_by": ["modules"]
                     }
                 }
             }
