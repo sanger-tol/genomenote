@@ -5,6 +5,16 @@
         "https://github.com/nf-core/modules.git": {
             "modules": {
                 "nf-core": {
+                    "agat/spstatistics": {
+                        "branch": "master",
+                        "git_sha": "0a0b723d114e502207072603479b635dfbc2bf59",
+                        "installed_by": ["modules"]
+                    },
+                    "agat/sqstatbasic": {
+                        "branch": "master",
+                        "git_sha": "0a0b723d114e502207072603479b635dfbc2bf59",
+                        "installed_by": ["modules"]
+                    },
                     "bedtools/bamtobed": {
                         "branch": "master",
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
