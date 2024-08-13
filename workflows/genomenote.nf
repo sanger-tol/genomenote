@@ -14,8 +14,6 @@ def checkPathParamList = [ params.input, params.multiqc_config, params.lineage_d
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
-if (params.assembly && params.taxon_id && params.bioproject && params.biosample_wgs) { metadata_inputs = [ params.assembly, params.taxon_id, params.bioproject, params.biosample_wgs ] }
-else { exit 1, 'Metadata input not specified. Please include an assembly accession, a taxon id, a bioproject accession and a biosample accession' }
 if (params.input)     { ch_input = Channel.fromPath(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 if (params.fasta)     { ch_fasta = Channel.fromPath(params.fasta) } else { exit 1, 'Genome fasta not specified!' }
 if (params.binsize)   { ch_bin   = Channel.of(params.binsize)     } else { exit 1, 'Bin size for cooler/cload not specified!' }
@@ -25,7 +23,8 @@ if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.linea
 
 // Check optional parameters
 if (params.lineage_db) { ch_lineage_db = Channel.fromPath(params.lineage_db) } else { ch_lineage_db = Channel.empty() }
-if (params.note_template) { ch_note_template = Channel.fromPath(params.note_template) } else { ch_note_template = Channel.empty() } 
+if (params.cool_order) { ch_cool_order = Channel.fromPath(params.cool_order) } else { ch_cool_order = Channel.empty() }
+if (params.annotation_set) { ch_gff = Channel.fromPath(params.annotation_set) } else { ch_gff = Channel.empty() }
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,8 +32,6 @@ if (params.note_template) { ch_note_template = Channel.fromPath(params.note_temp
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-ch_metdata_input           = Channel.of( metadata_inputs )
-ch_file_list               = Channel.fromPath("$projectDir/assets/genome_metadata_template.csv")
 ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
 ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
 ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
@@ -51,10 +48,10 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK       } from '../subworkflows/local/input_check'
-include { GENOME_METADATA   } from '../subworkflows/local/genome_metadata'
 include { CONTACT_MAPS      } from '../subworkflows/local/contact_maps'
 include { GENOME_STATISTICS } from '../subworkflows/local/genome_statistics'
-include { COMBINE_NOTE_DATA } from '../subworkflows/local/combine_note_data'
+include { ANNOTATION_STATS } from '../subworkflows/local/annotation_statistics'
+
 
 
 /*
@@ -70,7 +67,6 @@ include { GUNZIP                      } from '../modules/nf-core/gunzip/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -84,10 +80,6 @@ workflow GENOMENOTE {
 
     ch_versions = Channel.empty()
 
-    //
-    // SUBWORKFLOW: Read in template of data files to fetch, parse these files and output a list of genome metadata params
-    GENOME_METADATA ( ch_file_list )
-    ch_versions = ch_versions.mix(GENOME_METADATA.out.versions)
 
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
@@ -123,13 +115,6 @@ workflow GENOMENOTE {
 
 
     //
-    // SUBWORKFLOW: Create contact map matrices from HiC alignment files
-    //
-    CONTACT_MAPS ( ch_fasta, ch_inputs.hic, ch_bin )
-    ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
-
-
-    //
     // SUBWORKFLOW: Create genome statistics table
     //
     ch_inputs.hic
@@ -142,13 +127,19 @@ workflow GENOMENOTE {
     GENOME_STATISTICS ( ch_fasta, ch_lineage_tax_ids, ch_lineage_db, ch_inputs.pacbio, ch_flagstat )
     ch_versions = ch_versions.mix ( GENOME_STATISTICS.out.versions )
 
-    //
-    // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
-    //
 
-    COMBINE_NOTE_DATA (GENOME_METADATA.out.consistent, GENOME_METADATA.out.inconsistent, GENOME_STATISTICS.out.summary, ch_note_template)
-    ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
-
+    //
+    // SUBWORKFLOW: Create contact map matrices from HiC alignment files
+    //
+    CONTACT_MAPS ( ch_fasta, ch_inputs.hic, GENOME_STATISTICS.out.summary_seq, ch_bin, ch_cool_order )
+    ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
+   
+    // 
+    // SUBWORKFLOW : Obtain feature statistics from the annotation file : GFF
+    //
+    ch_gff = Channel.fromPath(params.annotation_set)
+    ANNOTATION_STATS (ch_gff)
+    ch_versions = ch_versions.mix ( ANNOTATION_STATS.out.versions )
 
     //
     // MODULE: Combine different versions.yml
