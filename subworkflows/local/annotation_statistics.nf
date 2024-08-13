@@ -1,8 +1,8 @@
 // include modules from nf-core 
 
-include { AGAT_SPSTATISTICS } from '../modules/nf-core/agat/spstatistics/main'
-include { AGAT_SPSTATISTICS } from '../modules/nf-core/agat/spstatistics/main'
-include { GUNZIP            } from '../modules/nf-core/gunzip/main'
+include { AGAT_SPSTATISTICS } from '../../modules/nf-core/agat/spstatistics/main'
+include { AGAT_SPSTATISTICS } from '../../modules/nf-core/agat/spstatistics/main'
+include { GUNZIP            } from '../../modules/nf-core/gunzip/main'
 
 
 workflow ANNOTATION_STATS {
