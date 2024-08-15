@@ -140,7 +140,16 @@
                     "type": "string",
                     "description": "The name for the namespace used in the Kubernetes cluster running the HiGlass server.",
                     "hidden": true
-                }
+                },
+                "annotation_set": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^(?:[\\w/]+/)?\\S+\\.gff3?\\.gz?$",
+                    "description": "Path to annotation file :gff.",
+                    "help_text": "You will need to specify the path to the annotation file as eith gff or gff.gz.",
+                    "fa_icon": "fas fa-file-code"
+               }
             }
         },
 
