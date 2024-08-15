@@ -149,7 +149,7 @@
                     "description": "Path to annotation file :gff.",
                     "help_text": "You will need to specify the path to the annotation file as eith gff or gff.gz.",
                     "fa_icon": "fas fa-file-code"
-               }
+                }
             }
         },
 
