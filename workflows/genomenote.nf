@@ -26,6 +26,7 @@ if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.linea
 // Check optional parameters
 if (params.lineage_db) { ch_lineage_db = Channel.fromPath(params.lineage_db) } else { ch_lineage_db = Channel.empty() }
 if (params.note_template) { ch_note_template = Channel.fromPath(params.note_template) } else { ch_note_template = Channel.empty() } 
+if (params.annotation_set) { ch_gff = Channel.fromPath(params.annotation_set) } else { ch_gff = Channel.empty() }
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,6 +56,7 @@ include { GENOME_METADATA   } from '../subworkflows/local/genome_metadata'
 include { CONTACT_MAPS      } from '../subworkflows/local/contact_maps'
 include { GENOME_STATISTICS } from '../subworkflows/local/genome_statistics'
 include { COMBINE_NOTE_DATA } from '../subworkflows/local/combine_note_data'
+include { ANNOTATION_STATS  } from '../subworkflows/local/annotation_statistics' 
 
 
 /*
@@ -148,7 +150,13 @@ workflow GENOMENOTE {
 
     COMBINE_NOTE_DATA (GENOME_METADATA.out.consistent, GENOME_METADATA.out.inconsistent, GENOME_STATISTICS.out.summary, ch_note_template)
     ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
-
+ 
+    //
+    // SUBWORKFLOW : Obtain feature statistics from the annotation file : GFF
+    //
+    ch_gff = Channel.fromPath(params.annotation_set)
+    ANNOTATION_STATS (ch_gff)
+    ch_versions = ch_versions.mix ( ANNOTATION_STATS.out.versions )
 
     //
     // MODULE: Combine different versions.yml
