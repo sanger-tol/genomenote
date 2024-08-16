@@ -56,6 +56,7 @@ include { GENOME_METADATA   } from '../subworkflows/local/genome_metadata'
 include { CONTACT_MAPS      } from '../subworkflows/local/contact_maps'
 include { GENOME_STATISTICS } from '../subworkflows/local/genome_statistics'
 include { COMBINE_NOTE_DATA } from '../subworkflows/local/combine_note_data'
+include { ANNOTATION_STATS  } from '../subworkflows/local/annotation_statistics' 
 
 
 /*
