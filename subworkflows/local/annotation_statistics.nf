@@ -1,7 +1,7 @@
 // include modules from nf-core
 
 include { AGAT_SPSTATISTICS } from '../../modules/nf-core/agat/spstatistics/main'
-include { AGAT_SQSTATBASIC  } from '../../modules/nf-core/agat/spstatistics/main'
+include { AGAT_SQSTATBASIC  } from '../../modules/nf-core/agat/sqstatbasic/main'
 include { GUNZIP            } from '../../modules/nf-core/gunzip/main'
 
 
