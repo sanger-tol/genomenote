@@ -17,10 +17,10 @@ def parse_args(args=None):
     parser.add_argument("--busco", help="Input BUSCO short summary JSON file.")
     parser.add_argument("--qv", nargs="*", help="Input QV TSV file from MERQURYFK.")
     parser.add_argument("--completeness", nargs="*", help="Input COMPLETENESS stats TSV file from MERQURYFK.")
-    parser.add_argument("--hic", help="HiC sample ID used for contact maps.")
-    parser.add_argument("--flagstat", help="HiC flagstat file created by Samtools.")
+    parser.add_argument("--hic", action="append", help="HiC sample ID used for contact maps.")
+    parser.add_argument("--flagstat", action="append", help="HiC flagstat file created by Samtools.")
     parser.add_argument("--outcsv", help="Output CSV file.", required=True)
-    parser.add_argument("--version", action="version", version="%(prog)s 2.0")
+    parser.add_argument("--version", action="version", version="%(prog)s 3.1")
     return parser.parse_args(args)
 
 
@@ -89,7 +89,14 @@ def ncbi_stats(genome_in, seq_in, writer):
             if not chromosome_header:
                 writer.writerow(["##Chromosome", "Length", "GC_Percent", "Accession"])
                 chromosome_header = True
-            writer.writerow([mol["chr_name"], mol["length"], mol["gc_percent"], mol["genbank_accession"]])
+            writer.writerow(
+                [
+                    mol["chr_name"],
+                    round(mol["length"] / 1000000, 2),
+                    mol["gc_percent"],
+                    mol["genbank_accession"]
+                ]
+            )
     organelle_header = False
     for mol in seq:
         if "gc_percent" in mol and mol["assembly_unit"] == "non-nuclear":
@@ -99,7 +106,7 @@ def ncbi_stats(genome_in, seq_in, writer):
             writer.writerow(
                 [
                     mol["assigned_molecule_location_type"],
-                    mol["length"],
+                    round(mol["length"] / 1000000, 2),
                     mol["gc_percent"],
                     mol["genbank_accession"],
                 ]
@@ -169,7 +176,8 @@ def main(args=None):
         if args.qv and args.completeness is not None:
             extract_pacbio(args.qv, args.completeness, writer)
         if args.hic is not None:
-            extract_mapped(args.hic, args.flagstat, writer)
+            for hic, flagstat in zip(args.hic, args.flagstat):
+                extract_mapped(hic, flagstat, writer)
 
 
 if __name__ == "__main__":

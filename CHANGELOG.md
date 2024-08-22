@@ -3,6 +3,50 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[1.2.0](https://github.com/sanger-tol/genomenote/releases/tag/1.2.0)] - Pyrenean Mountain Dog - [2024-05-01]
+
+### Enhancements & fixes
+
+- Updated the MerquryFK resources to cope with mistletoe (the pipeline as a
+  whole is not yet fully compatible with mistletoe, though).
+- Updated the Busco resources to better deal with large genomes.
+- Round the chromosome lengths to 2 decimal points.
+- The pipeline is now publishing the Busco output directories.
+- The pipeline now generates a contact map for each Hi-C sample (instead of
+  randomly picking one) and reports them all in the CSV.
+- The Hi-C contact map is now ordered according to the karyotype (as defined in
+  the assembly record) by default, and added the `--cool_order` option to
+  override it.
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference.
+
+| Dependency | Old version | New version |
+| ---------- | ----------- | ----------- |
+| busco      | 5.4.3       | 5.5.0       |
+
+> **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
+
+### Parameters
+
+| Old parameter | New parameter |
+| ------------- | ------------- |
+|               | --cool_order  |
+
+## [[1.1.2](https://github.com/sanger-tol/genomenote/releases/tag/1.1.2)] [2024-04-29]
+
+### Enhancements & fixes
+
+- Bugfix: the BAM still needs to be filtered with `-F0x400`
+
+## [[1.1.1](https://github.com/sanger-tol/genomenote/releases/tag/1.1.1)] [2024-02-26]
+
+### Enhancements & fixes
+
+- Stopped forcing the `eutheria_odb10` BUSCO lineage to be used for all mammals.
+  This to synchronise this pipeline with the [BlobToolKit pipeline](https://github.com/sanger-tol/blobtoolkit).
+
 ## [[1.1.0](https://github.com/sanger-tol/genomenote/releases/tag/1.1.0)] - Golden Retriever - [2024-01-04]
 
 ### Enhancements & fixes

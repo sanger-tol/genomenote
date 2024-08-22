@@ -18,7 +18,7 @@ def parse_args(args=None):
     parser.add_argument("NCBI_SUMMARY_JSON", help="NCBI entry for this assembly for this assembly (in JSON).")
     parser.add_argument("LINEAGE_TAX_IDS", help="Mapping between BUSCO lineages and taxon IDs.")
     parser.add_argument("FILE_OUT", help="Output CSV file.")
-    parser.add_argument("--version", action="version", version="%(prog)s 1.0")
+    parser.add_argument("--version", action="version", version="%(prog)s 1.1")
     return parser.parse_args(args)
 
 
@@ -47,10 +47,8 @@ def get_odb(ncbi_summary, lineage_tax_ids, file_out):
     # Do the intersection to find the ancestors that have a BUSCO lineage
     odb_arr = [lineage_tax_ids_dict[taxon_id] for taxon_id in ancestor_taxon_ids if taxon_id in lineage_tax_ids_dict]
 
-    # The most recent [-1] OBD10 lineage is selected, unless one of the lineage values is "eutheria", then choose "eutheria"
-    # NOTE: this rule is a guess that hasn't been confirmed by Karen
-    odb_val = "eutheria_odb10" if "eutheria_odb10" in odb_arr else odb_arr[-1]
-
+    # The most recent [-1] OBD10 lineage is selected
+    odb_val = odb_arr[-1] + "_odb10"
     out_dir = os.path.dirname(file_out)
     make_dir(out_dir)
 

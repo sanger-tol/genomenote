@@ -26,6 +26,8 @@ if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.linea
 // Check optional parameters
 if (params.lineage_db) { ch_lineage_db = Channel.fromPath(params.lineage_db) } else { ch_lineage_db = Channel.empty() }
 if (params.note_template) { ch_note_template = Channel.fromPath(params.note_template) } else { ch_note_template = Channel.empty() } 
+if (params.cool_order) { ch_cool_order = Channel.fromPath(params.cool_order) } else { ch_cool_order = Channel.empty() }
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -123,13 +125,6 @@ workflow GENOMENOTE {
 
 
     //
-    // SUBWORKFLOW: Create contact map matrices from HiC alignment files
-    //
-    CONTACT_MAPS ( ch_fasta, ch_inputs.hic, ch_bin )
-    ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
-
-
-    //
     // SUBWORKFLOW: Create genome statistics table
     //
     ch_inputs.hic
@@ -148,6 +143,13 @@ workflow GENOMENOTE {
 
     COMBINE_NOTE_DATA (GENOME_METADATA.out.consistent, GENOME_METADATA.out.inconsistent, GENOME_STATISTICS.out.summary, ch_note_template)
     ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
+
+
+    //
+    // SUBWORKFLOW: Create contact map matrices from HiC alignment files
+    //
+    CONTACT_MAPS ( ch_fasta, ch_inputs.hic, GENOME_STATISTICS.out.summary_seq, ch_bin, ch_cool_order )
+    ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
 
 
     //

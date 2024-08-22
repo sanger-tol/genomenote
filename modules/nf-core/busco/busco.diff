@@ -1,12 +1,22 @@
 Changes in module 'nf-core/busco'
 --- modules/nf-core/busco/main.nf
 +++ modules/nf-core/busco/main.nf
-@@ -1,5 +1,5 @@
+@@ -1,6 +1,5 @@
  process BUSCO {
 -    tag "$meta.id"
+-    label 'process_medium'
 +    tag "${meta.id}_${lineage}"
-     label 'process_medium'
  
-     conda "bioconda::busco=5.4.3"
+     conda "${moduleDir}/environment.yml"
+     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+@@ -37,7 +36,7 @@
+     def prefix = task.ext.prefix ?: "${meta.id}-${lineage}"
+     def busco_config = config_file ? "--config $config_file" : ''
+     def busco_lineage = lineage.equals('auto') ? '--auto-lineage' : "--lineage_dataset ${lineage}"
+-    def busco_lineage_dir = busco_lineages_path ? "--download_path ${busco_lineages_path}" : ''
++    def busco_lineage_dir = busco_lineages_path ? "--download_path ${busco_lineages_path} --offline" : ''
+     """
+     # Nextflow changes the container --entrypoint to /bin/bash (container default entrypoint: /usr/local/env-execute)
+     # Check for container variable initialisation script and source it.
 
 ************************************************************
