@@ -37,6 +37,7 @@ workflow ANNOTATION_STATS {
 
     AGAT_SQSTATBASIC.versions.view { file ->
         println "Versions file: $file"
+    }
 
     // Other feature stats e.g intron count & length etc
     AGAT_SPSTATISTICS(ch_unzipped)
@@ -49,6 +50,7 @@ workflow ANNOTATION_STATS {
 
     AGAT_SPSTATISTICS.versions.view { file ->
         println "Versions file: $file"
+    }
 
     // Parsing the txt files as input for the local module
     EXTRACT_ANNOTATION_STATISTICS_INFO(AGAT_SQSTATBASIC.out.stats_txt, AGAT_SPSTATISTICS.out.stats_txt)
