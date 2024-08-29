@@ -17,7 +17,7 @@ process EXTRACT_ANNOTATION_STATISTICS_INFO {
     when:
     task.ext.when == null || task.ext.when
     def prefix = task.ext.prefix ?: meta.id
-    def output_file = "${prefix}.csv"
+    def output_file = "\${prefix}.csv"
 
     script:
     """
