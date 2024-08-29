@@ -51,9 +51,13 @@ workflow ANNOTATION_STATS {
     AGAT_SPSTATISTICS.out.versions.view { file ->
         println "Versions file: $file"
     }
+    
+    // Create channels for stats_txt outputs
+    ch_basic_stats = AGAT_SQSTATBASIC.out.stats_txt
+    ch_other_stats = AGAT_SPSTATISTICS.out.stats_txt
 
     // Parsing the txt files as input for the local module
-    EXTRACT_ANNOTATION_STATISTICS_INFO(AGAT_SQSTATBASIC.out.stats_txt, AGAT_SPSTATISTICS.out.stats_txt)
+    EXTRACT_ANNOTATION_STATISTICS_INFO(ch_basic_stats, ch_other_stats)
     ch_versions = ch_versions.mix( EXTRACT_ANNOTATION_STATISTICS_INFO.out.versions.first() )
 
     emit:
