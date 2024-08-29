@@ -11,20 +11,22 @@ process EXTRACT_ANNOTATION_STATISTICS_INFO {
     tuple val(meta), path(other_stats) 
 
     output:
-    path("$meta.csv"), emit: csv
+    tuple val (meta), path("${meta.id}.csv") , emit: csv
     path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
+    def prefix = task.ext.prefix ?: meta.id
+
     script:
     """
     echo "Basic stats file: $basic_stats"
     echo "Other stats file: $other_stats"
 
-    bin/extract_annotation_statistics_info.py \\
+    extract_annotation_statistics_info.py \\
         $basic_stats \\
         $other_stats \\
-        assemblyID.csv
+        ${prefix}.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
