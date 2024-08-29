@@ -51,10 +51,6 @@ workflow ANNOTATION_STATS {
     AGAT_SPSTATISTICS.out.versions.view { file ->
         println "Versions file: $file"
     }
-    
-    // Create channels for stats_txt outputs : Extracts both the ID:filepath
-    //ch_basic_stats = AGAT_SQSTATBASIC.out.stats_txt
-    //ch_other_stats = AGAT_SPSTATISTICS.out.stats_txt
 
     // Create tuples with metadata and file paths
     ch_basic_stats = AGAT_SQSTATBASIC.out.stats_txt.map { [id: it[0], path: it[1]] }
@@ -65,6 +61,7 @@ workflow ANNOTATION_STATS {
     ch_versions = ch_versions.mix( EXTRACT_ANNOTATION_STATISTICS_INFO.out.versions.first() )
 
     emit:
+    stats   = EXTRACT_ANNOTATION_STATISTICS_INFO.out.csv  // channel: [ csv ]
     versions = ch_versions                       // channel: [ versions.yml ]
 
 }

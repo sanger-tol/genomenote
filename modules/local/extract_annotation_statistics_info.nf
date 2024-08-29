@@ -7,11 +7,11 @@ process EXTRACT_ANNOTATION_STATISTICS_INFO {
         'https://depot.galaxyproject.org/singularity/python:3.9--1' :
         'quay.io/biocontainers/python:3.9--1' }"
     input:
-    tuple val(meta), path(basic_stats) 
-    tuple val(meta), path(other_stats) 
+    tuple val(meta), path(basic_stats)
+    tuple val(meta), path(other_stats)
 
     output:
-    tuple val (meta), path("${meta.id}.csv") , emit: csv
+    tuple val (meta), path("*.csv") , emit: csv
     path "versions.yml", emit: versions
 
     when:
