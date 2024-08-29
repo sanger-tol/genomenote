@@ -31,10 +31,16 @@ workflow ANNOTATION_STATS {
     basic_stats = AGAT_SQSTATBASIC(ch_unzipped)
     ch_versions = ch_versions.mix (basic_stats.versions.first() )
 
+    // Print basic_stats outputs to inspect
+    basic_stats.stats_txt.view { "Basic Stats TXT: ${it}" }
+
 
     // Other feature stats e.g intron count & length etc
     other_stats = AGAT_SPSTATISTICS(ch_unzipped)
     ch_versions = ch_versions.mix ( other_stats.versions.first() )
+
+    // Print other_stats outputs to inspect
+    other_stats.stats_txt.view { "Other Stats TXT: ${it}" }
 
     // Parsing the txt files as input for the local module
     EXTRACT_ANNOTATION_STATISTICS_INFO(basic_stats.stats_txt, other_stats.stats_txt)
