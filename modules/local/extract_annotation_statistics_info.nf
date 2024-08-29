@@ -7,8 +7,8 @@ process EXTRACT_ANNOTATION_STATISTICS_INFO {
         'https://depot.galaxyproject.org/singularity/python:3.9--1' :
         'quay.io/biocontainers/python:3.9--1' }"
     input:
-    file(basic_stats) from ch_basic_stats
-    file(other_stats) from ch_other_stats
+    path (basic_stats)
+    path (other_stats)
 
     output:
     path("assemblyID.csv"), emit: csv
