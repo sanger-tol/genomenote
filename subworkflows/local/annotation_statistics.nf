@@ -31,11 +31,11 @@ workflow ANNOTATION_STATS {
     ch_versions = ch_versions.mix ( AGAT_SQSTATBASIC.out.versions.first() )
 
     // View the outputs from the subworkflow
-    AGAT_SQSTATBASIC.stats_txt.view { file ->
+    AGAT_SQSTATBASIC.out.stats_txt.view { file ->
         println "Stats file: $file"
     }
 
-    AGAT_SQSTATBASIC.versions.view { file ->
+    AGAT_SQSTATBASIC.out.versions.view { file ->
         println "Versions file: $file"
     }
 
@@ -44,11 +44,11 @@ workflow ANNOTATION_STATS {
     ch_versions = ch_versions.mix ( AGAT_SPSTATISTICS.out.versions.first() )
 
     // View the outputs from the subworkflow
-    AGAT_SPSTATISTICS.stats_txt.view { file ->
+    AGAT_SPSTATISTICS.out.stats_txt.view { file ->
         println "Stats file: $file"
     }
 
-    AGAT_SPSTATISTICS.versions.view { file ->
+    AGAT_SPSTATISTICS.out.versions.view { file ->
         println "Versions file: $file"
     }
 
