@@ -52,9 +52,13 @@ workflow ANNOTATION_STATS {
         println "Versions file: $file"
     }
     
-    // Create channels for stats_txt outputs
-    ch_basic_stats = AGAT_SQSTATBASIC.out.stats_txt
-    ch_other_stats = AGAT_SPSTATISTICS.out.stats_txt
+    // Create channels for stats_txt outputs : Extracts both the ID:filepath
+    //ch_basic_stats = AGAT_SQSTATBASIC.out.stats_txt
+    //ch_other_stats = AGAT_SPSTATISTICS.out.stats_txt
+
+    // Create tuples with metadata and file paths
+    ch_basic_stats = AGAT_SQSTATBASIC.out.stats_txt.map { [id: it[0], path: it[1]] }
+    ch_other_stats = AGAT_SPSTATISTICS.out.stats_txt.map { [id: it[0], path: it[1]] }
 
     // Parsing the txt files as input for the local module
     EXTRACT_ANNOTATION_STATISTICS_INFO(ch_basic_stats, ch_other_stats)
