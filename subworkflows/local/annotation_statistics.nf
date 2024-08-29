@@ -29,7 +29,7 @@ workflow ANNOTATION_STATS {
 
     // Basic Annotation summary statistics
     basic_stats = AGAT_SQSTATBASIC(ch_unzipped)
-    ch_versions = ch_versions.mix (basic_stats.out.versions.first() )
+    ch_versions = ch_versions.mix (basic_stats.versions.first() )
 
 
     // Other feature stats e.g intron count & length etc
