@@ -17,16 +17,15 @@ process EXTRACT_ANNOTATION_STATISTICS_INFO {
     when:
     task.ext.when == null || task.ext.when
     def prefix = task.ext.prefix ?: meta.id
+    def output_file = "${prefix}.csv"
 
     script:
     """
-    echo "Basic stats file: $basic_stats"
-    echo "Other stats file: $other_stats"
 
     extract_annotation_statistics_info.py \\
         $basic_stats \\
         $other_stats \\
-        ${prefix}.csv
+        $output_file
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
