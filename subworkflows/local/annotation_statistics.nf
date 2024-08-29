@@ -34,10 +34,10 @@ workflow ANNOTATION_STATS {
 
     // Other feature stats e.g intron count & length etc
     other_stats = AGAT_SPSTATISTICS(ch_unzipped)
-    ch_versions = ch_versions.mix ( other_stats.out.versions.first() )
+    ch_versions = ch_versions.mix ( other_stats.versions.first() )
 
     // Parsing the txt files as input for the local module
-    EXTRACT_ANNOTATION_STATISTICS_INFO(basic_stats.out.stats_txt, other_stats.out.stats_txt)
+    EXTRACT_ANNOTATION_STATISTICS_INFO(basic_stats.stats_txt, other_stats.stats_txt)
 
     emit:
     versions = ch_versions                       // channel: [ versions.yml ]
