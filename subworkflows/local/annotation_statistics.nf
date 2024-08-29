@@ -28,14 +28,14 @@ workflow ANNOTATION_STATS {
 
     // Basic Annotation summary statistics
     AGAT_SQSTATBASIC(ch_unzipped)
-    ch_versions = ch_versions.mix (AGAT_SQSTATBASIC.versions.first() )
+    ch_versions = ch_versions.mix (AGAT_SQSTATBASIC.versions.out.versions.first() )
 
     // Other feature stats e.g intron count & length etc
     AGAT_SPSTATISTICS(ch_unzipped)
-    ch_versions = ch_versions.mix ( AGAT_SPSTATISTICS.versions.first() )
+    ch_versions = ch_versions.mix ( AGAT_SPSTATISTICS.out.versions.first() )
 
     // Parsing the txt files as input for the local module
-    EXTRACT_ANNOTATION_STATISTICS_INFO(AGAT_SQSTATBASIC.stats_txt, AGAT_SPSTATISTICS.stats_txt)
+    EXTRACT_ANNOTATION_STATISTICS_INFO(AGAT_SQSTATBASIC.out.stats_txt, AGAT_SPSTATISTICS.out.stats_txt)
     ch_versions = ch_versions.mix( EXTRACT_ANNOTATION_STATISTICS_INFO.out.versions.first() )
 
     emit:
