@@ -43,7 +43,7 @@ workflow ANNOTATION_STATS {
     AGAT_SPSTATISTICS(ch_unzipped)
     ch_versions = ch_versions.mix ( AGAT_SPSTATISTICS.out.versions.first() )
 
-    / View the outputs from the subworkflow
+    // View the outputs from the subworkflow
     AGAT_SPSTATISTICS.stats_txt.view { file ->
         println "Stats file: $file"
     }
