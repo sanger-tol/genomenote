@@ -65,6 +65,7 @@ def print_error(error, context="Line", context_str=""):
 
 
 def parse_json(file_in, file_out):
+    biosample_type = "COPO"
     with open(file_in, 'r') as json_file:
         data = json.load(json_file)
 
@@ -78,12 +79,14 @@ def parse_json(file_in, file_out):
         param = find_element(record, f[1], index=0)
         if param is not None:
             if isinstance(param, numbers.Number):
-                param = str(param)
-
+                param = str(param)    
             if any(p in string.punctuation for p in param):
-                param = '"' + param + '"'
-
-            param_list.append([f[0], param])
+                param = '"' + param + '"'   
+            # Prefix parameter name if biosample type is COPO
+            param_name = f[0]
+            if biosample_type == "COPO" :
+                param_name = f"{biosample_type}_{param_name}"
+            param_list.append([param_name, param])
 
     if len(param_list) > 0:
         out_dir = os.path.dirname(file_out)
