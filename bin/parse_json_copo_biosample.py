@@ -8,33 +8,22 @@ import string
 import numbers
 
 fetch = [
-    # Basic Information
     ("SPECIMEN_ID", ("SPECIMEN_ID",)),
     ("biosampleAccession", ("BIOSAMPLE_ACCESSION",)),
     ("SCIENTIFIC_NAME", ("GENUS_SPECIES",)),
     ("COMMON_NAME", ("COMMON_NAME",)),
-
-    # Collection Details
     ("COLLECTED_BY", ("COLLECTORS",)),
     ("COLLECTOR_AFFILIATION", ("COLLECTOR_INSTITUTE",)),
     ("DATE_OF_COLLECTION", ("COLLECTOR_DATE",)),
     ("DESCRIPTION_OF_COLLECTION_METHOD", ("COLLECTION_METHOD",)),
-
-    # Location Details
     ("COLLECTION_LOCATION", ("COLLECTION_LOCATION",)), 
     ("DECIMAL_LATITUDE", ("LATITUDE",)), 
     ("DECIMAL_LONGITUDE", ("LONGITUDE",)), 
     ("HABITAT", ("HABITAT",)),
-
-    # Identification
     ("IDENTIFIED_BY", ("IDENTIFIER",)),
     ("IDENTIFIER_AFFILIATION", ("IDENTIFIER_INSTITUTE",)),
-
-    # Preservation and Symbiotics
     ("PRESERVATION_APPROACH", ("PRESERVATION_METHOD",)),
     ("SYMBIONT", ("SYMBIONT",)),
-
-    # Additional attributes
     ("TAXON_ID", ("NCBI_TAXID",)),
     ("ORDER_OR_GROUP", ("ORDER",)),
     ("FAMILY", ("FAMILY",)),
