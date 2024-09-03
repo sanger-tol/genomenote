@@ -11,7 +11,7 @@ process EXTRACT_ANNOTATION_STATISTICS_INFO {
     tuple val(meta2), path(other_stats)
 
     output:
-    path 
+    tuple val (meta), path("*.csv") , emit: csv
     path "versions.yml", emit: versions
 
     when:
@@ -25,7 +25,7 @@ process EXTRACT_ANNOTATION_STATISTICS_INFO {
     extract_annotation_statistics_info.py \\
         $basic_stats \\
         $other_stats \\
-        ${output_file}
+        $output_file
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
