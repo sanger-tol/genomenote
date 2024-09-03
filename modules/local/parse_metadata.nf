@@ -22,7 +22,7 @@ process PARSE_METADATA {
     script: // This script is bundled with the pipeline, in nf-core/genomenote/bin/
     def prefix = task.ext.prefix ?: meta.id
     def script_name = "parse_${meta.ext.toLowerCase()}_${meta.source.toLowerCase()}_${meta.type.toLowerCase()}.py"
-    def is_biosample = (meta.biosample_type == "WGS" || meta.biosample_type == "HIC" || meta.biosample_type == "RNA") ? "_${meta.biosample_type}" : ""
+    def is_biosample = (meta.biosample_type == "WGS" || meta.biosample_type == "HIC" || meta.biosample_type == "RNA" || meta.biosample_type == "COPO") ? "_${meta.biosample_type}" : ""
     def output_file = "${prefix}_${meta.source.toLowerCase()}_${meta.type.toLowerCase()}${is_biosample}.csv".strip('_')
     """
     $script_name \\
