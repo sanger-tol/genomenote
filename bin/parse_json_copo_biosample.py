@@ -16,9 +16,9 @@ fetch = [
     ("COLLECTOR_AFFILIATION", ("COLLECTOR_INSTITUTE",)),
     ("DATE_OF_COLLECTION", ("COLLECTOR_DATE",)),
     ("DESCRIPTION_OF_COLLECTION_METHOD", ("COLLECTION_METHOD",)),
-    ("COLLECTION_LOCATION", ("COLLECTION_LOCATION",)), 
-    ("DECIMAL_LATITUDE", ("LATITUDE",)), 
-    ("DECIMAL_LONGITUDE", ("LONGITUDE",)), 
+    ("COLLECTION_LOCATION", ("COLLECTION_LOCATION",)),
+    ("DECIMAL_LATITUDE", ("LATITUDE",)),
+    ("DECIMAL_LONGITUDE", ("LONGITUDE",)),
     ("HABITAT", ("HABITAT",)),
     ("IDENTIFIED_BY", ("IDENTIFIER",)),
     ("IDENTIFIER_AFFILIATION", ("IDENTIFIER_INSTITUTE",)),
@@ -33,6 +33,7 @@ fetch = [
     ("ORGANISM_PART", ("ORGANISM_PART",)),
     ("GAL", ("GAL",)),
 ]
+
 
 def parse_args(args=None):
     Description = "Parse contents of a COPO json file report and pul out meta data required by a genome note."
@@ -66,7 +67,7 @@ def print_error(error, context="Line", context_str=""):
 
 def parse_json(file_in, file_out):
     biosample_type = "COPO"
-    with open(file_in, 'r') as json_file:
+    with open(file_in, "r") as json_file:
         data = json.load(json_file)
 
     param_list = []
@@ -79,12 +80,12 @@ def parse_json(file_in, file_out):
         param = find_element(record, f[1], index=0)
         if param is not None:
             if isinstance(param, numbers.Number):
-                param = str(param)    
+                param = str(param)
             if any(p in string.punctuation for p in param):
-                param = '"' + param + '"'   
+                param = '"' + param + '"'
             # Prefix parameter name if biosample type is COPO
             param_name = f[0]
-            if biosample_type == "COPO" :
+            if biosample_type == "COPO":
                 param_name = f"{biosample_type}_{param_name}"
             param_list.append([param_name, param])
 
