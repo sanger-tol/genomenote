@@ -6,3 +6,4 @@ ENA,Taxonomy,https://www.ebi.ac.uk/ena/browser/api/xml/TAXONOMY_ID,xml
 NCBI,Assembly,https://api.ncbi.nlm.nih.gov/datasets/v2alpha/genome/accession/ASSEMBLY_ACCESSION/dataset_report?filters.exclude_atypical=false&filters.assembly_version=current&chromosomes=1&chromosomes=2&chromosomes=3&chromosomes=X&chromosomes=Y&chromosomes=M,json
 NCBI,Taxonomy,https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=taxonomy&id=TAXONOMY_ID,xml
 GOAT,Assembly,http://goat.genomehubs.org/api/v2/record?recordId=ASSEMBLY_ACCESSION&result=assembly&taxonomy=ncbi,json
+COPO,Biosample,https://copo-project.org/api/sample/biosampleAccession/BIOSAMPLE_ACCESSION?standard=tol&return_type=json,json
