@@ -17,6 +17,9 @@ files = [
     ("NCBI_ASSEMBLY", "ncbi_assembly_file"),
     ("NCBI_TAXONOMY", "ncbi_taxonomy_file"),
     ("GOAT_ASSEMBLY", "goat_assembly_file"),
+    ("COPO_BIOSAMPLE", "copo_biosample_wgs_file"),
+    ("COPO_BIOSAMPLE_HIC", "copo_biosample_hic_file"),
+    ("COPO_BIOSAMPLE_RNA", "copo_biosample_rna_file"),
 ]
 
 
