@@ -8,24 +8,24 @@ process EXTRACT_ANNOTATION_STATISTICS_INFO {
         'quay.io/biocontainers/python:3.9--1' }"
     input:
     tuple val(meta), path(basic_stats)
-    tuple val(meta), path(other_stats)
+    tuple val(meta2), path(other_stats)
 
     output:
-    tuple val (meta), path("*.csv") , emit: csv
+    path 
     path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
-    def prefix = task.ext.prefix ?: meta.id
-    def output_file = "\${prefix}.csv"
-
+    
     script:
+    def prefix = task.ext.prefix ?: meta.id
+    def output_file = "${prefix}.csv"
     """
 
     extract_annotation_statistics_info.py \\
         $basic_stats \\
         $other_stats \\
-        $output_file
+        ${output_file}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -30,34 +30,12 @@ workflow ANNOTATION_STATS {
     AGAT_SQSTATBASIC(ch_unzipped)
     ch_versions = ch_versions.mix ( AGAT_SQSTATBASIC.out.versions.first() )
 
-    // View the outputs from the subworkflow
-    AGAT_SQSTATBASIC.out.stats_txt.view { file ->
-        println "Stats file: $file"
-    }
-
-    AGAT_SQSTATBASIC.out.versions.view { file ->
-        println "Versions file: $file"
-    }
-
-    // Other feature stats e.g intron count & length etc
-    AGAT_SPSTATISTICS(ch_unzipped)
-    ch_versions = ch_versions.mix ( AGAT_SPSTATISTICS.out.versions.first() )
-
-    // View the outputs from the subworkflow
-    AGAT_SPSTATISTICS.out.stats_txt.view { file ->
-        println "Stats file: $file"
-    }
-
-    AGAT_SPSTATISTICS.out.versions.view { file ->
-        println "Versions file: $file"
-    }
-
-    // Create tuples with metadata and file paths
-    ch_basic_stats = AGAT_SQSTATBASIC.out.stats_txt.map { [id: it[0], path: it[1]] }
-    ch_other_stats = AGAT_SPSTATISTICS.out.stats_txt.map { [id: it[0], path: it[1]] }
-
-    // Parsing the txt files as input for the local module
-    EXTRACT_ANNOTATION_STATISTICS_INFO(ch_basic_stats, ch_other_stats)
+    // Parsing the stats_txt files as input channels 
+    EXTRACT_ANNOTATION_STATISTICS_INFO(
+        AGAT_SQSTATBASIC.out.stats_txt, 
+        AGAT_SPSTATISTICS.out.stats_txt
+    )
+    
     ch_versions = ch_versions.mix( EXTRACT_ANNOTATION_STATISTICS_INFO.out.versions.first() )
 
     emit:
