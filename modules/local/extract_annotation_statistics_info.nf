@@ -1,5 +1,5 @@
 // EXtracting essential annotation statistics information from the output txt files
-process EXTRACT_ANNOTATION_STATISTICS_INFO { 
+process EXTRACT_ANNOTATION_STATISTICS_INFO{ 
     label 'process_single'
     conda "conda-forge::python=3.9.1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
