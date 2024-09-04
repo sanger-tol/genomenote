@@ -107,9 +107,8 @@ def parse_csv(file_in, file_out):
                         param_list.append(["CHR_TABLE", json_chrs])
 
                     else:
-                        chr_length = str(round((int(chr_row[1]) * 0.00001), 1))
                         chrs.append(
-                            {"Chromosome": chr_row[0], "Length": chr_length, "GC": chr_row[2], "Accession": chr_row[3]}
+                            {"Chromosome": chr_row[0], "Length": chr_row[1], "GC": chr_row[2], "Accession": chr_row[3]}
                         )
 
     if len(param_list) > 0:
