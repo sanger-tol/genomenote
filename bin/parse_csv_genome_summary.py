@@ -79,9 +79,6 @@ def parse_csv(file_in, file_out):
                 if key == "GENOME_LENGTH" or key == "SCAFF_N50" or key == "CONTIG_N50":
                     param = str(round((int(param) * 1e-6), 1))  # convert to Mbp
 
-                #if key == "MITO_SIZE":
-                #    param = str(round((int(param) * 0.001), 1))  # convert to kbp
-
                 # Convert ints and floats to str to allow for params with punctuation to be quoted
                 if isinstance(param, numbers.Number):
                     param = str(param)
