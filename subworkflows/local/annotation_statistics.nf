@@ -1,9 +1,9 @@
 // include modules from nf-core
 
-include { AGAT_SPSTATISTICS } from '../../modules/nf-core/agat/spstatistics/main'
-include { AGAT_SQSTATBASIC  } from '../../modules/nf-core/agat/sqstatbasic/main'
-include { GUNZIP            } from '../../modules/nf-core/gunzip/main'
-
+include { AGAT_SPSTATISTICS                  } from '../../modules/nf-core/agat/spstatistics/main'
+include { AGAT_SQSTATBASIC                   } from '../../modules/nf-core/agat/sqstatbasic/main'
+include { GUNZIP                             } from '../../modules/nf-core/gunzip/main'
+include { EXTRACT_ANNOTATION_STATISTICS_INFO } from '../../modules/local/extract_annotation_statistics_info.nf'
 
 workflow ANNOTATION_STATS {
 
@@ -26,18 +26,24 @@ workflow ANNOTATION_STATS {
         ch_unzipped = ch_gff_tupple
     }
 
-
     // Basic Annotation summary statistics
     AGAT_SQSTATBASIC(ch_unzipped)
     ch_versions = ch_versions.mix ( AGAT_SQSTATBASIC.out.versions.first() )
 
-
-    // Other feature stats e.g intron count & length etc
+    // Other annotation statistics
     AGAT_SPSTATISTICS(ch_unzipped)
-    ch_versions = ch_versions.mix ( AGAT_SPSTATISTICS.out.versions.first() )
+    ch_versions = ch_versions.mix ( AGAT_SPSTATISTICS.out.versions.first() )   
 
+    // Parsing the stats_txt files as input channels 
+    EXTRACT_ANNOTATION_STATISTICS_INFO(
+        AGAT_SQSTATBASIC.out.stats_txt, 
+        AGAT_SPSTATISTICS.out.stats_txt
+    )
+    
+    ch_versions = ch_versions.mix( EXTRACT_ANNOTATION_STATISTICS_INFO.out.versions.first() )
 
     emit:
+    stats   = EXTRACT_ANNOTATION_STATISTICS_INFO.out.csv  // channel: [ csv ]
     versions = ch_versions                       // channel: [ versions.yml ]
 
 }
