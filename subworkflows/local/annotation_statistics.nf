@@ -32,7 +32,7 @@ workflow ANNOTATION_STATS {
 
     // Other annotation statistics
     AGAT_SPSTATISTICS(ch_unzipped)
-    ch_versions = ch_versions.mix ( AGAT_SQSTATBASIC.out.versions.first() )   
+    ch_versions = ch_versions.mix ( AGAT_SPSTATISTICS.out.versions.first() )   
 
     // Parsing the stats_txt files as input channels 
     EXTRACT_ANNOTATION_STATISTICS_INFO(
