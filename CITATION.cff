@@ -8,10 +8,10 @@ message: >-
     metadata from this file.
 type: software
 authors:
-    - given-names: Cibin
-      family-names: Sadasivan Baby
+    - given-names: Tyler
+      family-names: Chafin
       affiliation: Wellcome Sanger Institute
-      orcid: "https://orcid.org/0000-0002-8538-276X"
+      orcid: "https://orcid.org/0000-0001-8687-5905"
     - given-names: Matthieu
       family-names: Muffato
       affiliation: Wellcome Sanger Institute
@@ -20,6 +20,10 @@ authors:
       family-names: Qi
       affiliation: Wellcome Sanger Institute
       orcid: "https://orcid.org/0000-0003-1262-8973"
+    - given-names: Cibin
+      family-names: Sadasivan Baby
+      affiliation: Wellcome Sanger Institute
+      orcid: "https://orcid.org/0000-0002-8538-276X"
     - given-names: Priyanka
       family-names: Surana
       affiliation: Wellcome Sanger Institute
