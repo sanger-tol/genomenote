@@ -41,9 +41,6 @@ def parse_args(args=None):
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
     parser.add_argument("FILE_IN", help="Input JSON Assembly file.")
     parser.add_argument("FILE_OUT", help="Output file.")
-    parser.add_argument("--copo_biosample_wgs_file", help="Input parsed COPO genomic biosample file.", required=False)
-    parser.add_argument("--copo_biosample_hic_file", help="Input parsed COPO HiC biosample file.", required=False)
-    parser.add_argument("--copo_biosample_rna_file", help="Input parsed COPO RNASeq biosample file.", required=False)
     parser.add_argument("--version", action="version", version="%(prog)s 1.0")
     return parser.parse_args(args)
 
