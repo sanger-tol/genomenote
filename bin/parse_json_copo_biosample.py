@@ -9,23 +9,22 @@ import numbers
 
 fetch = [
     ("SPECIMEN_ID", ("SPECIMEN_ID",)),
-    ("biosampleAccession", ("BIOSAMPLE_ACCESSION",)),
-    ("SCIENTIFIC_NAME", ("GENUS_SPECIES",)),
+    ("BIOSAMPLE_ACCESSION", ("biosampleAccession",)),
+    ("GENUS_SPECIES", ("SCIENTIFIC_NAME",)),
     ("COMMON_NAME", ("COMMON_NAME",)),
-    ("COLLECTED_BY", ("COLLECTORS",)),
-    ("COLLECTOR_AFFILIATION", ("COLLECTOR_INSTITUTE",)),
-    ("DATE_OF_COLLECTION", ("COLLECTOR_DATE",)),
-    ("DESCRIPTION_OF_COLLECTION_METHOD", ("COLLECTION_METHOD",)),
+    ("COLLECTORS", ("COLLECTED_BY",)),
+    ("COLLECTOR_INSTITUTE", ("COLLECTOR_AFFILIATION",)),
+    ("COLLECTOR_DATE", ("DATE_OF_COLLECTION",)),
+    ("COLLECTION_METHOD", ("DESCRIPTION_OF_COLLECTION_METHOD",)),
     ("COLLECTION_LOCATION", ("COLLECTION_LOCATION",)),
-    ("DECIMAL_LATITUDE", ("LATITUDE",)),
-    ("DECIMAL_LONGITUDE", ("LONGITUDE",)),
+    ("LATITUDE", ("DECIMAL_LATITUDE",)),
     ("HABITAT", ("HABITAT",)),
-    ("IDENTIFIED_BY", ("IDENTIFIER",)),
-    ("IDENTIFIER_AFFILIATION", ("IDENTIFIER_INSTITUTE",)),
-    ("PRESERVATION_APPROACH", ("PRESERVATION_METHOD",)),
+    ("IDENTIFIER", ("IDENTIFIED_BY",)),
+    ("IDENTIFIER_INSTITUTE", ("IDENTIFIER_AFFILIATION",)),
+    ("PRESERVATION_METHOD", ("PRESERVATION_APPROACH",)),
     ("SYMBIONT", ("SYMBIONT",)),
-    ("TAXON_ID", ("NCBI_TAXID",)),
-    ("ORDER_OR_GROUP", ("ORDER",)),
+    ("NCBI_TAXID", ("TAXON_ID",)),
+    ("ORDER", ("ORDER_OR_GROUP",)),
     ("FAMILY", ("FAMILY",)),
     ("GENUS", ("GENUS",)),
     ("SEX", ("SEX",)),
@@ -69,14 +68,14 @@ def parse_json(file_in, file_out):
     try:
         with open(file_in, "r") as f:
             file = json.load(f)
-        record = file.get('data', [])
+        records = file.get('data', [])
     except Exception as e:
         print_error(f"Failed to read JSON file. Error: {e}")
 
     biosample_type = "COPO"
     param_list = []
 
-    for data in record: 
+    for data in records: 
         for f in fetch:
             param = find_element(data, f[1], index=0)
             if param is not None:
