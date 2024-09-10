@@ -2,16 +2,16 @@
 # Visit https://bit.ly/cffinit to generate yours today!
 
 cff-version: 1.2.0
-title: sanger-tol/genomenote v1.2.1
+title: sanger-tol/genomenote v1.2.2
 message: >-
     If you use this software, please cite it using the
     metadata from this file.
 type: software
 authors:
-    - given-names: Cibin
-      family-names: Sadasivan Baby
+    - given-names: Tyler
+      family-names: Chafin
       affiliation: Wellcome Sanger Institute
-      orcid: "https://orcid.org/0000-0002-8538-276X"
+      orcid: "https://orcid.org/0000-0001-8687-5905"
     - given-names: Matthieu
       family-names: Muffato
       affiliation: Wellcome Sanger Institute
@@ -20,12 +20,16 @@ authors:
       family-names: Qi
       affiliation: Wellcome Sanger Institute
       orcid: "https://orcid.org/0000-0003-1262-8973"
+    - given-names: Cibin
+      family-names: Sadasivan Baby
+      affiliation: Wellcome Sanger Institute
+      orcid: "https://orcid.org/0000-0002-8538-276X"
     - given-names: Priyanka
       family-names: Surana
       affiliation: Wellcome Sanger Institute
       orcid: "https://orcid.org/0000-0002-7167-0875"
-    - given-names: Yates
-      family-names: Bethan
+    - given-names: Bethan
+      family-names: Yates
       affiliation: Wellcome Sanger Institute
       orcid: "https://orcid.org/0000-0003-1658-1762"
 identifiers:
@@ -34,5 +38,5 @@ identifiers:
 repository-code: "https://github.com/sanger-tol/genomenote"
 license: MIT
 commit: TODO
-version: 1.2.1
+version: 1.2.2
 date-released: "2022-10-07"

@@ -3,7 +3,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [[1.2.1](https://github.com/sanger-tol/genomenote/releases/tag/1.2.1)] [2024-07-12]
+## [[1.2.2](https://github.com/sanger-tol/genomenote/releases/tag/1.2.2)] - Pyrenean Mountain Dog (patch 2) - [2024-09-10]
+
+### Enhancements & fixes
+
+- Bugfix: don't run Busco in scratch mode for large genomes as it takes too much space on /tmp
+
+## [[1.2.1](https://github.com/sanger-tol/genomenote/releases/tag/1.2.1)] - Pyrenean Mountain Dog (patch 1) - [2024-07-12]
 
 ### Enhancements & fixes
 
@@ -40,13 +46,13 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | ------------- | ------------- |
 |               | --cool_order  |
 
-## [[1.1.2](https://github.com/sanger-tol/genomenote/releases/tag/1.1.2)] [2024-04-29]
+## [[1.1.2](https://github.com/sanger-tol/genomenote/releases/tag/1.1.2)] - Golden Retriever (patch 2) - [2024-04-29]
 
 ### Enhancements & fixes
 
 - Bugfix: the BAM still needs to be filtered with `-F0x400`
 
-## [[1.1.1](https://github.com/sanger-tol/genomenote/releases/tag/1.1.1)] [2024-02-26]
+## [[1.1.1](https://github.com/sanger-tol/genomenote/releases/tag/1.1.1)] - Golden Retriever (patch 1) - [2024-02-26]
 
 ### Enhancements & fixes
 
