@@ -79,9 +79,6 @@ def parse_csv(file_in, file_out):
                 if key == "GENOME_LENGTH" or key == "SCAFF_N50" or key == "CONTIG_N50":
                     param = str(round((int(param) * 1e-6), 1))  # convert to Mbp
 
-                if key == "MITO_SIZE":
-                    param = str(round((int(param) * 0.001), 1))  # convert to kbp
-
                 # Convert ints and floats to str to allow for params with punctuation to be quoted
                 if isinstance(param, numbers.Number):
                     param = str(param)
@@ -107,9 +104,8 @@ def parse_csv(file_in, file_out):
                         param_list.append(["CHR_TABLE", json_chrs])
 
                     else:
-                        chr_length = str(round((int(chr_row[1]) * 0.00001), 1))
                         chrs.append(
-                            {"Chromosome": chr_row[0], "Length": chr_length, "GC": chr_row[2], "Accession": chr_row[3]}
+                            {"Chromosome": chr_row[0], "Length": chr_row[1], "GC": chr_row[2], "Accession": chr_row[3]}
                         )
 
     if len(param_list) > 0:

@@ -90,12 +90,7 @@ def ncbi_stats(genome_in, seq_in, writer):
                 writer.writerow(["##Chromosome", "Length", "GC_Percent", "Accession"])
                 chromosome_header = True
             writer.writerow(
-                [
-                    mol["chr_name"],
-                    round(mol["length"] / 1000000, 2),
-                    mol["gc_percent"],
-                    mol["genbank_accession"]
-                ]
+                [mol["chr_name"], round(mol["length"] / 1000000, 2), mol["gc_percent"], mol["genbank_accession"]]
             )
     organelle_header = False
     for mol in seq:
