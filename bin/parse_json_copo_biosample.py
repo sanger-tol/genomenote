@@ -71,9 +71,9 @@ def parse_json(file_in, file_out):
         data = json.load(json_file)
 
     param_list = []
-    record = data["records"][0]  # Get the single record
+    record = data["data"][0]  # Get the single record
 
-    if len(data["records"]) != 1:
+    if data["number_found"] != 1:
         print_error("More than one record found")
 
     for f in fetch:
