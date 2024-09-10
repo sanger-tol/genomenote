@@ -69,9 +69,15 @@ def parse_json(file_in, file_out):
     biosample_type = "COPO"
     with open(file_in, "r") as json_file:
         data = json.load(json_file)
+        # Check if 'data' key exists and if the list is non-empty
+        if "data" in data and len(data["data"]) > 0:
+            record = data["data"][0]  # Get the single record
+
+        else:
+            print_error(f"Error: 'data' key missing or list is empty in the file: {file_in}")
+            return  # Exit early if no valid data
 
     param_list = []
-    record = data["data"][0]  # Get the single record
 
     if data["number_found"] != 1:
         print_error("More than one record found")
