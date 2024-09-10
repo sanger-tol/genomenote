@@ -66,34 +66,29 @@ def print_error(error, context="Line", context_str=""):
 
 
 def parse_json(file_in, file_out):
+    try:
+        with open(file_in, "r") as f:
+            file = json.load(f)
+        record = file.get('data', [])
+    except Exception as e:
+        print_error(f"Failed to read JSON file. Error: {e}")
+
     biosample_type = "COPO"
-    with open(file_in, "r") as json_file:
-        data = json.load(json_file)
-        # Check if 'data' key exists and if the list is non-empty
-        if "data" in data and len(data["data"]) > 0:
-            record = data["data"][0]  # Get the single record
-
-        else:
-            print_error(f"Error: 'data' key missing or list is empty in the file: {file_in}")
-            return  # Exit early if no valid data
-
     param_list = []
 
-    if data["number_found"] != 1:
-        print_error("More than one record found")
-
-    for f in fetch:
-        param = find_element(record, f[1], index=0)
-        if param is not None:
-            if isinstance(param, numbers.Number):
-                param = str(param)
-            if any(p in string.punctuation for p in param):
-                param = '"' + param + '"'
-            # Prefix parameter name if biosample type is COPO
-            param_name = f[0]
-            if biosample_type == "COPO":
-                param_name = f"{biosample_type}_{param_name}"
-            param_list.append([param_name, param])
+    for data in record: 
+        for f in fetch:
+            param = find_element(data, f[1], index=0)
+            if param is not None:
+                if isinstance(param, numbers.Number):
+                    param = str(param)
+                if any(p in string.punctuation for p in param):
+                    param = '"' + param + '"'
+                # Prefix parameter name if biosample type is COPO
+                param_name = f[0]
+                if biosample_type == "COPO":
+                    param_name = f"{biosample_type}_{param_name}"
+                param_list.append([param_name, param])
 
     if len(param_list) > 0:
         out_dir = os.path.dirname(file_out)
