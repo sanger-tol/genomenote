@@ -68,14 +68,14 @@ def parse_json(file_in, file_out):
     try:
         with open(file_in, "r") as f:
             file = json.load(f)
-        records = file.get('data', [])
+        records = file.get("data", [])
     except Exception as e:
         print_error(f"Failed to read JSON file. Error: {e}")
 
     biosample_type = "COPO"
     param_list = []
 
-    for data in records: 
+    for data in records:
         for f in fetch:
             param = find_element(data, f[1], index=0)
             if param is not None:
