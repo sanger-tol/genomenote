@@ -17,6 +17,9 @@ files = [
     ("NCBI_ASSEMBLY", "ncbi_assembly_file"),
     ("NCBI_TAXONOMY", "ncbi_taxonomy_file"),
     ("GOAT_ASSEMBLY", "goat_assembly_file"),
+    ("COPO_BIOSAMPLE", "copo_biosample_wgs_file"),
+    ("COPO_BIOSAMPLE_HIC", "copo_biosample_hic_file"),
+    ("COPO_BIOSAMPLE_RNA", "copo_biosample_rna_file"),
 ]
 
 
@@ -34,6 +37,9 @@ def parse_args(args=None):
     parser.add_argument("--ncbi_assembly_file", help="Input parsed ENA assembly file.", required=False)
     parser.add_argument("--ncbi_taxonomy_file", help="Input parsed ENA assembly file.", required=False)
     parser.add_argument("--goat_assembly_file", help="Input parsed ENA assembly file.", required=False)
+    parser.add_argument("--copo_biosample_wgs_file", help="Input parsed COPO genomic biosample file.", required=False)
+    parser.add_argument("--copo_biosample_hic_file", help="Input parsed COPO HiC biosample file.", required=False)
+    parser.add_argument("--copo_biosample_rna_file", help="Input parsed COPO RNASeq biosample file.", required=False)
     parser.add_argument("--out_consistent", help="Output file.", required=True)
     parser.add_argument("--out_inconsistent", help="Output file.", required=True)
     parser.add_argument("--version", action="version", version="%(prog)s 1.0")
