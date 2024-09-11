@@ -68,27 +68,46 @@ def print_error(error, context="Line", context_str=""):
 def parse_json(file_in, file_out):
     try:
         with open(file_in, "r") as f:
-            file = json.load(f)
-        records = file.get("data", [])
+            data = json.load(f)
+        
     except Exception as e:
         print_error(f"Failed to read JSON file. Error: {e}")
 
-    biosample_type = "COPO"
-    param_list = []
+    if data["number_found"] == 0:
+        out_dir = os.path.dirname(file_out)
+        make_dir(out_dir)
+        with open(file_out, "w") as fout:
+            fout.write(",".join(["#paramName", "paramValue"]) + "\n")
+        return
 
-    for data in records:
-        for f in fetch:
-            param = find_element(data, f[1], index=0)
-            if param is not None:
-                if isinstance(param, numbers.Number):
-                    param = str(param)
-                if any(p in string.punctuation for p in param):
-                    param = '"' + param + '"'
-                # Prefix parameter name if biosample type is COPO
-                param_name = f[0]
-                if biosample_type == "COPO":
-                    param_name = f"{biosample_type}_{param_name}"
-                param_list.append([param_name, param])
+    elif data["number_found"] >> 1:    
+        print_error("More than one record found")
+
+    else: 
+        record = data["data"]
+
+        # Extract biosample type from FILE_OUT
+        biosample_type = None
+        if "HIC" in file_out.upper():
+            biosample_type = "HIC"
+        elif "RNA" in file_out.upper():
+            biosample_type = "RNA"
+
+        param_list = []
+
+        for data in record: 
+            for f in fetch:
+                param = find_element(data, f[1], index=0)
+                if param is not None:
+                    if isinstance(param, numbers.Number):
+                        param = str(param)
+                    if any(p in string.punctuation for p in param):
+                        param = '"' + param + '"'
+                    # Prefix parameter name if biosample type is COPO
+                    param_name = f[0]
+                    if biosample_type in ["HIC", "RNA"]:
+                        param_name = f"{biosample_type}_{param_name}"
+                    param_list.append([param_name, param])
 
     if len(param_list) > 0:
         out_dir = os.path.dirname(file_out)
