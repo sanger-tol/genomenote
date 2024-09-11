@@ -69,7 +69,7 @@ def parse_json(file_in, file_out):
     try:
         with open(file_in, "r") as f:
             data = json.load(f)
-        
+
     except Exception as e:
         print_error(f"Failed to read JSON file. Error: {e}")
 
@@ -80,10 +80,10 @@ def parse_json(file_in, file_out):
             fout.write(",".join(["#paramName", "paramValue"]) + "\n")
         return
 
-    elif data["number_found"] >> 1:    
+    elif data["number_found"] >> 1:
         print_error("More than one record found")
 
-    else: 
+    else:
         record = data["data"]
 
         # Extract biosample type from FILE_OUT
@@ -95,7 +95,7 @@ def parse_json(file_in, file_out):
 
         param_list = []
 
-        for data in record: 
+        for data in record:
             for f in fetch:
                 param = find_element(data, f[1], index=0)
                 if param is not None:
