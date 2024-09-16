@@ -13,7 +13,6 @@ workflow GENOME_METADATA {
     take:
     ch_file_list        // channel: /path/to/genome_metadata_file_template
 
-
     main:
     ch_versions = Channel.empty()
 
@@ -53,46 +52,15 @@ workflow GENOME_METADATA {
     }
     | set { metadata_list }
 
-    
-        // Define biosamples with their types
-        def biosamples = [
-            ["WGS", params.biosample_wgs],
-            ["HIC", params.biosample_hic],
-            ["RNA", params.biosample_rna]
-        ]
+    // Fetch GBIF metadata for GBIF-related entries
+    metadata_list
+    | filter { it.size() == 2 }  // Only pass entries with genus and species to FETCHGBIFMETADATA
+    | FETCHGBIFMETADATA
 
-        // Process each biosample
-        biosamples.each { biosampleType, biosampleID ->
-            if ( biosampleID != null ) {
-                // Skip if biosampleID is null}
-                def url = row.url
-                    .replaceAll(/ASSEMBLY_ACCESSION/, params.assembly)
-                    .replaceAll(/TAXONOMY_ID/, params.taxon_id)
-                    .replaceAll(/BIOPROJECT_ACCESSION/, params.bioproject)
-                    .replaceAll(/BIOSAMPLE_ACCESSION/, biosampleID)
+    ch_versions = ch_versions.mix( FETCHGBIFMETADATA.out.versions.first() )
 
-                if (row.type == 'Biosample') {
-                    // Add entry with biosample type in metadata for Biosample type
-                    entries << [
-                        metadata + [biosample_type: biosampleType],
-                        url
-                    ]
-                } else {
-                    // Add entry without biosample type in metadata for other types
-                    entries << [
-                        metadata + [biosample_type: ''],
-                        url
-                    ]
-                }
-            }
-        }
-        return entries
-    }
-    | unique()
-    | set { file_list }
-
-    // Fetch files
-    RUN_WGET ( file_list )
+    // Continue with normal metadata parsing and combination process
+    RUN_WGET ( metadata_list.filter { it.size() == 1 } )
     ch_versions = ch_versions.mix( RUN_WGET.out.versions.first() )
 
     PARSE_METADATA(RUN_WGET.out.file_path)
@@ -109,20 +77,11 @@ workflow GENOME_METADATA {
     }
     | set { ch_parsed_files }
 
-    // Fetch GBIF metadata for GBIF-related entries
-    metadata_list
-    | filter { it.size() == 2 }  // Only pass entries with genus and species to FETCHGBIFMETADATA
-    | FETCHGBIFMETADATA
-
-    ch_versions = ch_versions.mix( FETCHGBIFMETADATA.out.versions.first() )
-
-
     COMBINE_METADATA(ch_parsed_files, FETCHGBIFMETADATA.out.file_path)
     ch_versions = ch_versions.mix( COMBINE_METADATA.out.versions.first() )
 
     emit:
-    consistent  = COMBINE_METADATA.out.consistent // channel: [ csv ]
+    consistent    = COMBINE_METADATA.out.consistent // channel: [ csv ]
     inconsistent  = COMBINE_METADATA.out.inconsistent // channel: [ csv ]
-    versions    = ch_versions.ifEmpty(null) // channel: [versions.yml]
-    
+    versions      = ch_versions.ifEmpty(null) // channel: [versions.yml]
 }
