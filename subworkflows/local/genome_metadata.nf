@@ -35,7 +35,7 @@ workflow GENOME_METADATA {
 
         // Pass GBIF-related rows to the FETCHGBIFMETADATA process
         if (genus && species) {
-            return tuple(genus, species)
+            return [genus, species]
         }
 
         // Return other metadata entries as usual
