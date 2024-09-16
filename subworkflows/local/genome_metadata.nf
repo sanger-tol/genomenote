@@ -53,10 +53,7 @@ workflow GENOME_METADATA {
     | set { metadata_list }
 
     // Fetch GBIF metadata for GBIF-related entries
-    metadata_list
-    | filter { it.size() == 2 }  // Only pass entries with genus and species to FETCHGBIFMETADATA
-    | FETCHGBIFMETADATA
-
+    FETCHGBIFMETADATA(genus,species)
     ch_versions = ch_versions.mix( FETCHGBIFMETADATA.out.versions.first() )
 
     // Continue with normal metadata parsing and combination process
