@@ -7,7 +7,7 @@
 include { RUN_WGET                  }       from '../../modules/local/run_wget'
 include { PARSE_METADATA            }       from '../../modules/local/parse_metadata'
 include { COMBINE_METADATA          }       from '../../modules/local/combine_metadata'
-include { FETCHGBIFMETADATA         }       from '../../modules/local/fetch_gbif_metadata'
+include { FETCH_GBIF_METADATA       }       from '../../modules/local/fetch_gbif_metadata'
 
 
 workflow GENOME_METADATA {
@@ -91,15 +91,16 @@ workflow GENOME_METADATA {
     | set { ch_parsed_files }
 
     // Split params.species into genus and species
-    def speciesParts = params.species.split('-')
-    def genus = speciesParts[0]
-    def species = speciesParts[1] 
+    def species_parts = params.species.split('-')
+    def genus = species_parts[0]  
+    def species = species_parts[1] 
 
-    // Fetch Metadata from GBIF
-    FETCHGBIFMETADATA(genus, species )
-    ch_versions = ch_versions.mix( FETCHGBIFMETADATA.out.versions.first() )
+    // Fetch GBIF metadata using the split genus and species
+    FETCH_GBIF_METADATA(genus, species)
+    ch_versions = ch_versions.mix(FETCH_GBIF_METADATA.out.versions.first() )
 
-    COMBINE_METADATA(ch_parsed_files)
+
+    COMBINE_METADATA(ch_parsed_files, FETCH_GBIF_METADATA.out.file_path )
     ch_versions = ch_versions.mix( COMBINE_METADATA.out.versions.first() )
 
     emit:
