@@ -7,4 +7,4 @@ NCBI,Assembly,https://api.ncbi.nlm.nih.gov/datasets/v2alpha/genome/accession/ASS
 NCBI,Taxonomy,https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=taxonomy&id=TAXONOMY_ID,xml
 GOAT,Assembly,http://goat.genomehubs.org/api/v2/record?recordId=ASSEMBLY_ACCESSION&result=assembly&taxonomy=ncbi,json
 COPO,Biosample,https://copo-project.org/api/sample/biosampleAccession/BIOSAMPLE_ACCESSION?standard=tol&return_type=json,json
-GBIF,Taxonomy,https://api.gbif.org/v1/species/match?genus=Felis&species=catus,json
+GBIF,Taxonomy,https://api.gbif.org/v1/species/match?verbose=true&genus=GENUS_NAME&species=SPECIES_NAME,json
