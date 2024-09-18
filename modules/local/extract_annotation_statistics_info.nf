@@ -9,7 +9,7 @@ process EXTRACT_ANNOTATION_STATISTICS_INFO{
     input:
     tuple val(meta), path(basic_stats)
     tuple val(meta2), path(other_stats)
-    path(busco_stats)
+    tuple val(meta3), path(busco_stats) 
 
     output:
     tuple val (meta), path("*.csv") , emit: csv
