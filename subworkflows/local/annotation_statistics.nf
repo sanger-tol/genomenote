@@ -12,7 +12,6 @@ workflow ANNOTATION_STATS {
     take:
     gff                    //  channel: /path/to/annotation file
     genome                 // channel: [ meta, fasta ]
-    lineage_tax_ids        // channel: /path/to/lineage_tax_ids
     lineage_db             // channel: /path/to/buscoDB
     
     main:
@@ -44,7 +43,10 @@ workflow ANNOTATION_STATS {
     ch_versions = ch_versions.mix ( GFFREAD.out.versions.first() )
 
     // Running Busco in protein mode
-    BUSCO(GFFREAD.out.gffread_fasta, ch_lineage, lineage_db.ifEmpty([]), [])
+    Channel.value('proteins') \
+    .set { ch_mode }
+
+    BUSCO(GFFREAD.out.gffread_fasta, lineage_db, ch_mode)
     ch_versions = ch_versions.mix ( BUSCO.out.versions.first() )
 
     BUSCO.out.short_summaries_json
