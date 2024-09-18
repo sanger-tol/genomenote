@@ -38,11 +38,12 @@ workflow ANNOTATION_STATS {
     AGAT_SPSTATISTICS(ch_gff_unzipped)
     ch_versions = ch_versions.mix ( AGAT_SPSTATISTICS.out.versions.first() )
 
-    // Extracting the FASTA file path from the genome channel
-    genome_fasta = genome.map { meta, fasta -> fasta }   
+    genome
+    | map { meta, fasta -> fasta }
+    | set { ch_fasta }
 
     // Obtaining the protein fasta file from the gff3
-    GFFREAD(ch_gff_unzipped, genome_fasta)
+    GFFREAD(ch_gff_unzipped, ch_fasta)
     ch_versions = ch_versions.mix ( GFFREAD.out.versions.first() )
 
     // Running Busco in protein mode
