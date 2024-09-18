@@ -46,7 +46,7 @@ workflow ANNOTATION_STATS {
     Channel.value('proteins') \
     .set { ch_mode }
 
-    BUSCO(GFFREAD.out.gffread_fasta, lineage_db, ch_mode)
+    BUSCO(GFFREAD.out.gffread_fasta, lineage_db,  ch_mode, [] )
     ch_versions = ch_versions.mix ( BUSCO.out.versions.first() )
 
     BUSCO.out.short_summaries_json
