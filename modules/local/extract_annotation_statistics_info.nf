@@ -9,6 +9,7 @@ process EXTRACT_ANNOTATION_STATISTICS_INFO{
     input:
     tuple val(meta), path(basic_stats)
     tuple val(meta2), path(other_stats)
+    path(busco_stats)
 
     output:
     tuple val (meta), path("*.csv") , emit: csv
@@ -25,6 +26,7 @@ process EXTRACT_ANNOTATION_STATISTICS_INFO{
     extract_annotation_statistics_info.py \\
         $basic_stats \\
         $other_stats \\
+        $busco_stats \\
         $output_file
 
     cat <<-END_VERSIONS > versions.yml
