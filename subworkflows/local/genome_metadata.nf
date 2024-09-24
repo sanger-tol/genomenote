@@ -91,7 +91,7 @@ workflow GENOME_METADATA {
     | set { ch_parsed_files }
 
     // Split params.species into genus and species
-    def species_parts = params.species.split('-')
+    def species_parts = params.species.split('_')
     def genus = species_parts[0]  
     def species = species_parts[1] 
 
