@@ -10,11 +10,11 @@ process FETCH_GBIF_METADATA {
     val species
 
     output:
-    val 'gbif_metadata.json' emit file_path
+    val "*.json' emit file_path
     path "versions.yml", emit: versions
 
     script:
-    def script_name = "fetch_gbif_taxonomy.py"
+    def script_name = "fetch_gbif_metadata.py"
     """
     $script_name --genus $genus --species $species --output gbif_metadata.json
 
