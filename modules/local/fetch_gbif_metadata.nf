@@ -1,6 +1,8 @@
 process FETCH_GBIF_METADATA {
+    tag "${genus}"
+    tag "${species}"
 
-    conda "conda-forge::python=3.9.1"
+    conda "conda-forge::python=3.9.1 requests"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/python:3.9--1' :
         'quay.io/biocontainers/python:3.9--1' }"
@@ -10,7 +12,7 @@ process FETCH_GBIF_METADATA {
     val species
 
     output:
-    val "*.json' emit file_path
+    val "gbif_metadata.json", emit: file_path
     path "versions.yml", emit: versions
 
     script:
