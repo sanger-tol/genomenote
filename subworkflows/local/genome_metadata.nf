@@ -79,17 +79,6 @@ workflow GENOME_METADATA {
     PARSE_METADATA(RUN_WGET.out.file_path)
     ch_versions = ch_versions.mix( PARSE_METADATA.out.versions.first() )
     
-    PARSE_METADATA.out.file_path
-    | map { it -> tuple( it[1] )}
-    | collect  
-    | map { it ->
-        meta = [:]
-        meta.id = params.assembly
-        meta.taxon_id = params.taxon_id
-        [ meta, it ]
-    }
-    | set { ch_parsed_files }
-
     // Split params.species into genus and species
     def species_parts = params.species.split('_')
     def genus = species_parts[0]  
@@ -99,8 +88,26 @@ workflow GENOME_METADATA {
     FETCH_GBIF_METADATA(genus, species)
     ch_versions = ch_versions.mix(FETCH_GBIF_METADATA.out.versions.first() )
 
+    FETCH_GBIF_METADATA.out.file_path
+    | map { it -> tuple( it )}
+    | set { ch_gbif }
 
-    COMBINE_METADATA(ch_parsed_files, FETCH_GBIF_METADATA.out.file_path )
+    PARSE_METADATA.out.file_path
+    | map { it -> tuple( it[1] )}
+    | set { ch_parsed }
+
+    // Combining the two channels into one input channel
+    ch_parsed.mix(ch_gbif)
+    | collect  
+    | map { it ->
+        meta = [:]
+        meta.id = params.assembly
+        meta.taxon_id = params.taxon_id
+        [ meta, it ]
+    }
+    | set { ch_parsed_files } 
+
+    COMBINE_METADATA(ch_parsed_files )
     ch_versions = ch_versions.mix( COMBINE_METADATA.out.versions.first() )
 
     emit:
