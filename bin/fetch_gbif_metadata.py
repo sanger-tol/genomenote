@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
+import os
+import sys
+import csv
 import requests
 import json
 import argparse
-import sys
 
 
 def parse_args(args=None):
