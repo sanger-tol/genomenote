@@ -5,6 +5,7 @@ import json
 import argparse
 import sys
 
+
 def parse_args(args=None):
     Description = "Parse contents of an ENA Taxonomy report and pul out meta data required by a genome note."
     Epilog = "Example usage: python fetch_gbif_metadata.py --genus --species --output"
@@ -15,9 +16,11 @@ def parse_args(args=None):
     parser.add_argument("--output", required=True, help="Output file path")
     return parser.parse_args()
 
+
 def make_dir(path):
     if len(path) > 0:
         os.makedirs(path, exist_ok=True)
+
 
 def fetch_gbif_data(genus, species, output_file):
 
@@ -42,7 +45,7 @@ def fetch_gbif_data(genus, species, output_file):
                 if len(param_list) > 0:
                     out_dir = os.path.dirname(output_file)
                     make_dir(out_dir)  # Create directory if it does not exist
-                    
+
                     with open(output_file, "w") as fout:
                         # Write header
                         fout.write(",".join(["#paramName", "paramValue"]) + "\n")
@@ -50,11 +53,12 @@ def fetch_gbif_data(genus, species, output_file):
                             fout.write(",".join(param_pair) + "\n")
                         if authorship:
                             key = "TAXONOMY_AUTHORITY"
-                            value = authorship  
-                            fout.write(f"{key},\"{value}\"\n")  
+                            value = authorship
+                            fout.write(f'{key},"{value}"\n')
                             return output_file
 
     return "Authorship not found."
+
 
 def main(args=None):
     args = parse_args(args)
