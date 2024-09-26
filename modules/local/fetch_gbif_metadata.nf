@@ -27,7 +27,7 @@ process FETCH_GBIF_METADATA {
 
     script:
     def script_name = "fetch_gbif_metadata.py"
-    def output_file = "${param_assembly_id}.csv"
+    def output_file = "${param_assembly_id}_gbif_metadata.csv"
 
     """
     $script_name --genus $genus --species $species --output $output_file
