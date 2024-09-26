@@ -1,6 +1,5 @@
 process FETCH_GBIF_METADATA {
-    tag "${genus}"
-    tag "${species}"
+    
     tag "${param_assembly_id}"
     label 'process_single'
 
