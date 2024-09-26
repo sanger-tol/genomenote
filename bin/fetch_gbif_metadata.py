@@ -2,14 +2,12 @@
 
 import os
 import sys
-import csv
 import requests
-import json
 import argparse
 
 
 def parse_args(args=None):
-    Description = "Parse contents of an ENA Taxonomy report and pul out meta data required by a genome note."
+    Description = "Parse contents of an ENA Taxonomy report and pull out metadata required by a genome note."
     Epilog = "Example usage: python fetch_gbif_metadata.py --genus --species --output"
 
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
@@ -25,7 +23,6 @@ def make_dir(path):
 
 
 def fetch_gbif_data(genus, species, output_file):
-
     match_url = f"https://api.gbif.org/v1/species/match?verbose=true&genus={genus}&species={species}"
     response = requests.get(match_url)
 
@@ -39,11 +36,31 @@ def fetch_gbif_data(genus, species, output_file):
 
             if species_response.status_code == 200:
                 species_data = species_response.json()
-                authorship = species_data.get("authorship")  # Retrieve authorship field
+                
+                # Metadata fields to extract
+                metadata_fields = {
+                    "NCBI_TAXID": "taxonID",
+                    "KINGDOM": "kingdom",
+                    "PHYLUM": "phylum",
+                    "CLASS": "class",
+                    "ORDER": "order",
+                    "FAMILY": "family",
+                    "GENUS": "genus",
+                    "SPECIES": "species",
+                    "GENUS_SPECIES": "canonicalName",
+                    "COMMON_NAME": "vernacularName",
+                    "TAXONOMY_AUTHORITY": "authorship"
+                }
 
-                # Initialize param_list
                 param_list = []
-
+                
+                # Retrieve the required fields and create parameter pairs
+                for key, json_key in metadata_fields.items():
+                    value = species_data.get(json_key)
+                    if value:
+                        param_list.append((key, value))
+                
+                # Check if there is any data to write
                 if len(param_list) > 0:
                     out_dir = os.path.dirname(output_file)
                     make_dir(out_dir)  # Create directory if it does not exist
@@ -53,13 +70,10 @@ def fetch_gbif_data(genus, species, output_file):
                         fout.write(",".join(["#paramName", "paramValue"]) + "\n")
                         for param_pair in param_list:
                             fout.write(",".join(param_pair) + "\n")
-                        if authorship:
-                            key = "TAXONOMY_AUTHORITY"
-                            value = authorship
-                            fout.write(f'{key},"{value}"\n')
-                            return output_file
+                    
+                    return output_file
 
-    return "Authorship not found."
+    return "Metadata not found."
 
 
 def main(args=None):
