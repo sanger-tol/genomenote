@@ -82,13 +82,15 @@ workflow GENOME_METADATA {
     // Split params.species into genus and species
     def species_parts = params.species.split('_')
     def genus = species_parts[0]  
-    def species = species_parts[1] 
-
-    def meta = [id: "example_id"]  // Define your meta variable as needed
-    def param_assembly_id = params.assembly  // Use params.assembly directly
+    def species = species_parts[1]     
+    def param_assembly_id = params.assembly
+    println "Genus: $genus"
+    println "Species: $species"
+    println "Param Assembly ID: $param_assembly_id"
+  
 
     // Fetch GBIF metadata using the split genus and species
-    FETCH_GBIF_METADATA(genus, species, meta, param_assembly_id)
+    FETCH_GBIF_METADATA(genus, species, param_assembly_id)
     ch_versions = ch_versions.mix(FETCH_GBIF_METADATA.out.versions.first() )
 
     FETCH_GBIF_METADATA.out.file_path
