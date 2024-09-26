@@ -58,7 +58,7 @@ def fetch_gbif_data(genus, species, output_file):
                 for key, json_key in metadata_fields.items():
                     value = species_data.get(json_key)
                     if value:
-                        param_list.append((key, value))
+                        param_list.append((f"GBIF_{key}", value))
 
                 # Check if there is any data to write
                 if len(param_list) > 0:
