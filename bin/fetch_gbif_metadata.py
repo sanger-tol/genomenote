@@ -58,6 +58,19 @@ def fetch_gbif_data(genus, species, output_file):
                 for key, json_key in metadata_fields.items():
                     value = species_data.get(json_key)
                     if value:
+                        # Special handling for TAXONOMY_AUTHORITY to clean up the value
+                        if key == "TAXONOMY_AUTHORITY":
+                            value = value.strip()
+                            # Clean up leading and trailing parentheses
+                            if value.startswith("(") and value.endswith(")"):
+                                value = value[1:-1].strip()  # Remove both parentheses
+                            elif value.startswith("("):
+                                value = value[1:].strip()  # Remove leading parentheses
+                            elif value.endswith(")"):
+                                value = value[:-1].strip()  # Remove trailing parentheses
+                            # Wrap the authorship in quotes
+                            value = f'"{value}"'  # Enclose the value in quotes
+
                         param_list.append((f"GBIF_{key}", value))
 
                 # Check if there is any data to write
