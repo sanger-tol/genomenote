@@ -36,7 +36,7 @@ def fetch_gbif_data(genus, species, output_file):
 
             if species_response.status_code == 200:
                 species_data = species_response.json()
-                
+
                 # Metadata fields to extract
                 metadata_fields = {
                     "NCBI_TAXID": "taxonID",
@@ -49,17 +49,17 @@ def fetch_gbif_data(genus, species, output_file):
                     "SPECIES": "species",
                     "GENUS_SPECIES": "canonicalName",
                     "COMMON_NAME": "vernacularName",
-                    "TAXONOMY_AUTHORITY": "authorship"
+                    "TAXONOMY_AUTHORITY": "authorship",
                 }
 
                 param_list = []
-                
+
                 # Retrieve the required fields and create parameter pairs
                 for key, json_key in metadata_fields.items():
                     value = species_data.get(json_key)
                     if value:
                         param_list.append((key, value))
-                
+
                 # Check if there is any data to write
                 if len(param_list) > 0:
                     out_dir = os.path.dirname(output_file)
@@ -70,7 +70,7 @@ def fetch_gbif_data(genus, species, output_file):
                         fout.write(",".join(["#paramName", "paramValue"]) + "\n")
                         for param_pair in param_list:
                             fout.write(",".join(param_pair) + "\n")
-                    
+
                     return output_file
 
     return "Metadata not found."
