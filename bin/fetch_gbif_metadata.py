@@ -71,7 +71,7 @@ def fetch_gbif_data(genus, species, output_file):
                             # Wrap the authorship in quotes
                             value = f'"{value}"'  # Enclose the value in quotes
 
-                        param_list.append((f"GBIF_{key}", value))
+                        param_list.append((key, value))
 
                 # Check if there is any data to write
                 if len(param_list) > 0:
