@@ -29,7 +29,6 @@ workflow GENOME_METADATA {
         def metadata = [
             id: params.assembly,
             taxon_id: params.taxon_id,
-            species: params.species, // Include species for GBIF fetch
             source: row.source,
             type: row.type,
             ext: row.ext
