@@ -111,7 +111,7 @@ def ncbi_stats(genome_in, seq_in, writer):
                     mol.get("chr_name", math.nan),
                     round(mol.get("length", 0) / 1000000, 2) if mol.get("length") is not None else math.nan,
                     mol.get("gc_percent", math.nan),
-                    mol.get("genbank_accession")
+                    mol.get("genbank_accession"),
                 ]
             )
 
@@ -126,7 +126,7 @@ def ncbi_stats(genome_in, seq_in, writer):
                     mol.get("assigned_molecule_location_type", math.nan),
                     round(mol.get("length", 0) / 1000000, 2) if mol.get("length") is not None else math.nan,
                     mol.get("gc_percent", math.nan),
-                    mol.get("genbank_accession")
+                    mol.get("genbank_accession"),
                 ]
             )
 
