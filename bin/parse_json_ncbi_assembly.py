@@ -89,10 +89,14 @@ def parse_json(file_in, file_out):
         param = find_element(data["reports"][0], f[1], attribs, param_list, index=0)
 
         if param is not None:
+            # Preprocess some values to standardise their format
+            if f[0] == "GAL":
+                param = param.title()
+
             if f[0] == "COLLECTION_LOCATION":
                 location_list = param.split(" | ")
                 location_list.reverse()
-                
+
                 # remove United Kingdom from location    
                 if "UNITED KINGDOM" in location_list:
                     location_list.remove("UNITED KINGDOM")

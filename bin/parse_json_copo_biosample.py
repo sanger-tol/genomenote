@@ -99,6 +99,10 @@ def parse_json(file_in, file_out):
             for f in fetch:
                 param = find_element(data, f[1], index=0)
                 if param is not None:
+                    # Preprocess some values to standardise their format
+                    if f[0] == "GAL":
+                        param = param.title()
+                        
                     # pre-process collection location
                     if f[0] == "COLLECTION_LOCATION":
                         location_list = param.split(" | ")

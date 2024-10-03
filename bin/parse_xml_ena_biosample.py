@@ -129,6 +129,10 @@ def parse_xml(file_in, file_out):
                         param = None
 
                 if param is not None:
+                    # Preprocess some values to standardise their format
+                    if f[0] == "GAL":
+                        param = param.title()
+
                     # pre-process collection location
                     if f[0] == "COLLECTION_LOCATION":
                         location_list = param.split(" | ")
@@ -139,7 +143,7 @@ def parse_xml(file_in, file_out):
                             location_list.remove("UNITED KINGDOM")
 
                         param = ", ".join(location_list).title()
-                        
+
                     # Convert ints and floats to str to allow for params with punctuation to be quoted
                     if isinstance(param, numbers.Number):
                         param = str(param)
