@@ -102,7 +102,10 @@ def parse_json(file_in, file_out):
                     # Preprocess some values to standardise their format
                     if f[0] == "GAL":
                         param = param.title()
-                        
+
+                    if f[0] == "LIFESTAGE":
+                        param = param.lower()
+
                     # pre-process collection location
                     if f[0] == "COLLECTION_LOCATION":
                         location_list = param.split(" | ")
