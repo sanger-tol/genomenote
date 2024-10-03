@@ -39,7 +39,6 @@ def fetch_gbif_data(genus, species, output_file):
 
                 # Metadata fields to extract
                 metadata_fields = {
-                    "KINGDOM": "kingdom",
                     "PHYLUM": "phylum",
                     "CLASS": "class",
                     "ORDER": "order",

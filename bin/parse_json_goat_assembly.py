@@ -18,7 +18,6 @@ fetch = [
     ),
     ("COMMON_NAME", ("record", "taxon_names"), {"class": "genbank common name"}),
     ("GENUS_SPECIES", ("record", "taxon_names"), {"class": "scientific name"}),
-    ("KINGDOM", ("record", "lineage"), {"taxon_rank": "kingdom"}),
     ("PHYLUM", ("record", "lineage"), {"taxon_rank": "phylum"}),
     ("CLASS", ("record", "lineage"), {"taxon_rank": "class"}),
     ("ORDER", ("record", "lineage"), {"taxon_rank": "order"}),
