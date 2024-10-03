@@ -89,6 +89,17 @@ def parse_json(file_in, file_out):
         param = find_element(data["reports"][0], f[1], attribs, param_list, index=0)
 
         if param is not None:
+            if f[0] == "COLLECTION_LOCATION":
+                location_list = param.split(" | ")
+                location_list.reverse()
+                
+                # remove United Kingdom from location    
+                if "UNITED KINGDOM" in location_list:
+                    location_list.remove("UNITED KINGDOM")
+
+                param = ", ".join(location_list).title()
+   
+
             if f[0] == "GENOME_LENGTH":
                 param = str(round((int(param) * 1e-6), 2))  # convert to Mbp 2 decimal places
             

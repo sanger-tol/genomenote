@@ -99,6 +99,17 @@ def parse_json(file_in, file_out):
             for f in fetch:
                 param = find_element(data, f[1], index=0)
                 if param is not None:
+                    # pre-process collection location
+                    if f[0] == "COLLECTION_LOCATION":
+                        location_list = param.split(" | ")
+                        location_list.reverse()
+                
+                        # remove United Kingdom from location    
+                        if "UNITED KINGDOM" in location_list:
+                            location_list.remove("UNITED KINGDOM")
+
+                        param = ", ".join(location_list).title()
+
                     if isinstance(param, numbers.Number):
                         param = str(param)
                     if any(p in string.punctuation for p in param):
