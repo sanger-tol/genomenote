@@ -39,7 +39,6 @@ def fetch_gbif_data(genus, species, output_file):
 
                 # Metadata fields to extract
                 metadata_fields = {
-                    "NCBI_TAXID": "taxonID",
                     "KINGDOM": "kingdom",
                     "PHYLUM": "phylum",
                     "CLASS": "class",
@@ -61,13 +60,6 @@ def fetch_gbif_data(genus, species, output_file):
                         # Special handling for TAXONOMY_AUTHORITY to clean up the value
                         if key == "TAXONOMY_AUTHORITY":
                             value = value.strip()
-                            # Clean up leading and trailing parentheses
-                            if value.startswith("(") and value.endswith(")"):
-                                value = value[1:-1].strip()  # Remove both parentheses
-                            elif value.startswith("("):
-                                value = value[1:].strip()  # Remove leading parentheses
-                            elif value.endswith(")"):
-                                value = value[:-1].strip()  # Remove trailing parentheses
                             # Wrap the authorship in quotes
                             value = f'"{value}"'  # Enclose the value in quotes
 
