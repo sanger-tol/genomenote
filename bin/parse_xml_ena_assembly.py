@@ -103,8 +103,11 @@ def parse_xml(file_in, file_out):
                                 if child.find("TAG").text == "count-non-chromosome-replicon":
                                     non_chrs = child.find("VALUE").text
                                     param = str(int(param) - int(non_chrs))
-                        if f[0] == "GENOME_LENGTH" or f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
-                            param = str(round((int(param) * 1e-6), 1))  # convert to Mbp
+                        if f[0] == "GENOME_LENGTH":
+                            param = str(round((int(param) * 1e-6), 2))  # convert to Mbp, 2 decimal place
+                        
+                        if f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
+                            param = str(round((int(param) * 1e-6), 1))  # convert to Mbp, 1 decimal place
 
                 else:
                     try:
