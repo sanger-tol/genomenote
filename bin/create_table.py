@@ -109,7 +109,7 @@ def ncbi_stats(genome_in, seq_in, writer):
             writer.writerow(
                 [
                     mol.get("chr_name", math.nan),
-                    round(mol.get("length", 0) / 1000000, 2) if mol.get("length") is not None else math.nan,
+                    "%.2f" % (mol.get("length", 0) / 1000000) if mol.get("length") is not None else math.nan,
                     mol.get("gc_percent", math.nan),
                     mol.get("genbank_accession"),
                 ]
@@ -124,7 +124,7 @@ def ncbi_stats(genome_in, seq_in, writer):
             writer.writerow(
                 [
                     mol.get("assigned_molecule_location_type", math.nan),
-                    round(mol.get("length", 0) / 1000, 2) if mol.get("length") is not None else math.nan,
+                    "%.2f" % (mol.get("length", 0) / 1000) if mol.get("length") is not None else math.nan,
                     mol.get("gc_percent", math.nan),
                     mol.get("genbank_accession"),
                 ]
@@ -144,9 +144,18 @@ def extract_busco(file_in, writer):
 
     lineage_dataset_name = data.get("lineage_dataset", {}).get("name", math.nan)
     results_summary = data.get("results", {}).get("one_line_summary", math.nan)
+    results_complete = data.get("results", {}).get("Complete", math.nan)
+    results_single_copy = data.get("results", {}).get("Single copy", math.nan)
+    results_duplicated = data.get("results", {}).get("Multi copy", math.nan)
+    results_n_markers = data.get("results", {}).get("n_markers", math.nan)
+
 
     writer.writerow(["##BUSCO", lineage_dataset_name])
     writer.writerow(["Summary", results_summary])
+    writer.writerow(["Complete", results_complete])
+    writer.writerow(["Single", results_single_copy])
+    writer.writerow(["Duplicated", results_duplicated])
+    writer.writerow(["Number_Orthologs", f"{results_n_markers:,}"])
 
 
 def extract_pacbio(qv, completeness, writer):

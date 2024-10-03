@@ -37,7 +37,7 @@ fetch = [
     ("LONGITUDE", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='geographic location (longitude)']//", "VALUE")),
     ("HABITAT", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='habitat']//", "VALUE")),
     ("BIOSAMPLE_ACCESSION", ["SAMPLE"], ("attrib", "accession")),
-    ("TISSUE_TYPE", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='organism part']//", "VALUE")),
+    ("ORGANISM_PART", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='organism part']//", "VALUE")),
     ("TOLID", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='tolid']//", "VALUE")),
 ]
 

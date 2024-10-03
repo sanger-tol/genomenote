@@ -15,7 +15,7 @@ param_lookup = {
     "Taxon_ID": "NCBI_TAXID",
     "Assembly_Name": "ASSEMBLY_ID",
     "Life_Stage": "LIFESTAGE",
-    "Tissue": "TISSUE_TYPE",
+    "Tissue": "ORGANISM_PART",
     "Sex": "SAMPLE_SEX",
     "Total_Sequence": "GENOME_LENGTH",
     "Chromosomes": "CHROMOSOME_NUMBER",
@@ -26,6 +26,10 @@ param_lookup = {
     "Mitochondrion": "MITO_SIZE",
     "##BUSCO": "BUSCO_REF",
     "Summary": "BUSCO_STRING",
+    "Complete": "BUSCO_C",
+    "Single": "BUSCO_S",
+    "Duplicated": "BUSCO_D",
+    "Number_Orthologs": "BUSCO_N",
     "QV": "QV",
     "Completeness": "KMER",
 }
@@ -72,15 +76,14 @@ def parse_csv(file_in, file_out):
                 param = row[1]
 
                 if key == "BUSCO_STRING":
-                    param = '"' + param + '"'
                     busco = param.replace("[", ":").split(":")
                     param_list.append(["BUSCO", busco[1]])
 
                 if key == "GENOME_LENGTH":
-                    param = str(round((int(param) * 1e-6), 2))  # convert to Mbp, 2 decimal places
+                    param = str("%.2f" % (int(param) * 1e-6))  # convert to Mbp, 2 decimal places
                 
                 if key == "SCAFF_N50" or key == "CONTIG_N50":
-                    param = str(round((int(param) * 1e-6), 1))  # convert to Mbp, 1 decimal place
+                    param = str("%.1f" % (int(param) * 1e-6))  # convert to Mbp, 1 decimal place
 
                 # Convert ints and floats to str to allow for params with punctuation to be quoted
                 if isinstance(param, numbers.Number):

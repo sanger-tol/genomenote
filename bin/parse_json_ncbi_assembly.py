@@ -34,7 +34,7 @@ fetch = [
     ("LONGITUDE", ("assembly_info", "biosample", "attributes"), {"name": "geographic location (longitude)"}),
     ("HABITAT", ("assembly_info", "biosample", "attributes"), {"name": "habitat"}),
     ("BIOSAMPLE_ACCESSION", ("assembly_info", "biosample", "accession")),
-    ("TISSUE_TYPE", ("assembly_info", "biosample", "attributes"), {"name": "tissue"}),
+    ("ORGANISM_PART", ("assembly_info", "biosample", "attributes"), {"name": "tissue"}),
     ("GENOME_LENGTH", ("assembly_stats", "total_sequence_length")),
     ("CHROMOSOME_NUMBER", ("assembly_stats", "total_number_of_chromosomes")),
     ("SCAFF_NUMBER", ("assembly_stats", "number_of_scaffolds")),
@@ -105,10 +105,12 @@ def parse_json(file_in, file_out):
    
 
             if f[0] == "GENOME_LENGTH":
-                param = str(round((int(param) * 1e-6), 2))  # convert to Mbp 2 decimal places
-            
+                print(param)
+                param = str("%.2f" % (int(param) * 1e-6))  # convert to Mbp 2 decimal places
+                print(param)
+
             if f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
-                param = str(round((int(param) * 1e-6), 1))  # convert to Mbp 1 decimal place
+                param = str("%.1f" % (int(param) * 1e-6))  # convert to Mbp 1 decimal place
 
             # Convert ints and floats to str to allow for params with punctuation to be quoted
             if isinstance(param, numbers.Number):

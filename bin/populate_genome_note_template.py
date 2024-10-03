@@ -50,7 +50,7 @@ def build_param_list(param_file):
                 json_chrs = json.loads(value)
                 value = json_chrs
 
-            if key == "TISSUE_TYPE":
+            if key == "ORGANISM_PART":
                 value = value.lower()
 
             if key == "IDENTIFIER" or key == "IDENTIFIER_INSTITUTE":
