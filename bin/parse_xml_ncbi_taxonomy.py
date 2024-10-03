@@ -10,7 +10,6 @@ fetch = [
     ("GENUS_SPECIES", ["Taxon", "Scientific_Name"]),
     ("NCBI_TAXID", ["Taxon", "TaxId"]),
     ("TAX_STRING", ["Taxon", "Lineage"]),
-    ("KINGDOM", ["Taxon", "LineageEx"], ("Taxon", "Rank", "kingdom", "ScientificName")),
     ("PHYLUM", ["Taxon", "LineageEx"], ("Taxon", "Rank", "phylum", "ScientificName")),
     ("CLASS", ["Taxon", "LineageEx"], ("Taxon", "Rank", "class", "ScientificName")),
     ("ORDER", ["Taxon", "LineageEx"], ("Taxon", "Rank", "order", "ScientificName")),

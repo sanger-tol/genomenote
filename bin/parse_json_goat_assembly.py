@@ -25,7 +25,7 @@ fetch = [
     ("TRIBE", ("record", "lineage"), {"taxon_rank": "tribe"}),
     ("GENUS", ("record", "lineage"), {"taxon_rank": "genus"}),
     ("NCBI_TAXID", ("record", "taxon_id")),
-    ("BIOSAMPLE_ACCESSION", ("record", "attributes", "biosample", "value")),
+    ("PROJECT_BIOSAMPLE_ACCESSION", ("record", "attributes", "biosample", "value")),
     ("SAMPLE_SEX", ("record", "attributes", "sample_sex", "value")),
     ("GENOME_LENGTH", ("record", "attributes", "assembly_span", "value")),
     ("SCAFF_NUMBER", ("record", "attributes", "scaffold_count", "value")),
