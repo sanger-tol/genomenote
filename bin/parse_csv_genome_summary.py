@@ -15,7 +15,6 @@ param_lookup = {
     "Taxon_ID": "NCBI_TAXID",
     "Assembly_Name": "ASSEMBLY_ID",
     "Life_Stage": "LIFESTAGE",
-    "Tissue": "ORGANISM_PART",
     "Sex": "SAMPLE_SEX",
     "Total_Sequence": "GENOME_LENGTH",
     "Chromosomes": "CHROMOSOME_NUMBER",
