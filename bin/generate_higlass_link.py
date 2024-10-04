@@ -49,8 +49,8 @@ def request_viewconfig(higlass_server, file_name, map_uuid, grid_uuid, genome_le
     request_data = {
         "uid": file_name,
         "viewconf": {
-            "editable": "true",
-            "zoomFixed": "false",
+            "editable": True,
+            "zoomFixed": False,
             "trackSourceServers": ["/api/v1"],
             "exportViewUrl": "/api/v1/viewconfs/",
             "views": [
@@ -69,6 +69,11 @@ def request_viewconfig(higlass_server, file_name, map_uuid, grid_uuid, genome_le
                                         "tilesetUid": map_uuid,
                                         "uid": "",
                                         "type": "heatmap",
+                                        "options": {
+                                            "heatmapValueScaling": "linear",
+                                            "valueScaleMin": 0.0,
+                                            "ValueScaleMax": 20.0,
+                                        }
                                     },
                                     {
                                         "filetype": "chromsizes-tsv",
@@ -76,7 +81,10 @@ def request_viewconfig(higlass_server, file_name, map_uuid, grid_uuid, genome_le
                                         "tilesetUid": grid_uuid,
                                         "uid": "",
                                         "type": "2d-chromosome-grid",
-                                        "options": {"lineStrokeWidth": 1, "lineStrokeColor": "grey"},
+                                        "options": {
+                                            "lineStrokeWidth": 1,
+                                            "lineStrokeColor": "grey"
+                                        },
                                         "width": 20,
                                         "height": 20,
                                     },
@@ -90,12 +98,29 @@ def request_viewconfig(higlass_server, file_name, map_uuid, grid_uuid, genome_le
                     },
                     "initialXDomain": [0, genome_length],
                     "initialYDomain": [0, genome_length],
-                    "layout": {"w": 12, "h": 12, "x": 0, "y": 0, "i": "", "moved": "false", "static": "false"},
+                    "layout": {
+                        "w": 12,
+                        "h": 12,
+                        "x": 0,
+                        "y": 0,
+                        "i": "",
+                        "moved": False,
+                        "static": False
+                    },
                 }
             ],
-            "zoomLocks": {"locksByViewUid": {}, "locksDict": {}},
-            "locationLocks": {"locksByViewUid": {}, "locksDict": {}},
-            "valueScaleLocks": {"locksByViewUid": {}, "locksDict": {}},
+            "zoomLocks": {
+                "locksByViewUid": {}, 
+                "locksDict": {}
+            },
+            "locationLocks": {
+                "locksByViewUid": {},
+                "locksDict": {}
+            },
+            "valueScaleLocks": {
+                "locksByViewUid": {},
+                "locksDict": {}
+            },
         },
     }
 
@@ -122,7 +147,7 @@ def print_output(url, file_out):
     out_dir = os.path.dirname(file_out)
     make_dir(out_dir)
     with open(file_out, "w") as fout:
-        fout.write(",".join(["Higlass URL", url]) + "\n")
+        fout.write(",".join(["HIGLASS_URL", url]) + "\n")
 
 
 def main(args=None):

@@ -13,6 +13,7 @@ workflow COMBINE_NOTE_DATA {
     ch_params_consistent // channel: /path/to/csv/file/consistent_parameters from GENOME_METADATA subworkflow
     ch_params_inconsistent // channel: /path/to/csv/file/consistent_parameters from GENOME_METADATA subworkflow
     ch_summary // channel: /path/to/csv/summary/file from GENOME_STATISTICS subworkflow 
+    ch_higlass // channel: /path/to/csv/higlass_link from CONTACT_MAPS subworkflow 
     ch_note_template   // channel: /path/to/genome_note_doc_template
 
 
@@ -33,11 +34,25 @@ workflow COMBINE_NOTE_DATA {
     ch_versions = ch_versions.mix( PARSE_METADATA.out.versions.first() )
 
 
-
     COMBINE_STATISTICS_AND_METADATA(ch_params_consistent, ch_params_inconsistent, PARSE_METADATA.out.file_path)
     ch_versions = ch_versions.mix( COMBINE_STATISTICS_AND_METADATA.out.versions.first() )
 
-    POPULATE_TEMPLATE( COMBINE_STATISTICS_AND_METADATA.out.consistent, ch_note_template )
+    ch_higlass
+    | map { it -> [ [id: params.assembly] , it ] }
+
+    
+    // Add higlass url to the parsed dataset
+    COMBINE_STATISTICS_AND_METADATA.out.consistent.concat(ch_higlass)
+    .map { it ->
+        it[1]
+    }
+    .collectFile(name: 'combined.csv', sort: false) { it ->
+        it.text
+    }
+    .map { it -> [ [id: params.assembly] , it ] }
+    .set { ch_parsed }
+
+    POPULATE_TEMPLATE( ch_parsed, ch_note_template )
     ch_versions = ch_versions.mix( POPULATE_TEMPLATE.out.versions.first() )
 
     if ( params.write_to_portal ) { 

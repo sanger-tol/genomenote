@@ -42,7 +42,6 @@ ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.mu
 ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
 ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
 
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT LOCAL MODULES/SUBWORKFLOWS
@@ -138,18 +137,17 @@ workflow GENOMENOTE {
     ch_versions = ch_versions.mix ( GENOME_STATISTICS.out.versions )
 
     //
-    // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
-    //
-
-    COMBINE_NOTE_DATA (GENOME_METADATA.out.consistent, GENOME_METADATA.out.inconsistent, GENOME_STATISTICS.out.summary, ch_note_template)
-    ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
-
-
-    //
     // SUBWORKFLOW: Create contact map matrices from HiC alignment files
     //
     CONTACT_MAPS ( ch_fasta, ch_inputs.hic, GENOME_STATISTICS.out.summary_seq, ch_bin, ch_cool_order )
     ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
+
+    //
+    // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
+    //
+
+    COMBINE_NOTE_DATA (GENOME_METADATA.out.consistent, GENOME_METADATA.out.inconsistent, GENOME_STATISTICS.out.summary, CONTACT_MAPS.out.link, ch_note_template)
+    ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
 
 
     //
