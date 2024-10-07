@@ -14,6 +14,7 @@ fetch = [
     ("BIOPROJECT_ACCESSION", ("assembly_info", "bioproject_accession")),
     ("BIOPROJECT_TITLE", ("assembly_info", "bioproject_lineage"), {"bioprojects": "test"}),
     ("ASSEMBLY_ACCESSION", ("accession",)),
+    ("ALT_HAP_ACCESSION", ("assembly_info", "linked_assemblies"), {"linked_assembly": None}),
     ("GAL", ("assembly_info", "biosample", "attributes"), {"name": "GAL"}),
     ("COLLECTORS", ("assembly_info", "biosample", "attributes"), {"name": "collected_by"}),
     ("COLLECTOR_INSTITUTE", ("assembly_info", "biosample", "attributes"), {"name": "collecting institution"}),
@@ -100,16 +101,17 @@ def parse_json(file_in, file_out):
                 # remove United Kingdom from location
                 if "UNITED KINGDOM" in location_list:
                     location_list.remove("UNITED KINGDOM")
+                elif "United Kingdom" in location_list:
+                    location_list.remove("United Kingdom")
 
                 param = ", ".join(location_list).title()
 
             if f[0] == "GENOME_LENGTH":
-                print(param)
                 param = str("%.2f" % (int(param) * 1e-6))  # convert to Mbp 2 decimal places
-                print(param)
 
             if f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
                 param = str("%.1f" % (int(param) * 1e-6))  # convert to Mbp 1 decimal place
+
 
             # Convert ints and floats to str to allow for params with punctuation to be quoted
             if isinstance(param, numbers.Number):
@@ -153,6 +155,13 @@ def find_element(data, fields, attribs, param_list, index=0):
                     if project["parent_accessions"] != None and len(project["parent_accessions"]) == 1:
                         if project["title"] != None:
                             return project["title"]
+
+        if "linked_assembly" in attribs.keys():
+            for assembly in data:
+                if "alternat" in assembly["assembly_type"] and "haplotype" in assembly["assembly_type"] :
+                    return assembly["linked_assembly"]
+    
+
 
         else:
             # fields either not found or we don't yet handle parsing it
