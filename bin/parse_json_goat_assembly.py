@@ -33,6 +33,7 @@ fetch = [
     ("CHROMOSOME_NUMBER", ("record", "attributes", "chromosome_count", "value")),
     ("CONTIG_NUMBER", ("record", "attributes", "contig_count", "value")),
     ("CONTIG_N50", ("record", "attributes", "contig_n50", "value")),
+    ("PERC_ASSEM", ("record", "attributes", "assigned_percent", "value")),
 ]
 
 
@@ -88,6 +89,9 @@ def parse_json(file_in, file_out):
 
             if f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
                 param = str("%.1f" % (int(param) * 1e-6))  # convert to Mbp 1 decimal place
+
+            if f[0] == "PERC_ASSEM":
+                param = str("%.2f" % param)
 
             # Convert ints and floats to str to allow for params with punctuation to be quoted
             if isinstance(param, numbers.Number):
