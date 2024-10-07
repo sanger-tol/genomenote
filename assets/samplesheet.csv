@@ -1,3 +1,4 @@
 sample,datatype,datafile
-ieCloDipt1,pacbio,https://tolit.cog.sanger.ac.uk/test-data/Cloeon_dipterum/genomic_data/ieCloDipt1/pacbio/m64094_200901_101741.ccs.bc1001_BAK8A_OA--bc1001_BAK8A_OA.subsampled.bam
-ieCloDipt1,hic,https://tolit.cog.sanger.ac.uk/test-data/Cloeon_dipterum/analysis/ieCloDipt1.1/read_mapping/hic/GCA_949628265.1.unmasked.hic.ieCloDipt1.subsampled.cram
+ilCerPisi1,pacbio,https://tolit.cog.sanger.ac.uk/test-data/Ceramica_pisi/genomic_data/ilCerPisi1/pacbio/m84047_230817_174414_s3.ccs.bc2048.subsampled.bam
+ilCerPisi1,pacbio,https://tolit.cog.sanger.ac.uk/test-data/Ceramica_pisi/genomic_data/ilCerPisi1/pacbio/m64097e_230309_154741.ccs.bc1012_BAK8A_OA--bc1012_BAK8A_OA.subsampled.bam
+ilCerPisi1,hic,https://tolit.cog.sanger.ac.uk/test-data/Ceramica_pisi/analysis/ilCerPisi1.1/read_mapping/hic/GCA_963859965.1.unmasked.hic.ilCerPisi2.subsampled.cram
