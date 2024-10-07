@@ -110,8 +110,8 @@ def parse_json(file_in, file_out):
                     if f[0] == "COLLECTION_LOCATION":
                         location_list = param.split(" | ")
                         location_list.reverse()
-                
-                        # remove United Kingdom from location    
+
+                        # remove United Kingdom from location
                         if "UNITED KINGDOM" in location_list:
                             location_list.remove("UNITED KINGDOM")
                         elif "United Kingdom" in location_list:

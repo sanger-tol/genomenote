@@ -64,9 +64,9 @@ def build_param_list(param_file):
                 value = value.replace("Of", "of")
                 value = value.replace("The", "the")
 
-            # Set URLS for BTK 
+            # Set URLS for BTK
             if key == "ASSEMBLY_ACCESSION":
-                # Base BTK URL    
+                # Base BTK URL
                 btk_url = "https://blobtoolkit.genomehubs.org/view/GCA/dataset/GCA"
                 btk_url = btk_url.replace("GCA", value)
 
@@ -94,7 +94,7 @@ def build_param_list(param_file):
 
         mydict["AUTHORS"] = ", ".join(authors)
 
-        if mydict["ASSEMBLY_ACCESSION"] and mydict["GENUS_SPECIES"] :
+        if mydict["ASSEMBLY_ACCESSION"] and mydict["GENUS_SPECIES"]:
             btk_busco_url = "https://blobtoolkit.genomehubs.org/view/SPECIES/dataset/GCA/busco"
             btk_busco_url = btk_busco_url.replace("GCA", mydict["ASSEMBLY_ACCESSION"])
             btk_busco_url = btk_busco_url.replace("SPECIES", mydict["GENUS_SPECIES"])

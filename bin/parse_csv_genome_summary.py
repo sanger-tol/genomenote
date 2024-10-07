@@ -80,7 +80,7 @@ def parse_csv(file_in, file_out):
 
                 if key == "GENOME_LENGTH":
                     param = str("%.2f" % (int(param) * 1e-6))  # convert to Mbp, 2 decimal places
-                
+
                 if key == "SCAFF_N50" or key == "CONTIG_N50":
                     param = str("%.1f" % (int(param) * 1e-6))  # convert to Mbp, 1 decimal place
 

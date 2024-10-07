@@ -149,7 +149,6 @@ def extract_busco(file_in, writer):
     results_duplicated = data.get("results", {}).get("Multi copy", math.nan)
     results_n_markers = data.get("results", {}).get("n_markers", math.nan)
 
-
     writer.writerow(["##BUSCO", lineage_dataset_name])
     writer.writerow(["Summary", results_summary])
     writer.writerow(["Complete", results_complete])

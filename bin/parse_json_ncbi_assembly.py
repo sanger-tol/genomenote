@@ -97,12 +97,11 @@ def parse_json(file_in, file_out):
                 location_list = param.split(" | ")
                 location_list.reverse()
 
-                # remove United Kingdom from location    
+                # remove United Kingdom from location
                 if "UNITED KINGDOM" in location_list:
                     location_list.remove("UNITED KINGDOM")
 
                 param = ", ".join(location_list).title()
-   
 
             if f[0] == "GENOME_LENGTH":
                 print(param)
