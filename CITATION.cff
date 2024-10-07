@@ -8,10 +8,18 @@ message: >-
     metadata from this file.
 type: software
 authors:
+    - given-names: Sandra
+      family-names: Babiyre
+      affiliation: Wellcome Sanger Institute
+      orcid: "https://orcid.org/0009-0004-7773-7008"
     - given-names: Tyler
       family-names: Chafin
       affiliation: Wellcome Sanger Institute
       orcid: "https://orcid.org/0000-0001-8687-5905"
+    - given-names: Chau
+      family-names: Duong
+      affiliation: Wellcome Sanger Institute
+      orcid: "https://orcid.org/0009-0001-0649-2291"
     - given-names: Matthieu
       family-names: Muffato
       affiliation: Wellcome Sanger Institute
