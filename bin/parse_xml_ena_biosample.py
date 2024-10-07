@@ -141,6 +141,8 @@ def parse_xml(file_in, file_out):
                         # remove United Kingdom from location
                         if "UNITED KINGDOM" in location_list:
                             location_list.remove("UNITED KINGDOM")
+                        elif "United Kingdom" in location_list:
+                            location_list.remove("United Kingdom")
 
                         param = ", ".join(location_list).title()
 
