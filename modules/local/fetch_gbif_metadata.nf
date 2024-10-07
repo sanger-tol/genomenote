@@ -1,5 +1,5 @@
 process FETCH_GBIF_METADATA {
-    tag "${param_assembly_id}"
+    tag "$assembly"
     label 'process_single'
 
     conda "conda-forge::python=3.9.1"
@@ -11,9 +11,9 @@ process FETCH_GBIF_METADATA {
         'quay.io/biocontainers/mulled-v2-5cada6dc649cb78fe4ccd00b84f9dc4ee50dd363:506b314b4875ac1041355eb6ab70f2d7f87c528c-0' }"
 
     input:
-    val genus
-    val species
-    val param_assembly_id
+    tuple val(assembly), val(species) 
+
+ 
 
     output:
     path "*.csv", emit: file_path
@@ -24,10 +24,10 @@ process FETCH_GBIF_METADATA {
 
     script:
     def script_name = "fetch_gbif_metadata.py"
-    def output_file = "${param_assembly_id}_gbif_taxonomy.csv"
+    def output_file = "${assembly}_gbif_taxonomy.csv"
 
     """
-    $script_name --genus $genus --species $species --output $output_file
+    $script_name --species $species --output $output_file
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

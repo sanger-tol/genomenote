@@ -84,6 +84,10 @@ def main(args=None):
     params_inconsistent = {}
 
     for file in files:
+        # check if file exists skip if not
+        if getattr(args, file[1]) is None:
+            continue
+
         (params, paramDict) = process_file(getattr(args, file[1]), params)
         param_sets[file[0]] = paramDict
 

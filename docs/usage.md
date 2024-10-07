@@ -22,9 +22,6 @@ You will need to supply the assembly accession for the genome you would like to 
 
 ```bash
    --assembly '[assembly accession]'
-   --species '[species name]'
-   --taxon_id '[taxon id]'
-   --bioproject '[bioproject accession]'
    --biosample_wgs '[biosample accession of the biosample used to produce the genomic sequence]'
    --biosample_hic '[biosample accession of the biosample used to produce the HiC data]'
    --biosample_rna '[biosample accession of the biosample used to produce the RNASeq data]
@@ -103,7 +100,7 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run sanger-tol/genomenote --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta --assembly GCA_922984935.2 --species Epithemia_sp._CRS-2021b --taxon_id 2809013 --bioproject PRJEB49353 --biosample_wgs SAMEA7524400 -profile docker
+nextflow run sanger-tol/genomenote --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta --assembly GCA_922984935.2 --biosample_wgs SAMEA7524400 -profile docker
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -136,9 +133,6 @@ outdir: './results/'
 fasta: './genome.fasta'
 input: 'data'
 assembly: 'GCA_922984935.2'
-species: 'Epithemia_sp._CRS-2021b'
-taxon_id: '2809013'
-bioproject: 'PRJEB49353'
 biosample_wgs: 'SAMEA7524400'
 <...>
 ```

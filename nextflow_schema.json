@@ -36,18 +36,6 @@
                     "type": "string",
                     "description": "The Genbank assembly accession for the assembly, for example: GCA_922984935.2."
                 },
-                "species": {
-                    "type": "string",
-                    "description": "The species name for the assembly with spaces replaced with '_', for example: Epithemia_sp._CRS-2021b."
-                },
-                "taxon_id": {
-                    "type": "string",
-                    "description": "The NCBI taxonomy ID corresponding to the GCA assembly accession, for example: 9662."
-                },
-                "bioproject": {
-                    "type": "string",
-                    "description": "The bioproject accesion linked to the genome assembly, for example: PRJEB49353."
-                },
                 "biosample_wgs": {
                     "type": "string",
                     "description": "The biosample accesion(s) linked to the WGS samples in the experiment, for example: SAMEA7520803."
