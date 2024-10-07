@@ -37,6 +37,7 @@ fetch = [
     ("PROJECT_BIOSAMPLE_ACCESSION", ("assembly_info", "biosample", "accession")),
     ("PROJECT_ORGANISM_PART", ("assembly_info", "biosample", "attributes"), {"name": "tissue"}),
     ("GENOME_LENGTH", ("assembly_stats", "total_sequence_length")),
+    ("LR_COV", ("assembly_stats", "genome_coverage")),
     ("CHROMOSOME_NUMBER", ("assembly_stats", "total_number_of_chromosomes")),
     ("SCAFF_NUMBER", ("assembly_stats", "number_of_scaffolds")),
     ("CONTIG_NUMBER", ("assembly_stats", "number_of_contigs")),
@@ -112,7 +113,6 @@ def parse_json(file_in, file_out):
             if f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
                 param = str("%.1f" % (int(param) * 1e-6))  # convert to Mbp 1 decimal place
 
-
             # Convert ints and floats to str to allow for params with punctuation to be quoted
             if isinstance(param, numbers.Number):
                 param = str(param)
@@ -158,10 +158,8 @@ def find_element(data, fields, attribs, param_list, index=0):
 
         if "linked_assembly" in attribs.keys():
             for assembly in data:
-                if "alternat" in assembly["assembly_type"] and "haplotype" in assembly["assembly_type"] :
+                if "alternat" in assembly["assembly_type"] and "haplotype" in assembly["assembly_type"]:
                     return assembly["linked_assembly"]
-    
-
 
         else:
             # fields either not found or we don't yet handle parsing it

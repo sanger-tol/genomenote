@@ -18,6 +18,7 @@ fetch = [
     ("GENOME_LENGTH", ["ASSEMBLY", "ASSEMBLY_ATTRIBUTES"], ("tag", ".//*[TAG='total-length']//", "VALUE")),
     ("SCAFF_NUMBER", ["ASSEMBLY", "ASSEMBLY_ATTRIBUTES"], ("tag", ".//*[TAG='scaffold-count']//", "VALUE")),
     ("SCAFF_N50", ["ASSEMBLY", "ASSEMBLY_ATTRIBUTES"], ("tag", ".//*[TAG='n50']//", "VALUE")),
+    ("GAP_COUNT", ["ASSEMBLY", "ASSEMBLY_ATTRIBUTES"], ("tag", ".//*[TAG='spanned-gaps']//", "VALUE")),
     ("CHROMOSOME_NUMBER", ["ASSEMBLY", "ASSEMBLY_ATTRIBUTES"], ("tag", ".//*[TAG='replicon-count']//", "VALUE")),
     ("CONTIG_NUMBER", ["ASSEMBLY", "ASSEMBLY_ATTRIBUTES"], ("tag", ".//*[TAG='count-contig']//", "VALUE")),
     ("CONTIG_N50", ["ASSEMBLY", "ASSEMBLY_ATTRIBUTES"], ("tag", ".//*[TAG='contig-n50']//", "VALUE")),

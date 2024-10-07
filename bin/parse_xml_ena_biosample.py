@@ -146,6 +146,10 @@ def parse_xml(file_in, file_out):
 
                         param = ", ".join(location_list).title()
 
+                    # organism part should be in lower case
+                    if f[0] == "ORGANISM_PART":
+                        param = param.lower()
+
                     # Convert ints and floats to str to allow for params with punctuation to be quoted
                     if isinstance(param, numbers.Number):
                         param = str(param)

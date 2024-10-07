@@ -119,6 +119,10 @@ def parse_json(file_in, file_out):
 
                         param = ", ".join(location_list).title()
 
+                    # organism part and preservation methods should be in lower case
+                    if f[0] == "ORGANISM_PART" or f[0] == "PRESERVATION_METHOD":
+                        param = param.lower()
+
                     if isinstance(param, numbers.Number):
                         param = str(param)
                     if any(p in string.punctuation for p in param):
