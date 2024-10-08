@@ -12,33 +12,30 @@ include { FETCH_GBIF_METADATA       }       from '../../modules/local/fetch_gbif
 
 workflow GENOME_METADATA {
     take:
-    ch_file_list        // channel: /path/to/genome_metadata_file_template
-
-
+    ch_file_list        // channel: [meta, /path/to/genome_metadata_file_template]
+    
     main:
     ch_versions = Channel.empty()
 
     // Define channel for RUN_WGET
     ch_file_list
     | splitCsv(header: ['source', 'type', 'url', 'ext'], skip: 1)
-    | flatMap { row ->
+    | flatMap { metadata, row ->
         // Create a list to hold the final entries
         def entries = []
 
         // Common metadata
-        def metadata = [
-            id: params.assembly,
-            taxon_id: params.taxon_id,
-            source: row.source,
-            type: row.type,
-            ext: row.ext
-        ]
+        def new_meta = metadata.clone()
+        new_meta.source = row.source
+        new_meta.type = row.type
+        new_meta.ext = row.ext
+        
 
         // Define biosamples with their types
         def biosamples = [
-            ["WGS", params.biosample_wgs],
-            ["HIC", params.biosample_hic],
-            ["RNA", params.biosample_rna]
+            ["WGS", metadata.biosample_wgs],
+            ["HIC", metadata.biosample_hic],
+            ["RNA", metadata.biosample_rna]
         ]
 
         // Process each biosample
@@ -46,21 +43,21 @@ workflow GENOME_METADATA {
             if ( biosampleID != null ) {
                 // Skip if biosampleID is null}
                 def url = row.url
-                    .replaceAll(/ASSEMBLY_ACCESSION/, params.assembly)
-                    .replaceAll(/TAXONOMY_ID/, params.taxon_id)
-                    .replaceAll(/BIOPROJECT_ACCESSION/, params.bioproject)
+                    .replaceAll(/ASSEMBLY_ACCESSION/, metadata.id)
+                    .replaceAll(/TAXONOMY_ID/, metadata.taxon_id)
+                    .replaceAll(/BIOPROJECT_ACCESSION/, metadata.bioproject)
                     .replaceAll(/BIOSAMPLE_ACCESSION/, biosampleID)
 
                 if (row.type == 'Biosample') {
                     // Add entry with biosample type in metadata for Biosample type
                     entries << [
-                        metadata + [biosample_type: biosampleType],
+                        new_meta + [biosample_type: biosampleType],
                         url
                     ]
                 } else {
                     // Add entry without biosample type in metadata for other types
                     entries << [
-                        metadata + [biosample_type: ''],
+                        new_meta + [biosample_type: ''],
                         url
                     ]
                 }
@@ -78,16 +75,23 @@ workflow GENOME_METADATA {
     PARSE_METADATA(RUN_WGET.out.file_path)
     ch_versions = ch_versions.mix( PARSE_METADATA.out.versions.first() )
     
-    // Split params.species into genus and species
-    def species_parts = params.species.split('_')
-    def genus = species_parts[0]  
-    def species = species_parts[1]     
-    def param_assembly_id = params.assembly
+
+    // Set channel for running GBIF
+    ch_gbif_params = Channel.empty()
+
+    ch_file_list
+    | map { meta, it -> 
+        def assembly = meta.id
+        def species = meta.species
+        [assembly, species]
+    }
+    | set { ch_gbif_params}
       
     // Fetch GBIF metdata using genus, species and id as input channels
-    FETCH_GBIF_METADATA(genus, species, param_assembly_id)
+    FETCH_GBIF_METADATA( ch_gbif_params )
     ch_versions = ch_versions.mix(FETCH_GBIF_METADATA.out.versions.first() )
 
+    // Combining the two output channels into one  channel
     FETCH_GBIF_METADATA.out.file_path
     | map { it -> tuple( it )}
     | set { ch_gbif }
@@ -96,18 +100,28 @@ workflow GENOME_METADATA {
     | map { it -> tuple( it[1] )}
     | set { ch_parsed }
 
-    // Combining the two channels into one input channel
     ch_parsed.mix(ch_gbif)
     | collect  
-    | map { it ->
-        meta = [:]
-        meta.id = params.assembly
-        meta.taxon_id = params.taxon_id
-        [ meta, it ]
+    | map { it ->  
+        [ it ]
     }
     | set { ch_parsed_files } 
 
-    COMBINE_METADATA(ch_parsed_files )
+    // Set meta required for file parsing
+    ch_file_list
+    | map { meta, it -> 
+        def fmeta = [:]
+        fmeta.id = meta.id
+        fmeta.taxon_id = meta.taxon_id
+        [fmeta]
+    }
+    | set {ch_meta_parsed}
+
+    // combine meta and parsed files
+    ch_meta_parsed = ch_meta.combine(ch_parsed_files)
+ 
+
+    COMBINE_METADATA( ch_meta_parsed )
     ch_versions = ch_versions.mix( COMBINE_METADATA.out.versions.first() )
 
     emit:
