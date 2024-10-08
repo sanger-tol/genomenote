@@ -28,7 +28,6 @@ This pipeline takes aligned HiC reads to create contact maps and chromosomal gri
   - `<sample>.cool`: initial contact matrix created
   - `<sample>.mcool`: final contact matrix for upload
 
-
 </details>
 
 ### Genome statistics
