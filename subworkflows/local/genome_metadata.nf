@@ -115,7 +115,7 @@ workflow GENOME_METADATA {
         fmeta.taxon_id = meta.taxon_id
         [fmeta]
     }
-    | set {ch_meta_parsed}
+    | set {ch_meta}
 
     // combine meta and parsed files
     ch_meta_parsed = ch_meta.combine(ch_parsed_files)
