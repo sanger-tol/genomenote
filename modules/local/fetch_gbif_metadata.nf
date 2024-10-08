@@ -11,9 +11,8 @@ process FETCH_GBIF_METADATA {
         'quay.io/biocontainers/mulled-v2-5cada6dc649cb78fe4ccd00b84f9dc4ee50dd363:506b314b4875ac1041355eb6ab70f2d7f87c528c-0' }"
 
     input:
-    tuple val(assembly), val(species) 
+    tuple val(assembly), val(species)
 
- 
 
     output:
     path "*.csv", emit: file_path
