@@ -231,6 +231,7 @@ NXF_OPTS='-Xms1g -Xmx4g'
 ```
 
 ## For internal Sanger use only
+
 If you wish to run the optional step that writes genome metatdata key value-pairs to a genome notes databases you will need to set the parameter "write_to_portal" to true and provide the base url for the REST API that writes to the database.
 
 ```bash
