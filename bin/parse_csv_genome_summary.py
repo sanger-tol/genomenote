@@ -78,10 +78,10 @@ def parse_csv(file_in, file_out):
                     busco = param.replace("[", ":").split(":")
                     param_list.append(["BUSCO", busco[1]])
 
-                if key == "GENOME_LENGTH":
+                elif key == "GENOME_LENGTH":
                     param = str("%.2f" % (int(param) * 1e-6))  # convert to Mbp, 2 decimal places
 
-                if key == "SCAFF_N50" or key == "CONTIG_N50":
+                elif key == "SCAFF_N50" or key == "CONTIG_N50":
                     param = str("%.1f" % (int(param) * 1e-6))  # convert to Mbp, 1 decimal place
 
                 # Convert ints and floats to str to allow for params with punctuation to be quoted

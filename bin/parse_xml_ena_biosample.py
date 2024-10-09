@@ -109,14 +109,14 @@ def parse_xml(file_in, file_out):
                         except ValueError:
                             param = None
                     ## Count child elements with specific tag
-                    if f[2][0] == "count":
+                    elif f[2][0] == "count":
                         if r is not None:
                             param = str(len(r.findall(f[2][1]))) if len(r.findall(f[2][1])) != 0 else None
                         else:
                             param = None
 
                     ## Fetch paired tag-value elements from a parent, where tag is specified and value is wanted
-                    if f[2][0] == "tag":
+                    elif f[2][0] == "tag":
                         r = r.findall(f[2][1])
                         for child in r:
                             if child.tag == f[2][2]:
@@ -134,21 +134,14 @@ def parse_xml(file_in, file_out):
                         param = param.title()
 
                     # pre-process collection location
-                    if f[0] == "COLLECTION_LOCATION":
-                        location_list = param.split(" | ")
+                    elif f[0] == "COLLECTION_LOCATION":
+                        location_list = param.split("|")
                         location_list.reverse()
-
-                        # remove United Kingdom from location
-                        if "UNITED KINGDOM" in location_list:
-                            location_list.remove("UNITED KINGDOM")
-                        elif "United Kingdom" in location_list:
-                            location_list.remove("United Kingdom")
-
-                        param = ", ".join(location_list).title()
+                        param = ", ".join(loc.title().strip() for loc in location_list)
 
                     # organism part should be in lower case
-                    if f[0] == "ORGANISM_PART":
-                        param = param.lower()
+                    elif f[0] == "ORGANISM_PART":
+                        param = param.lower().replace("_", " ")
 
                     # Convert ints and floats to str to allow for params with punctuation to be quoted
                     if isinstance(param, numbers.Number):

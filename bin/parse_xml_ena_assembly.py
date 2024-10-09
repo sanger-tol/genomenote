@@ -86,7 +86,7 @@ def parse_xml(file_in, file_out):
                             param = None
 
                     ## Fetch paired tag-value elements from a parent, where tag is specified and value is wanted
-                    if f[2][0] == "tag":
+                    elif f[2][0] == "tag":
                         r = r.findall(f[2][1])
                         for child in r:
                             if child.tag == f[2][2]:
@@ -96,18 +96,18 @@ def parse_xml(file_in, file_out):
                     if param is not None:
                         if f[0] == "SPECIMEN_ID":
                             param = param.split(".")[0]
-                        if f[0] == "ASSEMBLY_ID":
+                        elif f[0] == "ASSEMBLY_ID":
                             param = param.split(" ")[0]
-                        if f[0] == "CHROMOSOME_NUMBER":
+                        elif f[0] == "CHROMOSOME_NUMBER":
                             ra = root.findall("./ASSEMBLY/ASSEMBLY_ATTRIBUTES/ASSEMBLY_ATTRIBUTE")
                             for child in ra:
                                 if child.find("TAG").text == "count-non-chromosome-replicon":
                                     non_chrs = child.find("VALUE").text
                                     param = str(int(param) - int(non_chrs))
-                        if f[0] == "GENOME_LENGTH":
+                        elif f[0] == "GENOME_LENGTH":
                             param = str("%.2f" % (int(param) * 1e-6))  # convert to Mbp, 2 decimal place
 
-                        if f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
+                        elif f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
                             param = str("%.1f" % (int(param) * 1e-6))  # convert to Mbp, 1 decimal place
 
                 else:

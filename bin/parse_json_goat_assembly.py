@@ -87,10 +87,10 @@ def parse_json(file_in, file_out):
             if f[0] == "GENOME_LENGTH":
                 param = str("%.2f" % (int(param) * 1e-6))  # convert to Mbp, 2 decimal places
 
-            if f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
+            elif f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
                 param = str("%.1f" % (int(param) * 1e-6))  # convert to Mbp 1 decimal place
 
-            if f[0] == "PERC_ASSEM":
+            elif f[0] == "PERC_ASSEM":
                 param = str("%.2f" % param)
 
             # Convert ints and floats to str to allow for params with punctuation to be quoted
@@ -122,16 +122,16 @@ def find_element(data, fields, attribs, param_list, index=0):
                 if item["class"] == attribs["class"]:
                     return item["name"]
 
-        if "taxon_rank" in attribs.keys():
+        elif "taxon_rank" in attribs.keys():
             for item in data:
                 if item["taxon_rank"] == attribs["taxon_rank"]:
                     return item["scientific_name"]
 
-        if "index" in attribs.keys():
+        elif "index" in attribs.keys():
             index = attribs["index"]
             return data[attribs["index"]]
 
-        if "bioprojects" in attribs.keys():
+        elif "bioprojects" in attribs.keys():
             bioproject_key = None
 
             for param in param_list:

@@ -42,6 +42,8 @@ def build_param_list(param_file):
         reader = csv.reader(infile)
 
         mydict = {}
+        locs = ["COLLECTION_LOCATION", "HIC_COLLECTION_LOCATION", "RNA_COLLECTION_LOCATION"]
+
         for row in reader:
             key = row.pop(0)
             value = row[0]
@@ -50,14 +52,14 @@ def build_param_list(param_file):
                 json_chrs = json.loads(value)
                 value = json_chrs
 
-            if key == "ORGANISM_PART":
+            elif key == "ORGANISM_PART":
                 value = value.lower()
 
-            if key == "IDENTIFIER" or key == "IDENTIFIER_INSTITUTE":
+            elif key == "IDENTIFIER" or key == "IDENTIFIER_INSTITUTE":
                 value = value.replace("|", ",")
                 value = value.lower().title()
 
-            if key == "COLLECTORS" or key == "COLLECTOR_INSTITUTE" or key == "COLLECTION_LOCATION":
+            elif key == "COLLECTORS" or key == "COLLECTOR_INSTITUTE" or key in locs:
                 value = value.replace("|", ",")
                 value = value.lower().title()
                 value = value.replace("At", "at")
@@ -65,7 +67,7 @@ def build_param_list(param_file):
                 value = value.replace("The", "the")
 
             # Set URLS for BTK
-            if key == "ASSEMBLY_ACCESSION":
+            elif key == "ASSEMBLY_ACCESSION":
                 # Base BTK URL
                 btk_url = "https://blobtoolkit.genomehubs.org/view/GCA/dataset/GCA"
                 btk_url = btk_url.replace("GCA", value)
@@ -95,9 +97,8 @@ def build_param_list(param_file):
         mydict["AUTHORS"] = ", ".join(authors)
 
         if mydict["ASSEMBLY_ACCESSION"] and mydict["GENUS_SPECIES"]:
-            btk_busco_url = "https://blobtoolkit.genomehubs.org/view/SPECIES/dataset/GCA/busco"
+            btk_busco_url = "https://blobtoolkit.genomehubs.org/view/GCA/dataset/GCA/busco"
             btk_busco_url = btk_busco_url.replace("GCA", mydict["ASSEMBLY_ACCESSION"])
-            btk_busco_url = btk_busco_url.replace("SPECIES", mydict["GENUS_SPECIES"])
             mydict["BTK_BUSCO_URL"] = btk_busco_url
 
         return mydict

@@ -103,24 +103,17 @@ def parse_json(file_in, file_out):
                     if f[0] == "GAL":
                         param = param.title()
 
-                    if f[0] == "LIFESTAGE":
+                    elif f[0] == "LIFESTAGE":
                         param = param.lower()
 
                     # pre-process collection location
-                    if f[0] == "COLLECTION_LOCATION":
-                        location_list = param.split(" | ")
+                    elif f[0] == "COLLECTION_LOCATION":
+                        location_list = param.split("|")
                         location_list.reverse()
-
-                        # remove United Kingdom from location
-                        if "UNITED KINGDOM" in location_list:
-                            location_list.remove("UNITED KINGDOM")
-                        elif "United Kingdom" in location_list:
-                            location_list.remove("United Kingdom")
-
-                        param = ", ".join(location_list).title()
+                        param = ", ".join(loc.title().strip() for loc in location_list)
 
                     # organism part and preservation methods should be in lower case
-                    if f[0] == "ORGANISM_PART" or f[0] == "PRESERVATION_METHOD":
+                    elif f[0] == "ORGANISM_PART" or f[0] == "PRESERVATION_METHOD":
                         param = param.lower()
 
                     if isinstance(param, numbers.Number):

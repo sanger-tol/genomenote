@@ -82,6 +82,7 @@ def main(args=None):
     params = {}
     param_sets = {}
     params_inconsistent = {}
+    locs = ["COLLECTION_LOCATION", "HIC_COLLECTION_LOCATION", "RNA_COLLECTION_LOCATION"]
 
     for file in files:
         # check if file exists skip if not
@@ -93,6 +94,14 @@ def main(args=None):
 
     for key in params.keys():
         value_set = {v for v in params[key]}
+
+        # Handle collection locations having county provided by some data sources but not others
+        # use longer of the two location strings
+        if (key in locs) and len(value_set) == 2:
+            (loc_a, loc_b) = sorted(value_set, key=len)
+            if loc_b.find(loc_a):
+                params[key] = [loc_b]
+
         if len(value_set) != 1:
             params_inconsistent[key] = []
 
@@ -102,7 +111,11 @@ def main(args=None):
 
     # Strip inconsistent data from parameter list
     for i in params_inconsistent.keys():
-        params.pop(i)
+        # Don't remove locations from consistent file if one is a substring of the other, longest string is returned
+        if (i in locs ) and len(params[i]) == 1:
+            continue
+        else:
+            params.pop(i)
 
     # Write out file where data is consistent across different sources
     if len(params) > 0:
