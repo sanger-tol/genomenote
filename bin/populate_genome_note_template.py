@@ -88,14 +88,21 @@ def build_param_list(param_file):
         authors = []
         seen = set()
 
-        for i_key in ("IDENTIFIER", "HIC_IDENTIFIER", "RNA_IDENTIFIER", "COLLECTORS", "HIC_COLLECTORS", "RNA_COLLECTORS"):
+        for i_key in (
+            "IDENTIFIER",
+            "HIC_IDENTIFIER",
+            "RNA_IDENTIFIER",
+            "COLLECTORS",
+            "HIC_COLLECTORS",
+            "RNA_COLLECTORS",
+        ):
             item = mydict.get(i_key)
             if item:
                 for i in item.split(","):
                     i = i.strip()
                     if i not in seen:
                         authors.append(i)
-                        seen.add(i)    
+                        seen.add(i)
 
         mydict["AUTHORS"] = ", ".join(authors).strip()
 
