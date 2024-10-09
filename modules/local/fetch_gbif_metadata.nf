@@ -5,8 +5,8 @@ process FETCH_GBIF_METADATA {
     conda "conda-forge::python=3.9.1"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/mulled-v2-5cada6dc649cb78fe4ccd00b84f9dc4ee50dd363:506b314b4875ac1041355eb6ab70f2d7f87c528c-0' :
-        'quay.io/biocontainers/mulled-v2-5cada6dc649cb78fe4ccd00b84f9dc4ee50dd363:506b314b4875ac1041355eb6ab70f2d7f87c528c-0' }"
+        'https://depot.galaxyproject.org/singularity/requests:2.26.0':
+        'quay.io/biocontainers/requests:2.26.0'}"
 
     input:
     tuple val(assembly), val(species)
