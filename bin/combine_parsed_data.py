@@ -112,7 +112,7 @@ def main(args=None):
     # Strip inconsistent data from parameter list
     for i in params_inconsistent.keys():
         # Don't remove locations from consistent file if one is a substring of the other, longest string is returned
-        if (i in locs ) and len(params[i]) == 1:
+        if (i in locs) and len(params[i]) == 1:
             continue
         else:
             params.pop(i)
