@@ -106,10 +106,7 @@ workflow GENOME_METADATA {
     // Set meta required for file parsing
     ch_file_list
     | map { meta, it -> 
-        def fmeta = [:]
-        fmeta.id = meta.id
-        fmeta.taxon_id = meta.taxon_id
-        [fmeta]
+       [id: meta.id, taxon_id: meta.taxon_id]
     }
     | set {ch_meta}
 
