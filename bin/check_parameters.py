@@ -46,6 +46,12 @@ def fetch_assembly_data(assembly, wgs_biosample, hic_biosample, rna_biosample, o
                 params.append(studies[0])
                 header.append("bioproject")
 
+            else:
+                raise AssertionError(f"Could not determine the Bioproject linked to this assembly {assembly}\n")
+        else:
+            raise AssertionError(f"Could not determine the Bioproject linked to this assembly {assembly}\n")
+
+        # Validate wgs_biosample
         wgs_url = f"https://www.ebi.ac.uk/ena/portal/api/search?query=sample_accession%3D%22{wgs_biosample}%22&result=sample&fields=sample_accession%2Ctax_id&limit=0&download=true&format=json"
         wgs_response = requests.get(wgs_url)
 
@@ -61,6 +67,10 @@ def fetch_assembly_data(assembly, wgs_biosample, hic_biosample, rna_biosample, o
                 params.append(wgs_biosample)
                 header.append("wgs_biosample")
 
+        else:
+            raise AssertionError(f"The WGS biosample id: {wgs_biosample} could not retrieved from ENA\n")
+
+        # Validate hic_biosample
         if hic_biosample and hic_biosample != "null":
             print(hic_biosample)
             hic_url = f"https://www.ebi.ac.uk/ena/portal/api/search?query=sample_accession%3D%22{hic_biosample}%22&result=sample&fields=sample_accession%2Ctax_id&limit=0&download=true&format=json"
@@ -77,10 +87,14 @@ def fetch_assembly_data(assembly, wgs_biosample, hic_biosample, rna_biosample, o
                 else:
                     header.append("hic_biosample")
                     params.append(hic_biosample)
+
+            else:
+                raise AssertionError(f"The Hi-C biosample id: {hic_biosample} could not retrieved from ENA\n")
         else:
             header.append("hic_biosample")
             params.append("null")
 
+        # Validate rna_biosample
         if rna_biosample and rna_biosample != "null":
             rna_url = f"https://www.ebi.ac.uk/ena/portal/api/search?query=sample_accession%3D%22{rna_biosample}%22&result=sample&fields=sample_accession%2Ctax_id&limit=0&download=true&format=json"
             rna_response = requests.get(rna_url)
@@ -96,6 +110,9 @@ def fetch_assembly_data(assembly, wgs_biosample, hic_biosample, rna_biosample, o
                 else:
                     header.append("rna_biosample")
                     params.append(rna_biosample)
+
+            else:
+                raise AssertionError(f"The RNASeq biosample id: {rna_biosample} could not retrieved from ENA\n")
 
         else:
             header.append("rna_biosample")
