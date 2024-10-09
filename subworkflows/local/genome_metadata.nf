@@ -20,22 +20,18 @@ workflow GENOME_METADATA {
     // Define channel for RUN_WGET
     ch_file_list
     | splitCsv(header: ['source', 'type', 'url', 'ext'], skip: 1)
-    | flatMap { metadata, row ->
+    | flatMap { meta, row ->
         // Create a list to hold the final entries
         def entries = []
 
-        // Common metadata
-        def new_meta = metadata.clone()
-        new_meta.source = row.source
-        new_meta.type = row.type
-        new_meta.ext = row.ext
+        def new_meta = meta + [source: row.source] + [type: row.type] + [ext: row.ext]
         
 
         // Define biosamples with their types
         def biosamples = [
-            ["WGS", metadata.biosample_wgs],
-            ["HIC", metadata.biosample_hic],
-            ["RNA", metadata.biosample_rna]
+            ["WGS", new_meta.biosample_wgs],
+            ["HIC", new_meta.biosample_hic],
+            ["RNA", new_meta.biosample_rna]
         ]
 
         // Process each biosample
@@ -43,19 +39,19 @@ workflow GENOME_METADATA {
             if ( biosampleID != null ) {
                 // Skip if biosampleID is null}
                 def url = row.url
-                    .replaceAll(/ASSEMBLY_ACCESSION/, metadata.id)
-                    .replaceAll(/TAXONOMY_ID/, metadata.taxon_id)
-                    .replaceAll(/BIOPROJECT_ACCESSION/, metadata.bioproject)
+                    .replaceAll(/ASSEMBLY_ACCESSION/, new_meta.id)
+                    .replaceAll(/TAXONOMY_ID/, new_meta.taxon_id)
+                    .replaceAll(/BIOPROJECT_ACCESSION/, new_meta.bioproject)
                     .replaceAll(/BIOSAMPLE_ACCESSION/, biosampleID)
 
                 if (row.type == 'Biosample') {
-                    // Add entry with biosample type in metadata for Biosample type
+                    // Add entry with biosample type in meta for Biosample type
                     entries << [
                         new_meta + [biosample_type: biosampleType],
                         url
                     ]
                 } else {
-                    // Add entry without biosample type in metadata for other types
+                    // Add entry without biosample type in meta for other types
                     entries << [
                         new_meta + [biosample_type: ''],
                         url
