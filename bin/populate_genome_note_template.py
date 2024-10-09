@@ -43,6 +43,10 @@ def build_param_list(param_file):
 
         mydict = {}
         locs = ["COLLECTION_LOCATION", "HIC_COLLECTION_LOCATION", "RNA_COLLECTION_LOCATION"]
+        collectors = ["COLLECTORS", "HIC_COLLECTORS", "RNA_COLLECTORS"]
+        inst_collectors = ["COLLECTOR_INSTITUTE", "HIC_COLLECTOR_INSTITUTE", "RNA_COLLECTOR_INSTITUTE"]
+        identifiers = ["IDENTIFIER", "HIC_IDENTIFIER", "RNA_IDENTIFIER"]
+        inst_identifier = ["IDENTIFIER_INSTITUTE", "HIC_IDENTIFIER_INSTITUTE", "RNA_IDENTIFIER_INSTITUTE"]
 
         for row in reader:
             key = row.pop(0)
@@ -55,11 +59,14 @@ def build_param_list(param_file):
             elif key == "ORGANISM_PART":
                 value = value.lower()
 
-            elif key == "IDENTIFIER" or key == "IDENTIFIER_INSTITUTE":
+            elif key in identifiers or key in inst_identifier:
                 value = value.replace("|", ",")
                 value = value.lower().title()
+                value = value.replace("At", "at")
+                value = value.replace("Of", "of")
+                value = value.replace("The", "the")
 
-            elif key == "COLLECTORS" or key == "COLLECTOR_INSTITUTE" or key in locs:
+            elif key in collectors or key in inst_collectors or key in locs:
                 value = value.replace("|", ",")
                 value = value.lower().title()
                 value = value.replace("At", "at")
@@ -80,25 +87,22 @@ def build_param_list(param_file):
 
         authors = []
         seen = set()
-        if mydict["IDENTIFIER"]:
-            for i in mydict["IDENTIFIER"].split(", "):
-                i = i.rstrip()
-                if i not in seen:
-                    authors.append(i)
-                    seen.add(i)
 
-        if mydict["COLLECTORS"]:
-            for c in mydict["COLLECTORS"].split(", "):
-                c = c.rstrip()
-                if c not in seen:
-                    authors.append(c)
-                    seen.add(c)
+        for i_key in ("IDENTIFIER", "HIC_IDENTIFIER", "RNA_IDENTIFIER", "COLLECTORS", "HIC_COLLECTORS", "RNA_COLLECTORS"):
+            item = mydict.get(i_key)
+            if item:
+                for i in item.split(","):
+                    i = i.strip()
+                    if i not in seen:
+                        authors.append(i)
+                        seen.add(i)    
 
-        mydict["AUTHORS"] = ", ".join(authors)
+        mydict["AUTHORS"] = ", ".join(authors).strip()
 
-        if mydict["ASSEMBLY_ACCESSION"] and mydict["GENUS_SPECIES"]:
+        assembly_acc = mydict.get("ASSEMBLY_ACCESSION")
+        if assembly_acc:
             btk_busco_url = "https://blobtoolkit.genomehubs.org/view/GCA/dataset/GCA/busco"
-            btk_busco_url = btk_busco_url.replace("GCA", mydict["ASSEMBLY_ACCESSION"])
+            btk_busco_url = btk_busco_url.replace("GCA", assembly_acc)
             mydict["BTK_BUSCO_URL"] = btk_busco_url
 
         return mydict
