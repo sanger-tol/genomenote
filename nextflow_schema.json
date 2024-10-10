@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "binsize", "kmer_size", "outdir"],
+            "required": ["input", "assembly", "biosample_wgs", "binsize", "kmer_size", "outdir"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -31,6 +31,22 @@
                     "type": "integer",
                     "default": 31,
                     "description": "Size for Fastk to create the k-mer library"
+                },
+                "assembly": {
+                    "type": "string",
+                    "description": "The Genbank assembly accession for the assembly, for example: GCA_922984935.2."
+                },
+                "biosample_wgs": {
+                    "type": "string",
+                    "description": "The biosample accesion(s) linked to the WGS samples in the experiment, for example: SAMEA7520803."
+                },
+                "biosample_rna": {
+                    "type": "string",
+                    "description": "The biosample accesion(s) linked to the RNA samples in the experiment, for example: SAMEA7521081."
+                },
+                "biosample_hic": {
+                    "type": "string",
+                    "description": "The biosample accesion(s) linked to the Hi-C samples in the experiment, for example: SAMEA7520846."
                 },
                 "outdir": {
                     "type": "string",
@@ -58,9 +74,72 @@
                     "description": "Path to a file that contains the sequence names in the order you want to represent them on the contact-map.",
                     "help_text": "If not specified, the pipeline will use the sequences in the same order they are listed by the NCI, which follows the karyotype.",
                     "fa_icon": "fas fa-file-lines"
+                },
+                "write_to_portal": {
+                    "type": "boolean",
+                    "description": "Flag to control if results are written to genome notes portal database .",
+                    "default": false,
+                    "fa_icon": "fas far fa-file-code",
+                    "hidden": true
+                },
+                "genome_notes_api": {
+                    "type": "string",
+                    "description": "URL for Genome Notes Portal API .",
+                    "fa_icon": "far fa-file-code"
+                },
+                "note_template": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "The path to a genome note template file.",
+                    "help_text": "Set this parameter if you have a genome note template file that you wish to populate. Templates may be docx or xml files",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "upload_higlass_data": {
+                    "type": "boolean",
+                    "description": "flag to control if Higlass server should be updated to add new files",
+                    "default": false,
+                    "fa_icon": "fas far fa-file-code",
+                    "hidden": true
+                },
+                "higlass_url": {
+                    "type": "string",
+                    "description": "URL for the Higlass server",
+                    "hidden": true
+                },
+                "higlass_upload_directory": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "The ingress directory for the kubernetes cluster running the HiGlass server.",
+                    "fa_icon": "fas fa-folder-open",
+                    "hidden": true
+                },
+                "higlass_data_project_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Subdirectory struture to use for organising HiGlass data, suggested format is <project_name>/<taxon_group> e.g. '/asg/algae'",
+                    "fa_icon": "fas fa-folder-open",
+                    "hidden": true
+                },
+                "higlass_kubeconfig": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "The path to the kubeconfig  for the kubernetes cluster running the HiGlass server.",
+                    "fa_icon": "fas fa-folder-open",
+                    "hidden": true
+                },
+                "higlass_deployment_name": {
+                    "type": "string",
+                    "description": "Name of the kubernetes deployment for the HiGlass server.",
+                    "hidden": true
+                },
+                "higlass_namespace": {
+                    "type": "string",
+                    "description": "The name for the namespace used in the Kubernetes cluster running the HiGlass server.",
+                    "hidden": true
                 }
             }
         },
+
         "databases": {
             "title": "Databases",
             "type": "object",

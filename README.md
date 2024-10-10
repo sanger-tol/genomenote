@@ -17,14 +17,15 @@
 
 <!--![sanger-tol/genomenote workflow](https://raw.githubusercontent.com/sanger-tol/genomenote/main/docs/images/sanger-tol-genomenote_workflow.png)-->
 
-1. Summary statistics ([`NCBI datasets summary genome accession`](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/reference-docs/command-line/datasets/summary/genome/datasets_summary_genome_accession/))
-2. Convert alignment to BED ([`samtools view`](https://www.htslib.org/doc/samtools-view.html), [`bedtools bamtobed`](https://bedtools.readthedocs.io/en/latest/content/tools/bamtobed.html))
-3. Filter BED ([`GNU sort`](https://www.gnu.org/software/coreutils/manual/html_node/sort-invocation.html), [`filter bed`](https://raw.githubusercontent.com/sanger-tol/genomenote/main/bin/filter_bed.sh))
-4. Contact maps ([`Cooler cload`](https://cooler.readthedocs.io/en/latest/cli.html#cooler-cload-pairs), [`Cooler zoomify`](https://cooler.readthedocs.io/en/latest/cli.html#cooler-zoomify), [`Cooler dump`](https://cooler.readthedocs.io/en/latest/cli.html#cooler-dump))
-5. Genome completeness ([`NCBI API`](https://www.ncbi.nlm.nih.gov/datasets/docs/v1/reference-docs/rest-api/), [`BUSCO`](https://busco.ezlab.org))
-6. Consensus quality and k-mer completeness ([`FASTK`](https://github.com/thegenemyers/FASTK), [`MERQURY.FK`](https://github.com/thegenemyers/MERQURY.FK))
-7. Collated summary table ([`createtable`](bin/create_table.py))
-8. Present results and visualisations ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
+1. Fetches genome metadata from [ENA](https://www.ebi.ac.uk/ena/browser/api/#/ENA_Browser_Data_API), [NCBI](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/reference-docs/rest-api), and [GoaT](https://goat.genomehubs.org/api-docs/)
+2. Summary statistics ([`NCBI datasets summary genome accession`](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/reference-docs/command-line/datasets/summary/genome/datasets_summary_genome_accession/))
+3. Convert alignment to BED ([`samtools view`](https://www.htslib.org/doc/samtools-view.html), [`bedtools bamtobed`](https://bedtools.readthedocs.io/en/latest/content/tools/bamtobed.html))
+4. Filter BED ([`GNU sort`](https://www.gnu.org/software/coreutils/manual/html_node/sort-invocation.html), [`filter bed`](https://raw.githubusercontent.com/sanger-tol/genomenote/main/bin/filter_bed.sh))
+5. Contact maps ([`Cooler cload`](https://cooler.readthedocs.io/en/latest/cli.html#cooler-cload-pairs), [`Cooler zoomify`](https://cooler.readthedocs.io/en/latest/cli.html#cooler-zoomify), [`Cooler dump`](https://cooler.readthedocs.io/en/latest/cli.html#cooler-dump))
+6. Genome completeness ([`NCBI API`](https://www.ncbi.nlm.nih.gov/datasets/docs/v1/reference-docs/rest-api/), [`BUSCO`](https://busco.ezlab.org))
+7. Consensus quality and k-mer completeness ([`FASTK`](https://github.com/thegenemyers/FASTK), [`MERQURY.FK`](https://github.com/thegenemyers/MERQURY.FK))
+8. Collated summary table ([`createtable`](bin/create_table.py))
+9. Present results and visualisations ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
 
 ## Usage
 
@@ -52,6 +53,9 @@ nextflow run sanger-tol/genomenote \
    -profile <docker/singularity/.../institute> \
    --input samplesheet.csv \
    --fasta genome.fasta \
+   --assembly GCA_922984935.2 \
+   --bioproject PRJEB49353 \
+   --biosample SAMEA7524400 \
    --outdir <OUTDIR>
 ```
 
@@ -69,8 +73,9 @@ sanger-tol/genomenote was originally written by [Priyanka Surana](https://github
 We thank the following people for their assistance in the development of this pipeline:
 
 - [Matthieu Muffato](https://github.com/muffato)
+- [Beth Yates](https://github.com/BethYates)
 - [Shane McCarthy](https://github.com/mcshane) and [Yumi Sims](https://github.com/yumisims) for providing software and algorithm guidance.
-- [Cibin Sadasivan Baby](https://github.com/cibinsb) and [Beth Yates](https://github.com/BethYates) for providing reviews.
+- [Cibin Sadasivan Baby](https://github.com/cibinsb) for providing reviews.
 
 ## Contributions and Support
 
