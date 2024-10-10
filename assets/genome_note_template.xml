@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE article>
+<article>
+    <body>
+        <sec>
+            <title>Species taxonomy</title>
+            <p>{{ TAX_STRING }};
+                <italic>{{ GENUS }}</italic>;
+                <italic>{{ GENUS_SPECIES }}</italic> ($TAXONOMY_AUTHORITY) (NCBI:txid{{ NCBI_TAXID }}) {{ TEST_NOT_REPLACED }}.
+            </p>
+        </sec>
+        <sec>
+            <table>
+                <thead>
+                    <tr>
+                        <th align="center" valign="top">INSDC accession</th>
+                        <th align="center" valign="top">Chromosome</th>
+                        <th align="center" valign="top">Length (Mb)</th>
+                        <th align="center" valign="top">GC%</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for chromosome in CHR_TABLE %}
+                    <tr>
+                        <td align="left" valign="top">{{ chromosome.get('Accession') }}</td>
+                        <td align="center" valign="top">{{ chromosome.get('Chromosome') }}</td>
+                        <td align="center" valign="top">{{ chromosome.get('Length') }}</td>
+                        <td align="center" valign="top">{{ chromosome.get('GC') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </sec>
+    </body>
+</article>
