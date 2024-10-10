@@ -75,7 +75,7 @@ def parse_xml(file_in, file_out):
                             param = None
 
                     ## Fetch paired tag-value elements from a parent, where tag is specified and value is wanted
-                    if f[2][0] == "tag":
+                    elif f[2][0] == "tag":
                         r = r.findall(f[2][1])
                         for child in r:
                             if child.tag == f[2][2]:

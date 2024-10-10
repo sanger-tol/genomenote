@@ -1,35 +1,32 @@
-process FETCH_GBIF_METADATA {
+process PARAMS_CHECK {
     tag "$assembly"
     label 'process_single'
 
-    conda "conda-forge::python=3.9.1"
-
+    conda "conda-forge::python=3.10.2"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/requests:2.26.0':
         'quay.io/biocontainers/requests:2.26.0'}"
 
     input:
-    tuple val(assembly), val(species)
-
+    tuple val(assembly), val(wgs_biosample), val(hic_biosample), val(rna_biosample)
 
     output:
-    path "*.csv", emit: file_path
+    path '*.csv', emit: csv
     path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
-    def script_name = "fetch_gbif_metadata.py"
-    def output_file = "${assembly}_gbif_taxonomy.csv"
-
     """
-    $script_name --species $species --output $output_file
+    check_parameters.py \\
+        --assembly $assembly \\
+        --wgs_biosample $wgs_biosample \\
+        --hic_biosample $hic_biosample \\
+        --rna_biosample $rna_biosample \\
+        --output ${assembly}_valid.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(python --version | sed 's/Python //g')
-        requests: \$(python -c 'import requests; print(requests.__version__)')
     END_VERSIONS
     """
 }
+

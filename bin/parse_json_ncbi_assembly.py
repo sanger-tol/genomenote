@@ -14,6 +14,7 @@ fetch = [
     ("BIOPROJECT_ACCESSION", ("assembly_info", "bioproject_accession")),
     ("BIOPROJECT_TITLE", ("assembly_info", "bioproject_lineage"), {"bioprojects": "test"}),
     ("ASSEMBLY_ACCESSION", ("accession",)),
+    ("ALT_HAP_ACCESSION", ("assembly_info", "linked_assemblies"), {"linked_assembly": None}),
     ("GAL", ("assembly_info", "biosample", "attributes"), {"name": "GAL"}),
     ("COLLECTORS", ("assembly_info", "biosample", "attributes"), {"name": "collected_by"}),
     ("COLLECTOR_INSTITUTE", ("assembly_info", "biosample", "attributes"), {"name": "collecting institution"}),
@@ -33,9 +34,10 @@ fetch = [
     ("LATITUDE", ("assembly_info", "biosample", "attributes"), {"name": "geographic location (latitude)"}),
     ("LONGITUDE", ("assembly_info", "biosample", "attributes"), {"name": "geographic location (longitude)"}),
     ("HABITAT", ("assembly_info", "biosample", "attributes"), {"name": "habitat"}),
-    ("BIOSAMPLE_ACCESSION", ("assembly_info", "biosample", "accession")),
-    ("TISSUE_TYPE", ("assembly_info", "biosample", "attributes"), {"name": "tissue"}),
+    ("PROJECT_BIOSAMPLE_ACCESSION", ("assembly_info", "biosample", "accession")),
+    ("PROJECT_ORGANISM_PART", ("assembly_info", "biosample", "attributes"), {"name": "tissue"}),
     ("GENOME_LENGTH", ("assembly_stats", "total_sequence_length")),
+    ("LR_COV", ("assembly_stats", "genome_coverage")),
     ("CHROMOSOME_NUMBER", ("assembly_stats", "total_number_of_chromosomes")),
     ("SCAFF_NUMBER", ("assembly_stats", "number_of_scaffolds")),
     ("CONTIG_NUMBER", ("assembly_stats", "number_of_contigs")),
@@ -89,8 +91,20 @@ def parse_json(file_in, file_out):
         param = find_element(data["reports"][0], f[1], attribs, param_list, index=0)
 
         if param is not None:
-            if f[0] == "GENOME_LENGTH" or f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
-                param = str(round((int(param) * 1e-6), 1))  # convert to Mbp
+            # Preprocess some values to standardise their format
+            if f[0] == "GAL":
+                param = param.title()
+
+            elif f[0] == "COLLECTION_LOCATION":
+                location_list = param.split("|")
+                location_list.reverse()
+                param = ", ".join(loc.title().strip() for loc in location_list)
+
+            elif f[0] == "GENOME_LENGTH":
+                param = str("%.2f" % (int(param) * 1e-6))  # convert to Mbp 2 decimal places
+
+            elif f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
+                param = str("%.1f" % (int(param) * 1e-6))  # convert to Mbp 1 decimal place
 
             # Convert ints and floats to str to allow for params with punctuation to be quoted
             if isinstance(param, numbers.Number):
@@ -121,7 +135,7 @@ def find_element(data, fields, attribs, param_list, index=0):
                 if item["name"] == attribs["name"]:
                     return item["value"]
 
-        if "bioprojects" in attribs.keys():
+        elif "bioprojects" in attribs.keys():
             bioproject_key = None
 
             for param in param_list:
@@ -134,6 +148,13 @@ def find_element(data, fields, attribs, param_list, index=0):
                     if project["parent_accessions"] != None and len(project["parent_accessions"]) == 1:
                         if project["title"] != None:
                             return project["title"]
+
+        elif "linked_assembly" in attribs.keys():
+            linked_assembly = []
+            for assembly in data:
+                linked_assembly.append(assembly["linked_assembly"])
+
+            return ", ".join(linked_assembly)
 
         else:
             # fields either not found or we don't yet handle parsing it

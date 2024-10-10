@@ -18,8 +18,6 @@ fetch = [
     ),
     ("COMMON_NAME", ("record", "taxon_names"), {"class": "genbank common name"}),
     ("GENUS_SPECIES", ("record", "taxon_names"), {"class": "scientific name"}),
-    ("TAXONOMY_AUTHORITY", ("record", "taxon_names"), {"class": "authority"}),
-    ("KINGDOM", ("record", "lineage"), {"taxon_rank": "kingdom"}),
     ("PHYLUM", ("record", "lineage"), {"taxon_rank": "phylum"}),
     ("CLASS", ("record", "lineage"), {"taxon_rank": "class"}),
     ("ORDER", ("record", "lineage"), {"taxon_rank": "order"}),
@@ -27,7 +25,7 @@ fetch = [
     ("TRIBE", ("record", "lineage"), {"taxon_rank": "tribe"}),
     ("GENUS", ("record", "lineage"), {"taxon_rank": "genus"}),
     ("NCBI_TAXID", ("record", "taxon_id")),
-    ("BIOSAMPLE_ACCESSION", ("record", "attributes", "biosample", "value")),
+    ("PROJECT_BIOSAMPLE_ACCESSION", ("record", "attributes", "biosample", "value")),
     ("SAMPLE_SEX", ("record", "attributes", "sample_sex", "value")),
     ("GENOME_LENGTH", ("record", "attributes", "assembly_span", "value")),
     ("SCAFF_NUMBER", ("record", "attributes", "scaffold_count", "value")),
@@ -35,6 +33,7 @@ fetch = [
     ("CHROMOSOME_NUMBER", ("record", "attributes", "chromosome_count", "value")),
     ("CONTIG_NUMBER", ("record", "attributes", "contig_count", "value")),
     ("CONTIG_N50", ("record", "attributes", "contig_n50", "value")),
+    ("PERC_ASSEM", ("record", "attributes", "assigned_percent", "value")),
 ]
 
 
@@ -85,8 +84,14 @@ def parse_json(file_in, file_out):
         param = find_element(data["records"][0], f[1], attribs, param_list, index=0)
 
         if param is not None:
-            if f[0] == "GENOME_LENGTH" or f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
-                param = str(round((int(param) * 1e-6), 1))  # convert to Mbp
+            if f[0] == "GENOME_LENGTH":
+                param = str("%.2f" % (int(param) * 1e-6))  # convert to Mbp, 2 decimal places
+
+            elif f[0] == "SCAFF_N50" or f[0] == "CONTIG_N50":
+                param = str("%.1f" % (int(param) * 1e-6))  # convert to Mbp 1 decimal place
+
+            elif f[0] == "PERC_ASSEM":
+                param = str("%.2f" % param)
 
             # Convert ints and floats to str to allow for params with punctuation to be quoted
             if isinstance(param, numbers.Number):
@@ -117,16 +122,16 @@ def find_element(data, fields, attribs, param_list, index=0):
                 if item["class"] == attribs["class"]:
                     return item["name"]
 
-        if "taxon_rank" in attribs.keys():
+        elif "taxon_rank" in attribs.keys():
             for item in data:
                 if item["taxon_rank"] == attribs["taxon_rank"]:
                     return item["scientific_name"]
 
-        if "index" in attribs.keys():
+        elif "index" in attribs.keys():
             index = attribs["index"]
             return data[attribs["index"]]
 
-        if "bioprojects" in attribs.keys():
+        elif "bioprojects" in attribs.keys():
             bioproject_key = None
 
             for param in param_list:

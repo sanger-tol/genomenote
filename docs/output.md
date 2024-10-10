@@ -27,7 +27,6 @@ This pipeline takes aligned HiC reads to create contact maps and chromosomal gri
   - `<sample>.bedpe`: chromosomal grid created from the `.cool` file
   - `<sample>.cool`: initial contact matrix created
   - `<sample>.mcool`: final contact matrix for upload
-  - `<assembly>_higlass_link.csv`: file with url for higlass map
 
 </details>
 
@@ -40,9 +39,9 @@ This pipeline collates (1) assembly information, statistics and chromosome detai
 
 - `genome_note/`
   - `<gca_accession>.csv`: collate genome statistics file
-  - `<gca_accession>.docx`: partially completed genome note docx template file
+  - `<gca_accession>.{docx|xml}`: partially completed genome note template file
   - `<gca_accession>_genome_note_consistent.csv`: a file of genome metadata parameters pulled from various public data repositories where all source agree on the paramter value.
-  - `<gca_accession>_genome_note_inconsistent.csv`: a file of genome metadata parameters, and their sources pulled from various public data repositories where the paramter has differnt values between data sources.
+  - `<gca_accession>_genome_note_inconsistent.csv`: a file of genome metadata parameters, and their sources pulled from various public data repositories where the paramter value differs between data sources.
 
 </details>
 

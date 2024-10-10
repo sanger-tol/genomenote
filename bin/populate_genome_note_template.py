@@ -42,6 +42,12 @@ def build_param_list(param_file):
         reader = csv.reader(infile)
 
         mydict = {}
+        locs = ["COLLECTION_LOCATION", "HIC_COLLECTION_LOCATION", "RNA_COLLECTION_LOCATION"]
+        collectors = ["COLLECTORS", "HIC_COLLECTORS", "RNA_COLLECTORS"]
+        inst_collectors = ["COLLECTOR_INSTITUTE", "HIC_COLLECTOR_INSTITUTE", "RNA_COLLECTOR_INSTITUTE"]
+        identifiers = ["IDENTIFIER", "HIC_IDENTIFIER", "RNA_IDENTIFIER"]
+        inst_identifier = ["IDENTIFIER_INSTITUTE", "HIC_IDENTIFIER_INSTITUTE", "RNA_IDENTIFIER_INSTITUTE"]
+
         for row in reader:
             key = row.pop(0)
             value = row[0]
@@ -50,39 +56,61 @@ def build_param_list(param_file):
                 json_chrs = json.loads(value)
                 value = json_chrs
 
-            if key == "TISSUE_TYPE":
+            elif key == "ORGANISM_PART":
                 value = value.lower()
 
-            if key == "IDENTIFIER" or key == "IDENTIFIER_INSTITUTE":
-                value = value.replace("|", ",")
-                value = value.lower().title()
-
-            if key == "COLLECTORS" or key == "COLLECTOR_INSTITUTE" or key == "COLLECTION_LOCATION":
+            elif key in identifiers or key in inst_identifier:
                 value = value.replace("|", ",")
                 value = value.lower().title()
                 value = value.replace("At", "at")
                 value = value.replace("Of", "of")
                 value = value.replace("The", "the")
 
+            elif key in collectors or key in inst_collectors or key in locs:
+                value = value.replace("|", ",")
+                value = value.lower().title()
+                value = value.replace("At", "at")
+                value = value.replace("Of", "of")
+                value = value.replace("The", "the")
+
+            # Set URLS for BTK
+            elif key == "ASSEMBLY_ACCESSION":
+                # Base BTK URL
+                btk_url = "https://blobtoolkit.genomehubs.org/view/GCA/dataset/GCA"
+                btk_url = btk_url.replace("GCA", value)
+
+                mydict["BTK_SNAIL_URL"] = btk_url + "/snail"
+                mydict["BTK_BLOB_URL"] = btk_url + "/blob"
+                mydict["BTK_CUMULATIVE_URL"] = btk_url + "/cumulative"
+
             mydict[key] = value
 
         authors = []
         seen = set()
-        if mydict["IDENTIFIER"]:
-            for i in mydict["IDENTIFIER"].split(", "):
-                i = i.rstrip()
-                if i not in seen:
-                    authors.append(i)
-                    seen.add(i)
 
-        if mydict["COLLECTORS"]:
-            for c in mydict["COLLECTORS"].split(", "):
-                c = c.rstrip()
-                if c not in seen:
-                    authors.append(c)
-                    seen.add(c)
+        for i_key in (
+            "IDENTIFIER",
+            "HIC_IDENTIFIER",
+            "RNA_IDENTIFIER",
+            "COLLECTORS",
+            "HIC_COLLECTORS",
+            "RNA_COLLECTORS",
+        ):
+            item = mydict.get(i_key)
+            if item:
+                for i in item.split(","):
+                    i = i.strip()
+                    if i not in seen:
+                        authors.append(i)
+                        seen.add(i)
 
-        mydict["AUTHORS"] = ", ".join(authors)
+        mydict["AUTHORS"] = ", ".join(authors).strip()
+
+        assembly_acc = mydict.get("ASSEMBLY_ACCESSION")
+        if assembly_acc:
+            btk_busco_url = "https://blobtoolkit.genomehubs.org/view/GCA/dataset/GCA/busco"
+            btk_busco_url = btk_busco_url.replace("GCA", assembly_acc)
+            mydict["BTK_BUSCO_URL"] = btk_busco_url
 
         return mydict
 

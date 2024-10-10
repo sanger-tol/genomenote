@@ -11,7 +11,6 @@ def parse_args(args=None):
     Epilog = "Example usage: python fetch_gbif_metadata.py --genus --species --output"
 
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
-    parser.add_argument("--genus", required=True, help="The genus of the species")
     parser.add_argument("--species", required=True, help="The species name")
     parser.add_argument("--output", required=True, help="Output file path")
     return parser.parse_args()
@@ -39,8 +38,6 @@ def fetch_gbif_data(genus, species, output_file):
 
                 # Metadata fields to extract
                 metadata_fields = {
-                    "NCBI_TAXID": "taxonID",
-                    "KINGDOM": "kingdom",
                     "PHYLUM": "phylum",
                     "CLASS": "class",
                     "ORDER": "order",
@@ -61,13 +58,6 @@ def fetch_gbif_data(genus, species, output_file):
                         # Special handling for TAXONOMY_AUTHORITY to clean up the value
                         if key == "TAXONOMY_AUTHORITY":
                             value = value.strip()
-                            # Clean up leading and trailing parentheses
-                            if value.startswith("(") and value.endswith(")"):
-                                value = value[1:-1].strip()  # Remove both parentheses
-                            elif value.startswith("("):
-                                value = value[1:].strip()  # Remove leading parentheses
-                            elif value.endswith(")"):
-                                value = value[:-1].strip()  # Remove trailing parentheses
                             # Wrap the authorship in quotes
                             value = f'"{value}"'  # Enclose the value in quotes
 
@@ -91,7 +81,8 @@ def fetch_gbif_data(genus, species, output_file):
 
 def main(args=None):
     args = parse_args(args)
-    fetch_gbif_data(args.genus, args.species, args.output)
+    (genus, species) = args.species.split("_")
+    fetch_gbif_data(genus, species, args.output)
 
 
 if __name__ == "__main__":

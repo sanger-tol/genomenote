@@ -6,7 +6,6 @@ import argparse
 import xml.etree.ElementTree as ET
 
 fetch = {
-    "kingdom": ["KINGDOM"],
     "phylum": ["PHYLUM"],
     "class": ["CLASS"],
     "order": ["ORDER"],

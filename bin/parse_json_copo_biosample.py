@@ -99,6 +99,23 @@ def parse_json(file_in, file_out):
             for f in fetch:
                 param = find_element(data, f[1], index=0)
                 if param is not None:
+                    # Preprocess some values to standardise their format
+                    if f[0] == "GAL":
+                        param = param.title()
+
+                    elif f[0] == "LIFESTAGE":
+                        param = param.lower()
+
+                    # pre-process collection location
+                    elif f[0] == "COLLECTION_LOCATION":
+                        location_list = param.split("|")
+                        location_list.reverse()
+                        param = ", ".join(loc.title().strip() for loc in location_list)
+
+                    # organism part and preservation methods should be in lower case
+                    elif f[0] == "ORGANISM_PART" or f[0] == "PRESERVATION_METHOD":
+                        param = param.lower()
+
                     if isinstance(param, numbers.Number):
                         param = str(param)
                     if any(p in string.punctuation for p in param):

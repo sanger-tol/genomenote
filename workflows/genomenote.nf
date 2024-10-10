@@ -14,8 +14,8 @@ def checkPathParamList = [ params.input, params.multiqc_config, params.lineage_d
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
-if (params.assembly && params.taxon_id && params.bioproject && params.biosample_wgs) { metadata_inputs = [ params.assembly, params.taxon_id, params.bioproject, params.biosample_wgs ] }
-else { exit 1, 'Metadata input not specified. Please include an assembly accession, a taxon id, a bioproject accession and a biosample accession' }
+if (params.assembly && params.biosample_wgs) { metadata_inputs = [ params.assembly, params.biosample_wgs ] }
+else { exit 1, 'Metadata input not specified. Please include an assembly accession and a biosample accession for the WGS data' }
 if (params.input)     { ch_input = Channel.fromPath(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 if (params.fasta)     { ch_fasta = Channel.fromPath(params.fasta) } else { exit 1, 'Genome fasta not specified!' }
 if (params.binsize)   { ch_bin   = Channel.of(params.binsize)     } else { exit 1, 'Bin size for cooler/cload not specified!' }
@@ -27,7 +27,8 @@ if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.linea
 if (params.lineage_db) { ch_lineage_db = Channel.fromPath(params.lineage_db) } else { ch_lineage_db = Channel.empty() }
 if (params.note_template) { ch_note_template = Channel.fromPath(params.note_template) } else { ch_note_template = Channel.empty() } 
 if (params.cool_order) { ch_cool_order = Channel.fromPath(params.cool_order) } else { ch_cool_order = Channel.empty() }
-
+if (params.biosample_hic) metadata_inputs.add(params.biosample_hic) else metadata_inputs.add(null)
+if (params.biosample_rna) metadata_inputs.add(params.biosample_rna) else metadata_inputs.add(null)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,7 +42,6 @@ ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config
 ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
 ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
 ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -87,14 +87,9 @@ workflow GENOMENOTE {
     ch_versions = Channel.empty()
 
     //
-    // SUBWORKFLOW: Read in template of data files to fetch, parse these files and output a list of genome metadata params
-    GENOME_METADATA ( ch_file_list )
-    ch_versions = ch_versions.mix(GENOME_METADATA.out.versions)
-
-    //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
-    INPUT_CHECK ( ch_input ).data
+    INPUT_CHECK ( ch_input, ch_metdata_input ).data
     | branch { meta, file ->
         hic : meta.datatype == 'hic'
             return [ meta, file, [] ]
@@ -106,10 +101,21 @@ workflow GENOMENOTE {
 
 
     //
-    // MODULE: Uncompress fasta file if needed
+    // SUBWORKFLOW: Read in template of data files to fetch, parse these files and output a list of genome metadata params
     //
-    ch_fasta
-    | map { file -> [ [ 'id': file.baseName ], file ] }
+
+    INPUT_CHECK.out.param.combine( ch_file_list )
+    | set { ch_metadata }
+
+
+    GENOME_METADATA ( ch_metadata )
+    ch_versions = ch_versions.mix(GENOME_METADATA.out.versions)
+
+    //
+    // MODULE: Uncompress fasta file if needed and set meta based on input params
+    //
+
+    INPUT_CHECK.out.param.combine( ch_fasta )
     | set { ch_genome }
 
     if ( params.fasta.endsWith('.gz') ) {
@@ -138,18 +144,17 @@ workflow GENOMENOTE {
     ch_versions = ch_versions.mix ( GENOME_STATISTICS.out.versions )
 
     //
-    // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
-    //
-
-    COMBINE_NOTE_DATA (GENOME_METADATA.out.consistent, GENOME_METADATA.out.inconsistent, GENOME_STATISTICS.out.summary, ch_note_template)
-    ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
-
-
-    //
     // SUBWORKFLOW: Create contact map matrices from HiC alignment files
     //
     CONTACT_MAPS ( ch_fasta, ch_inputs.hic, GENOME_STATISTICS.out.summary_seq, ch_bin, ch_cool_order )
     ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
+
+    //
+    // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
+    //
+
+    COMBINE_NOTE_DATA (GENOME_METADATA.out.consistent, GENOME_METADATA.out.inconsistent, GENOME_STATISTICS.out.summary, CONTACT_MAPS.out.link, ch_note_template)
+    ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
 
 
     //

@@ -37,7 +37,7 @@ fetch = [
     ("LONGITUDE", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='geographic location (longitude)']//", "VALUE")),
     ("HABITAT", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='habitat']//", "VALUE")),
     ("BIOSAMPLE_ACCESSION", ["SAMPLE"], ("attrib", "accession")),
-    ("TISSUE_TYPE", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='organism part']//", "VALUE")),
+    ("ORGANISM_PART", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='organism part']//", "VALUE")),
     ("TOLID", ["SAMPLE", "SAMPLE_ATTRIBUTES"], ("tag", ".//*[TAG='tolid']//", "VALUE")),
 ]
 
@@ -109,14 +109,14 @@ def parse_xml(file_in, file_out):
                         except ValueError:
                             param = None
                     ## Count child elements with specific tag
-                    if f[2][0] == "count":
+                    elif f[2][0] == "count":
                         if r is not None:
                             param = str(len(r.findall(f[2][1]))) if len(r.findall(f[2][1])) != 0 else None
                         else:
                             param = None
 
                     ## Fetch paired tag-value elements from a parent, where tag is specified and value is wanted
-                    if f[2][0] == "tag":
+                    elif f[2][0] == "tag":
                         r = r.findall(f[2][1])
                         for child in r:
                             if child.tag == f[2][2]:
@@ -129,6 +129,20 @@ def parse_xml(file_in, file_out):
                         param = None
 
                 if param is not None:
+                    # Preprocess some values to standardise their format
+                    if f[0] == "GAL":
+                        param = param.title()
+
+                    # pre-process collection location
+                    elif f[0] == "COLLECTION_LOCATION":
+                        location_list = param.split("|")
+                        location_list.reverse()
+                        param = ", ".join(loc.title().strip() for loc in location_list)
+
+                    # organism part should be in lower case
+                    elif f[0] == "ORGANISM_PART":
+                        param = param.lower().replace("_", " ")
+
                     # Convert ints and floats to str to allow for params with punctuation to be quoted
                     if isinstance(param, numbers.Number):
                         param = str(param)

@@ -9,9 +9,7 @@ fetch = [
     ("COMMON_NAME", ["Taxon", "OtherNames", "GenbankCommonName"]),
     ("GENUS_SPECIES", ["Taxon", "Scientific_Name"]),
     ("NCBI_TAXID", ["Taxon", "TaxId"]),
-    ("TAXONOMY_AUTHORITY", ["Taxon", "OtherNames"], ("Name", "ClassCDE", "authority", "DispName")),
     ("TAX_STRING", ["Taxon", "Lineage"]),
-    ("KINGDOM", ["Taxon", "LineageEx"], ("Taxon", "Rank", "kingdom", "ScientificName")),
     ("PHYLUM", ["Taxon", "LineageEx"], ("Taxon", "Rank", "phylum", "ScientificName")),
     ("CLASS", ["Taxon", "LineageEx"], ("Taxon", "Rank", "class", "ScientificName")),
     ("ORDER", ["Taxon", "LineageEx"], ("Taxon", "Rank", "order", "ScientificName")),
@@ -89,23 +87,6 @@ def parse_xml(file_in, file_out):
                                     param = None
 
                         if rank_found == 0:
-                            param = None
-
-                    ## Fetch authority(ies)
-                    if f[2][0] == "Name":
-                        authority_found = 0
-                        r = r.findall(f[2][0])
-                        for child in r:
-                            c = child.find(f[2][1])
-                            if c.text == f[2][2]:
-                                authority_found = 1
-                                name = child.find(f[2][3])
-                                if name is not None:
-                                    param = '"' + name.text + '"'
-                                else:
-                                    param = None
-
-                        if authority_found == 0:
                             param = None
 
                 else:
