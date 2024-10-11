@@ -8,8 +8,8 @@ message: >-
     metadata from this file.
 type: software
 authors:
-    - given-names: Sandra
-      family-names: Babiyre
+    - given-names: Sandra Ruth
+      family-names: Babirye
       affiliation: Wellcome Sanger Institute
       orcid: "https://orcid.org/0009-0004-7773-7008"
     - given-names: Tyler
