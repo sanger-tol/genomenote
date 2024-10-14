@@ -26,7 +26,7 @@ jobs:
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
-          compute_env: ${{ secrets.TOWER_COMPUTE_ENV }}
+          compute_env: ${{ secrets.TOWER_COMPUTE_ENV_4G }}
           revision: ${{ env.REVISION }}
           workdir: ${{ secrets.TOWER_WORKDIR_PARENT }}/work/${{ github.repository }}/work-${{ env.REVISION }}
           parameters: |
