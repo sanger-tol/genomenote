@@ -1,11 +1,13 @@
 // include modules from nf-core
 
-include { AGAT_SPSTATISTICS                  } from '../../modules/nf-core/agat/spstatistics/main'
-include { AGAT_SQSTATBASIC                   } from '../../modules/nf-core/agat/sqstatbasic/main'
-include { GUNZIP                             } from '../../modules/nf-core/gunzip/main'
-include { EXTRACT_ANNOTATION_STATISTICS_INFO } from '../../modules/local/extract_annotation_statistics_info.nf'
-include { BUSCO                              } from '../../modules/nf-core/busco/main'
-include { GFFREAD                            } from '../../modules/nf-core/gffread/main'
+include { AGAT_SPSTATISTICS                             } from '../../modules/nf-core/agat/spstatistics/main'
+include { AGAT_SQSTATBASIC                              } from '../../modules/nf-core/agat/sqstatbasic/main'
+include { GUNZIP                                        } from '../../modules/nf-core/gunzip/main'
+include { EXTRACT_ANNOTATION_STATISTICS_INFO            } from '../../modules/local/extract_annotation_statistics_info.nf'
+include { BUSCO as BUSCOPROTEINS                        } from '../../modules/nf-core/busco/main'
+include { NCBIDATASETS_SUMMARYGENOME as SUMMARYGENOME   } from '../../modules/local/ncbidatasets/summarygenome'
+include { GFFREAD                                       } from '../../modules/nf-core/gffread/main'
+include { NCBI_GET_ODB                                  } from '../../modules/local/ncbidatasets/get_odb'
 
 workflow ANNOTATION_STATS {
 
@@ -13,6 +15,7 @@ workflow ANNOTATION_STATS {
     gff                    //  channel: /path/to/annotation file
     genome                 // channel: [ meta, fasta ]
     lineage_db             // channel: /path/to/buscoDB
+    lineage_tax_ids        // channel: /path/to/lineage_tax_ids
     
     main:
     ch_versions = Channel.empty()
@@ -46,14 +49,26 @@ workflow ANNOTATION_STATS {
     GFFREAD(ch_gff_unzipped, ch_fasta)
     ch_versions = ch_versions.mix ( GFFREAD.out.versions.first() )
 
+    // Get ODB lineage value
+    NCBI_GET_ODB ( SUMMARYGENOME.out.summary, lineage_tax_ids )
+    ch_versions = ch_versions.mix ( NCBI_GET_ODB.out.versions.first() )
+   
+    // BUSCO
+    NCBI_GET_ODB.out.csv
+    | map { meta, csv -> csv }
+    | splitCsv()
+    | map { row -> row[1] }
+    | set { ch_lineage }
+
+
     // Running Busco in protein mode
     Channel.value('proteins') \
     .set { ch_mode }
 
-    BUSCO(GFFREAD.out.gffread_fasta, lineage_db,  ch_mode, [] )
-    ch_versions = ch_versions.mix ( BUSCO.out.versions.first() )
+    BUSCOPROTEINS(GFFREAD.out.gffread_fasta,  ch_lineage, ch_mode, lineage_db.ifEmpty([]), [] )
+    ch_versions = ch_versions.mix ( BUSCOPROTEINS.out.versions.first() )
 
-    BUSCO.out.short_summaries_json
+    BUSCOPROTEINS.out.short_summaries_json
     | ifEmpty ( [ [], [] ] )
     | set { ch_busco }
 
