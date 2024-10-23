@@ -122,7 +122,9 @@ def write_to_csv(data, output, busco_stats_file):
 # Main function to take input files and output file as arguments
 def main():
     Description = "Parse contents of the agat_spstatistics, buscoproteins and agat_sqstatbasic to extract relevant annotation statistics information."
-    Epilog = "Example usage: python extract_annotation_statistics_info.py <basic_stats> <other_stats> <busco_stats> <output>"
+    Epilog = (
+        "Example usage: python extract_annotation_statistics_info.py <basic_stats> <other_stats> <busco_stats> <output>"
+    )
 
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
     parser.add_argument("basic_stats", help="Input txt file with basic_feature_statistics.")
@@ -135,7 +137,7 @@ def main():
     cds_info = extract_cds_info(args.other_stats)
     non_coding_genes = extract_non_coding_genes(args.basic_stats)
     data = {**cds_info, **non_coding_genes}
-    write_to_csv(data,args.output, args.busco_stats)
+    write_to_csv(data, args.output, args.busco_stats)
 
 
 if __name__ == "__main__":
