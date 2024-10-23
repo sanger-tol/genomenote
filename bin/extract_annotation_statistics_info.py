@@ -75,8 +75,21 @@ def extract_non_coding_genes(file):
     return {"NCG": NCG}
 
 
+# Extract the busco score
+def parse_busco_stats(busco_stats_file):
+    busco_score = None
+    with open(busco_stats_file, "r") as file:
+        for line in file:
+            if line.startswith("results.one_line_summary"):
+                busco_score = line.strip()  # Store the entire summary or parse the desired part
+                break
+    return busco_score
+
+
 # Function to write the extracted data to a CSV file
-def write_to_csv(data, output_file):
+def write_to_csv(data, output_file, busco_stats_file):
+    busco_score = parse_busco_stats(busco_stats_file)
+
     descriptions = {
         "TRANSC_MRNA": "The number of transcribed mRNAs",
         "PCG": "The number of protein coding genes",
@@ -101,16 +114,20 @@ def write_to_csv(data, output_file):
         # Write the data
         for key, value in data.items():
             writer.writerow([key, value])
+        # Add the BUSCO score as a new line
+        if busco_score:
+            writer.writerow(["BUSCO_PROTEIN", busco_score])
 
 
 # Main function to take input files and output file as arguments
 def main():
-    Description = "Parse contents of the agat_spstatistics and agat_sqstatbasic to extract relevant annotation statistics information."
-    Epilog = "Example usage: python extract_annotation_statistics_info.py <FILE_1> <FILE_2> <FILE_OUT>"
+    Description = "Parse contents of the agat_spstatistics, buscoproteins and agat_sqstatbasic to extract relevant annotation statistics information."
+    Epilog = "Example usage: python extract_annotation_statistics_info.py <FILE_1> <FILE_2> <FILE_3> <FILE_OUT>"
 
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
     parser.add_argument("FILE_1", help="Input txt file with basic_feature_statistics.")
     parser.add_argument("FILE_2", help="Input txt file with other_feature_statistics.")
+    parser.add_argument("FILE_3", help="Input file for the busco statistics.")
     parser.add_argument("FILE_OUT", help="Output file.")
     parser.add_argument("--version", action="version", version="%(prog)s 1.0")
     args = parser.parse_args()
