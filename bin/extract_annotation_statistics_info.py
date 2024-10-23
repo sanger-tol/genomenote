@@ -87,7 +87,7 @@ def parse_busco_stats(busco_stats_file):
 
 
 # Function to write the extracted data to a CSV file
-def write_to_csv(data, output_file, busco_stats_file):
+def write_to_csv(data, output, busco_stats_file):
     busco_score = parse_busco_stats(busco_stats_file)
 
     descriptions = {
