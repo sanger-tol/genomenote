@@ -122,12 +122,12 @@ def write_to_csv(data, output_file, busco_stats_file):
 # Main function to take input files and output file as arguments
 def main():
     Description = "Parse contents of the agat_spstatistics, buscoproteins and agat_sqstatbasic to extract relevant annotation statistics information."
-    Epilog = "Example usage: python extract_annotation_statistics_info.py <FILE_1> <FILE_2> <FILE_3> <FILE_OUT>"
+    Epilog = "Example usage: python extract_annotation_statistics_info.py <FILE_1> <FILE_2> <FILE_OUT>"
 
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
     parser.add_argument("FILE_1", help="Input txt file with basic_feature_statistics.")
     parser.add_argument("FILE_2", help="Input txt file with other_feature_statistics.")
-    parser.add_argument("FILE_3", help="Input file for the busco statistics.")
+    # parser.add_argument("FILE_3", help="Input file for the busco statistics.")
     parser.add_argument("FILE_OUT", help="Output file.")
     parser.add_argument("--version", action="version", version="%(prog)s 1.0")
     args = parser.parse_args()
