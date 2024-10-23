@@ -49,6 +49,10 @@ workflow ANNOTATION_STATS {
     GFFREAD(ch_gff_unzipped, ch_fasta)
     ch_versions = ch_versions.mix ( GFFREAD.out.versions.first() )
 
+    // Genome summary statistics
+    SUMMARYGENOME ( genome )
+    ch_versions = ch_versions.mix ( SUMMARYGENOME.out.versions.first() )
+
     // Get ODB lineage value
     NCBI_GET_ODB ( SUMMARYGENOME.out.summary, lineage_tax_ids )
     ch_versions = ch_versions.mix ( NCBI_GET_ODB.out.versions.first() )
@@ -58,14 +62,11 @@ workflow ANNOTATION_STATS {
     | map { meta, csv -> csv }
     | splitCsv()
     | map { row -> row[1] }
-    | set { ch_lineage }
+    | set { ch_lineage}
 
+    // Running BUSCO in protein mode
 
-    // Running Busco in protein mode
-    Channel.value('proteins') \
-    .set { ch_mode }
-
-    BUSCOPROTEINS(GFFREAD.out.gffread_fasta,  ch_lineage, ch_mode, lineage_db.ifEmpty([]), [] )
+    BUSCOPROTEINS(GFFREAD.out.gffread_fasta,ch_lineage,lineage_db.ifEmpty([]), [] )
     ch_versions = ch_versions.mix ( BUSCOPROTEINS.out.versions.first() )
 
     BUSCOPROTEINS.out.short_summaries_json
