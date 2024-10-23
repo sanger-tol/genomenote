@@ -122,20 +122,20 @@ def write_to_csv(data, output_file, busco_stats_file):
 # Main function to take input files and output file as arguments
 def main():
     Description = "Parse contents of the agat_spstatistics, buscoproteins and agat_sqstatbasic to extract relevant annotation statistics information."
-    Epilog = "Example usage: python extract_annotation_statistics_info.py <FILE_1> <FILE_2> <FILE_OUT>"
+    Epilog = "Example usage: python extract_annotation_statistics_info.py <basic_stats> <other_stats> <busco_stats> <output>"
 
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
-    parser.add_argument("FILE_1", help="Input txt file with basic_feature_statistics.")
-    parser.add_argument("FILE_2", help="Input txt file with other_feature_statistics.")
-    # parser.add_argument("FILE_3", help="Input file for the busco statistics.")
-    parser.add_argument("FILE_OUT", help="Output file.")
+    parser.add_argument("basic_stats", help="Input txt file with basic_feature_statistics.")
+    parser.add_argument("other_stats", help="Input txt file with other_feature_statistics.")
+    parser.add_argument("busco_stats", help="Input file for the busco statistics.")
+    parser.add_argument("output", help="Output file.")
     parser.add_argument("--version", action="version", version="%(prog)s 1.0")
     args = parser.parse_args()
 
-    cds_info = extract_cds_info(args.FILE_2)
-    non_coding_genes = extract_non_coding_genes(args.FILE_1)
+    cds_info = extract_cds_info(args.other_stats)
+    non_coding_genes = extract_non_coding_genes(args.basic_stats)
     data = {**cds_info, **non_coding_genes}
-    write_to_csv(data, args.FILE_OUT)
+    write_to_csv(data,args.output, args.busco_stats)
 
 
 if __name__ == "__main__":
