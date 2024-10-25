@@ -65,19 +65,14 @@ workflow ANNOTATION_STATS {
     | set { ch_lineage}
 
     // Running BUSCO in protein mode
-
     BUSCOPROTEINS(GFFREAD.out.gffread_fasta,ch_lineage,lineage_db.ifEmpty([]), [] )
     ch_versions = ch_versions.mix ( BUSCOPROTEINS.out.versions.first() )
-
-    BUSCOPROTEINS.out.short_summaries_json
-    | ifEmpty ( [ [], [] ] )
-    | set { ch_busco}
 
     // Parsing the stats_txt files as input channels 
     EXTRACT_ANNOTATION_STATISTICS_INFO(
         AGAT_SQSTATBASIC.out.stats_txt, 
         AGAT_SPSTATISTICS.out.stats_txt,
-        ch_busco
+        BUSCOPROTEINS.out.short_summaries_json
 
     )
     
