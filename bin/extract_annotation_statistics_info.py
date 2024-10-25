@@ -75,20 +75,30 @@ def extract_non_coding_genes(file):
     return {"NCG": NCG}
 
 
-# Extract the busco score
-def parse_busco_stats(busco_stats_file):
-    busco_score = None
+# Extract BUSCO Scores
+def extract_busco_results(busco_stats_file):
+    busco_results = []
+
     with open(busco_stats_file, "r") as file:
+        capture_results = False
+
         for line in file:
-            if line.startswith("results.one_line_summary"):
-                busco_score = line.strip()  # Store the entire summary or parse the desired part
-                break
-    return busco_score
+            line = line.strip()
+            if line.startswith("***** Results: *****"):
+                capture_results = True
+                continue
+
+            if capture_results:
+                if line.startswith("Assembly Statistics:"):
+                    break  # Stop capturing when reaching the assembly statistics
+                busco_results.append(line)
+
+    return busco_results
 
 
 # Function to write the extracted data to a CSV file
-def write_to_csv(data, output, busco_stats_file):
-    busco_score = parse_busco_stats(busco_stats_file)
+def write_to_csv(data, output_file, busco_stats_file):
+    busco_results = extract_busco_results(busco_stats_file)
 
     descriptions = {
         "TRANSC_MRNA": "The number of transcribed mRNAs",
@@ -99,6 +109,7 @@ def write_to_csv(data, output, busco_stats_file):
         "CDS_LENGTH": "The average length of coding sequence",
         "EXON_SIZE": "The average length of a coding exon",
         "INTRON_SIZE": "The average length of coding intron size",
+        "BUSCO_PROTEIN_SCORES": "BUSCO results summary from the analysis",
     }
 
     with open(output_file, "w", newline="") as csvfile:
@@ -114,9 +125,10 @@ def write_to_csv(data, output, busco_stats_file):
         # Write the data
         for key, value in data.items():
             writer.writerow([key, value])
-        # Add the BUSCO score as a new line
-        if busco_score:
-            writer.writerow(["BUSCO_PROTEIN", busco_score])
+
+        # Add the BUSCO results as new lines
+        for result in busco_results:
+            writer.writerow([result])
 
 
 # Main function to take input files and output file as arguments
