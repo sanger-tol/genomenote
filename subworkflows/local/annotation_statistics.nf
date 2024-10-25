@@ -69,9 +69,9 @@ workflow ANNOTATION_STATS {
     BUSCOPROTEINS(GFFREAD.out.gffread_fasta,ch_lineage,lineage_db.ifEmpty([]), [] )
     ch_versions = ch_versions.mix ( BUSCOPROTEINS.out.versions.first() )
 
-    BUSCOPROTEINS.out.short_summaries_json
+    BUSCOPROTEINS.out.short_summaries_txt
     | ifEmpty ( [ [], [] ] )
-    | set { ch_busco }
+    | set { ch_busco}
 
     // Parsing the stats_txt files as input channels 
     EXTRACT_ANNOTATION_STATISTICS_INFO(
