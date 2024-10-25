@@ -69,7 +69,7 @@ workflow ANNOTATION_STATS {
     BUSCOPROTEINS(GFFREAD.out.gffread_fasta,ch_lineage,lineage_db.ifEmpty([]), [] )
     ch_versions = ch_versions.mix ( BUSCOPROTEINS.out.versions.first() )
 
-    BUSCOPROTEINS.out.short_summaries_txt
+    BUSCOPROTEINS.out.short_summaries_json
     | ifEmpty ( [ [], [] ] )
     | set { ch_busco}
 
