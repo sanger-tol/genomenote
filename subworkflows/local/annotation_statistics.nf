@@ -14,8 +14,8 @@ workflow ANNOTATION_STATS {
     take:
     gff                    //  channel: /path/to/annotation file
     genome                 // channel: [ meta, fasta ]
-    lineage_db             // channel: /path/to/buscoDB
     lineage_tax_ids        // channel: /path/to/lineage_tax_ids
+    lineage_db             // channel: /path/to/buscoDB
     
     main:
     ch_versions = Channel.empty()
