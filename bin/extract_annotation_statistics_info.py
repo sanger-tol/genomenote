@@ -3,6 +3,7 @@ import re
 import csv
 import sys
 import argparse
+import json
 
 
 # Extract CDS information from mrna and transcript sections
@@ -54,7 +55,13 @@ def extract_cds_info(file):
 
 # Function to extract the number of non-coding genes from the second file
 def extract_non_coding_genes(file):
-    non_coding_genes = {"lnc_rna": 0, "ncrna": 0, "pseudogene": 0, "snorna": 0, "snrna": 0, "rrna": 0, "trna": 0}
+    non_coding_genes = {"lnc_rna": 0, 
+                        "ncrna": 0, 
+                        "pseudogene": 0,
+                        "snorna": 0, 
+                        "snrna": 0, 
+                        "rrna": 0, 
+                        "trna": 0 }
 
     with open(file, "r") as f:
         for line in f:
@@ -75,25 +82,22 @@ def extract_non_coding_genes(file):
     return {"NCG": NCG}
 
 
-# Extract BUSCO Scores
+# Extract the one_line_summary from a BUSCO JSON file
 def extract_busco_results(busco_stats_file):
-    busco_results = []
-
-    with open(busco_stats_file, "r") as file:
-        capture_results = False
-
-        for line in file:
-            line = line.strip()
-            if line.startswith("***** Results: *****"):
-                capture_results = True
-                continue
-
-            if capture_results:
-                if line.startswith("Assembly Statistics:"):
-                    break  # Stop capturing when reaching the assembly statistics
-                busco_results.append(line)
-
-    return busco_results
+    try:
+        with open(busco_stats_file, "r") as file:
+            busco_data = json.load(file)
+            # Extract the one_line_summary from the results section
+            one_line_summary = busco_data.get("results", {}).get("one_line_summary")
+            if one_line_summary:
+                # Use regex to extract everything after the first colon
+                match = re.search(r':\s*"(.*)"', one_line_summary)
+                if match:
+                    one_line_summary = match.group(1)  # Get text after the colon
+            return {"BUSCO_PROTEIN_SCORES": one_line_summary} if one_line_summary else {}
+    except (json.JSONDecodeError, FileNotFoundError) as e:
+        print(f"Error loading BUSCO JSON file: {e}")
+        return {}
 
 
 # Function to write the extracted data to a CSV file
@@ -109,7 +113,7 @@ def write_to_csv(data, output_file, busco_stats_file):
         "CDS_LENGTH": "The average length of coding sequence",
         "EXON_SIZE": "The average length of a coding exon",
         "INTRON_SIZE": "The average length of coding intron size",
-        "BUSCO_PROTEIN_SCORES": "BUSCO results summary from the analysis",
+        "BUSCO_PROTEIN_SCORES": "BUSCO results summary from running BUSCO in protein mode",
     }
 
     with open(output_file, "w", newline="") as csvfile:
@@ -126,9 +130,9 @@ def write_to_csv(data, output_file, busco_stats_file):
         for key, value in data.items():
             writer.writerow([key, value])
 
-        # Add the BUSCO results as new lines
-        for result in busco_results:
-            writer.writerow([result])
+        # Add the BUSCO results summary
+        for key, value in busco_results.items():
+            writer.writerow([key, value])
 
 
 # Main function to take input files and output file as arguments
@@ -141,7 +145,7 @@ def main():
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
     parser.add_argument("basic_stats", help="Input txt file with basic_feature_statistics.")
     parser.add_argument("other_stats", help="Input txt file with other_feature_statistics.")
-    parser.add_argument("busco_stats", help="Input file for the busco statistics.")
+    parser.add_argument("busco_stats", help="Input JSON file for the BUSCO statistics.")
     parser.add_argument("output", help="Output file.")
     parser.add_argument("--version", action="version", version="%(prog)s 1.0")
     args = parser.parse_args()
