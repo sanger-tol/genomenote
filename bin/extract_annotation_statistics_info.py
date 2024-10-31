@@ -3,6 +3,7 @@ import re
 import csv
 import sys
 import argparse
+import json
 
 
 # Extract CDS information from mrna and transcript sections
@@ -75,8 +76,28 @@ def extract_non_coding_genes(file):
     return {"NCG": NCG}
 
 
+# Extract the one_line_summary from a BUSCO JSON file
+def extract_busco_results(busco_stats_file):
+    try:
+        with open(busco_stats_file, "r") as file:
+            busco_data = json.load(file)
+            # Extract the one_line_summary from the results section
+            one_line_summary = busco_data.get("results", {}).get("one_line_summary")
+            if one_line_summary:
+                # Use regex to extract everything after the first colon
+                match = re.search(r':\s*"(.*)"', one_line_summary)
+                if match:
+                    one_line_summary = match.group(1)  # Get text after the colon
+            return {"BUSCO_PROTEIN_SCORES": one_line_summary} if one_line_summary else {}
+    except (json.JSONDecodeError, FileNotFoundError) as e:
+        print(f"Error loading BUSCO JSON file: {e}")
+        return {}
+
+
 # Function to write the extracted data to a CSV file
-def write_to_csv(data, output_file):
+def write_to_csv(data, output_file, busco_stats_file):
+    busco_results = extract_busco_results(busco_stats_file)
+
     descriptions = {
         "TRANSC_MRNA": "The number of transcribed mRNAs",
         "PCG": "The number of protein coding genes",
@@ -86,6 +107,7 @@ def write_to_csv(data, output_file):
         "CDS_LENGTH": "The average length of coding sequence",
         "EXON_SIZE": "The average length of a coding exon",
         "INTRON_SIZE": "The average length of coding intron size",
+        "BUSCO_PROTEIN_SCORES": "BUSCO results summary from running BUSCO in protein mode",
     }
 
     with open(output_file, "w", newline="") as csvfile:
@@ -102,23 +124,30 @@ def write_to_csv(data, output_file):
         for key, value in data.items():
             writer.writerow([key, value])
 
+        # Add the BUSCO results summary
+        for key, value in busco_results.items():
+            writer.writerow([key, value])
+
 
 # Main function to take input files and output file as arguments
 def main():
-    Description = "Parse contents of the agat_spstatistics and agat_sqstatbasic to extract relevant annotation statistics information."
-    Epilog = "Example usage: python extract_annotation_statistics_info.py <FILE_1> <FILE_2> <FILE_OUT>"
+    Description = "Parse contents of the agat_spstatistics, buscoproteins and agat_sqstatbasic to extract relevant annotation statistics information."
+    Epilog = (
+        "Example usage: python extract_annotation_statistics_info.py <basic_stats> <other_stats> <busco_stats> <output>"
+    )
 
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
-    parser.add_argument("FILE_1", help="Input txt file with basic_feature_statistics.")
-    parser.add_argument("FILE_2", help="Input txt file with other_feature_statistics.")
-    parser.add_argument("FILE_OUT", help="Output file.")
+    parser.add_argument("basic_stats", help="Input txt file with basic_feature_statistics.")
+    parser.add_argument("other_stats", help="Input txt file with other_feature_statistics.")
+    parser.add_argument("busco_stats", help="Input JSON file for the BUSCO statistics.")
+    parser.add_argument("output", help="Output file.")
     parser.add_argument("--version", action="version", version="%(prog)s 1.0")
     args = parser.parse_args()
 
-    cds_info = extract_cds_info(args.FILE_2)
-    non_coding_genes = extract_non_coding_genes(args.FILE_1)
+    cds_info = extract_cds_info(args.other_stats)
+    non_coding_genes = extract_non_coding_genes(args.basic_stats)
     data = {**cds_info, **non_coding_genes}
-    write_to_csv(data, args.FILE_OUT)
+    write_to_csv(data, args.output, args.busco_stats)
 
 
 if __name__ == "__main__":

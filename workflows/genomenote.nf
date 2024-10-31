@@ -155,7 +155,7 @@ workflow GENOMENOTE {
     // SUBWORKFLOW : Obtain feature statistics from the annotation file : GFF
     //
     ch_gff = Channel.fromPath(params.annotation_set)
-    ANNOTATION_STATS (ch_gff)
+    ANNOTATION_STATS (ch_gff, ch_fasta, ch_lineage_tax_ids, ch_lineage_db)
     ch_versions = ch_versions.mix ( ANNOTATION_STATS.out.versions )
 
     //
