@@ -26,7 +26,6 @@ process COMBINE_STATISTICS_AND_METADATA {
     def annotation = annotation_statistics_params ? "--in_annotation_statistics $annotation_statistics_params" : ''
 
     """
-    echo 
     combine_statistics_data.py \\
     --in_consistent $consistent_params \\
     --in_inconsistent $inconsistent_params \\
