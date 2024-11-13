@@ -55,7 +55,7 @@ def extract_cds_info(file):
 
 # Function to extract the number of non-coding genes from the second file
 def extract_non_coding_genes(file):
-    non_coding_genes = {"lnc_rna": 0, "ncrna": 0, "pseudogene": 0, "snorna": 0, "snrna": 0, "rrna": 0, "trna": 0}
+    non_coding_genes = {"ncrna_gene": 0}
 
     with open(file, "r") as f:
         for line in f:
@@ -118,7 +118,7 @@ def write_to_csv(data, output_file, busco_stats_file):
             csvfile.write(f"# {key}: {description}\n")
 
         # Write the Variable and Value columns header
-        writer.writerow(["Variable", "Value"])
+        writer.writerow(["#paramName", "paramValue"])
 
         # Write the data
         for key, value in data.items():

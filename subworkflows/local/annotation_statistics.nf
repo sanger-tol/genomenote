@@ -9,7 +9,7 @@ include { NCBIDATASETS_SUMMARYGENOME as SUMMARYGENOME   } from '../../modules/lo
 include { GFFREAD                                       } from '../../modules/nf-core/gffread/main'
 include { NCBI_GET_ODB                                  } from '../../modules/local/ncbidatasets/get_odb'
 
-workflow ANNOTATION_STATS {
+workflow ANNOTATION_STATISTICS {
 
     take:
     gff                    //  channel: /path/to/annotation file
@@ -20,15 +20,17 @@ workflow ANNOTATION_STATS {
     main:
     ch_versions = Channel.empty()
 
-
     // Map the GFF channel to create a tuple with metadata and the file
     gff
-    | map { file -> [ [ 'id': file.baseName ], file ] }
-    | set {ch_gff_tupple}
+    | map { file -> 
+        [ [ 'id': params.assembly + '_annotation', 'ext': "gff" ], file ]
+    }
+    | set { ch_gff_tupple }
 
     // Uncompress the gff files if needed
     if (params.annotation_set.endsWith('.gz')) {
         ch_gff_unzipped = GUNZIP(ch_gff_tupple).gunzip
+        ch_versions = ch_versions.mix ( GUNZIP.out.versions.first() )
     } else {
         ch_gff_unzipped = ch_gff_tupple
     }
@@ -73,13 +75,12 @@ workflow ANNOTATION_STATS {
         AGAT_SQSTATBASIC.out.stats_txt, 
         AGAT_SPSTATISTICS.out.stats_txt,
         BUSCOPROTEINS.out.short_summaries_json
-
     )
     
     ch_versions = ch_versions.mix( EXTRACT_ANNOTATION_STATISTICS_INFO.out.versions.first() )
 
     emit:
-    stats   = EXTRACT_ANNOTATION_STATISTICS_INFO.out.csv  // channel: [ csv ]
+    summary   = EXTRACT_ANNOTATION_STATISTICS_INFO.out.csv  // channel: [ csv ]
     versions = ch_versions                       // channel: [ versions.yml ]
 
 }
