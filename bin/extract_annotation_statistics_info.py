@@ -13,8 +13,8 @@ def extract_cds_info(file):
         "TRANSC_MRNA": re.compile(r"Number of mrna\s+(\d+)"),
         "PCG": re.compile(r"Number of gene\s+(\d+)"),
         "CDS_PER_GENE": re.compile(r"mean mrnas per gene\s+([\d.]+)"),
-        "EXONS_PER_TRANSC": re.compile(r"mean exons per transcript\s+([\d.]+)"),
-        "CDS_LENGTH": re.compile(r"mean cds length \(bp\)\s+([\d.]+)"),
+        "EXONS_PER_TRANSC": re.compile(r"mean exons per mrna\s+([\d.]+)"),
+        "CDS_LENGTH": re.compile(r"mean mrna length \(bp\)\s+([\d.]+)"),
         "EXON_SIZE": re.compile(r"mean exon length \(bp\)\s+([\d.]+)"),
         "INTRON_SIZE": re.compile(r"mean intron in cds length \(bp\)\s+([\d.]+)"),
     }
