@@ -10,7 +10,6 @@ The directories listed below will be created in the results directory after the 
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
-
 - [Contact maps](#contact-maps) – Contact matrix created using HiC sequencing data
 - [Genome statistics](#genome-statistics) – Collated assembly information, genome statistics and alignment quality information
 - [Annotation statistics](#annotation-statistics) - Statistics calculated on the annotated protein set for the assembly (if GFF annotation file is provided as input)
@@ -47,14 +46,14 @@ This pipeline collates (1) assembly information, statistics and chromosome detai
 
 </details>
 
-### Annotation statistics 
-This pipeline can generate some statistics using AGAT and a BUSCO completeness score on the assembly annotation if a GFF file of protein annotations is given as input. This file should be a GFF3 format file describing the annotated protein set. 
+### Annotation statistics
+
+This pipeline can generate some statistics using AGAT and a BUSCO completeness score on the assembly annotation if a GFF file of protein annotations is given as input. This file should be a GFF3 format file describing the annotated protein set.
 
 <detail markdown="1">
 <summary>Output files</summary>
 
-- `annotation_stats/`
-  -`<gca_accession>_annotation.csv`: collated annotation statistics file
+- `annotation_stats/` -`<gca_accession>_annotation.csv`: collated annotation statistics file
 
 </details>
 

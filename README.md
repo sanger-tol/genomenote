@@ -25,7 +25,7 @@
 6. Genome completeness ([`NCBI API`](https://www.ncbi.nlm.nih.gov/datasets/docs/v1/reference-docs/rest-api/), [`BUSCO`](https://busco.ezlab.org))
 7. Consensus quality and k-mer completeness ([`FASTK`](https://github.com/thegenemyers/FASTK), [`MERQURY.FK`](https://github.com/thegenemyers/MERQURY.FK))
 8. Collated summary table ([`createtable`](bin/create_table.py))
-9. Optionally calculates some annotation statistics and completeness , ([`AGAT`](https://github.com/NBISweden/AGAT), [`BUSCO`](https://busco.ezlab.org)) 
+9. Optionally calculates some annotation statistics and completeness , ([`AGAT`](https://github.com/NBISweden/AGAT), [`BUSCO`](https://busco.ezlab.org))
 10. Combines calculated statisics and assembly metadata with a template file to produce a genome note document.
 11. Present results and visualisations ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
 
