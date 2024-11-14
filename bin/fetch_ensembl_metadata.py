@@ -30,7 +30,7 @@ def fetch_ensembl_data(species, output_file):
 
     url = "https://beta.ensembl.org/data/graphql"
     sp = species.replace("_", " ")
-    variables = { "species": sp }
+    variables = {"species": sp}
     query = """
     query Annotation($species: String)
     {
@@ -47,7 +47,7 @@ def fetch_ensembl_data(species, output_file):
         }
     }
     """
-    response = requests.post(url=url, json={'query': query, 'variables': variables })
+    response = requests.post(url=url, json={"query": query, "variables": variables})
 
     if response.status_code == 200:
         param_list = []
@@ -59,11 +59,9 @@ def fetch_ensembl_data(species, output_file):
                 accession = genomes["assembly_accession"]
                 acc = f'"{accession}"'
                 param_list.append(("ANNOT_ACCESSION", acc))
-                annot_url =f"https://rapid.ensembl.org/{species}_{accession}/Info/Index"
+                annot_url = f"https://rapid.ensembl.org/{species}_{accession}/Info/Index"
                 annot_url = f'"{annot_url}"'
                 param_list.append(("ANNOT_URL", annot_url))
-
-
 
     # Write out file even if there is no annotation data to write
     out_dir = os.path.dirname(output_file)
@@ -72,12 +70,11 @@ def fetch_ensembl_data(species, output_file):
     with open(output_file, "w") as fout:
         # Write header
         fout.write(",".join(["#paramName", "paramValue"]) + "\n")
-            
+
         for param_pair in param_list:
             fout.write(",".join(param_pair) + "\n")
 
     return output_file
-
 
 
 def main(args=None):
