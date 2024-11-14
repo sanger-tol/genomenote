@@ -10,8 +10,10 @@ The directories listed below will be created in the results directory after the 
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
+
 - [Contact maps](#contact-maps) – Contact matrix created using HiC sequencing data
 - [Genome statistics](#genome-statistics) – Collated assembly information, genome statistics and alignment quality information
+- [Annotation statistics](#annotation-statistics) - Statistics calculated on the annotated protein set for the assembly (if GFF annotation file is provided as input)
 - [BUSCO](#busco) - BUSCO results
 - [MultiQC](#multiqc) - Aggregate report describing results from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
@@ -38,10 +40,21 @@ This pipeline collates (1) assembly information, statistics and chromosome detai
 <summary>Output files</summary>
 
 - `genome_note/`
-  - `<gca_accession>.csv`: collate genome statistics file
+  - `<gca_accession>.csv`: collated genome statistics file
   - `<gca_accession>.{docx|xml}`: partially completed genome note template file
   - `<gca_accession>_genome_note_consistent.csv`: a file of genome metadata parameters pulled from various public data repositories where all source agree on the paramter value.
   - `<gca_accession>_genome_note_inconsistent.csv`: a file of genome metadata parameters, and their sources pulled from various public data repositories where the paramter value differs between data sources.
+
+</details>
+
+### Annotation statistics 
+This pipeline can generate some statistics using AGAT and a BUSCO completeness score on the assembly annotation if a GFF file of protein annotations is given as input. This file should be a GFF3 format file describing the annotated protein set. 
+
+<detail markdown="1">
+<summary>Output files</summary>
+
+- `annotation_stats/`
+  -`<gca_accession>_annotation.csv`: collated annotation statistics file
 
 </details>
 

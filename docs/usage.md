@@ -13,18 +13,27 @@ These typically include:
 1. Assembly metadata from COPO, ENA, GoaT, GBIF and NCBI
 2. Assembly information, statistics and chromosome details from NCBI datasets.
 3. Genome completeness from BUSCO.
-4. Consensus quality and k-mer completeness from MerquryFK - when high-quality reads are available.
-5. Hi-C contact map and chromosomal grid using Cooler, as well as primary mapped percentage from samtools flagstat - when Hi-C reads are provided. These files can be displayed on a [HiGlass](http://higlass.io) server, like the one use by the [Sanger Institute](https://genome-note-higlass.tol.sanger.ac.uk/app).
+4. Annotation statistics from AGAT and completeness from BUSCO.
+5. Consensus quality and k-mer completeness from MerquryFK - when high-quality reads are available.
+6. Hi-C contact map and chromosomal grid using Cooler, as well as primary mapped percentage from samtools flagstat - when Hi-C reads are provided. These files can be displayed on a [HiGlass](http://higlass.io) server, like the one use by the [Sanger Institute](https://genome-note-higlass.tol.sanger.ac.uk/app).
 
 ## Genome metadata input
 
 You will need to supply the assembly accession for the genome you would like to analyse along with the biosample acession(s) linked to this genome assembly.
 
 ```bash
-   --assembly '[assembly accession]'
-   --biosample_wgs '[biosample accession of the biosample used to produce the genomic sequence]'
-   --biosample_hic '[biosample accession of the biosample used to produce the HiC data]'
-   --biosample_rna '[biosample accession of the biosample used to produce the RNASeq data]
+--assembly '[assembly accession]'
+--biosample_wgs '[biosample accession of the biosample used to produce the genomic sequence]'
+--biosample_hic '[biosample accession of the biosample used to produce the HiC data]'
+--biosample_rna '[biosample accession of the biosample used to produce the RNASeq data]
+```
+
+## Annotation input
+
+If you want to generate statistics on the set of proteins annotated for the assembly you will need to supply a GFF3 file of the predicted protein sequences. The assembly region names used in this file must match the assembly regions names used in the assembly fasta file provided with --fasta
+
+```bash
+--annotation_set '[Path to annotation file :gff]
 ```
 
 ## Samplesheet input
