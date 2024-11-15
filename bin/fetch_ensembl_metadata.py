@@ -59,7 +59,8 @@ def fetch_ensembl_data(species, output_file):
                 accession = genomes["assembly_accession"]
                 acc = f'"{accession}"'
                 param_list.append(("ANNOT_ACCESSION", acc))
-                annot_url = f"https://rapid.ensembl.org/{species}_{accession}/Info/Index"
+                species_id = genomes["genome_id"]
+                annot_url = f"https://beta.ensembl.org/species/{species_id}"
                 annot_url = f'"{annot_url}"'
                 param_list.append(("ANNOT_URL", annot_url))
 
