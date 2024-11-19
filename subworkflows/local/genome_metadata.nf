@@ -93,8 +93,17 @@ workflow GENOME_METADATA {
     | map { it -> tuple( it )}
     | set { ch_gbif }
 
+
+   ch_file_list
+    | map { meta, it -> 
+        def assembly = meta.id
+        def taxon_id = meta.taxon_id
+        [assembly, taxon_id]
+    }
+    | set { ch_ensembl_params} 
+
     // Query Ensembl Metadata API to see if this species has been annotated
-    FETCH_ENSEMBL_METADATA ( ch_gbif_params )
+    FETCH_ENSEMBL_METADATA ( ch_ensembl_params )
     ch_versions = ch_versions.mix( FETCH_ENSEMBL_METADATA.out.versions.first() )    
 
     PARSE_METADATA.out.file_path

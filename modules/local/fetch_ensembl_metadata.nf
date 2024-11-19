@@ -9,7 +9,7 @@ process FETCH_ENSEMBL_METADATA {
         'quay.io/biocontainers/requests:2.26.0'}"
 
     input:
-    tuple val(assembly), val(species)
+    tuple val(assembly), val(taxon_id)
 
 
     output:
@@ -24,7 +24,7 @@ process FETCH_ENSEMBL_METADATA {
     def output_file = "${assembly}_ensembl_annotation.csv"
 
     """
-    $script_name --species $species --output $output_file
+    $script_name --taxon_id $taxon_id --output $output_file
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
