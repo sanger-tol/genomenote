@@ -8,7 +8,7 @@ import argparse
 
 def parse_args(args=None):
     Description = "Query the Ensembl Metadata API to pull out annotation information required by a genome note."
-    Epilog = "Example usage: python fetch_ensembl_metadata.py --species --output"
+    Epilog = "Example usage: python fetch_ensembl_metadata.py --taxon_id --output"
 
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
     parser.add_argument("--taxon_id", required=True, help="The species taxon id")
@@ -24,7 +24,7 @@ def make_dir(path):
 
 
 def fetch_ensembl_data(taxon, output_file):
-    # Use the species name to query the Ensembl Metadata API to determine if the
+    # Use the species taxon_id to query the Ensembl Metadata API to determine if the
     # species has been annotated. Return assmbly accesssion of annotated data and
     # a url linking to that species on the Ensembl Rapid website
 
