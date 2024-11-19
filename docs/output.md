@@ -53,7 +53,7 @@ This pipeline can generate some statistics using AGAT and a BUSCO completeness s
 <detail markdown="1">
 <summary>Output files</summary>
 
-- `annotation_stats/` -`<gca_accession>_annotation.csv`: collated annotation statistics file
+- `gene/` -`<annotation_input_filename>_stats.csv`: collated annotation statistics file
 
 </details>
 

@@ -23,7 +23,7 @@ workflow ANNOTATION_STATISTICS {
     // Map the GFF channel to create a tuple with metadata and the file
     gff
     | map { file -> 
-        [ [ 'id': params.assembly + '_annotation', 'ext': "gff" ], file ]
+        [ [ 'id': params.assembly + '_annotation', 'ext': "gff", 'filename': file.baseName ], file ]
     }
     | set { ch_gff_tupple }
 
