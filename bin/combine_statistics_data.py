@@ -8,7 +8,7 @@ import string
 
 files = [
     ("CONSISTENT", "in_consistent"),
-    ("GENOME_STATISITCS", "in_genome_statistics"),
+    ("GENOME_STATISTICS", "in_genome_statistics"),
     ("ANNOTATION_STATISITCS", "in_annotation_statistics"),
 ]
 
