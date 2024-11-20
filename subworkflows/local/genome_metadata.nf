@@ -8,6 +8,7 @@ include { RUN_WGET                  }       from '../../modules/local/run_wget'
 include { PARSE_METADATA            }       from '../../modules/local/parse_metadata'
 include { COMBINE_METADATA          }       from '../../modules/local/combine_metadata'
 include { FETCH_GBIF_METADATA       }       from '../../modules/local/fetch_gbif_metadata'
+include { FETCH_ENSEMBL_METADATA    }       from '../../modules/local/fetch_ensembl_metadata'
 
 
 workflow GENOME_METADATA {
@@ -92,11 +93,24 @@ workflow GENOME_METADATA {
     | map { it -> tuple( it )}
     | set { ch_gbif }
 
+
+   ch_file_list
+    | map { meta, it -> 
+        def assembly = meta.id
+        def taxon_id = meta.taxon_id
+        [assembly, taxon_id]
+    }
+    | set { ch_ensembl_params} 
+
+    // Query Ensembl Metadata API to see if this species has been annotated
+    FETCH_ENSEMBL_METADATA ( ch_ensembl_params )
+    ch_versions = ch_versions.mix( FETCH_ENSEMBL_METADATA.out.versions.first() )    
+
     PARSE_METADATA.out.file_path
     | map { it -> tuple( it[1] )}
     | set { ch_parsed }
 
-    ch_parsed.mix(ch_gbif)
+    ch_parsed.mix(ch_gbif, FETCH_ENSEMBL_METADATA.out.file_path)
     | collect  
     | map { it ->  
         [ it ]
