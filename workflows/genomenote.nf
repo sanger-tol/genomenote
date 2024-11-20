@@ -21,7 +21,7 @@ if (params.fasta)     { ch_fasta = Channel.fromPath(params.fasta) } else { exit 
 if (params.binsize)   { ch_bin   = Channel.of(params.binsize)     } else { exit 1, 'Bin size for cooler/cload not specified!' }
 if (params.kmer_size) { ch_kmer  = Channel.of(params.kmer_size)   } else { exit 1, 'Kmer library size for fastk not specified' }
 
-if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.lineage_tax_ids) } else { exit 1, 'Mapping BUSCO lineage <-> taxon_ids not specified' }
+if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.lineage_tax_ids) } else { exit 1, 'Mapping BUSCO lineage equivalent taxon_ids not specified' }
 
 // Check optional parameters
 if (params.lineage_db) { ch_lineage_db = Channel.fromPath(params.lineage_db) } else { ch_lineage_db = Channel.empty() }
@@ -29,6 +29,8 @@ if (params.note_template) { ch_note_template = Channel.fromPath(params.note_temp
 if (params.cool_order) { ch_cool_order = Channel.fromPath(params.cool_order) } else { ch_cool_order = Channel.empty() }
 if (params.biosample_hic) metadata_inputs.add(params.biosample_hic) else metadata_inputs.add(null)
 if (params.biosample_rna) metadata_inputs.add(params.biosample_rna) else metadata_inputs.add(null)
+if (params.annotation_set) { ch_gff = Channel.fromPath(params.annotation_set) } else { ch_gff = Channel.empty()}
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,11 +54,12 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK       } from '../subworkflows/local/input_check'
-include { GENOME_METADATA   } from '../subworkflows/local/genome_metadata'
-include { CONTACT_MAPS      } from '../subworkflows/local/contact_maps'
-include { GENOME_STATISTICS } from '../subworkflows/local/genome_statistics'
-include { COMBINE_NOTE_DATA } from '../subworkflows/local/combine_note_data'
+include { INPUT_CHECK           } from '../subworkflows/local/input_check'
+include { GENOME_METADATA       } from '../subworkflows/local/genome_metadata'
+include { CONTACT_MAPS          } from '../subworkflows/local/contact_maps'
+include { GENOME_STATISTICS     } from '../subworkflows/local/genome_statistics'
+include { COMBINE_NOTE_DATA     } from '../subworkflows/local/combine_note_data'
+include { ANNOTATION_STATISTICS } from '../subworkflows/local/annotation_statistics' 
 
 
 /*
@@ -85,7 +88,7 @@ def multiqc_report = []
 workflow GENOMENOTE {
 
     ch_versions = Channel.empty()
-
+    ch_annotation_stats = Channel.empty()
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
@@ -150,18 +153,24 @@ workflow GENOMENOTE {
     ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
 
     //
+    // SUBWORKFLOW : Obtain feature statistics from the annotation file : GFF
+    //
+    if ( params.annotation_set ) {
+        ANNOTATION_STATISTICS (ch_gff, ch_fasta, ch_lineage_tax_ids, ch_lineage_db)
+        ch_versions = ch_versions.mix ( ANNOTATION_STATISTICS.out.versions )
+        ch_annotation_stats = ch_annotation_stats.mix (ANNOTATION_STATISTICS.out.summary)
+    }
+
+    //
     // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
     //
-
-    COMBINE_NOTE_DATA (GENOME_METADATA.out.consistent, GENOME_METADATA.out.inconsistent, GENOME_STATISTICS.out.summary, CONTACT_MAPS.out.link, ch_note_template)
+    COMBINE_NOTE_DATA (GENOME_METADATA.out.consistent, GENOME_METADATA.out.inconsistent, GENOME_STATISTICS.out.summary, ch_annotation_stats.ifEmpty([[],[]]), CONTACT_MAPS.out.link, ch_note_template)
     ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
-
-
+ 
     //
     // MODULE: Combine different versions.yml
     //
     CUSTOM_DUMPSOFTWAREVERSIONS ( ch_versions.unique().collectFile(name: 'collated_versions.yml') )
-
 
     //
     // MODULE: MultiQC

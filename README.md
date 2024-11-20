@@ -13,7 +13,7 @@
 
 ## Introduction
 
-**sanger-tol/genomenote** is a bioinformatics pipeline that takes aligned HiC reads, creates contact maps and chromosomal grid using Cooler, and display on a [HiGlass server](https://genome-note-higlass.tol.sanger.ac.uk/app). The pipeline also collates (1) assembly information, statistics and chromosome details from NCBI datasets, (2) genome completeness from BUSCO, (3) consensus quality and k-mer completeness from MerquryFK, and (4) HiC primary mapped percentage from samtools flagstat.
+**sanger-tol/genomenote** is a bioinformatics pipeline that takes aligned HiC reads, creates contact maps and chromosomal grid using Cooler, and display on a [HiGlass server](https://genome-note-higlass.tol.sanger.ac.uk/app). The pipeline also collates (1) assembly information, statistics and chromosome details from NCBI datasets, (2) genome completeness from BUSCO, (3) consensus quality and k-mer completeness from MerquryFK, (4) HiC primary mapped percentage from samtools flagstat and optionally (5) Annotation statistics from AGAT and BUSCO. The pipeline combines the calculated statistics and collated assembly metadata with a template document to output a genome note document.
 
 <!--![sanger-tol/genomenote workflow](https://raw.githubusercontent.com/sanger-tol/genomenote/main/docs/images/sanger-tol-genomenote_workflow.png)-->
 
@@ -25,7 +25,9 @@
 6. Genome completeness ([`NCBI API`](https://www.ncbi.nlm.nih.gov/datasets/docs/v1/reference-docs/rest-api/), [`BUSCO`](https://busco.ezlab.org))
 7. Consensus quality and k-mer completeness ([`FASTK`](https://github.com/thegenemyers/FASTK), [`MERQURY.FK`](https://github.com/thegenemyers/MERQURY.FK))
 8. Collated summary table ([`createtable`](bin/create_table.py))
-9. Present results and visualisations ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
+9. Optionally calculates some annotation statistics and completeness , ([`AGAT`](https://github.com/NBISweden/AGAT), [`BUSCO`](https://busco.ezlab.org))
+10. Combines calculated statisics and assembly metadata with a template file to produce a genome note document.
+11. Present results and visualisations ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
 
 ## Usage
 
