@@ -21,6 +21,7 @@ files = [
     ("COPO_BIOSAMPLE_HIC", "copo_biosample_hic_file"),
     ("COPO_BIOSAMPLE_RNA", "copo_biosample_rna_file"),
     ("GBIF_TAXONOMY", "gbif_taxonomy_file"),
+    ("ENSEMBL_ANNOTATION", "ensembl_annotation_file"),
 ]
 
 
@@ -42,6 +43,7 @@ def parse_args(args=None):
     parser.add_argument("--copo_biosample_hic_file", help="Input parsed COPO HiC biosample file.", required=False)
     parser.add_argument("--copo_biosample_rna_file", help="Input parsed COPO RNASeq biosample file.", required=False)
     parser.add_argument("--gbif_taxonomy_file", help="Input parsed GBIF taxonomy file.", required=False)
+    parser.add_argument("--ensembl_annotation_file", help="Input parsed Ensembl annotation file.", required=False)
     parser.add_argument("--out_consistent", help="Output file.", required=True)
     parser.add_argument("--out_inconsistent", help="Output file.", required=True)
     parser.add_argument("--version", action="version", version="%(prog)s 1.0")
