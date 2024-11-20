@@ -3,6 +3,32 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[2.1.0](https://github.com/sanger-tol/genomenote/releases/tag/2.1.0)] - Pembroke Welsh Corgi [2024-11-20]
+
+### Enhancements & fixes
+
+- New annotation_statistics subworkfow which runs BUSCO in protein mode and generates some basic statistics on the the annotated gene set if provided with a GFF3 file of gene annotations using the `--annotation_set` option.
+- The genome_metadata subworkflow now queries Ensembl's GraphQL API to determine if Ensembl has released gene annotation for the assembly being processed.
+
+### Parameters
+
+| Old parameter | New parameter    |
+| ------------- | ---------------- |
+|               | --annotation_set |
+
+> **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference.
+
+| Dependency | Old version | New version |
+| ---------- | ----------- | ----------- |
+| gffread    |             | 0.12.7      |
+| agat       |             | 1.4.0       |
+
+> **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
+
 ## [[2.0.0](https://github.com/sanger-tol/genomenote/releases/tag/2.0.0)] - English Cocker Spaniel [2024-10-10]
 
 ### Enhancements & fixes

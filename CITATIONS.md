@@ -12,6 +12,10 @@
 
 ## Pipeline tools
 
+- [AGAT](https://github.com/NBISweden/AGAT)
+
+  > Dainat J. AGAT: Another Gff Analysis Toolkit to handle annotations in any GTF/GFF format. (Version v1.4.0). Zenodo. https://www.doi.org/10.5281/zenodo.3552717
+
 - [BedTools](https://bedtools.readthedocs.io/en/latest/)
 
   > Quinlan, Aaron R., and Ira M. Hall. “BEDTools: A Flexible Suite of Utilities for Comparing Genomic Features.” Bioinformatics, vol. 26, no. 6, 2010, pp. 841–842., https://doi.org/10.1093/bioinformatics/btq033.
@@ -29,6 +33,10 @@
   > James K Bonfield, Shane A McCarthy, and Richard Durbin. "Crumble: reference free lossy compression of sequence quality values" Bioinformatics, Volume 35, Issue 2, January 2019, Pages 337–339, https://doi.org/10.1093/bioinformatics/bty608
 
 - [FastK](https://github.com/thegenemyers/FASTK)
+
+- [GFFREAD](https://github.com/gpertea/gffread)
+
+  > Pertea G and Pertea M. "GFF Utilities: GffRead and GffCompare [version 1; peer review: 3 approved]". F1000Research 2020, 9:304 https://doi.org/10.12688/f1000research.23297.1
 
 - [MerquryFK](https://github.com/thegenemyers/MERQURY.FK)
 
