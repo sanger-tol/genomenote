@@ -7,12 +7,12 @@
                 "nf-core": {
                     "agat/spstatistics": {
                         "branch": "master",
-                        "git_sha": "0a0b723d114e502207072603479b635dfbc2bf59",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
                         "installed_by": ["modules"]
                     },
                     "agat/sqstatbasic": {
                         "branch": "master",
-                        "git_sha": "0a0b723d114e502207072603479b635dfbc2bf59",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
                         "installed_by": ["modules"]
                     },
                     "bedtools/bamtobed": {
