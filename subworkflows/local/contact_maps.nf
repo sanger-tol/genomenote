@@ -33,12 +33,7 @@ workflow CONTACT_MAPS {
 
 
     // CRAM to BAM
-    genome
-    | map { meta, fasta -> fasta }
-    | first
-    | set { ch_fasta }
-
-    SAMTOOLS_VIEW ( reads, ch_fasta, [] )
+    SAMTOOLS_VIEW ( reads, genome.first(), [] )
     ch_versions = ch_versions.mix ( SAMTOOLS_VIEW.out.versions.first() )
 
 
@@ -72,7 +67,7 @@ workflow CONTACT_MAPS {
     GET_CHROMLIST.out.list
     | map { meta, list -> list }
     | first
-    | set { ch_chromsizes }    
+    | set { ch_chromsizes }
 
     COOLER_CLOAD ( ch_cooler, ch_chromsizes )
     ch_versions = ch_versions.mix ( COOLER_CLOAD.out.versions.first() )
@@ -90,7 +85,7 @@ workflow CONTACT_MAPS {
     // Create the `.genome` file
     COOLER_CLOAD.out.cool
     | map { meta, cool, bin -> [ meta, cool, [] ] }
-    | set { ch_dump }    
+    | set { ch_dump }
 
     COOLER_DUMP ( ch_dump )
     ch_versions = ch_versions.mix ( COOLER_DUMP.out.versions.first() )
@@ -101,7 +96,7 @@ workflow CONTACT_MAPS {
     if ( params.upload_higlass_data ) {
         UPLOAD_HIGLASS_DATA (COOLER_ZOOMIFY.out.mcool, COOLER_DUMP.out.bedpe, params.higlass_data_project_dir, params.higlass_upload_directory )
         ch_versions = ch_versions.mix ( UPLOAD_HIGLASS_DATA.out.versions.first() )
-   
+
         GENERATE_HIGLASS_LINK (UPLOAD_HIGLASS_DATA.out.file_name, UPLOAD_HIGLASS_DATA.out.map_uuid, UPLOAD_HIGLASS_DATA.out.grid_uuid, params.higlass_url, UPLOAD_HIGLASS_DATA.out.genome_file)
         ch_versions = ch_versions.mix ( GENERATE_HIGLASS_LINK.out.versions.first() )
         ch_higlass_link = ch_higlass_link.mix ( GENERATE_HIGLASS_LINK.out.higlass_link.first() )
