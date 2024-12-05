@@ -25,7 +25,7 @@ if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.linea
 
 // Check optional parameters
 if (params.lineage_db) { ch_lineage_db = Channel.fromPath(params.lineage_db) } else { ch_lineage_db = Channel.empty() }
-if (params.note_template) { ch_note_template = Channel.fromPath(params.note_template) } else { ch_note_template = Channel.empty() } 
+if (params.note_template) { ch_note_template = Channel.fromPath(params.note_template) } else { ch_note_template = Channel.empty() }
 if (params.cool_order) { ch_cool_order = Channel.fromPath(params.cool_order) } else { ch_cool_order = Channel.empty() }
 if (params.biosample_hic) metadata_inputs.add(params.biosample_hic) else metadata_inputs.add(null)
 if (params.biosample_rna) metadata_inputs.add(params.biosample_rna) else metadata_inputs.add(null)
@@ -59,7 +59,7 @@ include { GENOME_METADATA       } from '../subworkflows/local/genome_metadata'
 include { CONTACT_MAPS          } from '../subworkflows/local/contact_maps'
 include { GENOME_STATISTICS     } from '../subworkflows/local/genome_statistics'
 include { COMBINE_NOTE_DATA     } from '../subworkflows/local/combine_note_data'
-include { ANNOTATION_STATISTICS } from '../subworkflows/local/annotation_statistics' 
+include { ANNOTATION_STATISTICS } from '../subworkflows/local/annotation_statistics'
 
 
 /*
@@ -166,7 +166,7 @@ workflow GENOMENOTE {
     //
     COMBINE_NOTE_DATA (GENOME_METADATA.out.consistent, GENOME_METADATA.out.inconsistent, GENOME_STATISTICS.out.summary, ch_annotation_stats.ifEmpty([[],[]]), CONTACT_MAPS.out.link, ch_note_template)
     ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
- 
+
     //
     // MODULE: Combine different versions.yml
     //
@@ -192,7 +192,9 @@ workflow GENOMENOTE {
         ch_multiqc_files.collect(),
         ch_multiqc_config.toList(),
         ch_multiqc_custom_config.toList(),
-        ch_multiqc_logo.toList()
+        ch_multiqc_logo.toList(),
+        [],
+        []
     )
     multiqc_report = MULTIQC.out.report.toList()
 

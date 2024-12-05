@@ -5,7 +5,7 @@
 include { NCBIDATASETS_SUMMARYGENOME as SUMMARYGENOME   } from '../../modules/local/ncbidatasets/summarygenome'
 include { NCBIDATASETS_SUMMARYGENOME as SUMMARYSEQUENCE } from '../../modules/local/ncbidatasets/summarygenome'
 include { NCBI_GET_ODB                                  } from '../../modules/local/ncbidatasets/get_odb'
-include { BUSCO                                         } from '../../modules/nf-core/busco/main'
+include { BUSCO_BUSCO as BUSCO                          } from '../../modules/nf-core/busco/busco/main'
 include { RESTRUCTUREBUSCODIR                           } from '../../modules/local/restructurebuscodir'
 include { FASTK_FASTK                                   } from '../../modules/nf-core/fastk/fastk/main'
 include { MERQURYFK_MERQURYFK                           } from '../../modules/nf-core/merquryfk/merquryfk/main'
@@ -46,7 +46,7 @@ workflow GENOME_STATISTICS {
     | splitCsv()
     | map { row -> row[1] }
     | set { ch_lineage }
-    
+
     BUSCO ( genome, "genome", ch_lineage, lineage_db.ifEmpty([]), [] )
     ch_versions = ch_versions.mix ( BUSCO.out.versions.first() )
 
@@ -87,7 +87,7 @@ workflow GENOME_STATISTICS {
     FASTK_FASTK.out.hist
     | join ( FASTK_FASTK.out.ktab )
     | set { ch_combo }
-    
+
     ch_pacbio.dir
     | map { meta, dir -> [
         meta,
@@ -95,7 +95,7 @@ workflow GENOME_STATISTICS {
         dir.listFiles().findAll { it.toString().contains(".ktab") } .collect(),
       ] }
     | set { ch_grab }
-    
+
     ch_combo
     | mix ( ch_grab )
     | combine ( genome )
@@ -104,7 +104,7 @@ workflow GENOME_STATISTICS {
 
 
     // MerquryFK
-    MERQURYFK_MERQURYFK ( ch_merq )
+    MERQURYFK_MERQURYFK ( ch_merq, [], [] )
     ch_versions = ch_versions.mix ( MERQURYFK_MERQURYFK.out.versions.first() )
 
 
@@ -112,11 +112,11 @@ workflow GENOME_STATISTICS {
     SUMMARYGENOME.out.summary
     | join ( SUMMARYSEQUENCE.out.summary )
     | set { ch_summary }
-    
+
     BUSCO.out.short_summaries_json
     | ifEmpty ( [ [], [] ] )
     | set { ch_busco }
-    
+
     MERQURYFK_MERQURYFK.out.qv
     | join ( MERQURYFK_MERQURYFK.out.stats )
     | map { meta, qv, comp -> [ meta + [ id: "merq" ], qv, comp ] }
