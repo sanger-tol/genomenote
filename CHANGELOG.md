@@ -3,7 +3,6 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
 ## [[2.1.0](https://github.com/sanger-tol/genomenote/releases/tag/2.1.0)] - Pembroke Welsh Corgi [2024-12-05]
 
 ### Enhancements & fixes
@@ -23,18 +22,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
 
-| Dependency  | Old version              | New version              |
-|-------------|--------------------------|--------------------------|
-| `agat`      |                          | 1.4.0                    |
-| `bedtools`   | 2.30.0                   | 2.31.1                  |
-| `busco`     | 5.5.0                    | 5.7.1                    | 
-| `cooler`    | 0.8.11                   | 0.9.2                    |
+| Dependency  | Old version                              | New version                              |
+| ----------- | ---------------------------------------- | ---------------------------------------- |
+| `agat`      |                                          | 1.4.0                                    |
+| `bedtools`  | 2.30.0                                   | 2.31.1                                   |
+| `busco`     | 5.5.0                                    | 5.7.1                                    |
+| `cooler`    | 0.8.11                                   | 0.9.2                                    |
 | `fastk`     | 427104ea91c78c3b8b8b49f1a7d6bbeaa869ba1c | 666652151335353eef2fcd58880bcef5bc2928e1 |
-| `gffread`   |                          | 0.12.7                   |
+| `gffread`   |                                          | 0.12.7                                   |
 | `merquryfk` | d00d98157618f4e8d1a9190026b19b471055b22e | 666652151335353eef2fcd58880bcef5bc2928e1 |
-| `multiqc`   | 1.14                     | 1.25.1                  |
-| `samtools`  | 1.17                     | 1.21                    |
-
+| `multiqc`   | 1.14                                     | 1.25.1                                   |
+| `samtools`  | 1.17                                     | 1.21                                     |
 
 > **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
 
@@ -67,7 +65,6 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 |               | --higlass_kubeconfig       |
 |               | --higlass_upload_directory |
 |               | --higlass_data_project_dir |
-
 
 ## [[1.2.2](https://github.com/sanger-tol/genomenote/releases/tag/1.2.2)] - Pyrenean Mountain Dog (patch 2) - [2024-09-10]
 
