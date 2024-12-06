@@ -18,7 +18,11 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | ---------- | ----------- | ----------- |
 | `bedtools` | 2.30.0      | 2.31.1      |
 | `busco   ` | 5.5.0       | 5.7.1       |
-| `tabix`    | 1.11        | 1.20        |
+| `cooler`   | 0.8.11      | 0.9.2       |
+| `fastk`    | 1.0.1       | 1.2         |
+| `merquryfk`| 1.0.1       | 1.2         |
+| `multiqc`  | 1.14        | 1.25.1      |
+| `samtools` | 1.17        | 1.20        |
 
 ## [[1.2.2](https://github.com/sanger-tol/genomenote/releases/tag/1.2.2)] - Pyrenean Mountain Dog (patch 2) - [2024-09-10]
 
