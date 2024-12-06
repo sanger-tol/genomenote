@@ -3,6 +3,23 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[1.2.3](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.3)] - Pyrenean Mountain Dog (patch 3) - [2024-12-06]
+
+### Enhancements & fixes
+
+- Update module versions
+- Remove reference to Anaconda repositories
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency | Old version | New version |
+| ---------- | ----------- | ----------- |
+| `bedtools` | 2.30.0      | 2.31.1      |
+| `busco   ` | 5.5.0       | 5.7.1       |
+| `tabix`    | 1.11        | 1.20        |
+
 ## [[1.2.2](https://github.com/sanger-tol/genomenote/releases/tag/1.2.2)] - Pyrenean Mountain Dog (patch 2) - [2024-09-10]
 
 ### Enhancements & fixes
