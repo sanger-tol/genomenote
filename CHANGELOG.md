@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - New annotation_statistics subworkfow which runs BUSCO in protein mode and generates some basic statistics on the the annotated gene set if provided with a GFF3 file of gene annotations using the `--annotation_set` option.
 - The genome_metadata subworkflow now queries Ensembl's GraphQL API to determine if Ensembl has released gene annotation for the assembly being processed.
+- Module updates and remove Anaconda channels
 
 ### Parameters
 
