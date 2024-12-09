@@ -30,7 +30,7 @@ You will need to supply the assembly accession for the genome you would like to 
 
 ## Annotation input
 
-If you want to generate statistics on the set of proteins annotated for the assembly you will need to supply a GFF3 file of the predicted protein sequences. The assembly region names used in this file must match the assembly regions names used in the assembly fasta file provided with --fasta
+If you want to generate statistics on the geneset annotated for the assembly you will need to supply a GFF3 file of the predicted gene sequences. The assembly region names used in this file must match the assembly regions names used in the assembly fasta file provided with --fasta
 
 ```bash
 --annotation_set '[Path to annotation file :gff]
