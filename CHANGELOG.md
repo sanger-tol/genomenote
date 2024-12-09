@@ -3,6 +3,12 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[1.2.4](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.4)] - Pyrenean Mountain Dog (patch 4) - [2024-12-09]
+
+### Enhancements & fixes
+
+- Remove defaults from lib/Utils.groovy
+
 ## [[1.2.3](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.3)] - Pyrenean Mountain Dog (patch 3) - [2024-12-06]
 
 ### Enhancements & fixes
