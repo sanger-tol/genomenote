@@ -3,13 +3,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [[2.1.0](https://github.com/sanger-tol/genomenote/releases/tag/2.1.0)] - Pembroke Welsh Corgi [2024-12-05]
+## [[2.1.0](https://github.com/sanger-tol/genomenote/releases/tag/2.1.0)] - Pembroke Welsh Corgi [2024-12-11]
 
 ### Enhancements & fixes
 
 - New annotation_statistics subworkfow which runs BUSCO in protein mode and generates some basic statistics on the the annotated gene set if provided with a GFF3 file of gene annotations using the `--annotation_set` option.
 - The genome_metadata subworkflow now queries Ensembl's GraphQL API to determine if Ensembl has released gene annotation for the assembly being processed.
 - Module updates and remove Anaconda channels
+- Removed merquryfk completeness metric
 
 ### Parameters
 
@@ -31,7 +32,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | `cooler`    | 0.8.11                                   | 0.9.2                                    |
 | `fastk`     | 427104ea91c78c3b8b8b49f1a7d6bbeaa869ba1c | 666652151335353eef2fcd58880bcef5bc2928e1 |
 | `gffread`   |                                          | 0.12.7                                   |
-| `merquryfk` | d00d98157618f4e8d1a9190026b19b471055b22e | 666652151335353eef2fcd58880bcef5bc2928e1 |
+| `merquryfk` | d00d98157618f4e8d1a9190026b19b471055b22e |                                          |
 | `multiqc`   | 1.14                                     | 1.25.1                                   |
 | `samtools`  | 1.17                                     | 1.21                                     |
 
