@@ -1,11 +1,10 @@
 ---
 title: 'sanger-tol/genomenote'
 tags:
-  - Python
-  - astronomy
-  - dynamics
-  - galactic dynamics
-  - milky way
+  - Nextflow
+  - nf-core
+  - genome assembly
+  - genomics
 authors:
   - name: Bethan Yates
     orcid: 0000-0000-0000-0000
@@ -41,9 +40,15 @@ Statement of need
 
 # Materials and Methods 
 
+Some ideas for subheadings:
+
 ## Features 
 
 ## Workflow 
+
+## Usage and Installation 
+
+Configuration, etc
 
 ## Outputs 
 
