@@ -1,8 +1,8 @@
-Changes in module 'nf-core/busco'
---- modules/nf-core/busco/main.nf
-+++ modules/nf-core/busco/main.nf
+Changes in module 'nf-core/busco/busco'
+--- modules/nf-core/busco/busco/main.nf
++++ modules/nf-core/busco/busco/main.nf
 @@ -1,6 +1,5 @@
- process BUSCO {
+ process BUSCO_BUSCO {
 -    tag "$meta.id"
 -    label 'process_medium'
 +    tag "${meta.id}_${lineage}"

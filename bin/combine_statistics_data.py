@@ -8,7 +8,8 @@ import string
 
 files = [
     ("CONSISTENT", "in_consistent"),
-    ("STATISITCS", "in_statistics"),
+    ("GENOME_STATISTICS", "in_genome_statistics"),
+    ("ANNOTATION_STATISITCS", "in_annotation_statistics"),
 ]
 
 
@@ -19,7 +20,13 @@ def parse_args(args=None):
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
     parser.add_argument("--in_consistent", help="Input consistent params file.", required=True)
     parser.add_argument("--in_inconsistent", help="Input consistent params file.", required=True)
-    parser.add_argument("--in_statistics", help="Input parsed genome statistics params file.", required=True)
+    parser.add_argument("--in_genome_statistics", help="Input parsed genome statistics params file.", required=True)
+    parser.add_argument(
+        "--in_annotation_statistics",
+        help="Input parsed annotation statistics params file.",
+        required=False,
+        default=None,
+    )
     parser.add_argument("--out_consistent", help="Output file.", required=True)
     parser.add_argument("--out_inconsistent", help="Output file.", required=True)
     parser.add_argument("--version", action="version", version="%(prog)s 1.0")
@@ -36,7 +43,7 @@ def process_file(file_in, file_type, params, param_sets):
         reader = csv.reader(infile)
 
         for row in reader:
-            if row[0] == "#paramName":
+            if row[0].startswith("#"):
                 continue
 
             key = row.pop(0)
@@ -95,7 +102,10 @@ def main(args=None):
     params_inconsistent = {}
 
     for file in files:
-        (params, param_sets) = process_file(getattr(args, file[1]), file[0], params, param_sets)
+        if file[0] == "ANNOTATION_STATISITCS" and args.in_annotation_statistics == None:
+            continue
+        else:
+            (params, param_sets) = process_file(getattr(args, file[1]), file[0], params, param_sets)
 
     for key in params.keys():
         value_set = {v for v in params[key]}

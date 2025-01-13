@@ -13,6 +13,7 @@ workflow COMBINE_NOTE_DATA {
     ch_params_consistent // channel: /path/to/csv/file/consistent_parameters from GENOME_METADATA subworkflow
     ch_params_inconsistent // channel: /path/to/csv/file/consistent_parameters from GENOME_METADATA subworkflow
     ch_summary // channel: /path/to/csv/summary/file from GENOME_STATISTICS subworkflow 
+    ch_annotation_summary // channel: /path/to/csv/summary/file from ANNOTATION_STATISTICS subworkflow
     ch_higlass // channel: /path/to/csv/higlass_link from CONTACT_MAPS subworkflow 
     ch_note_template   // channel: /path/to/genome_note_doc_template
 
@@ -30,11 +31,11 @@ workflow COMBINE_NOTE_DATA {
     }
     | set { ch_summary_meta }
 
+
     PARSE_METADATA(ch_summary_meta)
     ch_versions = ch_versions.mix( PARSE_METADATA.out.versions.first() )
 
-
-    COMBINE_STATISTICS_AND_METADATA(ch_params_consistent, ch_params_inconsistent, PARSE_METADATA.out.file_path)
+    COMBINE_STATISTICS_AND_METADATA(ch_params_consistent, ch_params_inconsistent, PARSE_METADATA.out.file_path, ch_annotation_summary)
     ch_versions = ch_versions.mix( COMBINE_STATISTICS_AND_METADATA.out.versions.first() )
 
     ch_higlass

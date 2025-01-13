@@ -7,8 +7,8 @@ import argparse
 
 
 def parse_args(args=None):
-    Description = "Parse contents of an ENA Taxonomy report and pull out metadata required by a genome note."
-    Epilog = "Example usage: python fetch_gbif_metadata.py --genus --species --output"
+    Description = "Query GBIF for species taxonomy information and pull out metadata required by a genome note."
+    Epilog = "Example usage: python fetch_gbif_metadata.py --species --output"
 
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
     parser.add_argument("--species", required=True, help="The species name")
