@@ -48,8 +48,8 @@ def fetch_ensembl_data(taxon, output_file):
     """
     response = requests.post(url=url, json={"query": query, "variables": variables})
 
+    param_list = []
     if response.status_code == 200:
-        param_list = []
         data = response.json()
         if data["data"]["genomes"] is not None:
             genomes = data["data"]["genomes"][0]
