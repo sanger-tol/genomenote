@@ -3,6 +3,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[2.X.Y](https://github.com/sanger-tol/genomenote/releases/tag/2.X.Y)]
+
+### Enhancements & fixes
+
+- Call the `/v2` version of the NCBI datasets API rather than `/v2alpha`
+- Fixed a bug in `FETCH_ENSEMBL_METADATA` when the Ensembl API fails
+- Fixed the runtime requirement of MultiQC
+
 ## [[2.1.0](https://github.com/sanger-tol/genomenote/releases/tag/2.1.0)] - Pembroke Welsh Corgi [2024-12-11]
 
 ### Enhancements & fixes
