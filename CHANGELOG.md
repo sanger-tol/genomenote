@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Enhancements & fixes
 
 - Moved over to the NCBI API v2 since the v1 is deprecated
+- Fixed the process name for Busco
 
 ## [[1.2.4](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.4)] - Pyrenean Mountain Dog (patch 4) - [2024-12-09]
 
