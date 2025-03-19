@@ -48,8 +48,8 @@ def fetch_ensembl_data(taxon, output_file):
     """
     response = requests.post(url=url, json={"query": query, "variables": variables})
 
+    param_list = []
     if response.status_code == 200:
-        param_list = []
         data = response.json()
         if data["data"]["genomes"] is not None:
             genomes = data["data"]["genomes"][0]
@@ -62,6 +62,12 @@ def fetch_ensembl_data(taxon, output_file):
                 annot_url = f"https://beta.ensembl.org/species/{species_id}"
                 annot_url = f'"{annot_url}"'
                 param_list.append(("ANNOT_URL", annot_url))
+    else:
+        print("Failed to get a response from the Ensembl API")
+        print(url)
+        print(query)
+        print(variables)
+        sys.exit(1)
 
     # Write out file even if there is no annotation data to write
     out_dir = os.path.dirname(output_file)
