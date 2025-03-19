@@ -3,6 +3,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[1.2.5](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.5)] - Pyrenean Mountain Dog (patch 5) - [2025-03-19]
+
+### Enhancements & fixes
+
+- Moved over to the NCBI API v2 since the v1 is deprecated
+- Fixed the process name for Busco
+
 ## [[1.2.4](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.4)] - Pyrenean Mountain Dog (patch 4) - [2024-12-09]
 
 ### Enhancements & fixes
@@ -20,15 +27,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
 
-| Dependency | Old version | New version |
-| ---------- | ----------- | ----------- |
-| `bedtools` | 2.30.0      | 2.31.1      |
-| `busco   ` | 5.5.0       | 5.7.1       |
-| `cooler`   | 0.8.11      | 0.9.2       |
-| `fastk`    | 1.0.1       | 1.2         |
-| `merquryfk`| 1.0.1       | 1.2         |
-| `multiqc`  | 1.14        | 1.25.1      |
-| `samtools` | 1.17        | 1.20        |
+| Dependency  | Old version | New version |
+| ----------- | ----------- | ----------- |
+| `bedtools`  | 2.30.0      | 2.31.1      |
+| `busco   `  | 5.5.0       | 5.7.1       |
+| `cooler`    | 0.8.11      | 0.9.2       |
+| `fastk`     | 1.0.1       | 1.2         |
+| `merquryfk` | 1.0.1       | 1.2         |
+| `multiqc`   | 1.14        | 1.25.1      |
+| `samtools`  | 1.17        | 1.20        |
 
 ## [[1.2.2](https://github.com/sanger-tol/genomenote/releases/tag/1.2.2)] - Pyrenean Mountain Dog (patch 2) - [2024-09-10]
 

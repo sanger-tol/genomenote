@@ -8,7 +8,7 @@ import requests
 import re
 
 
-NCBI_TAXONOMY_API = "https://api.ncbi.nlm.nih.gov/datasets/v1/taxonomy/taxon/%s"
+NCBI_TAXONOMY_API = "https://api.ncbi.nlm.nih.gov/datasets/v2/taxonomy/taxon/%s"
 
 
 def parse_args(args=None):
