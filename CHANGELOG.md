@@ -3,6 +3,12 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[2.1.2](https://github.com/sanger-tol/genomenote/releases/tag/2.1.2)] - Pembroke Welsh Corgi (patch 2) [2025-03-25]
+
+### Enhancements & fixes
+
+- Addition of the GFASTATS module and config.
+
 ## [[2.1.1](https://github.com/sanger-tol/genomenote/releases/tag/2.1.1)] - Pembroke Welsh Corgi (patch 1) [2025-03-19]
 
 ### Enhancements & fixes
