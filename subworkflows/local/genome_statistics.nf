@@ -9,6 +9,7 @@ include { BUSCO_BUSCO as BUSCO                          } from '../../modules/nf
 include { RESTRUCTUREBUSCODIR                           } from '../../modules/local/restructurebuscodir'
 include { FASTK_FASTK                                   } from '../../modules/nf-core/fastk/fastk/main'
 include { CREATETABLE                                   } from '../../modules/local/createtable'
+include { GFASTATS                                      } from '../../modules/nf-core/gfastats/main'
 
 // This is only temporarily removed so I'm leaving it here for now
 //include { MERQURYFK_MERQURYFK                           } from '../../modules/nf-core/merquryfk/merquryfk/main'
@@ -26,22 +27,46 @@ workflow GENOME_STATISTICS {
     ch_versions = Channel.empty()
 
 
-    // Genome summary statistics
+    //
+    // MODULE: Genome summary statistics
+    //
     SUMMARYGENOME ( genome )
     ch_versions = ch_versions.mix ( SUMMARYGENOME.out.versions.first() )
 
 
-    // Sequence summary statistics
+    //
+    // MODULE: Get genomic assembly statistics using GFASTATS
+    //
+    GFASTATS(
+        genome,
+        "fasta",
+        [],
+        [],
+        [[],[]],
+        [[],[]],
+        [[],[]],
+        [[],[]]
+    )
+    ch_versions     = ch_versions.mix( GFASTATS.out.versions )
+
+
+    //
+    // MODULE: Sequence summary statistics
+    //
     SUMMARYSEQUENCE ( genome )
     ch_versions = ch_versions.mix ( SUMMARYSEQUENCE.out.versions.first() )
 
 
-    // Get ODB lineage value
+    //
+    // MODULE: Get ODB lineage value
+    //
     NCBI_GET_ODB ( SUMMARYGENOME.out.summary, lineage_tax_ids )
     ch_versions = ch_versions.mix ( NCBI_GET_ODB.out.versions.first() )
 
 
-    // BUSCO
+    //
+    // MODULE: BUSCO
+    //
     NCBI_GET_ODB.out.csv
     | map { meta, csv -> csv }
     | splitCsv()
@@ -53,7 +78,7 @@ workflow GENOME_STATISTICS {
 
 
     //
-    // Tidy up the BUSCO output directories before publication
+    // MODULE: Tidy up the BUSCO output directories before publication
     //
     RESTRUCTUREBUSCODIR(
         BUSCO.out.batch_summary
@@ -66,12 +91,14 @@ workflow GENOME_STATISTICS {
     ch_versions = ch_versions.mix ( RESTRUCTUREBUSCODIR.out.versions.first() )
 
 
-    // FastK
+    //
+    // MODULE: FastK
+    //
     pacbio
     | branch {
-         meta, file ->
-             dir: file.isDirectory()
-             file: true
+        meta, file ->
+            dir: file.isDirectory()
+            file: true
     }
     | set { ch_pacbio }
 
@@ -84,7 +111,9 @@ workflow GENOME_STATISTICS {
     ch_versions = ch_versions.mix ( FASTK_FASTK.out.versions.first() )
 
 
-    // Define channel for MERQURKFK
+    //
+    // MODULE: Define channel for MERQURKFK
+    //
     FASTK_FASTK.out.hist
     | join ( FASTK_FASTK.out.ktab )
     | set { ch_combo }
@@ -94,7 +123,7 @@ workflow GENOME_STATISTICS {
         meta,
         dir.listFiles().findAll { it.toString().endsWith(".hist") } .collect(),
         dir.listFiles().findAll { it.toString().contains(".ktab") } .collect(),
-      ] }
+    ] }
     | set { ch_grab }
 
     ch_combo
@@ -110,7 +139,9 @@ workflow GENOME_STATISTICS {
     // ch_versions = ch_versions.mix ( MERQURYFK_MERQURYFK.out.versions.first() )
 
 
-    // Combined table
+    //
+    // MODULE: Combined table
+    //
     SUMMARYGENOME.out.summary
     | join ( SUMMARYSEQUENCE.out.summary )
     | set { ch_summary }
@@ -138,15 +169,21 @@ workflow GENOME_STATISTICS {
     // Now channel of tuple(list(meta), list(file))
     | set { ch_flagstat }
 
-    //CREATETABLE ( ch_summary, ch_busco, ch_merqury, ch_flagstat )
+
+    //
+    // MODULE: CREATETABLE ( ch_summary, ch_busco, ch_merqury, ch_flagstat )
+    //
     CREATETABLE ( ch_summary, ch_busco, [[], [], []], ch_flagstat )
     ch_versions = ch_versions.mix ( CREATETABLE.out.versions.first() )
 
 
-    // BUSCO results for MULTIQC
+    //
+    // MODULE: BUSCO results for MULTIQC
+    //
     BUSCO.out.short_summaries_txt
     | ifEmpty ( [ [], [] ] )
     | set { multiqc }
+
 
     emit:
     summary_seq = SUMMARYSEQUENCE.out.summary   // channel: [ meta, summary ]
