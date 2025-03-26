@@ -135,10 +135,7 @@ workflow GENOMENOTE {
     //
     // SUBWORKFLOW: Generate KMER plots of the input genome
     //
-    PLOT_HISTOGRAM (
-        ch_fasta,
-        ch_inputs.pacbio
-    )
+    PLOT_HISTOGRAM ( ch_inputs.pacbio )
     ch_versions = ch_versions.mix ( PLOT_HISTOGRAM.out.versions )
 
 
