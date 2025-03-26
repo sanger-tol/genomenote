@@ -39,9 +39,9 @@ workflow GENOME_STATISTICS {
     //
     GFASTATS(
         genome,
-        "fasta",
-        [],
-        [],
+        "",
+        "",
+        "",
         [[],[]],
         [[],[]],
         [[],[]],
