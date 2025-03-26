@@ -9,8 +9,8 @@ include { BUSCO_BUSCO as BUSCO                          } from '../../modules/nf
 include { RESTRUCTUREBUSCODIR                           } from '../../modules/local/restructurebuscodir'
 include { FASTK_FASTK                                   } from '../../modules/nf-core/fastk/fastk/main'
 include { CREATETABLE                                   } from '../../modules/local/createtable'
-include { FASTK_HISTEX                                  } from '../../modules/nf-core/fastk_histex/main'
-include { GENESCOPEFK                                   } from '../../modules/nf-core/genomescope2/main'
+include { FASTK_HISTEX                                  } from '../../modules/nf-core/fastk/histex/main'
+include { GENESCOPEFK                                   } from '../../modules/nf-core/genescopefk/main'
 
 
 // This is only temporarily removed so I'm leaving it here for now
