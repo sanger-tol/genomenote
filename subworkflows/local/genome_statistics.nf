@@ -36,25 +36,18 @@ workflow GENOME_STATISTICS {
     ch_versions = ch_versions.mix ( SUMMARYSEQUENCE.out.versions.first() )
 
 
-    //
-    // LOGIC: If the obd param is manually specified then we use that,
-    //          otherwise we get the lineage from NCBI.
-    //
-    if (!params.odb) {}
-        // Get ODB lineage value
-        NCBI_GET_ODB ( SUMMARYGENOME.out.summary, lineage_tax_ids )
-        ch_versions = ch_versions.mix ( NCBI_GET_ODB.out.versions.first() )
+    // Get ODB lineage value
+    NCBI_GET_ODB ( SUMMARYGENOME.out.summary, lineage_tax_ids )
+    ch_versions = ch_versions.mix ( NCBI_GET_ODB.out.versions.first() )
 
 
-        // BUSCO
-        NCBI_GET_ODB.out.csv
-        | map { meta, csv -> csv }
-        | splitCsv()
-        | map { row -> row[1] }
-        | set { ch_lineage }
-    } else {
-        ch_lineage = params.odb
-    }
+    // BUSCO
+    NCBI_GET_ODB.out.csv
+    | map { meta, csv -> csv }
+    | splitCsv()
+    | map { row -> row[1] }
+    | set { ch_lineage }
+
 
     BUSCO ( genome, "genome", ch_lineage, lineage_db.ifEmpty([]), [] )
     ch_versions = ch_versions.mix ( BUSCO.out.versions.first() )
