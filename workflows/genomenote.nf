@@ -113,13 +113,6 @@ workflow GENOMENOTE {
     GENOME_METADATA ( ch_metadata )
     ch_versions = ch_versions.mix(GENOME_METADATA.out.versions)
 
-
-    //
-    // SUBWORKFLOW: Generate KMER plots of the input genome
-    //
-    PLOT_HISTOGRAM ( ch_kmer )
-    ch_versions = ch_versions.mix ( PLOT_HISTOGRAM.out.versions )
-
     //
     // MODULE: Uncompress fasta file if needed and set meta based on input params
     //
@@ -140,6 +133,16 @@ workflow GENOMENOTE {
 
 
     //
+    // SUBWORKFLOW: Generate KMER plots of the input genome
+    //
+    PLOT_HISTOGRAM (
+        ch_fasta,
+        ch_inputs.pacbio
+    )
+    ch_versions = ch_versions.mix ( PLOT_HISTOGRAM.out.versions )
+
+
+    //
     // SUBWORKFLOW: Create genome statistics table
     //
     ch_inputs.hic
@@ -149,7 +152,13 @@ workflow GENOMENOTE {
     }
     | set { ch_flagstat }
 
-    GENOME_STATISTICS ( ch_fasta, ch_lineage_tax_ids, ch_lineage_db, ch_inputs.pacbio, ch_flagstat )
+    GENOME_STATISTICS (
+        ch_fasta,
+        ch_lineage_tax_ids,
+        ch_lineage_db,
+        ch_inputs.pacbio,
+        ch_flagstat
+    )
     ch_versions = ch_versions.mix ( GENOME_STATISTICS.out.versions )
 
 

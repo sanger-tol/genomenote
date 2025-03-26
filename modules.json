@@ -26,6 +26,11 @@
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/busco/busco/busco-busco.diff"
                     },
+                    "cat/cat": {
+                        "branch": "master",
+                        "git_sha": "81880787133db07d9b4c1febd152c090eb8325dc",
+                        "installed_by": ["modules"]
+                    },
                     "cooler/cload": {
                         "branch": "master",
                         "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
@@ -51,6 +56,11 @@
                         "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/fastk/fastk/fastk-fastk.diff"
+                    },
+                    "genescopefk": {
+                        "branch": "master",
+                        "git_sha": "a4d916a39231897a49c903089a548704c09b8ef3",
+                        "installed_by": ["modules"]
                     },
                     "gffread": {
                         "branch": "master",
