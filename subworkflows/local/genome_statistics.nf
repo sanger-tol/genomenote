@@ -39,18 +39,21 @@ workflow GENOME_STATISTICS {
     ch_versions         = ch_versions.mix ( SUMMARYSEQUENCE.out.versions.first() )
 
 
-    // Get ODB lineage value
-    NCBI_GET_ODB ( SUMMARYGENOME.out.summary, lineage_tax_ids )
-    ch_versions         = ch_versions.mix ( NCBI_GET_ODB.out.versions.first() )
+    if (params.odb_override) {
+        ch_lineage = params.odb_override
+    } else {
+        // Get ODB lineage value
+        NCBI_GET_ODB ( SUMMARYGENOME.out.summary, lineage_tax_ids )
+        ch_versions         = ch_versions.mix ( NCBI_GET_ODB.out.versions.first() )
 
 
-    // BUSCO
-    NCBI_GET_ODB.out.csv
-    | map { meta, csv -> csv }
-    | splitCsv()
-    | map { row -> row[1] }
-    | set { ch_lineage }
-
+        // BUSCO
+        NCBI_GET_ODB.out.csv
+        | map { meta, csv -> csv }
+        | splitCsv()
+        | map { row -> row[1] }
+        | set { ch_lineage }
+    }
 
     BUSCO (
         genome,
