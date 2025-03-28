@@ -39,44 +39,44 @@ workflow GENOME_STATISTICS {
     ch_versions         = ch_versions.mix ( SUMMARYSEQUENCE.out.versions.first() )
 
 
-    // if (params.odb_override) {
-    //     ch_lineage = params.odb_override
-    // } else {
-    //     // Get ODB lineage value
-    //     NCBI_GET_ODB ( SUMMARYGENOME.out.summary, lineage_tax_ids )
-    //     ch_versions         = ch_versions.mix ( NCBI_GET_ODB.out.versions.first() )
+    if (params.odb_override) {
+        ch_lineage = params.odb_override
+    } else {
+        // Get ODB lineage value
+        NCBI_GET_ODB ( SUMMARYGENOME.out.summary, lineage_tax_ids )
+        ch_versions         = ch_versions.mix ( NCBI_GET_ODB.out.versions.first() )
 
 
-    //     // BUSCO
-    //     NCBI_GET_ODB.out.csv
-    //     | map { meta, csv -> csv }
-    //     | splitCsv()
-    //     | map { row -> row[1] }
-    //     | set { ch_lineage }
-    // }
+        // BUSCO
+        NCBI_GET_ODB.out.csv
+        | map { meta, csv -> csv }
+        | splitCsv()
+        | map { row -> row[1] }
+        | set { ch_lineage }
+    }
 
-    // BUSCO (
-    //     genome,
-    //     "genome",
-    //     ch_lineage,
-    //     lineage_db.ifEmpty([]),
-    //     []
-    // )
-    // ch_versions         = ch_versions.mix ( BUSCO.out.versions.first() )
+    BUSCO (
+        genome,
+        "genome",
+        ch_lineage,
+        lineage_db.ifEmpty([]),
+        []
+    )
+    ch_versions         = ch_versions.mix ( BUSCO.out.versions.first() )
 
 
-    //
-    // Tidy up the BUSCO output directories before publication
-    //
-    // RESTRUCTUREBUSCODIR(
-    //     BUSCO.out.batch_summary
-    //     | combine ( ch_lineage )
-    //     | join ( BUSCO.out.short_summaries_txt, remainder: true )
-    //     | join ( BUSCO.out.short_summaries_json, remainder: true )
-    //     | join ( BUSCO.out.busco_dir )
-    //     | map { meta, batch_summary, lineage, short_summaries_txt, short_summaries_json, busco_dir -> [meta, lineage, batch_summary, short_summaries_txt ?: [], short_summaries_json ?: [], busco_dir] }
-    // )
-    // ch_versions         = ch_versions.mix ( RESTRUCTUREBUSCODIR.out.versions.first() )
+
+    Tidy up the BUSCO output directories before publication
+
+    RESTRUCTUREBUSCODIR(
+        BUSCO.out.batch_summary
+        | combine ( ch_lineage )
+        | join ( BUSCO.out.short_summaries_txt, remainder: true )
+        | join ( BUSCO.out.short_summaries_json, remainder: true )
+        | join ( BUSCO.out.busco_dir )
+        | map { meta, batch_summary, lineage, short_summaries_txt, short_summaries_json, busco_dir -> [meta, lineage, batch_summary, short_summaries_txt ?: [], short_summaries_json ?: [], busco_dir] }
+    )
+    ch_versions         = ch_versions.mix ( RESTRUCTUREBUSCODIR.out.versions.first() )
 
 
     //
@@ -145,13 +145,13 @@ workflow GENOME_STATISTICS {
     //
     // MODULE: Combined table
     //
-    // SUMMARYGENOME.out.summary
-    // | join ( SUMMARYSEQUENCE.out.summary )
-    // | set { ch_summary }
+    SUMMARYGENOME.out.summary
+    | join ( SUMMARYSEQUENCE.out.summary )
+    | set { ch_summary }
 
-    // BUSCO.out.short_summaries_json
-    // | ifEmpty ( [ [], [] ] )
-    // | set { ch_busco }
+    BUSCO.out.short_summaries_json
+    | ifEmpty ( [ [], [] ] )
+    | set { ch_busco }
 
     // This is only temporarily removed so I'm leaving it here for now
     // MERQURYFK_MERQURYFK.out.qv
@@ -161,43 +161,43 @@ workflow GENOME_STATISTICS {
     // | ifEmpty ( [ [], [], [] ] )
     // | set { ch_merqury }
 
-    // flagstat
-    // // Queue channel of tuple(meta, file)
-    // | toList
-    // // Value channel of list(tuple(meta, file))
-    // | map { lmf -> [
-    //         lmf.collect { it[0] },
-    //         lmf.collect { it[1] },
-    //     ] }
-    // // Now channel of tuple(list(meta), list(file))
-    // | set { ch_flagstat }
+    flagstat
+    // Queue channel of tuple(meta, file)
+    | toList
+    // Value channel of list(tuple(meta, file))
+    | map { lmf -> [
+            lmf.collect { it[0] },
+            lmf.collect { it[1] },
+        ] }
+    // Now channel of tuple(list(meta), list(file))
+    | set { ch_flagstat }
 
-    // //
-    // // MODULE: CREATETABLE ( ch_summary, ch_busco, ch_merqury, ch_flagstat )
-    // //
-    // CREATETABLE ( ch_summary, ch_busco, [[], [], []], ch_flagstat )
-    // ch_versions         = ch_versions.mix ( CREATETABLE.out.versions.first() )
+    //
+    // MODULE: CREATETABLE ( ch_summary, ch_busco, ch_merqury, ch_flagstat )
+    //
+    CREATETABLE ( ch_summary, ch_busco, [[], [], []], ch_flagstat )
+    ch_versions         = ch_versions.mix ( CREATETABLE.out.versions.first() )
 
 
-    // //
-    // // LOGIC: BUSCO results for MULTIQC
-    // //
-    // BUSCO.out.short_summaries_txt
-    // | ifEmpty ( [ [], [] ] )
-    // | set { multiqc }
+    //
+    // LOGIC: BUSCO results for MULTIQC
+    //
+    BUSCO.out.short_summaries_txt
+    | ifEmpty ( [ [], [] ] )
+    | set { multiqc }
 
-    // emit:
-    // summary_seq         = SUMMARYSEQUENCE.out.summary               // channel: [ meta, summary ]
-    // summary             = CREATETABLE.out.csv                       // channel: [ csv ]
-    // multiqc                                                         // channel: [ meta, summary ]
-    // ch_kmer_cov         = GENESCOPEFK.out.kmer_cov                  // channel: [ meta, kmer_coverage ]
-    // ch_linear_plot      = GENESCOPEFK.out.linear_plot               // channel: [ meta, linear_plot ]
-    // ch_log_plot         = GENESCOPEFK.out.log_plot                  // channel: [ meta, log_plot ]
-    // ch_model            = GENESCOPEFK.out.model                     // channel: [ meta, model ]
-    // ch_summary          = GENESCOPEFK.out.summary                   // channel: [ meta, summary ]
-    // ch_trans_lin_plot   = GENESCOPEFK.out.transformed_linear_plot   // channel: [ meta, transformed_linear_plot ]
-    // ch_trans_log_plot   = GENESCOPEFK.out.transformed_log_plot      // channel: [ meta, transformed_log_plot ]
-    // versions            = ch_versions                               // channel: [ versions.yml ]
+    emit:
+    summary_seq         = SUMMARYSEQUENCE.out.summary               // channel: [ meta, summary ]
+    summary             = CREATETABLE.out.csv                       // channel: [ csv ]
+    multiqc                                                         // channel: [ meta, summary ]
+    ch_kmer_cov         = GENESCOPEFK.out.kmer_cov                  // channel: [ meta, kmer_coverage ]
+    ch_linear_plot      = GENESCOPEFK.out.linear_plot               // channel: [ meta, linear_plot ]
+    ch_log_plot         = GENESCOPEFK.out.log_plot                  // channel: [ meta, log_plot ]
+    ch_model            = GENESCOPEFK.out.model                     // channel: [ meta, model ]
+    ch_summary          = GENESCOPEFK.out.summary                   // channel: [ meta, summary ]
+    ch_trans_lin_plot   = GENESCOPEFK.out.transformed_linear_plot   // channel: [ meta, transformed_linear_plot ]
+    ch_trans_log_plot   = GENESCOPEFK.out.transformed_log_plot      // channel: [ meta, transformed_log_plot ]
+    versions            = ch_versions                               // channel: [ versions.yml ]
 
 }
 
