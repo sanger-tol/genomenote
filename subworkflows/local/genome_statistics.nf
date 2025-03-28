@@ -40,7 +40,7 @@ workflow GENOME_STATISTICS {
 
 
     if (params.odb_override) {
-        ch_lineage = params.odb_override
+        ch_lineage      = Channel.of(params.odb_override)
     } else {
         // Get ODB lineage value
         NCBI_GET_ODB ( SUMMARYGENOME.out.summary, lineage_tax_ids )
@@ -53,6 +53,8 @@ workflow GENOME_STATISTICS {
         | splitCsv()
         | map { row -> row[1] }
         | set { ch_lineage }
+
+        ch_lineage.view{"AUTO_LINEAGE: $it"}
     }
 
     BUSCO (
