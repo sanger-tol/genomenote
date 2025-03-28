@@ -65,9 +65,9 @@ workflow GENOME_STATISTICS {
     ch_versions         = ch_versions.mix ( BUSCO.out.versions.first() )
 
 
-
-    Tidy up the BUSCO output directories before publication
-
+    //
+    // MODULE: Tidy up the BUSCO output directories before publication
+    //
     RESTRUCTUREBUSCODIR(
         BUSCO.out.batch_summary
         | combine ( ch_lineage )
