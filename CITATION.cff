@@ -37,6 +37,11 @@ authors:
       family-names: Yates
       affiliation: Wellcome Sanger Institute
       orcid: "https://orcid.org/0000-0003-1658-1762"
+    - given-names: Damon-Lee
+      name-particle: Bernard
+      family-names: Pointon
+      affiliation: Wellcome Sanger Institute
+      orcid: "https://orcid.org/0000-0003-2949-6719"
 identifiers:
     - type: doi
       value: 10.5281/zenodo.7949384

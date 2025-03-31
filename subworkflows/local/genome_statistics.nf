@@ -40,23 +40,30 @@ workflow GENOME_STATISTICS {
 
 
     if (params.odb_override) {
+        // NOTE: IN PIPELINE_INITIALISATION, ADD SANITY CHECK FOR LENGTH AND ENSURE MULTIPLE ODBS ARN'T BEING ADDED
         ch_lineage      = Channel.of(params.odb_override)
     } else {
-        // Get ODB lineage value
+        //
+        // MODULE: GET RAW ODB LINEAGE VALUE
+        //
         NCBI_GET_ODB ( SUMMARYGENOME.out.summary, lineage_tax_ids )
         ch_versions         = ch_versions.mix ( NCBI_GET_ODB.out.versions.first() )
 
 
-        // BUSCO
+        //
+        // LOGIC: FORMAT NCBI GET ODB OUTPUT INTO A CHANNEL OF val(lepidoptera_odb10) READY FOR BUSCO INPUT.
+        //
         NCBI_GET_ODB.out.csv
         | map { meta, csv -> csv }
         | splitCsv()
         | map { row -> row[1] }
         | set { ch_lineage }
 
-        ch_lineage.view{"AUTO_LINEAGE: $it"}
     }
 
+    //
+    // MODULE: RUN BUSCO
+    //
     BUSCO (
         genome,
         "genome",
