@@ -39,9 +39,9 @@ workflow GENOME_STATISTICS {
     ch_versions         = ch_versions.mix ( SUMMARYSEQUENCE.out.versions.first() )
 
 
-    if (params.odb_override) {
+    if (params.busco_lineage) {
         // NOTE: IN PIPELINE_INITIALISATION, ADD SANITY CHECK FOR LENGTH AND ENSURE MULTIPLE ODBS ARN'T BEING ADDED
-        ch_lineage      = Channel.of(params.odb_override)
+        ch_lineage      = Channel.of(params.busco_lineage)
     } else {
         //
         // MODULE: GET RAW ODB LINEAGE VALUE
