@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Addition of the GFASTATS module and config.
 - Addition of GenescopeFK histogram plots and related data.
-- Support for CLI provided odb's to override the NCBI auto generated odb's.
+- Support for CLI provided Busco lineage to override the NCBI auto generated one.
 
 ### Parameters
 
