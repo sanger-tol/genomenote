@@ -2,7 +2,7 @@
 # Visit https://bit.ly/cffinit to generate yours today!
 
 cff-version: 1.2.0
-title: sanger-tol/genomenote v2.1.1
+title: sanger-tol/genomenote v2.2.0
 type: software
 authors:
     - given-names: Sandra Ruth
@@ -47,5 +47,5 @@ identifiers:
       value: 10.5281/zenodo.7949384
 repository-code: "https://github.com/sanger-tol/genomenote"
 license: MIT
-version: 2.1.1
+version: 2.2.0
 date-released: "2022-10-07"
