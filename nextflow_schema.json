@@ -51,6 +51,7 @@
                 "busco_lineage": {
                     "type": "string",
                     "description": "Override the BUSCO database used for the assembly assessment.",
+                    "pattern": "._odb10$",
                     "default": null
                 },
                 "outdir": {

@@ -60,7 +60,6 @@ workflow GENOME_STATISTICS {
 
 
     if (params.busco_lineage) {
-        // NOTE: IN PIPELINE_INITIALISATION, ADD SANITY CHECK FOR LENGTH AND ENSURE MULTIPLE ODBS ARN'T BEING ADDED
         ch_lineage      = Channel.of(params.busco_lineage)
     } else {
         //
