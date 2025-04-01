@@ -11,7 +11,7 @@ include { FASTK_FASTK                                   } from '../../modules/nf
 include { CREATETABLE                                   } from '../../modules/local/createtable'
 include { FASTK_HISTEX                                  } from '../../modules/nf-core/fastk/histex/main'
 include { GENESCOPEFK                                   } from '../../modules/nf-core/genescopefk/main'
-
+include { GFASTATS                                      } from '../../modules/nf-core/gfastats/main'
 
 // This is only temporarily removed so I'm leaving it here for now
 //include { MERQURYFK_MERQURYFK                           } from '../../modules/nf-core/merquryfk/merquryfk/main'
@@ -29,12 +29,32 @@ workflow GENOME_STATISTICS {
     ch_versions         = Channel.empty()
 
 
-    //Genome summary statistics
+    //
+    // MODULE: Genome summary statistics
+    //
     SUMMARYGENOME ( genome )
     ch_versions         = ch_versions.mix ( SUMMARYGENOME.out.versions.first() )
 
 
-    // Sequence summary statistics
+    //
+    // MODULE: Get genomic assembly statistics using GFASTATS
+    //
+    GFASTATS(
+        genome,
+        "",
+        "",
+        "",
+        [[],[]],
+        [[],[]],
+        [[],[]],
+        [[],[]]
+    )
+    ch_versions     = ch_versions.mix( GFASTATS.out.versions )
+
+
+    //
+    // MODULE: Sequence summary statistics
+    //
     SUMMARYSEQUENCE ( genome )
     ch_versions         = ch_versions.mix ( SUMMARYSEQUENCE.out.versions.first() )
 
@@ -60,6 +80,7 @@ workflow GENOME_STATISTICS {
         | set { ch_lineage }
 
     }
+
 
     //
     // MODULE: RUN BUSCO
@@ -104,6 +125,10 @@ workflow GENOME_STATISTICS {
     | groupTuple ( by: [0] )
     | set { ch_fastk }
 
+
+    //
+    // MODULE: RUN FASTK KMER COUNTING TO GENERATE HISTOGRAM DATA
+    //
     FASTK_FASTK ( ch_fastk )
     ch_versions         = ch_versions.mix ( FASTK_FASTK.out.versions.first() )
 
@@ -152,7 +177,7 @@ workflow GENOME_STATISTICS {
 
 
     //
-    // MODULE: Combined table
+    // LOGIC: PREPARE FOR THE FOR Combined table
     //
     SUMMARYGENOME.out.summary
     | join ( SUMMARYSEQUENCE.out.summary )
@@ -181,6 +206,7 @@ workflow GENOME_STATISTICS {
     // Now channel of tuple(list(meta), list(file))
     | set { ch_flagstat }
 
+
     //
     // MODULE: CREATETABLE ( ch_summary, ch_busco, ch_merqury, ch_flagstat )
     //
@@ -194,6 +220,7 @@ workflow GENOME_STATISTICS {
     BUSCO.out.short_summaries_txt
     | ifEmpty ( [ [], [] ] )
     | set { multiqc }
+
 
     emit:
     summary_seq         = SUMMARYSEQUENCE.out.summary               // channel: [ meta, summary ]

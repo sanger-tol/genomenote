@@ -65,6 +65,10 @@
                     "genescopefk": {
                         "branch": "master",
                         "git_sha": "a4d916a39231897a49c903089a548704c09b8ef3",
+
+                    "gfastats": {
+                        "branch": "master",
+                        "git_sha": "8bc54984b57a02c8712d48274b90c1161bf2c996",
                         "installed_by": ["modules"]
                     },
                     "gffread": {
