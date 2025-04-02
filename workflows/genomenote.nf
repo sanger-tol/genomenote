@@ -106,7 +106,6 @@ workflow GENOMENOTE {
     //
     // SUBWORKFLOW: Read in template of data files to fetch, parse these files and output a list of genome metadata params
     //
-
     INPUT_CHECK.out.param.combine( ch_file_list )
     | set { ch_metadata }
 
@@ -143,14 +142,22 @@ workflow GENOMENOTE {
     }
     | set { ch_flagstat }
 
-    GENOME_STATISTICS ( ch_fasta, ch_lineage_tax_ids, ch_lineage_db, ch_inputs.pacbio, ch_flagstat )
+    GENOME_STATISTICS (
+        ch_fasta,
+        ch_lineage_tax_ids,
+        ch_lineage_db,
+        ch_inputs.pacbio,
+        ch_flagstat
+    )
     ch_versions = ch_versions.mix ( GENOME_STATISTICS.out.versions )
+
 
     //
     // SUBWORKFLOW: Create contact map matrices from HiC alignment files
     //
     CONTACT_MAPS ( ch_fasta, ch_inputs.hic, GENOME_STATISTICS.out.summary_seq, ch_bin, ch_cool_order )
     ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
+
 
     //
     // SUBWORKFLOW : Obtain feature statistics from the annotation file : GFF
@@ -161,16 +168,19 @@ workflow GENOMENOTE {
         ch_annotation_stats = ch_annotation_stats.mix (ANNOTATION_STATISTICS.out.summary)
     }
 
+
     //
     // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
     //
     COMBINE_NOTE_DATA (GENOME_METADATA.out.consistent, GENOME_METADATA.out.inconsistent, GENOME_STATISTICS.out.summary, ch_annotation_stats.ifEmpty([[],[]]), CONTACT_MAPS.out.link, ch_note_template)
     ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
 
+
     //
     // MODULE: Combine different versions.yml
     //
     CUSTOM_DUMPSOFTWAREVERSIONS ( ch_versions.unique().collectFile(name: 'collated_versions.yml') )
+
 
     //
     // MODULE: MultiQC

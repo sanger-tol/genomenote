@@ -2,7 +2,7 @@
 # Visit https://bit.ly/cffinit to generate yours today!
 
 cff-version: 1.2.0
-title: sanger-tol/genomenote v2.1.1
+title: sanger-tol/genomenote v2.2.0
 type: software
 authors:
     - given-names: Sandra Ruth
@@ -21,6 +21,11 @@ authors:
       family-names: Muffato
       affiliation: Wellcome Sanger Institute
       orcid: "https://orcid.org/0000-0002-7860-3560"
+    - given-names: Damon-Lee
+      name-particle: Bernard
+      family-names: Pointon
+      affiliation: Wellcome Sanger Institute
+      orcid: "https://orcid.org/0000-0003-2949-6719"
     - given-names: Guoying
       family-names: Qi
       affiliation: Wellcome Sanger Institute
@@ -42,5 +47,5 @@ identifiers:
       value: 10.5281/zenodo.7949384
 repository-code: "https://github.com/sanger-tol/genomenote"
 license: MIT
-version: 2.1.1
+version: 2.2.0
 date-released: "2022-10-07"

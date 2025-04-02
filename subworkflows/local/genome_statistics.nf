@@ -9,6 +9,8 @@ include { BUSCO_BUSCO as BUSCO                          } from '../../modules/nf
 include { RESTRUCTUREBUSCODIR                           } from '../../modules/local/restructurebuscodir'
 include { FASTK_FASTK                                   } from '../../modules/nf-core/fastk/fastk/main'
 include { CREATETABLE                                   } from '../../modules/local/createtable'
+include { FASTK_HISTEX                                  } from '../../modules/nf-core/fastk/histex/main'
+include { GENESCOPEFK                                   } from '../../modules/nf-core/genescopefk/main'
 include { GFASTATS                                      } from '../../modules/nf-core/gfastats/main'
 
 // This is only temporarily removed so I'm leaving it here for now
@@ -24,14 +26,14 @@ workflow GENOME_STATISTICS {
 
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions         = Channel.empty()
 
 
     //
     // MODULE: Genome summary statistics
     //
     SUMMARYGENOME ( genome )
-    ch_versions = ch_versions.mix ( SUMMARYGENOME.out.versions.first() )
+    ch_versions         = ch_versions.mix ( SUMMARYGENOME.out.versions.first() )
 
 
     //
@@ -54,27 +56,42 @@ workflow GENOME_STATISTICS {
     // MODULE: Sequence summary statistics
     //
     SUMMARYSEQUENCE ( genome )
-    ch_versions = ch_versions.mix ( SUMMARYSEQUENCE.out.versions.first() )
+    ch_versions         = ch_versions.mix ( SUMMARYSEQUENCE.out.versions.first() )
+
+
+    if (params.busco_lineage) {
+        ch_lineage      = Channel.of(params.busco_lineage)
+    } else {
+        //
+        // MODULE: GET RAW ODB LINEAGE VALUE
+        //
+        NCBI_GET_ODB ( SUMMARYGENOME.out.summary, lineage_tax_ids )
+        ch_versions         = ch_versions.mix ( NCBI_GET_ODB.out.versions.first() )
+
+
+        //
+        // LOGIC: FORMAT NCBI GET ODB OUTPUT INTO A CHANNEL OF val(lepidoptera_odb10) READY FOR BUSCO INPUT.
+        //
+        NCBI_GET_ODB.out.csv
+        | map { meta, csv -> csv }
+        | splitCsv()
+        | map { row -> row[1] }
+        | set { ch_lineage }
+
+    }
 
 
     //
-    // MODULE: Get ODB lineage value
+    // MODULE: RUN BUSCO
     //
-    NCBI_GET_ODB ( SUMMARYGENOME.out.summary, lineage_tax_ids )
-    ch_versions = ch_versions.mix ( NCBI_GET_ODB.out.versions.first() )
-
-
-    //
-    // MODULE: BUSCO
-    //
-    NCBI_GET_ODB.out.csv
-    | map { meta, csv -> csv }
-    | splitCsv()
-    | map { row -> row[1] }
-    | set { ch_lineage }
-
-    BUSCO ( genome, "genome", ch_lineage, lineage_db.ifEmpty([]), [] )
-    ch_versions = ch_versions.mix ( BUSCO.out.versions.first() )
+    BUSCO (
+        genome,
+        "genome",
+        ch_lineage,
+        lineage_db.ifEmpty([]),
+        []
+    )
+    ch_versions         = ch_versions.mix ( BUSCO.out.versions.first() )
 
 
     //
@@ -88,11 +105,11 @@ workflow GENOME_STATISTICS {
         | join ( BUSCO.out.busco_dir )
         | map { meta, batch_summary, lineage, short_summaries_txt, short_summaries_json, busco_dir -> [meta, lineage, batch_summary, short_summaries_txt ?: [], short_summaries_json ?: [], busco_dir] }
     )
-    ch_versions = ch_versions.mix ( RESTRUCTUREBUSCODIR.out.versions.first() )
+    ch_versions         = ch_versions.mix ( RESTRUCTUREBUSCODIR.out.versions.first() )
 
 
     //
-    // MODULE: FastK
+    // LOGIC: Prepare channels for FastK, collect files in directory create list for FASTK
     //
     pacbio
     | branch {
@@ -107,12 +124,31 @@ workflow GENOME_STATISTICS {
     | groupTuple ( by: [0] )
     | set { ch_fastk }
 
+
+    //
+    // MODULE: RUN FASTK KMER COUNTING TO GENERATE HISTOGRAM DATA
+    //
     FASTK_FASTK ( ch_fastk )
-    ch_versions = ch_versions.mix ( FASTK_FASTK.out.versions.first() )
+    ch_versions         = ch_versions.mix ( FASTK_FASTK.out.versions.first() )
 
 
     //
-    // MODULE: Define channel for MERQURKFK
+    // MODULE: HISTEX generates a histogram in -h given intervals
+    //
+    FASTK_HISTEX( FASTK_FASTK.out.hist )
+    ch_versions         = ch_versions.mix(FASTK_HISTEX.out.versions)
+
+
+    //
+    // MODULE: GENESCOPEFK PLOT THE KMER HISTOGRAM and
+    //          outputs a correct estimate of genome size and % repetitiveness
+    //
+    GENESCOPEFK( FASTK_HISTEX.out.hist )
+    ch_versions         = ch_versions.mix(GENESCOPEFK.out.versions)
+
+
+    //
+    // LOGIC: Define channel for MERQURKFK
     //
     FASTK_FASTK.out.hist
     | join ( FASTK_FASTK.out.ktab )
@@ -140,7 +176,7 @@ workflow GENOME_STATISTICS {
 
 
     //
-    // MODULE: Combined table
+    // LOGIC: PREPARE FOR THE FOR Combined table
     //
     SUMMARYGENOME.out.summary
     | join ( SUMMARYSEQUENCE.out.summary )
@@ -174,11 +210,11 @@ workflow GENOME_STATISTICS {
     // MODULE: CREATETABLE ( ch_summary, ch_busco, ch_merqury, ch_flagstat )
     //
     CREATETABLE ( ch_summary, ch_busco, [[], [], []], ch_flagstat )
-    ch_versions = ch_versions.mix ( CREATETABLE.out.versions.first() )
+    ch_versions         = ch_versions.mix ( CREATETABLE.out.versions.first() )
 
 
     //
-    // MODULE: BUSCO results for MULTIQC
+    // LOGIC: BUSCO results for MULTIQC
     //
     BUSCO.out.short_summaries_txt
     | ifEmpty ( [ [], [] ] )
@@ -186,10 +222,17 @@ workflow GENOME_STATISTICS {
 
 
     emit:
-    summary_seq = SUMMARYSEQUENCE.out.summary   // channel: [ meta, summary ]
-    summary  = CREATETABLE.out.csv      // channel: [ csv ]
-    multiqc                             // channel: [ meta, summary ]
-    versions = ch_versions              // channel: [ versions.yml ]
+    summary_seq         = SUMMARYSEQUENCE.out.summary               // channel: [ meta, summary ]
+    summary             = CREATETABLE.out.csv                       // channel: [ csv ]
+    multiqc                                                         // channel: [ meta, summary ]
+    ch_kmer_cov         = GENESCOPEFK.out.kmer_cov                  // channel: [ meta, kmer_coverage ]
+    ch_linear_plot      = GENESCOPEFK.out.linear_plot               // channel: [ meta, linear_plot ]
+    ch_log_plot         = GENESCOPEFK.out.log_plot                  // channel: [ meta, log_plot ]
+    ch_model            = GENESCOPEFK.out.model                     // channel: [ meta, model ]
+    ch_summary          = GENESCOPEFK.out.summary                   // channel: [ meta, summary ]
+    ch_trans_lin_plot   = GENESCOPEFK.out.transformed_linear_plot   // channel: [ meta, transformed_linear_plot ]
+    ch_trans_log_plot   = GENESCOPEFK.out.transformed_log_plot      // channel: [ meta, transformed_log_plot ]
+    versions            = ch_versions                               // channel: [ versions.yml ]
 
 }
 
