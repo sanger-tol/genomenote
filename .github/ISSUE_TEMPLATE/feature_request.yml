@@ -1,5 +1,5 @@
 name: Feature request
-description: Suggest an idea for the sanger-tol/genomenote pipeline
+description: Suggest an idea for the nf-core/genomenote pipeline
 labels: enhancement
 body:
   - type: textarea

@@ -1,15 +1,34 @@
-repository_type: pipeline
 lint:
+  actions_ci: false
   files_exist:
-    - CODE_OF_CONDUCT.md
-    - assets/nf-core-genomenote_logo_light.png
-    - docs/images/nf-core-genomenote_logo_light.png
-    - docs/images/nf-core-genomenote_logo_dark.png
-    - .github/ISSUE_TEMPLATE/config.yml
-    - .github/workflows/awstest.yml
-    - .github/workflows/awsfulltest.yml
-  nextflow_config:
-    - manifest.name
-    - manifest.homePage
+  - assets/nf-core-genomenote_logo_light.png
+  - docs/images/nf-core-genomenote_logo_light.png
+  - docs/images/nf-core-genomenote_logo_dark.png
+  - .github/ISSUE_TEMPLATE/config.yml
+  - .github/workflows/awstest.yml
+  - .github/workflows/awsfulltest.yml
+  - conf/igenomes.config
+  files_unchanged:
+  - LICENSE
+  - .github/ISSUE_TEMPLATE/bug_report.yml
+  - lib/NfcoreTemplate.groovy
+  - .github/CONTRIBUTING.md
+  - .github/workflows/branch.yml
+  - .github/workflows/linting.yml
   multiqc_config:
-    - report_comment
+  - report_comment
+  nextflow_config:
+  - manifest.name
+  - manifest.homePage
+  template_strings: false
+nf_core_version: 3.2.0
+repository_type: pipeline
+template:
+  author: '@cibinsb, @muffato, @gq1, @priyanka-surana, @BethYates, @DLBPointon'
+  description: Creating standarised genome assembly publications
+  force: false
+  is_nfcore: true
+  name: genomenote
+  org: nf-core
+  outdir: .
+  version: 2.2.0
