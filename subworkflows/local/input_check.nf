@@ -4,7 +4,7 @@
 
 include { PARAMS_CHECK      } from '../../modules/local/params_check'
 include { SAMPLESHEET_CHECK } from '../../modules/local/samplesheet_check'
-
+include { HIFI_TRIMMER     } from '../../modules/nf-core/custom/hifi-trimmer/main'
 
 workflow INPUT_CHECK {
     take:
@@ -62,10 +62,28 @@ workflow INPUT_CHECK {
         }
         .set { data }
 
+    // Apply hifi-trimmer to PacBio reads
+    data
+        .branch { meta, file ->
+            pacbio: meta.datatype == 'pacbio'
+                return [ meta, file ]
+            default: true
+                return [ meta, file ]
+        }
+        .set { ch_branched }
+
+    HIFI_TRIMMER ( ch_branched.pacbio )
+    ch_versions = SAMPLESHEET_CHECK.out.versions.mix(HIFI_TRIMMER.out.versions)
+
+    // Combine trimmed and untrimmed reads
+    ch_branched.default
+        .mix(HIFI_TRIMMER.out.trimmed_reads)
+        .set { ch_final_data }
+
     emit:
-    data                                   // channel: [ val(meta), data ]
+    data = ch_final_data                                   // channel: [ val(meta), data ]
     param                                  // channel: [val(meta)]  
-    versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
+    versions = ch_versions // channel: [ versions.yml ]
 }
 
 

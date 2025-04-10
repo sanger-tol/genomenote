@@ -225,3 +225,19 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | samtools          |             | 1.17                                     |
 
 > **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
+
+## [Unreleased]
+
+### Added
+- Added hifi-trimmer module for improved PacBio read filtering
+- Integrated hifi-trimmer into the input processing workflow
+- Added support for hifi-trimmer version 1.0.0
+- Added test profile and test data for hifi-trimmer module
+- Added GitHub Actions workflow for hifi-trimmer tests
+
+### Changed
+- Updated read filtering subworkflow to use hifi-trimmer for PacBio reads
+- Modified input processing to handle both trimmed and untrimmed reads
+
+### Fixed
+- Fixed issue with excessive read filtering in PacBio data processing

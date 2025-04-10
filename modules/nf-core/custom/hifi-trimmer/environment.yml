@@ -1,0 +1,7 @@
+name: hifi-trimmer
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - hifi-trimmer=1.0.0 
