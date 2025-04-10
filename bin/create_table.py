@@ -7,6 +7,7 @@ import sys
 import csv
 import re
 import math
+import pandas as pd
 
 
 def parse_args(args=None):
@@ -18,6 +19,7 @@ def parse_args(args=None):
     parser.add_argument("--busco", help="Input BUSCO short summary JSON file.")
     parser.add_argument("--qv", nargs="*", help="Input QV TSV file from MERQURYFK.")
     parser.add_argument("--completeness", nargs="*", help="Input COMPLETENESS stats TSV file from MERQURYFK.")
+    parser.add_argument("--haplotype_completeness", nargs="*", help="Input haplotype completeness TSV files.")
     parser.add_argument("--hic", action="append", help="HiC sample ID used for contact maps.")
     parser.add_argument("--flagstat", action="append", help="HiC flagstat file created by Samtools.")
     parser.add_argument("--outcsv", required=True, help="Output CSV file.")
@@ -218,11 +220,33 @@ def extract_mapped(sample, file_in, writer):
                 writer.writerow(["Primary_Mapped", re.search(r"\((.*?) :", line).group(1)])
 
 
+def parse_haplotype_completeness(completeness_files):
+    """Parse haplotype completeness files and return a dictionary of completeness values."""
+    completeness = {}
+    for file in completeness_files:
+        if not file:
+            continue
+        try:
+            df = pd.read_csv(file, sep='\t')
+            for _, row in df.iterrows():
+                assembly = row['Assembly']
+                if assembly == 'combined':
+                    completeness['combined'] = row['% Covered']
+                else:
+                    completeness[assembly] = row['% Covered']
+        except Exception as e:
+            print(f"Error parsing completeness file {file}: {e}", file=sys.stderr)
+    return completeness
+
+
 def main(args=None):
     args = parse_args(args)
 
     out_dir = os.path.dirname(args.outcsv)
     make_dir(out_dir)
+
+    # Parse haplotype completeness
+    haplotype_completeness = parse_haplotype_completeness(args.haplotype_completeness)
 
     with open(args.outcsv, "w") as fout:
         writer = csv.writer(fout)
