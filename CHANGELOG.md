@@ -42,7 +42,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | `gffread`   |                                          | 0.12.7                                   |
 | `merquryfk` | d00d98157618f4e8d1a9190026b19b471055b22e |                                          |
 | `multiqc`   | 1.14                                     | 1.25.1                                   |
-| `samtools`  | 1.17                                     | 1.21                                     |
+| `samtools`  | 1.17                                     | 1.20                                     |
 
 > **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
 
