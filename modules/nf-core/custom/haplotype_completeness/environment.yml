@@ -1,0 +1,9 @@
+name: haplotype_completeness
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.8
+  - pandas=1.3.0
+  - samtools=1.20 

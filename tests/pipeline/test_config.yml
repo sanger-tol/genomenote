@@ -1,0 +1,19 @@
+test_data:
+  input:
+    hic: "tests/data/test_hic.cram"
+    fasta: "tests/data/test_genome.fasta"
+    assembly: "GCA_000001405.15"
+    bioproject: "PRJNA12345"
+    biosample: "SAMN12345678"
+  
+  expected_outputs:
+    multiqc_report: "results/multiqc/multiqc_report.html"
+    cooler_files: "results/cooler/*.cool"
+    genome_stats: "results/genome_stats.json"
+    annotation_stats: "results/annotation_stats.tsv"
+    metadata: "results/metadata.json"
+  
+  thresholds:
+    min_assembly_size: 1000000
+    min_n50: 10000
+    min_busco_score: 0.5 

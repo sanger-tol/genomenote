@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   test:
-    name: Run pipeline with test data
+    name: Run pipeline tests
     # Only run on push if this is the nf-core dev branch (merged PRs)
     if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'sanger-tol/genomenote') }}"
     runs-on: ubuntu-latest
@@ -26,6 +26,7 @@ jobs:
         NXF_VER:
           - "22.10.1"
           - "latest-everything"
+        profile: ['test', 'test_hifi_trim']
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v3
@@ -36,8 +37,9 @@ jobs:
           version: "${{ matrix.NXF_VER }}"
 
       - name: Run pipeline with test data
-        # You can customise CI pipeline run tests as required
-        # For example: adding multiple test runs with different parameters
-        # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results
+          nextflow run ${GITHUB_WORKSPACE} -profile ${{ matrix.profile }},docker --outdir ./results
+
+      - name: Run tests
+        run: |
+          nextflow run ${GITHUB_WORKSPACE}/tests/modules/nf-core/custom/hifi-trimmer/main.nf -profile test,docker
