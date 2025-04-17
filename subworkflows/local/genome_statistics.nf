@@ -12,9 +12,7 @@ include { CREATETABLE                                   } from '../../modules/lo
 include { FASTK_HISTEX                                  } from '../../modules/nf-core/fastk/histex/main'
 include { GENESCOPEFK                                   } from '../../modules/nf-core/genescopefk/main'
 include { GFASTATS                                      } from '../../modules/nf-core/gfastats/main'
-
-// This is only temporarily removed so I'm leaving it here for now
-//include { MERQURYFK_MERQURYFK                           } from '../../modules/nf-core/merquryfk/merquryfk/main'
+include { MERQURYFK_MERQURYFK                           } from '../../modules/nf-core/merquryfk/merquryfk/main'
 
 workflow GENOME_STATISTICS {
     take:
@@ -23,6 +21,7 @@ workflow GENOME_STATISTICS {
     lineage_db             // channel: /path/to/buscoDB
     pacbio                 // channel: [ meta, kmer_db or reads ]
     flagstat               // channel: [ meta, flagstat ]
+    haplotype              // channel: [ meta, fasta ]
 
 
     main:
@@ -165,14 +164,21 @@ workflow GENOME_STATISTICS {
     ch_combo
     | mix ( ch_grab )
     | combine ( genome )
-    | map { meta, hist, ktab, meta2, fasta -> [ meta + [genome_size: meta2.genome_size], hist, ktab, fasta, [] ] }
+    | combine ( haplotype )
+    | map { meta, hist, ktab, meta2, fasta, meta3, haplotype ->
+        [ meta + [genome_size: meta2.genome_size], hist, ktab, fasta, haplotype ]
+    }
     | set { ch_merq }
 
 
     // This is only temporarily removed so I'm leaving it here for now
     // // MerquryFK
-    // MERQURYFK_MERQURYFK ( ch_merq, [], [] )
-    // ch_versions = ch_versions.mix ( MERQURYFK_MERQURYFK.out.versions.first() )
+    MERQURYFK_MERQURYFK (
+        ch_merq,
+        [],
+        []
+    )
+    ch_versions = ch_versions.mix ( MERQURYFK_MERQURYFK.out.versions.first() )
 
 
     //
@@ -187,12 +193,12 @@ workflow GENOME_STATISTICS {
     | set { ch_busco }
 
     // This is only temporarily removed so I'm leaving it here for now
-    // MERQURYFK_MERQURYFK.out.qv
-    // | join ( MERQURYFK_MERQURYFK.out.stats )
-    // | map { meta, qv, comp -> [ meta + [ id: "merq" ], qv, comp ] }
-    // | groupTuple ()
-    // | ifEmpty ( [ [], [], [] ] )
-    // | set { ch_merqury }
+    MERQURYFK_MERQURYFK.out.qv
+    | join ( MERQURYFK_MERQURYFK.out.stats )
+    | map { meta, qv, comp -> [ meta + [ id: "merq" ], qv, comp ] }
+    | groupTuple ()
+    | ifEmpty ( [ [], [], [] ] )
+    | set { ch_merqury }
 
     flagstat
     // Queue channel of tuple(meta, file)
@@ -209,7 +215,7 @@ workflow GENOME_STATISTICS {
     //
     // MODULE: CREATETABLE ( ch_summary, ch_busco, ch_merqury, ch_flagstat )
     //
-    CREATETABLE ( ch_summary, ch_busco, [[], [], []], ch_flagstat )
+    CREATETABLE ( ch_summary, ch_busco, ch_merqury, ch_flagstat )
     ch_versions         = ch_versions.mix ( CREATETABLE.out.versions.first() )
 
 
