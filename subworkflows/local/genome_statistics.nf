@@ -164,7 +164,7 @@ workflow GENOME_STATISTICS {
     ch_combo
     | mix ( ch_grab )
     | combine ( genome )
-    | combine ( haplotype )
+    | combine ( haplotype.ifEmpty([[],[]]) )
     | map { meta, hist, ktab, meta2, fasta, meta3, haplotype ->
         [ meta + [genome_size: meta2.genome_size], hist, ktab, fasta, haplotype ]
     }
@@ -215,7 +215,12 @@ workflow GENOME_STATISTICS {
     //
     // MODULE: CREATETABLE ( ch_summary, ch_busco, ch_merqury, ch_flagstat )
     //
-    CREATETABLE ( ch_summary, ch_busco, ch_merqury, ch_flagstat )
+    CREATETABLE (
+        ch_summary,
+        ch_busco,
+        ch_merqury,
+        ch_flagstat
+    )
     ch_versions         = ch_versions.mix ( CREATETABLE.out.versions.first() )
 
 

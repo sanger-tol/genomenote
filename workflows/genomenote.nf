@@ -71,8 +71,8 @@ include { ANNOTATION_STATISTICS } from '../subworkflows/local/annotation_statist
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { GUNZIP                      } from '../modules/nf-core/gunzip/main'
-include { GUNZIP as GUNZIP_HAPLO      } from '../modules/nf-core/gunzip/main'
+include { GUNZIP as GUNZIP_PRIMARY    } from '../modules/nf-core/gunzip/main'
+include { GUNZIP as GUNZIP_HAPLOTYPE  } from '../modules/nf-core/gunzip/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 
@@ -125,11 +125,11 @@ workflow GENOMENOTE {
     }
     | set { ch_haplotype }
 
-    GUNZIP_HAPLO (
+    GUNZIP_HAPLOTYPE (
         ch_haplotype.gzipped
     )
-    ch_unzipped = GUNZIP_HAPLO.out.gunzip
-    ch_versions = ch_versions.mix ( GUNZIP_HAPLO.out.versions )
+    ch_unzipped = GUNZIP_HAPLOTYPE.out.gunzip
+    ch_versions = ch_versions.mix ( GUNZIP_HAPLOTYPE.out.versions )
 
     //
     // NOTE: Mix the unzipped haplotype with the original zipped haplotypes - this exists as a prelude to multi-haplotype support
@@ -155,8 +155,8 @@ workflow GENOMENOTE {
     | set { ch_genome }
 
     if ( params.fasta.endsWith('.gz') ) {
-        ch_unzipped = GUNZIP ( ch_genome ).gunzip
-        ch_versions = ch_versions.mix ( GUNZIP.out.versions.first() )
+        ch_unzipped = GUNZIP_PRIMARY ( ch_genome ).gunzip
+        ch_versions = ch_versions.mix ( GUNZIP_PRIMARY.out.versions.first() )
     } else {
         ch_unzipped = ch_genome
     }
@@ -190,7 +190,13 @@ workflow GENOMENOTE {
     //
     // SUBWORKFLOW: Create contact map matrices from HiC alignment files
     //
-    CONTACT_MAPS ( ch_fasta, ch_inputs.hic, GENOME_STATISTICS.out.summary_seq, ch_bin, ch_cool_order )
+    CONTACT_MAPS (
+        ch_fasta,
+        ch_inputs.hic,
+        GENOME_STATISTICS.out.summary_seq,
+        ch_bin,
+        ch_cool_order
+    )
     ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
 
 
@@ -207,7 +213,14 @@ workflow GENOMENOTE {
     //
     // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
     //
-    COMBINE_NOTE_DATA (GENOME_METADATA.out.consistent, GENOME_METADATA.out.inconsistent, GENOME_STATISTICS.out.summary, ch_annotation_stats.ifEmpty([[],[]]), CONTACT_MAPS.out.link, ch_note_template)
+    COMBINE_NOTE_DATA (
+        GENOME_METADATA.out.consistent,
+        GENOME_METADATA.out.inconsistent,
+        GENOME_STATISTICS.out.summary,
+        ch_annotation_stats.ifEmpty([[],[]]),
+        CONTACT_MAPS.out.link,
+        ch_note_template
+    )
     ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
 
 
