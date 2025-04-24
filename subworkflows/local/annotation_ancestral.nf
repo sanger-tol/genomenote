@@ -39,13 +39,14 @@ workflow BUSCO_ANNOTATION {
         []
     )
     ch_versions                 = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
-    ch_grab                     = GrabFiles(BUSCO_BUSCO.out.busco_dir)
+    ch_busco_grab               = GrabFiles(BUSCO_BUSCO.out.busco_dir)
 
 
     //
     // LOGIC: AGGREGATE DATA AND SORT BRANCH ON CLASS
     //         FORCES PROCESSES TO ONLY RUN WHEN CONSTRAINT IS MET
     //         LOGIC WOULD HAVE TO BE UPDATED ONCE THE NUMBER OF THESE START GROWING.
+    //         THIS NEEDS TO BE MOVED INTO THE MAIN WORKFLOW
     //
     lineageinfo
         .combine(BUSCO_BUSCO.out.busco_dir)
@@ -55,18 +56,6 @@ workflow BUSCO_ANNOTATION {
             general: true
         }
         .set{ ch_busco_data }
-
-
-    //
-    // LOGIC: BUILD NEW INPUT CHANNEL FOR ANCESTRAL ID
-    //
-    ch_busco_data
-            .lep
-            .multiMap { lineage, meta, busco_dir, ancestral_table ->
-                busco_dir:    tuple( meta, busco_dir )
-                atable:       ancestral_table
-            }
-            .set{ ch_busco_lep_data }
 
 
     //
