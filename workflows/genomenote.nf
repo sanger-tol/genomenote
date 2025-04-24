@@ -178,8 +178,6 @@ workflow GENOMENOTE {
     // SUBWORKFLOW: Ancestral Element Analysis workflow - generates plots for user provided ancestral element mapping
     //              Only available for lepidoptera as of April 2025
     //
-    ch_lineage_db.view{"LINEAGE: $it"}
-
     ch_lineage_db
         .branch{ it ->
             lepidoptera:    it[0].split("_").contains("lepidoptera")
