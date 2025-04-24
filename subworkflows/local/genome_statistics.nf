@@ -149,10 +149,11 @@ workflow GENOME_STATISTICS {
     | set { multiqc }
 
     emit:
-    summary_seq = SUMMARYSEQUENCE.out.summary   // channel: [ meta, summary ]
-    summary  = CREATETABLE.out.csv      // channel: [ csv ]
-    multiqc                             // channel: [ meta, summary ]
-    versions = ch_versions              // channel: [ versions.yml ]
+    summary_seq      = SUMMARYSEQUENCE.out.summary   // channel: [ meta, summary ]
+    summary          = CREATETABLE.out.csv           // channel: [ csv ]
+    busco_full_table = BUSCO.out.full_table          // channel: [ meta, busco_dir ]
+    multiqc                                         // channel: [ meta, summary ]
+    versions         = ch_versions                   // channel: [ versions.yml ]
 
 }
 

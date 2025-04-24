@@ -13,8 +13,8 @@ process ANCESTRAL_EXTRACT {
 
     output:
     tuple val(meta), path("*buscopainter_complete_location.tsv")  , emit: comp_location
-    path("*buscopainter_duplicated_location.tsv")                 , emit: dup_location
-    path("*summary.tsv")                                          , emit: summary
+    tuple val(meta), path("*buscopainter_duplicated_location.tsv"), emit: dup_location
+    tuple val(meta), path("*summary.tsv")                         , emit: summary
     path "versions.yml"                                           , emit: versions
 
     when:

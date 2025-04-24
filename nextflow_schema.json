@@ -22,6 +22,13 @@
                     "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://pipelines.tol.sanger.ac.uk/genomenote/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
                 },
+                "ancestral_table": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.tsv$",
+                    "description": "TSV containing mappings for ancestral elements to busco genes."
+                },
                 "binsize": {
                     "type": "integer",
                     "default": 1000,
