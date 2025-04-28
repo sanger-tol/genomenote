@@ -21,7 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 |               | --busco_lineage   |
 |               | --ancestral_tabls |
 
-
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 
 ### Software dependencies
@@ -37,7 +36,6 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | `samtools/faidx`      |             | 1.21--h50ea8bc_0 |
 | `buscopainter.py`     |             | 1.0.0            |
 | `plot_buscopainter.R` |             | 1.0.0            |
-
 
 ## [[2.1.1](https://github.com/sanger-tol/genomenote/releases/tag/2.1.1)] - Pembroke Welsh Corgi (patch 1) [2025-03-19]
 
