@@ -85,76 +85,76 @@ def main(args=None):
     filter_chromosomes = filter_chromosomes(args.chromosome_list, args.exclude_molecules, args.min_fraction)
 
     with Image.open(args.input_png) as original:
-            width, height = original.size
+        width, height = original.size
 
-            # Compute extra margin based on font size
-            try:
-                font = ImageFont.truetype(args.font_path, size=args.font_size)
-            except Exception:
-                font = ImageFont.load_default()
+        # Compute extra margin based on font size
+        try:
+            font = ImageFont.truetype(args.font_path, size=args.font_size)
+        except Exception:
+            font = ImageFont.load_default()
 
-            bbox = font.getbbox("22")
-            label_height = bbox[3] - bbox[1]
-            extra_margin_bottom = label_height + 50
-            extra_margin_left = label_height + 50
+        bbox = font.getbbox("22")
+        label_height = bbox[3] - bbox[1]
+        extra_margin_bottom = label_height + 50
+        extra_margin_left = label_height + 50
 
-            # Create new image with extra margin
-            new_img = Image.new("RGB", (width + extra_margin_left, height + extra_margin_bottom), args.background_colour)
-            new_img.paste(original, (extra_margin_left, 0))
-            draw = ImageDraw.Draw(new_img)
+        # Create new image with extra margin
+        new_img = Image.new("RGB", (width + extra_margin_left, height + extra_margin_bottom), args.background_colour)
+        new_img.paste(original, (extra_margin_left, 0))
+        draw = ImageDraw.Draw(new_img)
 
-            # Compute x/y-positions based on proportion of genome
-            #total_length = args.total_genome_length if args.total_genome_length else sum(c['length'] for c in args.chromosomes_sorted)
-            total_length = sum(c['length'] for c in args.chromosomes_sorted)
+        # Compute x/y-positions based on proportion of genome
+        #total_length = args.total_genome_length if args.total_genome_length else sum(c['length'] for c in args.chromosomes_sorted)
+        total_length = sum(c['length'] for c in args.chromosomes_sorted)
 
-            x_positions = []
-            accum_length = 0
-            for c in filter_chromosomes:
-                chr_width = (c['length'] / total_length) * width
-                midpoint = accum_length + chr_width / 2
-                x_positions.append(midpoint)
-                accum_length += chr_width
+        x_positions = []
+        accum_length = 0
+        for c in filter_chromosomes:
+            chr_width = (c['length'] / total_length) * width
+            midpoint = accum_length + chr_width / 2
+            x_positions.append(midpoint)
+            accum_length += chr_width
 
-            # Draw horizontal labels below the image
-            for i, chrom in enumerate(filter_chromosomes):
-                label = chrom['molecule']
-                x = x_positions[i] + extra_margin_left
-                y = height + 10
-                bbox = font.getbbox(label)
-                text_width = bbox[2] - bbox[0]
-                text_height = bbox[3] - bbox[1]
+        # Draw horizontal labels below the image
+        for i, chrom in enumerate(filter_chromosomes):
+            label = chrom['molecule']
+            x = x_positions[i] + extra_margin_left
+            y = height + 10
+            bbox = font.getbbox(label)
+            text_width = bbox[2] - bbox[0]
+            text_height = bbox[3] - bbox[1]
 
-                draw.rectangle(
-                    [
-                        (x - text_width / 2 - args.padding, y - args.padding),
-                        (x + text_width / 2 + args.padding, y + text_height + args.padding)
-                    ],
-                    fill=args.background_colour
-                )
-                draw.text((x - text_width / 2, y), label, fill=args.text_colour, font=font)
+            draw.rectangle(
+                [
+                    (x - text_width / 2 - args.padding, y - args.padding),
+                    (x + text_width / 2 + args.padding, y + text_height + args.padding)
+                ],
+                fill=args.background_colour
+            )
+            draw.text((x - text_width / 2, y), label, fill=args.text_colour, font=font)
 
-            # Draw vertical labels to the left of the image (upright)
-            for i, chrom in enumerate(filter_chromosomes):
-                label = chrom['molecule']
-                y = x_positions[i]  # reusing x_positions for vertical axis
-                x = 30
+        # Draw vertical labels to the left of the image (upright)
+        for i, chrom in enumerate(filter_chromosomes):
+            label = chrom['molecule']
+            y = x_positions[i]  # reusing x_positions for vertical axis
+            x = 30
 
-                bbox = font.getbbox(label)
-                text_width = bbox[2] - bbox[0]
-                text_height = bbox[3] - bbox[1]
+            bbox = font.getbbox(label)
+            text_width = bbox[2] - bbox[0]
+            text_height = bbox[3] - bbox[1]
 
-                draw.rectangle(
-                    [
-                        (x - args.padding, y - text_height / 2 + args.padding),
-                        (x + text_width + args.padding, y + text_height / 2 + args.padding)
-                    ],
-                    fill=args.background_colour
-                )
-                draw.text((x, y - text_height / 2), label, fill=args.text_colour, font=font)
+            draw.rectangle(
+                [
+                    (x - args.padding, y - text_height / 2 + args.padding),
+                    (x + text_width + args.padding, y + text_height / 2 + args.padding)
+                ],
+                fill=args.background_colour
+            )
+            draw.text((x, y - text_height / 2), label, fill=args.text_colour, font=font)
 
-            logging.info(f"🧷 Using font size {args.font_size}, padding {args.padding}")
+        logging.info(f"🧷 Using font size {args.font_size}, padding {args.padding}")
 
-            new_img.save(args.output_path)
+        new_img.save(args.output_path)
 
 
 
