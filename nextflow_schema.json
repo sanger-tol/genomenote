@@ -55,6 +55,11 @@
                     "type": "string",
                     "description": "The biosample accesion(s) linked to the Hi-C samples in the experiment, for example: SAMEA7520846."
                 },
+                "busco_lineage": {
+                    "type": "string",
+                    "description": "Override the BUSCO database used for the assembly assessment.",
+                    "pattern": "._odb10$"
+                },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",

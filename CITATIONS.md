@@ -34,6 +34,12 @@
 
 - [FastK](https://github.com/thegenemyers/FASTK)
 
+- [GeneScopeFK](https://github.com/thegenemyers/GENESCOPE.FK)
+
+- [GFastats](https://github.com/vgl-hub/gfastats)
+
+  > Giulio Formenti, Linelle Abueg, Angelo Brajuka, Nadolina Brajuka, Cristóbal Gallardo-Alba, Alice Giani, Olivier Fedrigo, Erich D Jarvis, Gfastats: conversion, evaluation and manipulation of genome sequences using assembly graphs, Bioinformatics, Volume 38, Issue 17, September 2022, Pages 4214–4216, https://doi.org/10.1093/bioinformatics/btac460
+
 - [GFFREAD](https://github.com/gpertea/gffread)
 
   > Pertea G and Pertea M. "GFF Utilities: GffRead and GffCompare [version 1; peer review: 3 approved]". F1000Research 2020, 9:304 https://doi.org/10.12688/f1000research.23297.1
