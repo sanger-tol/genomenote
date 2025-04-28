@@ -3,13 +3,15 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [[2.2.0](https://github.com/sanger-tol/genomenote/releases/tag/2.2.0)] - English Staffy [2025-MM-DD]
+## [[2.2.0](https://github.com/sanger-tol/genomenote/releases/tag/2.2.0)] - German Doberman [2025-MM-DD]
 
 ### Enhancements & fixes
 
 - Addition of the GFASTATS module and config.
-- Addition of GenescopeFK histogram plots and related data.
+- Addition of GenescopeFK histogram plots and related data #181 [#157](https://github.com/sanger-tol/genomenote/issues/157).
 - Support for CLI provided Busco lineage to override the NCBI auto generated one.
+- Refactor of the CONTACT_MAPS subworkflow to support both/either HIGLASS or PRETEXT map generation #183.
+  - Split the logic for either method into HIGLASS_GENERATION and PRETEXT_GENERATION.
 
 ### Parameters
 
@@ -29,6 +31,9 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | `cat`          |             | 2.3.4       |
 | `genescopefk`  |             | 1.2         |
 | `fastk_histex` |             | 1.1.0       |
+| `pretextmap`   |             | ~ |
+| `pretextsnapshot` | | 0.0.4 |
+| `samtools/faidx` | | 1.21 |
 
 ## [[2.1.1](https://github.com/sanger-tol/genomenote/releases/tag/2.1.1)] - Pembroke Welsh Corgi (patch 1) [2025-03-19]
 
