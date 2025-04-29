@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for CLI provided Busco lineage to override the NCBI auto generated one.
 - Refactor of the CONTACT_MAPS subworkflow to support both/either HIGLASS or PRETEXT map generation #183.
   - Split the logic for either method into HIGLASS_GENERATION and PRETEXT_GENERATION.
+  - Addition of the Roboto font file to the assets folder.
+  - Addition of the Roboto font License to LICENSE and to the `process_snapshot.py` script.
 
 ### Parameters
 

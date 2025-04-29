@@ -19,3 +19,15 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+The Roboto font format file (`genomenote/assets/Roboto-VariableFont_wdth,wght.ttf`) has been designed by Christian Robertson, Paratype, Font Bureau and is copyrighted as such:
+
+Copyright 2011 The Roboto Project Authors (https://github.com/googlefonts/roboto-classic)
+This Font Software is licensed under the SIL Open Font License, Version 1.1 . This license is copied below, and is also available with a FAQ at: https://openfontlicense.org.
+
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007. Further information can be found here (https://fonts.google.com/specimen/Roboto/license).
+
+This file is unmodified in it's raw tff format and is bundled in this software soley for the use of the `bin/process_snapshot.py` script to annotate an existing png file.
+

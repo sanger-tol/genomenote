@@ -5,6 +5,7 @@ include { PRETEXTSNAPSHOT   } from '../../modules/nf-core/pretextsnapshot/main'
 workflow PRETEXT_GENERATION {
     take:
     genome          // Channel [ val(meta), path(file)      ]
+    chrom_list      // Channel [ val(meta), path(file)      ]
     bam_tuple       // Channel [ val(meta), path(file)      ]
 
     main:
@@ -12,6 +13,8 @@ workflow PRETEXT_GENERATION {
 
     //
     // MODULE: GENERATE FAI FILE FROM FASTA
+    //         THIS CAN LIKELY BE MOVED TO THE MAIN WORKFLOW IN THE FUTURE
+    //         AS MULTIPLE PR's USE THIS MODULE
     //
     SAMTOOLS_FAIDX (
         genome,
@@ -39,6 +42,18 @@ workflow PRETEXT_GENERATION {
         PRETEXTMAP.out.pretext
     )
     ch_versions     = ch_versions.mix( PRETEXTSNAPSHOT.out.versions )
+
+
+    //
+    // MODULE: ANNOTATE THE SNAPSHOT PNG WITH THE CHROMOSOME LIST
+    //         THIS MAKES THE CHROMOSOMES MORE OBVIOUS IN THE RESULTING IMAGE
+    //
+    // exclusion_list = Channel.empty() // list of molecules to exclude from labelling
+    // PROCESS_SNAPSHOT (
+    //     PRETEXTSNAPSHOT.out.image,
+    //     chrom_list,
+    //     exclusion_list
+    // )
 
 
     emit:

@@ -20,12 +20,19 @@ workflow CONTACT_MAPS {
     ch_versions = Channel.empty()
 
     // Extract the ordered chromosome list
-    GET_CHROMLIST ( summary_seq, cool_order.ifEmpty([]) )
+    GET_CHROMLIST (
+        summary_seq,
+        cool_order.ifEmpty([])
+    )
     ch_versions = ch_versions.mix ( GET_CHROMLIST.out.versions.first() )
 
 
     // CRAM to BAM
-    SAMTOOLS_VIEW ( reads, genome.first(), [] )
+    SAMTOOLS_VIEW (
+        reads,
+        genome.first(),
+        []
+    )
     ch_versions = ch_versions.mix ( SAMTOOLS_VIEW.out.versions.first() )
 
     //
@@ -45,6 +52,7 @@ workflow CONTACT_MAPS {
     //
     PRETEXT_GENERATION (
         genome,
+        GET_CHROMLIST.out.list,
         SAMTOOLS_VIEW.out.bam
     )
     ch_versions = ch_versions.mix ( PRETEXT_GENERATION.out.versions.first() )
