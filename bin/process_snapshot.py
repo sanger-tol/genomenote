@@ -54,7 +54,9 @@ def parse_args(arg=None):
     parser.add_argument("--input_png", required=True, type=str, help="Path to the pretext snapshot PNG")
     parser.add_argument("--chromosome_list", required=True, type=str, help="Chromosome list file")
     parser.add_argument("--output_path", type=str, help="Output path for labelled image", default="output.png")
-    parser.add_argument("--font_path", type=str, help="Path to the font file", default="../assets/Roboto-VariableFont_wdth,wght.ttf")
+    parser.add_argument(
+        "--font_path", type=str, help="Path to the font file", default="../assets/Roboto-VariableFont_wdth,wght.ttf"
+    )
     parser.add_argument("--font_size", type=int, help="Font size for labels", default=40)
     parser.add_argument("--min_fraction", type=float, help="Minimum fraction for labels", default=0.01)
     parser.add_argument(
