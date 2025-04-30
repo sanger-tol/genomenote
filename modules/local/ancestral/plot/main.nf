@@ -4,7 +4,7 @@ process ANCESTRAL_PLOT {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'oras://community.wave.seqera.io/library/r-optparse_r-scales_r-tidyverse:3285e4530d808c27' :
+        'https://community.wave.seqera.io/library/r-optparse_r-scales_r-tidyverse:3285e4530d808c27' :
         'community.wave.seqera.io/library/r-optparse_r-scales_r-tidyverse:9b4155b6beecffd1' }"
 
     input:
@@ -30,7 +30,7 @@ process ANCESTRAL_PLOT {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         R: \$(R --version | grep -oP "\\d+\\.\\d+\\.\\d+")
-        plot_buscopainter.R: \$(plot_buscopainter -v)
+        plot_buscopainter.R: \$(plot_buscopainter.R -v)
     END_VERSIONS
     """
 
@@ -44,7 +44,7 @@ process ANCESTRAL_PLOT {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         R: \$(R --version | grep -oP "\\d+\\.\\d+\\.\\d+")
-        plot_buscopainter.R: \$(plot_buscopainter -v)
+        plot_buscopainter.R: \$(plot_buscopainter.R -v)
     END_VERSIONS
     """
 

@@ -49,7 +49,7 @@ workflow GENOME_STATISTICS {
         [[],[]],
         [[],[]]
     )
-    ch_versions     = ch_versions.mix( GFASTATS.out.versions )
+    ch_versions         = ch_versions.mix( GFASTATS.out.versions )
 
 
     //
@@ -66,7 +66,7 @@ workflow GENOME_STATISTICS {
         // MODULE: GET RAW ODB LINEAGE VALUE
         //
         NCBI_GET_ODB ( SUMMARYGENOME.out.summary, lineage_tax_ids )
-        ch_versions         = ch_versions.mix ( NCBI_GET_ODB.out.versions.first() )
+        ch_versions     = ch_versions.mix ( NCBI_GET_ODB.out.versions.first() )
 
 
         //
@@ -232,7 +232,7 @@ workflow GENOME_STATISTICS {
     ch_summary          = GENESCOPEFK.out.summary                   // channel: [ meta, summary ]
     ch_trans_lin_plot   = GENESCOPEFK.out.transformed_linear_plot   // channel: [ meta, transformed_linear_plot ]
     ch_trans_log_plot   = GENESCOPEFK.out.transformed_log_plot      // channel: [ meta, transformed_log_plot ]
-    busco_full_table = BUSCO.out.full_table          // channel: [ meta, busco_dir ]
+    busco_full_table    = BUSCO.out.full_table          // channel: [ meta, busco_dir ]
     versions            = ch_versions                               // channel: [ versions.yml ]
 
 }

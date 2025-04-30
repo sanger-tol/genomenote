@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Old parameter | New parameter     |
 | ------------- | ----------------- |
 |               | --busco_lineage   |
-|               | --ancestral_tabls |
+|               | --ancestral_table |
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 
@@ -27,15 +27,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
 
-| Dependency            | Old version | New version      |
-| --------------------- | ----------- | ---------------- |
-| `gfastats`            |             | 1.3.1            |
-| `cat`                 |             | 2.3.4            |
-| `genescopefk`         |             | 1.2              |
-| `fastk_histex`        |             | 1.1.0            |
-| `samtools/faidx`      |             | 1.21--h50ea8bc_0 |
-| `buscopainter.py`     |             | 1.0.0            |
-| `plot_buscopainter.R` |             | 1.0.0            |
+| Dependency            | Old version | New version    |
+| --------------------- | ----------- | -------------- |
+| `gfastats`            |             | 1.3.1          |
+| `cat`                 |             | 2.3.4          |
+| `genescopefk`         |             | 1.2            |
+| `fastk_histex`        |             | 1.1.0          |
+| `samtools/faidx`      |             | 1.21           |
+| `buscopainter.py`     |             | 1.0.0          |
+| `plot_buscopainter.R` |             | 1.0.0          |
 
 ## [[2.1.1](https://github.com/sanger-tol/genomenote/releases/tag/2.1.1)] - Pembroke Welsh Corgi (patch 1) [2025-03-19]
 

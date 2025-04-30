@@ -12,7 +12,7 @@ include { ANCESTRAL_PLOT        } from '../../modules/local/ancestral/plot'
 
 workflow ANNOTATION_ANCESTRAL {
     take:
-    reference_tuple      // Channel: [ meta, datafile ]
+    fasta      // Channel: [ meta, fasta ]
     ancestral_table      // Channel: file(ancestral_table location)
     busco_full_table     // Channel: [ meta, busco_dir ]
 
@@ -35,7 +35,7 @@ workflow ANNOTATION_ANCESTRAL {
     // MODULE: INDEX THE INPUT ASSEMBLY
     //
     SAMTOOLS_FAIDX(
-        reference_tuple,
+        fasta,
         [[],[]],
         false
     )

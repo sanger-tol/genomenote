@@ -16,21 +16,24 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 // Check mandatory parameters
 if (params.assembly && params.biosample_wgs) { metadata_inputs = [ params.assembly, params.biosample_wgs ] }
 else { exit 1, 'Metadata input not specified. Please include an assembly accession and a biosample accession for the WGS data' }
-if (params.input)     { ch_input = Channel.fromPath(params.input) } else { exit 1, 'Input samplesheet not specified!' }
-if (params.fasta)     { ch_fasta = Channel.fromPath(params.fasta) } else { exit 1, 'Genome fasta not specified!' }
-if (params.binsize)   { ch_bin   = Channel.of(params.binsize)     } else { exit 1, 'Bin size for cooler/cload not specified!' }
-if (params.kmer_size) { ch_kmer  = Channel.of(params.kmer_size)   } else { exit 1, 'Kmer library size for fastk not specified' }
+
+if (params.input)           { ch_input = Channel.fromPath(params.input) } else { exit 1, 'Input samplesheet not specified!' }
+if (params.fasta)           { ch_fasta = Channel.fromPath(params.fasta) } else { exit 1, 'Genome fasta not specified!' }
+if (params.binsize)         { ch_bin   = Channel.of(params.binsize)     } else { exit 1, 'Bin size for cooler/cload not specified!' }
+if (params.kmer_size)       { ch_kmer  = Channel.of(params.kmer_size)   } else { exit 1, 'Kmer library size for fastk not specified' }
 
 if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.lineage_tax_ids) } else { exit 1, 'Mapping BUSCO lineage equivalent taxon_ids not specified' }
 
 // Check optional parameters
-if (params.lineage_db)      { ch_lineage_db = Channel.fromPath(params.lineage_db) } else { ch_lineage_db = Channel.empty() }
-if (params.note_template)   { ch_note_template = Channel.fromPath(params.note_template) } else { ch_note_template = Channel.empty() }
-if (params.cool_order)      { ch_cool_order = Channel.fromPath(params.cool_order) } else { ch_cool_order = Channel.empty() }
+if (params.lineage_db)      { ch_lineage_db = Channel.fromPath(params.lineage_db) }           else { ch_lineage_db = Channel.empty() }
+if (params.note_template)   { ch_note_template = Channel.fromPath(params.note_template) }     else { ch_note_template = Channel.empty() }
+if (params.cool_order)      { ch_cool_order = Channel.fromPath(params.cool_order) }           else { ch_cool_order = Channel.empty() }
+if (params.annotation_set)  { ch_gff = Channel.fromPath(params.annotation_set) }              else { ch_gff = Channel.empty()}
+if (params.ancestral_table) { ch_ancestral_table = Channel.fromPath(params.ancestral_table) } else { ch_ancestral_table = Channel.empty() }
+
 if (params.biosample_hic) metadata_inputs.add(params.biosample_hic) else metadata_inputs.add(null)
 if (params.biosample_rna) metadata_inputs.add(params.biosample_rna) else metadata_inputs.add(null)
-if (params.annotation_set)  { ch_gff = Channel.fromPath(params.annotation_set) } else { ch_gff = Channel.empty()}
-if (params.ancestral_table) { ch_ancestral_table = Channel.fromPath(params.ancestral_table) } else { ch_ancestral_table = Channel.empty() }
+
 
 
 /*
@@ -181,14 +184,8 @@ workflow GENOMENOTE {
     //              Only available for lepidoptera as of April 2025
     //              Once there are more options, this should be reviewed for a better system
     //
-    ch_lineage_db
-        .branch{ it ->
-            lepidoptera:    it[0].split("_").contains("lepidoptera")
-            other:          true
-        }
-        .set { lineage_odb }
 
-    if (lineage_odb.lepidoptera) {
+    if (ch_ancestral_table) {
         ANNOTATION_ANCESTRAL (
             ch_fasta,
             ch_ancestral_table,
