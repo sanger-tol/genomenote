@@ -30,10 +30,14 @@ Version 2 (process_snapshot.py) has been written by Damon-Lee Pointon
 
 """
 
+# PIL refers to the original Python Image Library, but Pillow (the fork) is the actively maintained version and also imported as PIL
+# Pillow is python3 compatible and the other is not
 from PIL import Image, ImageDraw, ImageFont
 import argparse
 import textwrap
 import logging
+from collections import OrderedDict
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -75,14 +79,26 @@ def filter_chromosomes(chromosome_list, exclude_molecules, min_fraction):
     """
     Filter out the excluded molecules and small unlocs from the chromosome list.
     """
-    max_length = max(c["length"] for c in chromosome_list)
-    filtered_chromosomes = [
-        c
-        for c in chromosome_list
-        if c["molecule"] not in exclude_molecules and c["length"] >= min_fraction * max_length
-    ]
+    print(f"Chromosome list: {chromosome_list}")
 
-    return sorted(filtered_chromosomes, key=lambda x: x["length"], reverse=True)
+    info_per_molecule = {}
+    with open(chromosome_list, "r") as input_file:
+        lines = input_file.readlines()
+        for l in lines:
+            split_lines = l.split('\t')
+            info_per_molecule[split_lines[0]] = int(split_lines[1])
+
+    max_length = max(info_per_molecule.values())
+    print(f"Max length: {max_length}")
+
+    filtered_chromosomes = [
+        chromo
+        for chromo, lengths in info_per_molecule.items()
+        if chromo not in exclude_molecules and lengths >= min_fraction * max_length
+    ]
+    print(filtered_chromosomes)
+
+    return OrderedDict(sorted(filtered_chromosomes, key=lambda x: info_per_molecule[x], reverse=True))
 
 
 def main(args=None):
@@ -92,7 +108,7 @@ def main(args=None):
     logging.info(f"Chromosome list: {args.chromosome_list}")
     logging.info(f"Output path: {args.output_path}")
 
-    filter_chromosomes = filter_chromosomes(args.chromosome_list, args.exclude_molecules, args.min_fraction)
+    filtered_chromosomes = filter_chromosomes(args.chromosome_list, args.exclude_molecules, args.min_fraction)
 
     with Image.open(args.input_png) as original:
         width, height = original.size
@@ -118,14 +134,14 @@ def main(args=None):
 
         x_positions = []
         accum_length = 0
-        for c in filter_chromosomes:
+        for c in filtered_chromosomes:
             chr_width = (c["length"] / total_length) * width
             midpoint = accum_length + chr_width / 2
             x_positions.append(midpoint)
             accum_length += chr_width
 
         # Draw horizontal labels below the image
-        for i, chrom in enumerate(filter_chromosomes):
+        for i, chrom in enumerate(filtered_chromosomes):
             label = chrom["molecule"]
             x = x_positions[i] + extra_margin_left
             y = height + 10
@@ -143,7 +159,7 @@ def main(args=None):
             draw.text((x - text_width / 2, y), label, fill=args.text_colour, font=font)
 
         # Draw vertical labels to the left of the image (upright)
-        for i, chrom in enumerate(filter_chromosomes):
+        for i, chrom in enumerate(filtered_chromosomes):
             label = chrom["molecule"]
             y = x_positions[i]  # reusing x_positions for vertical axis
             x = 30
