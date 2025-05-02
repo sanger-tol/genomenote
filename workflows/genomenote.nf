@@ -13,13 +13,13 @@ WorkflowGenomenote.initialise(params, log)
 def checkPathParamList = [ params.input, params.multiqc_config, params.lineage_db, params.fasta, params.lineage_tax_ids ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
-// Check mandatory parameters
-if (params.assembly) { metadata_inputs = [ params.assembly ] }
-    else { exit 1, 'Metadata input not specified. Please include an assembly accession and a biosample accession for the WGS data' }
-if (params.input)     { ch_input = Channel.fromPath(params.input) } else { exit 1, 'Input samplesheet not specified!' }
-if (params.fasta)     { ch_fasta = Channel.fromPath(params.fasta) } else { exit 1, 'Genome fasta not specified!' }
-if (params.binsize)   { ch_bin   = Channel.of(params.binsize)     } else { exit 1, 'Bin size for cooler/cload not specified!' }
-if (params.kmer_size) { ch_kmer  = Channel.of(params.kmer_size)   } else { exit 1, 'Kmer library size for fastk not specified' }
+// Mandatory parameters formatting and channeling
+metadata_inputs = [ params.assembly ]
+
+ch_input = Channel.fromPath(params.input)
+ch_fasta = Channel.fromPath(params.fasta)
+ch_bin   = Channel.of(params.binsize)
+ch_kmer  = Channel.of(params.kmer_size)
 
 if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.lineage_tax_ids) } else { exit 1, 'Mapping BUSCO lineage equivalent taxon_ids not specified' }
 
