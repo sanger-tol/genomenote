@@ -79,7 +79,7 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run sanger-tol/genomenote --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta --assembly GCA_922984935.2 --biosample_wgs SAMEA7524400 -profile docker
+nextflow run sanger-tol/genomenote --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta --assembly GCA_922984935.2 -profile docker
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -112,7 +112,6 @@ outdir: './results/'
 fasta: './genome.fasta'
 input: 'data'
 assembly: 'GCA_922984935.2'
-biosample_wgs: 'SAMEA7524400'
 <...>
 ```
 
