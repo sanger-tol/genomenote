@@ -1,0 +1,20 @@
+Changes in component 'nf-core/pretextmap'
+'modules/nf-core/pretextmap/meta.yml' is unchanged
+Changes in 'pretextmap/main.nf':
+--- modules/nf-core/pretextmap/main.nf
++++ modules/nf-core/pretextmap/main.nf
+@@ -10,7 +10,8 @@
+ 
+     input:
+     tuple val(meta), path(input)
+-    tuple val(meta2), path(fasta), path(fai)
++    tuple val(meta2), path(fasta)
++    tuple val(meta3), path(fai)
+ 
+     output:
+     tuple val(meta), path("*.pretext")  , emit: pretext
+
+'modules/nf-core/pretextmap/environment.yml' is unchanged
+'modules/nf-core/pretextmap/tests/main.nf.test' is unchanged
+'modules/nf-core/pretextmap/tests/main.nf.test.snap' is unchanged
+************************************************************

@@ -16,10 +16,11 @@ These typically include:
 4. Annotation statistics from AGAT and completeness from BUSCO.
 5. Consensus quality and k-mer completeness from MerquryFK - when high-quality reads are available.
 6. Hi-C contact map and chromosomal grid using Cooler, as well as primary mapped percentage from samtools flagstat - when Hi-C reads are provided. These files can be displayed on a [HiGlass](http://higlass.io) server, like the one use by the [Sanger Institute](https://genome-note-higlass.tol.sanger.ac.uk/app).
+7. Pretext map and snapshot
 
 ## Genome metadata input
 
-You will need to supply the assembly accession for the genome you would like to analyse along with the biosample acession(s) linked to this genome assembly.
+The assembly accession for the genome you would like to analyse along with the biosample acession(s) linked to this genome assembly are optional paramters.
 
 ```bash
 --assembly '[assembly accession]'
@@ -79,7 +80,7 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run sanger-tol/genomenote --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta --assembly GCA_922984935.2 --biosample_wgs SAMEA7524400 -profile docker
+nextflow run sanger-tol/genomenote --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta --assembly GCA_922984935.2 -profile docker
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -98,7 +99,7 @@ If you wish to repeatedly use the same parameters for multiple runs, rather than
 Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`.
 
 > ⚠️ Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
-> The above pipeline run specified with a params file in yaml format:
+> The above pipeline run specified with a params file in yaml format (using all parameters available for external users):
 
 ```bash
 nextflow run sanger-tol/genomenote -profile docker -params-file params.yaml
@@ -113,6 +114,8 @@ fasta: './genome.fasta'
 input: 'data'
 assembly: 'GCA_922984935.2'
 biosample_wgs: 'SAMEA7524400'
+biosample_hic: 'SAMEA112198479'
+biosample_rna: 'SAMEA112232914'
 <...>
 ```
 

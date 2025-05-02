@@ -17,17 +17,30 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [MultiQC](#multiqc) - Aggregate report describing results from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
-### Contact maps
+### HiGlass Contact maps
 
 This pipeline takes aligned HiC reads to create contact maps and chromosomal grid using Cooler for display on a [HiGlass server](https://higlass.io/).
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `contact_maps/`
+- `contact_maps/higlass/`
   - `<sample>.bedpe`: chromosomal grid created from the `.cool` file
   - `<sample>.cool`: initial contact matrix created
   - `<sample>.mcool`: final contact matrix for upload
+
+</details>
+
+### PreText Contact maps
+
+This pipeline takes aligned HiC reads to create contact maps and chromosomal grid using PretextMap for display on PretextView or via a pretext snapshot in your preffered image viewer.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `contact_maps/pretext/`
+  - `<sample>.pretext`: PretextMap for PretextView
+  - `<sample>.png`: Snapshot file
 
 </details>
 
