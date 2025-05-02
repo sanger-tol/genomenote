@@ -155,7 +155,14 @@ workflow GENOMENOTE {
     //
     // SUBWORKFLOW: Create contact map matrices from HiC alignment files
     //
-    CONTACT_MAPS ( ch_fasta, ch_inputs.hic, GENOME_STATISTICS.out.summary_seq, ch_bin, ch_cool_order )
+    CONTACT_MAPS (
+        ch_fasta,
+        ch_inputs.hic,
+        GENOME_STATISTICS.out.summary_seq,
+        ch_bin,
+        ch_cool_order,
+        params.select_contact_map
+    )
     ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
 
 
@@ -163,7 +170,12 @@ workflow GENOMENOTE {
     // SUBWORKFLOW : Obtain feature statistics from the annotation file : GFF
     //
     if ( params.annotation_set ) {
-        ANNOTATION_STATISTICS (ch_gff, ch_fasta, ch_lineage_tax_ids, ch_lineage_db)
+        ANNOTATION_STATISTICS (
+            ch_gff,
+            ch_fasta,
+            ch_lineage_tax_ids,
+            ch_lineage_db
+        )
         ch_versions = ch_versions.mix ( ANNOTATION_STATISTICS.out.versions )
         ch_annotation_stats = ch_annotation_stats.mix (ANNOTATION_STATISTICS.out.summary)
     }
@@ -172,7 +184,14 @@ workflow GENOMENOTE {
     //
     // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
     //
-    COMBINE_NOTE_DATA (GENOME_METADATA.out.consistent, GENOME_METADATA.out.inconsistent, GENOME_STATISTICS.out.summary, ch_annotation_stats.ifEmpty([[],[]]), CONTACT_MAPS.out.link, ch_note_template)
+    COMBINE_NOTE_DATA (
+        GENOME_METADATA.out.consistent,
+        GENOME_METADATA.out.inconsistent,
+        GENOME_STATISTICS.out.summary,
+        ch_annotation_stats.ifEmpty([[],[]]),
+        CONTACT_MAPS.out.link,
+        ch_note_template
+    )
     ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
 
 
