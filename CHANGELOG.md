@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Addition of the Ancestral Element Analysis (Annotation Ancestral) subworkflow
   - This only works for Lepidoptera
   - The lepidoptera_annotation_table.tsv has been added
+- Remove biosample_wgs as a required parameter.
 
 ### Parameters
 
