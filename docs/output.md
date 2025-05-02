@@ -65,8 +65,8 @@ This subworkflow uses ancestral linkage tables to plot locations of the putative
 <detail markdown="1">
 <summary>Output files</summary>
 
-- `ancestral_plots/` -`<gca_accession>_*_buscopainter.pdf`: collated annotation statistics file
-- `ancestral_plots/` -`<gca_accession>_*_buscopainter.png`: collated annotation statistics file
+- `ancestral_plots/` -`<gca_accession>_*_buscopainter.pdf`: PDF copy of the plot.
+- `ancestral_plots/` -`<gca_accession>_*_buscopainter.png`: PNG copy of the plot.
 
 </details>
 
