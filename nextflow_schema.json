@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "assembly", "biosample_wgs", "binsize", "kmer_size", "outdir"],
+            "required": ["input", "assembly", "binsize", "kmer_size", "outdir"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -34,19 +34,23 @@
                 },
                 "assembly": {
                     "type": "string",
-                    "description": "The Genbank assembly accession for the assembly, for example: GCA_922984935.2."
+                    "description": "The Genbank assembly accession for the assembly, for example: GCA_922984935.2.",
+                    "pattern": "GCA_[0-9]*?.[0-9]"
                 },
                 "biosample_wgs": {
                     "type": "string",
-                    "description": "The biosample accesion(s) linked to the WGS samples in the experiment, for example: SAMEA7520803."
+                    "description": "The biosample accesion(s) linked to the WGS samples in the experiment, for example: SAMEA7520803.",
+                    "pattern": "[SAM@(D|E|N)?(A|G)[0-9]*]"
                 },
                 "biosample_rna": {
                     "type": "string",
-                    "description": "The biosample accesion(s) linked to the RNA samples in the experiment, for example: SAMEA7521081."
+                    "description": "The biosample accesion(s) linked to the RNA samples in the experiment, for example: SAMEA7521081.",
+                    "pattern": "[SAM@(D|E|N)?(E|A|G)[0-9]*]"
                 },
                 "biosample_hic": {
                     "type": "string",
-                    "description": "The biosample accesion(s) linked to the Hi-C samples in the experiment, for example: SAMEA7520846."
+                    "description": "The biosample accesion(s) linked to the Hi-C samples in the experiment, for example: SAMEA7520846.",
+                    "pattern": "[SAM@(D|E|N)?(A|G)[0-9]*]"
                 },
                 "busco_lineage": {
                     "type": "string",
