@@ -1,7 +1,6 @@
 include { SAMTOOLS_FAIDX    } from '../../modules/nf-core/samtools/faidx/main'
 include { PRETEXTMAP        } from '../../modules/nf-core/pretextmap/main'
 include { PRETEXTSNAPSHOT   } from '../../modules/nf-core/pretextsnapshot/main'
-include { PROCESS_SNAPSHOT  } from '../../modules/local/process/snapshot/main'
 
 workflow PRETEXT_GENERATION {
     take:
@@ -45,21 +44,8 @@ workflow PRETEXT_GENERATION {
     ch_versions     = ch_versions.mix( PRETEXTSNAPSHOT.out.versions )
 
 
-    //
-    // MODULE: ANNOTATE THE SNAPSHOT PNG WITH THE CHROMOSOME LIST
-    //         THIS MAKES THE CHROMOSOMES MORE OBVIOUS IN THE RESULTING IMAGE
-    //
-    PROCESS_SNAPSHOT (
-        PRETEXTSNAPSHOT.out.image,
-        chrom_list,
-        []
-    )
-    ch_versions     = ch_versions.mix( PROCESS_SNAPSHOT.out.versions )
-
-
     emit:
     pretext_map     = PRETEXTMAP.out.pretext        // tuple val(meta), path("*.pretext")
     pretext_png     = PRETEXTSNAPSHOT.out.image     // tuple val(meta), path("*.pretext")
-    final_png       = PROCESS_SNAPSHOT.out.png    // tuple val(meta), path("*.pretext")
     versions        = ch_versions                   // channel: [ versions.yml ]
 }
