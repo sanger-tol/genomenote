@@ -175,8 +175,8 @@ workflow GENOME_STATISTICS {
     // // MerquryFK
     MERQURYFK_MERQURYFK (
         ch_merq,
-        [],
-        []
+        [[],[]],
+        [[],[]]
     )
     ch_versions = ch_versions.mix ( MERQURYFK_MERQURYFK.out.versions.first() )
 
@@ -244,6 +244,10 @@ workflow GENOME_STATISTICS {
     ch_summary          = GENESCOPEFK.out.summary                   // channel: [ meta, summary ]
     ch_trans_lin_plot   = GENESCOPEFK.out.transformed_linear_plot   // channel: [ meta, transformed_linear_plot ]
     ch_trans_log_plot   = GENESCOPEFK.out.transformed_log_plot      // channel: [ meta, transformed_log_plot ]
+    ch_complete_stats   = MERQURYFK_MERQURYFK.out.stats             // channel: [ meta, completeness_stats ]
+    ch_bed              = MERQURYFK_MERQURYFK.out.bed               // channel: [ meta, bed ]
+    ch_qv               = MERQURYFK_MERQURYFK.out.qv                // channel: [ meta, qv ]
+    ch_assembly_qv      = MERQURYFK_MERQURYFK.out.assembly_qv       // channel: [ meta, assembly_qv ]
     versions            = ch_versions                               // channel: [ versions.yml ]
 
 }

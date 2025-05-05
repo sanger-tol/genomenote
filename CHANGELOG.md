@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Addition of GenescopeFK histogram plots and related data.
 - Support for CLI provided Busco lineage to override the NCBI auto generated one.
 - Addition of MerquryFK module and config.
-- Addition of support for a _single_ haplotype genome sourced from the samplesheet.csv.
+- Addition of support for a _single_ haplotype assembly sourced from the samplesheet.csv.
 - Remove biosample_wgs as a required parameter.
 
 ### Parameters
@@ -32,7 +32,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | `cat`          |             | 2.3.4                                   |
 | `genescopefk`  |             | 1.2                                     |
 | `fastk_histex` |             | 1.1.0                                   |
-| `merquryfk`    |             | FK=1.1.0 (pre-release) MFK=1.1.2 R=4.42 |
+| `merquryfk`    |             | FK=38b07c2 MFK=1.1.2 R=4.42 |
 
 ## [[2.1.1](https://github.com/sanger-tol/genomenote/releases/tag/2.1.1)] - Pembroke Welsh Corgi (patch 1) [2025-03-19]
 
