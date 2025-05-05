@@ -5,6 +5,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [[2.2.0](https://github.com/sanger-tol/genomenote/releases/tag/2.2.0)] - German Doberman [2025-MM-DD]
 
+IMPORTANT: Please note that this version of the pipeline does not support `conda`, this is due to an update to the MerquryFK module in which some components are not released and therefore not available as a conda package.
+
 ### Enhancements & fixes
 
 - Addition of the GFASTATS module and config.
@@ -26,12 +28,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
 
-| Dependency     | Old version | New version                             |
-| -------------- | ----------- | --------------------------------------- |
-| `gfastats`     |             | 1.3.1                                   |
-| `cat`          |             | 2.3.4                                   |
-| `genescopefk`  |             | 1.2                                     |
-| `fastk_histex` |             | 1.1.0                                   |
+| Dependency     | Old version | New version                 |
+| -------------- | ----------- | --------------------------- |
+| `gfastats`     |             | 1.3.1                       |
+| `cat`          |             | 2.3.4                       |
+| `genescopefk`  |             | 1.2                         |
+| `fastk_histex` |             | 1.1.0                       |
 | `merquryfk`    |             | FK=38b07c2 MFK=1.1.2 R=4.42 |
 
 ## [[2.1.1](https://github.com/sanger-tol/genomenote/releases/tag/2.1.1)] - Pembroke Welsh Corgi (patch 1) [2025-03-19]
