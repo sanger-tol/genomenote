@@ -29,7 +29,6 @@ process NCBIDATASETS_SUMMARYGENOME {
         accession \\
         ${meta.id} \\
         ${args} \\
-        --api-key \$NCBI_API_KEY \\
         > ${prefix}.json
 
     validate_datasets_json.py ${prefix}.json
