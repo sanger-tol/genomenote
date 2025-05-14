@@ -5,16 +5,14 @@ include { AGAT_SQSTATBASIC                              } from '../../modules/nf
 include { GUNZIP                                        } from '../../modules/nf-core/gunzip/main'
 include { EXTRACT_ANNOTATION_STATISTICS_INFO            } from '../../modules/local/extract_annotation_statistics_info.nf'
 include { BUSCO_BUSCO as BUSCOPROTEINS                  } from '../../modules/nf-core/busco/busco/main'
-include { NCBIDATASETS_SUMMARYGENOME as SUMMARYGENOME   } from '../../modules/local/ncbidatasets/summarygenome'
 include { GFFREAD                                       } from '../../modules/nf-core/gffread/main'
-include { NCBI_GET_ODB                                  } from '../../modules/local/ncbidatasets/get_odb'
 
 workflow ANNOTATION_STATISTICS {
 
     take:
     gff                    //  channel: /path/to/annotation file
     genome                 // channel: [ meta, fasta ]
-    lineage_tax_ids        // channel: /path/to/lineage_tax_ids
+    busco_lineage          // channel: lineage_name
     lineage_db             // channel: /path/to/buscoDB
 
     main:
@@ -51,23 +49,8 @@ workflow ANNOTATION_STATISTICS {
     GFFREAD(ch_gff_unzipped, ch_fasta)
     ch_versions = ch_versions.mix ( GFFREAD.out.versions.first() )
 
-    // Genome summary statistics
-    SUMMARYGENOME ( genome )
-    ch_versions = ch_versions.mix ( SUMMARYGENOME.out.versions.first() )
-
-    // Get ODB lineage value
-    NCBI_GET_ODB ( SUMMARYGENOME.out.summary, lineage_tax_ids )
-    ch_versions = ch_versions.mix ( NCBI_GET_ODB.out.versions.first() )
-
-    // BUSCO
-    NCBI_GET_ODB.out.csv
-    | map { meta, csv -> csv }
-    | splitCsv()
-    | map { row -> row[1] }
-    | set { ch_lineage}
-
     // Running BUSCO in protein mode
-    BUSCOPROTEINS(GFFREAD.out.gffread_fasta, 'proteins', ch_lineage, lineage_db.ifEmpty([]), [] )
+    BUSCOPROTEINS(GFFREAD.out.gffread_fasta, 'proteins', busco_lineage, lineage_db.ifEmpty([]), [] )
     ch_versions = ch_versions.mix ( BUSCOPROTEINS.out.versions.first() )
 
     // Parsing the stats_txt files as input channels
