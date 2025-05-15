@@ -108,10 +108,14 @@ workflow GENOMENOTE {
     ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )
 
     // Currently we only expect to see ONE haplotype so make this a constraint
+    ch_inputs.haplotype.view{"HAPS: $it"}
+
     ch_inputs.haplotype
         .collect()
         .map { haplotype_tuples ->
-            if (haplotype_tuples.size() > 1) {
+            // Divide the size by 2 as the meta and file are counted seperately
+            // so meta + file = 2, but that is 1 haplotype
+            if ((haplotype_tuples.size() / 2) > 1) {
                 error "Multiple haplotype files detected and is not yet supported. Please only provide one haplotype file"
             }
         }
