@@ -111,7 +111,7 @@ workflow GENOMENOTE {
     ch_inputs.haplotype
         .collect()
         .map { haplotype_tuples ->
-            if (haplotype_tuples.size() > 2) {
+            if (haplotype_tuples.size() > 1) {
                 error "Multiple haplotype files detected and is not yet supported. Please only provide one haplotype file"
             }
         }

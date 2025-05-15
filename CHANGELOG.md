@@ -15,6 +15,7 @@ IMPORTANT: Please note that this version of the pipeline does not support `conda
 - Addition of MerquryFK module and config.
 - Addition of support for a _single_ haplotype assembly sourced from the samplesheet.csv.
 - Remove biosample_wgs as a required parameter.
+- Added support for providing an API key to NCBI datasets.
 
 ### Parameters
 
