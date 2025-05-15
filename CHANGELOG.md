@@ -33,7 +33,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | `cat`             |             | 2.3.4       |
 | `genescopefk`     |             | 1.2         |
 | `fastk_histex`    |             | 1.1.0       |
-| `pretextmap`      |             | ~           |
+| `pretextmap`      |             | 0.1.9       |
 | `pretextsnapshot` |             | 0.0.4       |
 | `samtools/faidx`  |             | 1.21        |
 
