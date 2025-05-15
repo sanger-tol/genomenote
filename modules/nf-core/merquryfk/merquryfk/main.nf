@@ -13,7 +13,7 @@ process MERQURYFK_MERQURYFK {
     input:
     tuple val(meta), path(fastk_hist),path(fastk_ktab),path(assembly),path(haplotigs)
     tuple val(meta2), path(mathaptab) // optional, trio mode
-    tuple val(meta3), path(pathaptab) // optional, trio mode                                                                     //optional
+    tuple val(meta3), path(pathaptab) // optional, trio mode
 
     output:
     tuple val(meta), path("${prefix}.completeness.stats")         , emit: stats

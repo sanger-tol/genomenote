@@ -3,7 +3,7 @@ Changes in component 'nf-core/merquryfk/merquryfk'
 Changes in 'merquryfk/merquryfk/main.nf':
 --- modules/nf-core/merquryfk/merquryfk/main.nf
 +++ modules/nf-core/merquryfk/merquryfk/main.nf
-@@ -3,15 +3,17 @@
+@@ -3,13 +3,15 @@
      label 'process_medium'
  
      // WARN: Version information not provided by tool on CLI. Please update version string below when bumping container versions.
@@ -22,11 +22,8 @@ Changes in 'merquryfk/merquryfk/main.nf':
 -    tuple val(meta) , path(fastk_hist),path(fastk_ktab), path(assembly), path(haplotigs)
 +    tuple val(meta), path(fastk_hist),path(fastk_ktab),path(assembly),path(haplotigs)
      tuple val(meta2), path(mathaptab) // optional, trio mode
--    tuple val(meta3), path(pathaptab) // optional, trio mode
-+    tuple val(meta3), path(pathaptab) // optional, trio mode                                                                     //optional
+     tuple val(meta3), path(pathaptab) // optional, trio mode
  
-     output:
-     tuple val(meta), path("${prefix}.completeness.stats")         , emit: stats
 @@ -40,16 +42,20 @@
          log.error("Error: Only one of the maternal and paternal hap tabs have been provided!")
      }
