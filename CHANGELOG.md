@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactor of the CONTACT_MAPS subworkflow to support both/either HIGLASS or PRETEXT map generation #183.
   - Split the logic for either method into HIGLASS_GENERATION and PRETEXT_GENERATION.
   - Addition of `select_contact_map` to select `higlass`, `pretext`, `both` for generation.
+- Remove biosample_wgs as a required parameter.
 
 ### Parameters
 

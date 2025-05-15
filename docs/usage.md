@@ -113,9 +113,6 @@ outdir: './results/'
 fasta: './genome.fasta'
 input: 'data'
 assembly: 'GCA_922984935.2'
-biosample_wgs: 'SAMEA7524400'
-biosample_hic: 'SAMEA112198479'
-biosample_rna: 'SAMEA112232914'
 <...>
 ```
 
