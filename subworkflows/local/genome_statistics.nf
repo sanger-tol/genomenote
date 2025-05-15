@@ -236,6 +236,7 @@ workflow GENOME_STATISTICS {
     summary_seq         = SUMMARYSEQUENCE.out.summary               // channel: [ meta, summary ]
     summary             = CREATETABLE.out.csv                       // channel: [ csv ]
     multiqc                                                         // channel: [ meta, summary ]
+    ch_busco_lineage    = ch_lineage                                // channel: [ lineage_name ]
     ch_gfastats         = GFASTATS.out.assembly_summary             // channel: [ meta, assembly_summary ]
     ch_kmer_cov         = GENESCOPEFK.out.kmer_cov                  // channel: [ meta, kmer_coverage ]
     ch_linear_plot      = GENESCOPEFK.out.linear_plot               // channel: [ meta, linear_plot ]

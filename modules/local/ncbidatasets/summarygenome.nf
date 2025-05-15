@@ -1,13 +1,11 @@
 process NCBIDATASETS_SUMMARYGENOME {
     tag "$meta.id"
     label 'process_single'
-    secret 'NCBI_API_KEY'
-    // Always expect that the NCBI API KEY is to be used here.
-    // We can't do this in a def before the script block or it can
-    // expand the variable and print it out!
 
     conda "conda-forge::ncbi-datasets-cli=16.22.1"
     container "docker.io/biocontainers/ncbi-datasets-cli:16.22.1_cv1"
+
+    errorStrategy { sleep(Math.pow(2, task.attempt) * 30 as long); return 'retry' }
 
     input:
     tuple val(meta), path(fasta)
@@ -29,7 +27,6 @@ process NCBIDATASETS_SUMMARYGENOME {
         accession \\
         ${meta.id} \\
         ${args} \\
-        --api-key \$NCBI_API_KEY \\
         > ${prefix}.json
 
     validate_datasets_json.py ${prefix}.json
