@@ -52,6 +52,7 @@ The `sample` identifiers have to be the same when you have re-sequenced the same
 sample,datatype,datafile
 sample1,hic,/path/to/aligned/cram
 sample1,pacbio,/path/to/unaligned/bam
+sample1,haplotype,/path/to/haplotype/assembly/fasta{.gz}
 ```
 
 ### Full samplesheet
@@ -64,12 +65,13 @@ A final samplesheet file consisting of both HiC and PacBio data may look somethi
 sample,datatype,datafile
 sample1,hic,/path/to/aligned/cram
 sample1,pacbio,/path/to/unaligned/bam
+sample1,haplotype,/path/to/haplotype/assembly/fasta{.gz}
 ```
 
 | Column     | Description                                                                                                                                                                                         |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `sample`   | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`).              |
-| `datatype` | Type of sequencing data. Must be `hic`, `pacbio`, or `10x`.                                                                                                                                         |
+| `datatype` | Type of data. Must be `hic`, `pacbio`, `10x` or `haplotype`                                                                                                                                         |
 | `datafile` | Full path to the data location. Can be either `bam` or `cram` aligned reads for `hic` data type. Can be either the FASTK `kmer` directory or the unaligned `bam` files for `pacbio`/`10x` datatype. |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.

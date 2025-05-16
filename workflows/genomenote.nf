@@ -73,7 +73,8 @@ include { ANNOTATION_STATISTICS } from '../subworkflows/local/annotation_statist
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { GUNZIP                      } from '../modules/nf-core/gunzip/main'
+include { GUNZIP as GUNZIP_PRIMARY    } from '../modules/nf-core/gunzip/main'
+include { GUNZIP as GUNZIP_HAPLOTYPE  } from '../modules/nf-core/gunzip/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 
@@ -100,9 +101,44 @@ workflow GENOMENOTE {
             return [ meta, file, [] ]
         pacbio : meta.datatype == 'pacbio' || meta.datatype == '10x'
             return [ meta, file ]
+        haplotype : meta.datatype == 'haplotype'
+            return [ meta, file ]
     }
     | set { ch_inputs }
     ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )
+
+    // Currently we only expect to see ONE haplotype so make this a constraint
+    ch_inputs.haplotype
+        // Remove meta otherwise collect() will include it as if it were an haplotype
+        .map { meta, haplotype -> haplotype }
+        .collect()
+        .map { haplotype_tuples ->
+            if (haplotype_tuples.size() > 1) {
+                error "Multiple haplotype files detected (${haplotype_tuples}) and is not yet supported. Please only provide one haplotype file"
+            }
+        }
+
+
+    //
+    // MODULE: Unzip the input haplotype if zipped
+    //
+    ch_inputs.haplotype
+    | branch { meta, fasta ->
+        gzipped: fasta.name.endsWith('.gz')
+        unzipped: true
+    }
+    | set { ch_haplotype }
+
+    GUNZIP_HAPLOTYPE (
+        ch_haplotype.gzipped
+    )
+    ch_unzipped = GUNZIP_HAPLOTYPE.out.gunzip
+    ch_versions = ch_versions.mix ( GUNZIP_HAPLOTYPE.out.versions )
+
+    //
+    // NOTE: Mix the unzipped haplotype with the original zipped haplotypes - this exists as a prelude to multi-haplotype support
+    //
+    ch_haplotype = ch_unzipped.mix(ch_haplotype.unzipped)
 
 
     //
@@ -123,8 +159,8 @@ workflow GENOMENOTE {
     | set { ch_genome }
 
     if ( params.fasta.endsWith('.gz') ) {
-        ch_unzipped = GUNZIP ( ch_genome ).gunzip
-        ch_versions = ch_versions.mix ( GUNZIP.out.versions.first() )
+        ch_unzipped = GUNZIP_PRIMARY ( ch_genome ).gunzip
+        ch_versions = ch_versions.mix ( GUNZIP_PRIMARY.out.versions.first() )
     } else {
         ch_unzipped = ch_genome
     }
@@ -149,7 +185,8 @@ workflow GENOMENOTE {
         ch_lineage_tax_ids,
         ch_lineage_db,
         ch_inputs.pacbio,
-        ch_flagstat
+        ch_flagstat,
+        ch_haplotype
     )
     ch_versions = ch_versions.mix ( GENOME_STATISTICS.out.versions )
 
@@ -157,7 +194,13 @@ workflow GENOMENOTE {
     //
     // SUBWORKFLOW: Create contact map matrices from HiC alignment files
     //
-    CONTACT_MAPS ( ch_fasta, ch_inputs.hic, GENOME_STATISTICS.out.summary_seq, ch_bin, ch_cool_order )
+    CONTACT_MAPS (
+        ch_fasta,
+        ch_inputs.hic,
+        GENOME_STATISTICS.out.summary_seq,
+        ch_bin,
+        ch_cool_order
+    )
     ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
 
 
@@ -165,7 +208,7 @@ workflow GENOMENOTE {
     // SUBWORKFLOW : Obtain feature statistics from the annotation file : GFF
     //
     if ( params.annotation_set ) {
-        ANNOTATION_STATISTICS (ch_gff, ch_fasta, ch_lineage_tax_ids, ch_lineage_db)
+        ANNOTATION_STATISTICS (ch_gff, ch_fasta, GENOME_STATISTICS.out.ch_busco_lineage, ch_lineage_db)
         ch_versions = ch_versions.mix ( ANNOTATION_STATISTICS.out.versions )
         ch_annotation_stats = ch_annotation_stats.mix (ANNOTATION_STATISTICS.out.summary)
     }
@@ -174,7 +217,14 @@ workflow GENOMENOTE {
     //
     // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
     //
-    COMBINE_NOTE_DATA (GENOME_METADATA.out.consistent, GENOME_METADATA.out.inconsistent, GENOME_STATISTICS.out.summary, ch_annotation_stats.ifEmpty([[],[]]), CONTACT_MAPS.out.link, ch_note_template)
+    COMBINE_NOTE_DATA (
+        GENOME_METADATA.out.consistent,
+        GENOME_METADATA.out.inconsistent,
+        GENOME_STATISTICS.out.summary,
+        ch_annotation_stats.ifEmpty([[],[]]),
+        CONTACT_MAPS.out.link,
+        ch_note_template
+    )
     ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
 
 

@@ -12,9 +12,7 @@ include { CREATETABLE                                   } from '../../modules/lo
 include { FASTK_HISTEX                                  } from '../../modules/nf-core/fastk/histex/main'
 include { GENESCOPEFK                                   } from '../../modules/nf-core/genescopefk/main'
 include { GFASTATS                                      } from '../../modules/nf-core/gfastats/main'
-
-// This is only temporarily removed so I'm leaving it here for now
-//include { MERQURYFK_MERQURYFK                           } from '../../modules/nf-core/merquryfk/merquryfk/main'
+include { MERQURYFK_MERQURYFK                           } from '../../modules/nf-core/merquryfk/merquryfk/main'
 
 workflow GENOME_STATISTICS {
     take:
@@ -23,6 +21,7 @@ workflow GENOME_STATISTICS {
     lineage_db             // channel: /path/to/buscoDB
     pacbio                 // channel: [ meta, kmer_db or reads ]
     flagstat               // channel: [ meta, flagstat ]
+    haplotype              // channel: [ meta, fasta ]
 
 
     main:
@@ -165,14 +164,21 @@ workflow GENOME_STATISTICS {
     ch_combo
     | mix ( ch_grab )
     | combine ( genome )
-    | map { meta, hist, ktab, meta2, fasta -> [ meta + [genome_size: meta2.genome_size], hist, ktab, fasta, [] ] }
+    | combine ( haplotype.ifEmpty([[],[]]) )
+    | map { meta, hist, ktab, meta2, fasta, meta3, haplotype ->
+        [ meta + [genome_size: meta2.genome_size], hist, ktab, fasta, haplotype ]
+    }
     | set { ch_merq }
 
 
     // This is only temporarily removed so I'm leaving it here for now
     // // MerquryFK
-    // MERQURYFK_MERQURYFK ( ch_merq, [], [] )
-    // ch_versions = ch_versions.mix ( MERQURYFK_MERQURYFK.out.versions.first() )
+    MERQURYFK_MERQURYFK (
+        ch_merq,
+        [[],[]],
+        [[],[]]
+    )
+    ch_versions = ch_versions.mix ( MERQURYFK_MERQURYFK.out.versions.first() )
 
 
     //
@@ -187,12 +193,12 @@ workflow GENOME_STATISTICS {
     | set { ch_busco }
 
     // This is only temporarily removed so I'm leaving it here for now
-    // MERQURYFK_MERQURYFK.out.qv
-    // | join ( MERQURYFK_MERQURYFK.out.stats )
-    // | map { meta, qv, comp -> [ meta + [ id: "merq" ], qv, comp ] }
-    // | groupTuple ()
-    // | ifEmpty ( [ [], [], [] ] )
-    // | set { ch_merqury }
+    MERQURYFK_MERQURYFK.out.qv
+    | join ( MERQURYFK_MERQURYFK.out.stats )
+    | map { meta, qv, comp -> [ meta + [ id: "merq" ], qv, comp ] }
+    | groupTuple ()
+    | ifEmpty ( [ [], [], [] ] )
+    | set { ch_merqury }
 
     flagstat
     // Queue channel of tuple(meta, file)
@@ -209,7 +215,12 @@ workflow GENOME_STATISTICS {
     //
     // MODULE: CREATETABLE ( ch_summary, ch_busco, ch_merqury, ch_flagstat )
     //
-    CREATETABLE ( ch_summary, ch_busco, [[], [], []], ch_flagstat )
+    CREATETABLE (
+        ch_summary,
+        ch_busco,
+        ch_merqury,
+        ch_flagstat
+    )
     ch_versions         = ch_versions.mix ( CREATETABLE.out.versions.first() )
 
 
@@ -225,6 +236,8 @@ workflow GENOME_STATISTICS {
     summary_seq         = SUMMARYSEQUENCE.out.summary               // channel: [ meta, summary ]
     summary             = CREATETABLE.out.csv                       // channel: [ csv ]
     multiqc                                                         // channel: [ meta, summary ]
+    ch_busco_lineage    = ch_lineage                                // channel: [ lineage_name ]
+    ch_gfastats         = GFASTATS.out.assembly_summary             // channel: [ meta, assembly_summary ]
     ch_kmer_cov         = GENESCOPEFK.out.kmer_cov                  // channel: [ meta, kmer_coverage ]
     ch_linear_plot      = GENESCOPEFK.out.linear_plot               // channel: [ meta, linear_plot ]
     ch_log_plot         = GENESCOPEFK.out.log_plot                  // channel: [ meta, log_plot ]
@@ -232,6 +245,10 @@ workflow GENOME_STATISTICS {
     ch_summary          = GENESCOPEFK.out.summary                   // channel: [ meta, summary ]
     ch_trans_lin_plot   = GENESCOPEFK.out.transformed_linear_plot   // channel: [ meta, transformed_linear_plot ]
     ch_trans_log_plot   = GENESCOPEFK.out.transformed_log_plot      // channel: [ meta, transformed_log_plot ]
+    ch_complete_stats   = MERQURYFK_MERQURYFK.out.stats             // channel: [ meta, completeness_stats ]
+    ch_bed              = MERQURYFK_MERQURYFK.out.bed               // channel: [ meta, bed ]
+    ch_qv               = MERQURYFK_MERQURYFK.out.qv                // channel: [ meta, qv ]
+    ch_assembly_qv      = MERQURYFK_MERQURYFK.out.assembly_qv       // channel: [ meta, assembly_qv ]
     versions            = ch_versions                               // channel: [ versions.yml ]
 
 }
