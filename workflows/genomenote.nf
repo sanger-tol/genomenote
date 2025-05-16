@@ -212,7 +212,7 @@ workflow GENOMENOTE {
         ANNOTATION_STATISTICS (
             ch_gff,
             ch_fasta,
-            ch_lineage_tax_ids,
+            GENOME_STATISTICS.out.ch_busco_lineage,
             ch_lineage_db
         )
         ch_versions = ch_versions.mix ( ANNOTATION_STATISTICS.out.versions )
