@@ -57,6 +57,12 @@
                     "description": "Override the BUSCO database used for the assembly assessment.",
                     "pattern": "._odb10$"
                 },
+                "select_contact_map": {
+                    "type": "string",
+                    "description": "Select which contact maps should be generated, higlass, pretext or both",
+                    "enum": ["higlass", "pretext", "both"],
+                    "default": "both"
+                },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
