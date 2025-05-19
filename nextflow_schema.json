@@ -63,6 +63,11 @@
                     "enum": ["higlass", "pretext", "both"],
                     "default": "both"
                 },
+                "blobtk_address": {
+                    "type":"string",
+                    "description": "Web address for you blobtoolkit viewer server",
+                    "pattern": "^https:.*\/"
+                },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
