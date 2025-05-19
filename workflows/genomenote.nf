@@ -192,6 +192,7 @@ workflow GENOMENOTE {
     )
     ch_versions = ch_versions.mix ( GENOME_STATISTICS.out.versions )
 
+
     //
     // SUBWORKFLOW: Grab blobtoolkit plots via API
     //
