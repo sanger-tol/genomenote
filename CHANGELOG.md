@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added support for providing an API key to NCBI datasets.
 - Added the blobtk module.
   - This module creates plots via calls to the blobtoolkit server.
+  - Container for this module is specified in the modules.config to avoid being prepended with `quay.io`
 - Added the `blobtk_address` to provide the https address of the server, if not provided the module will not run.
 
 ### Parameters
