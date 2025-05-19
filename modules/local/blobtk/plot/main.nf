@@ -3,7 +3,7 @@ process BLOBTK_PLOT {
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container "genomehubs/blobtk:0.6.5"
+    // Containter is controlled by modules.config
 
     input:
     tuple val(meta), path(fasta)
