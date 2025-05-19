@@ -64,7 +64,7 @@
                     "default": "both"
                 },
                 "blobtk_address": {
-                    "type":"string",
+                    "type": "string",
                     "description": "Web address for you blobtoolkit viewer server",
                     "pattern": "^https:.*\/"
                 },
