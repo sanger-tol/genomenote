@@ -172,25 +172,25 @@ workflow GENOMENOTE {
     | set { ch_fasta }
 
 
-    //
-    // SUBWORKFLOW: Create genome statistics table
-    //
-    ch_inputs.hic
-    | map{ meta, reads, blank ->
-        flagstat = file( reads.resolveSibling( reads.baseName + ".flagstat" ), checkIfExists: true )
-        [ meta, flagstat ]
-    }
-    | set { ch_flagstat }
+    // //
+    // // SUBWORKFLOW: Create genome statistics table
+    // //
+    // ch_inputs.hic
+    // | map{ meta, reads, blank ->
+    //     flagstat = file( reads.resolveSibling( reads.baseName + ".flagstat" ), checkIfExists: true )
+    //     [ meta, flagstat ]
+    // }
+    // | set { ch_flagstat }
 
-    GENOME_STATISTICS (
-        ch_fasta,
-        ch_lineage_tax_ids,
-        ch_lineage_db,
-        ch_inputs.pacbio,
-        ch_flagstat,
-        ch_haplotype
-    )
-    ch_versions = ch_versions.mix ( GENOME_STATISTICS.out.versions )
+    // GENOME_STATISTICS (
+    //     ch_fasta,
+    //     ch_lineage_tax_ids,
+    //     ch_lineage_db,
+    //     ch_inputs.pacbio,
+    //     ch_flagstat,
+    //     ch_haplotype
+    // )
+    // ch_versions = ch_versions.mix ( GENOME_STATISTICS.out.versions )
 
 
     //
@@ -202,80 +202,80 @@ workflow GENOMENOTE {
     )
 
 
-    //
-    // SUBWORKFLOW: Create contact map matrices from HiC alignment files
-    //
-    CONTACT_MAPS (
-        ch_fasta,
-        ch_inputs.hic,
-        GENOME_STATISTICS.out.summary_seq,
-        ch_bin,
-        ch_cool_order,
-        params.select_contact_map
-    )
-    ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
+    // //
+    // // SUBWORKFLOW: Create contact map matrices from HiC alignment files
+    // //
+    // CONTACT_MAPS (
+    //     ch_fasta,
+    //     ch_inputs.hic,
+    //     GENOME_STATISTICS.out.summary_seq,
+    //     ch_bin,
+    //     ch_cool_order,
+    //     params.select_contact_map
+    // )
+    // ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
 
 
-    //
-    // SUBWORKFLOW : Obtain feature statistics from the annotation file : GFF
-    //
-    if ( params.annotation_set ) {
-        ANNOTATION_STATISTICS (
-            ch_gff,
-            ch_fasta,
-            GENOME_STATISTICS.out.ch_busco_lineage,
-            ch_lineage_db
-        )
-        ch_versions = ch_versions.mix ( ANNOTATION_STATISTICS.out.versions )
-        ch_annotation_stats = ch_annotation_stats.mix (ANNOTATION_STATISTICS.out.summary)
-    }
+    // //
+    // // SUBWORKFLOW : Obtain feature statistics from the annotation file : GFF
+    // //
+    // if ( params.annotation_set ) {
+    //     ANNOTATION_STATISTICS (
+    //         ch_gff,
+    //         ch_fasta,
+    //         GENOME_STATISTICS.out.ch_busco_lineage,
+    //         ch_lineage_db
+    //     )
+    //     ch_versions = ch_versions.mix ( ANNOTATION_STATISTICS.out.versions )
+    //     ch_annotation_stats = ch_annotation_stats.mix (ANNOTATION_STATISTICS.out.summary)
+    // }
 
 
-    //
-    // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
-    //
-    COMBINE_NOTE_DATA (
-        GENOME_METADATA.out.consistent,
-        GENOME_METADATA.out.inconsistent,
-        GENOME_STATISTICS.out.summary,
-        ch_annotation_stats.ifEmpty([[],[]]),
-        CONTACT_MAPS.out.link,
-        ch_note_template
-    )
-    ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
+    // //
+    // // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
+    // //
+    // COMBINE_NOTE_DATA (
+    //     GENOME_METADATA.out.consistent,
+    //     GENOME_METADATA.out.inconsistent,
+    //     GENOME_STATISTICS.out.summary,
+    //     ch_annotation_stats.ifEmpty([[],[]]),
+    //     CONTACT_MAPS.out.link,
+    //     ch_note_template
+    // )
+    // ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
 
 
-    //
-    // MODULE: Combine different versions.yml
-    //
-    CUSTOM_DUMPSOFTWAREVERSIONS ( ch_versions.unique().collectFile(name: 'collated_versions.yml') )
+    // //
+    // // MODULE: Combine different versions.yml
+    // //
+    // CUSTOM_DUMPSOFTWAREVERSIONS ( ch_versions.unique().collectFile(name: 'collated_versions.yml') )
 
 
-    //
-    // MODULE: MultiQC
-    //
-    workflow_summary    = WorkflowGenomenote.paramsSummaryMultiqc(workflow, summary_params)
-    ch_workflow_summary = Channel.value(workflow_summary)
+    // //
+    // // MODULE: MultiQC
+    // //
+    // workflow_summary    = WorkflowGenomenote.paramsSummaryMultiqc(workflow, summary_params)
+    // ch_workflow_summary = Channel.value(workflow_summary)
 
-    methods_description    = WorkflowGenomenote.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description)
-    ch_methods_description = Channel.value(methods_description)
+    // methods_description    = WorkflowGenomenote.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description)
+    // ch_methods_description = Channel.value(methods_description)
 
-    ch_multiqc_files = Channel.empty()
-    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
-    ch_multiqc_files = ch_multiqc_files.mix(ch_flagstat.collect{it[1]}.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(GENOME_STATISTICS.out.multiqc.collect{it[1]}.ifEmpty([]))
+    // ch_multiqc_files = Channel.empty()
+    // ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    // ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
+    // ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+    // ch_multiqc_files = ch_multiqc_files.mix(ch_flagstat.collect{it[1]}.ifEmpty([]))
+    // ch_multiqc_files = ch_multiqc_files.mix(GENOME_STATISTICS.out.multiqc.collect{it[1]}.ifEmpty([]))
 
-    MULTIQC (
-        ch_multiqc_files.collect(),
-        ch_multiqc_config.toList(),
-        ch_multiqc_custom_config.toList(),
-        ch_multiqc_logo.toList(),
-        [],
-        []
-    )
-    multiqc_report = MULTIQC.out.report.toList()
+    // MULTIQC (
+    //     ch_multiqc_files.collect(),
+    //     ch_multiqc_config.toList(),
+    //     ch_multiqc_custom_config.toList(),
+    //     ch_multiqc_logo.toList(),
+    //     [],
+    //     []
+    // )
+    // multiqc_report = MULTIQC.out.report.toList()
 
 }
 
