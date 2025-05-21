@@ -1,7 +1,4 @@
-include { BLOBTK_PLOT as BLOBTK_PLOT_GRID_VIEW              } from '../../../modules/local/blobtk/plot/main'
-include { BLOBTK_PLOT as BLOBTK_PLOT_GRID_CHR_ONLY_VIEW     } from '../../../modules/local/blobtk/plot/main'
-include { BLOBTK_PLOT as BLOBTK_PLOT_DEFAULT_VIEW           } from '../../../modules/local/blobtk/plot/main'
-include { BLOBTK_PLOT as BLOBTK_PLOT_DEFAULT_CHR_ONLY_VIEW  } from '../../../modules/local/blobtk/plot/main'
+include { BLOBTK_PLOT } from '../../../modules/local/blobtk/plot/main'
 
 
 workflow GET_BLOBTK_PLOTS {
@@ -13,54 +10,38 @@ workflow GET_BLOBTK_PLOTS {
     main:
     ch_versions         = Channel.empty()
 
+    blobtk_arguments = [
+        [
+            name: "BLOB_VIEW",
+            args: "-v blob --scale-factor 0.6"
+        ],
+        [
+            name: "BLOB_CHR_VIEW",
+            args: "-v blob --filter assembly_level=chromosome --scale-factor 0.6"
+        ],
+        [
+            name: "GRID_VIEW",
+            args: "-v blob --shape grid -w 0.01 -x position --scale-factor 0.6"
+        ],
+        [
+            name: "GRID_CHR_VIEW_FILTER",
+            args: "-v blob --filter assembly_level=chromosome --shape grid -w 0.01 -x position --scale-factor 0.6"
+        ]
+    ]
+
     //
     // MODULE: Call the specified blobtk server and return grid view of the
     //          assembly position of blob on molecule
     //
-    BLOBTK_PLOT_GRID_VIEW (
+    BLOBTK_PLOT (
         fasta,
-        btk_address
+        btk_address,
+        blobtk_arguments
     )
-    ch_versions         = ch_versions.mix ( BLOBTK_PLOT_GRID_VIEW.out.versions.first() )
-
-
-    //
-    // MODULE: Call the specified blobtk server and return grid view of the
-    //          assembly position of blob on molecule
-    //              This is filtered for chromosomes only
-    //
-    BLOBTK_PLOT_GRID_CHR_ONLY_VIEW (
-        fasta,
-        btk_address
-    )
-    ch_versions         = ch_versions.mix ( BLOBTK_PLOT_GRID_CHR_ONLY_VIEW.out.versions.first() )
-
-
-    //
-    // MODULE: Call the specified blobtk server and return the default blob plot
-    //
-    BLOBTK_PLOT_DEFAULT_VIEW (
-        fasta,
-        btk_address
-    )
-    ch_versions         = ch_versions.mix ( BLOBTK_PLOT_DEFAULT_VIEW.out.versions.first() )
-
-
-    //
-    // MODULE: Call the specified blobtk server and return the default blob plot
-    //              This is filtered for chromosomes only
-    //
-    BLOBTK_PLOT_DEFAULT_CHR_ONLY_VIEW (
-        fasta,
-        btk_address
-    )
-    ch_versions         = ch_versions.mix ( BLOBTK_PLOT_DEFAULT_CHR_ONLY_VIEW.out.versions.first() )
-
+    ch_versions         = ch_versions.mix ( BLOBTK_PLOT.out.versions.first() )
+    ch_images           = BLOBTK_PLOT.out.png.mix ( BLOBTK_PLOT.out.png )
 
     emit:
-    grid_view           = BLOBTK_PLOT_GRID_VIEW.out.png
-    filtered_grid_view  = BLOBTK_PLOT_GRID_CHR_ONLY_VIEW.out.png
-    blob_view           = BLOBTK_PLOT_DEFAULT_VIEW.out.png
-    filtered_blob_view  = BLOBTK_PLOT_DEFAULT_CHR_ONLY_VIEW.out.png
+    blobtk_images       = ch_images
     versions            = ch_versions
 }
