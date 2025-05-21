@@ -1,5 +1,5 @@
 process BLOBTK_PLOT {
-    tag "$meta.id"
+    tag "$blobtk_args.name"
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
@@ -8,6 +8,7 @@ process BLOBTK_PLOT {
     input:
     tuple val(meta), path(fasta)
     path(dir_location)
+    each blobtk_args
 
     output:
     tuple val(meta), path("*.png"), emit: png
@@ -18,13 +19,14 @@ process BLOBTK_PLOT {
 
     script:
     def args         = task.ext.args ?: ''
-    def prefix       = task.ext.prefix ?: "${meta.id}"
+    def prefix       = task.ext.prefix ?: "${meta.id}_${blobtk_args.name}"
     def VERSION      = "0.6.5"
 
     """
     blobtk plot \\
         -d $dir_location \\
         $args \\
+        $blobtk_args.args \\
         -o ${prefix}.png
 
     cat <<-END_VERSIONS > versions.yml
