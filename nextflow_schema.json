@@ -65,8 +65,7 @@
                 },
                 "blobtk_address": {
                     "type": "string",
-                    "description": "Web address for you blobtoolkit viewer server",
-                    "pattern": "^https:.*\/"
+                    "description": "Web address for you blobtoolkit viewer server"
                 },
                 "outdir": {
                     "type": "string",

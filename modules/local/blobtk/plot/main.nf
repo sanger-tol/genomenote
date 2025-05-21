@@ -3,11 +3,11 @@ process BLOBTK_PLOT {
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    // Containter is controlled by modules.config
+    container   = "docker.io/genomehubs/blobtk:0.6.5"
 
     input:
     tuple val(meta), path(fasta)
-    val(server_address)
+    path(dir_location)
 
     output:
     tuple val(meta), path("*.png"), emit: png
@@ -17,14 +17,13 @@ process BLOBTK_PLOT {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    def full_address = "${server_address}api/v1/dataset/id/${meta.id}"
-    def VERSION = "0.6.5"
+    def args         = task.ext.args ?: ''
+    def prefix       = task.ext.prefix ?: "${meta.id}"
+    def VERSION      = "0.6.5"
 
     """
     blobtk plot \\
-        -d $full_address \\
+        -d $dir_location \\
         $args \\
         -o ${prefix}.png
 
