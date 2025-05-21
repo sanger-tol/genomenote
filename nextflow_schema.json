@@ -63,7 +63,7 @@
                     "enum": ["higlass", "pretext", "both"],
                     "default": "both"
                 },
-                "blobtk_address": {
+                "blobtk_location": {
                     "type": "string",
                     "description": "Web address for you blobtoolkit viewer server"
                 },
