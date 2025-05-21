@@ -25,8 +25,8 @@ process BLOBTK_PLOT {
     """
     blobtk plot \\
         -d $dir_location \\
-        $args \\
         $blobtk_args.args \\
+        $args \\
         -o ${prefix}.png
 
     cat <<-END_VERSIONS > versions.yml

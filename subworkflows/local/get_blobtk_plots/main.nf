@@ -10,22 +10,27 @@ workflow GET_BLOBTK_PLOTS {
     main:
     ch_versions         = Channel.empty()
 
+    //
+    // NOTE: other arguments for this module, that effect ALL runs of the module
+    //          are to be added in modules.config along with scale-factor,
+    //          as this is most likely to be adapted by the end user on personal taste.
+    //
     blobtk_arguments = [
         [
             name: "BLOB_VIEW",
-            args: "-v blob --scale-factor 0.6"
+            args: "-v blob"
         ],
         [
             name: "BLOB_CHR_VIEW",
-            args: "-v blob --filter assembly_level=chromosome --scale-factor 0.6"
+            args: "-v blob --filter assembly_level=chromosome"
         ],
         [
             name: "GRID_VIEW",
-            args: "-v blob --shape grid -w 0.01 -x position --scale-factor 0.6"
+            args: "-v blob --shape grid -w 0.01 -x position"
         ],
         [
             name: "GRID_CHR_VIEW_FILTER",
-            args: "-v blob --filter assembly_level=chromosome --shape grid -w 0.01 -x position --scale-factor 0.6"
+            args: "-v blob --filter assembly_level=chromosome --shape grid -w 0.01 -x position"
         ]
     ]
 

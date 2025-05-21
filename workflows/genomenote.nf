@@ -146,30 +146,30 @@ workflow GENOMENOTE {
     //
     // SUBWORKFLOW: Read in template of data files to fetch, parse these files and output a list of genome metadata params
     //
-    INPUT_CHECK.out.param.combine( ch_file_list )
-    | set { ch_metadata }
+    //INPUT_CHECK.out.param.combine( ch_file_list )
+    //| set { ch_metadata }
 
 
-    GENOME_METADATA ( ch_metadata )
-    ch_versions = ch_versions.mix(GENOME_METADATA.out.versions)
+    //GENOME_METADATA ( ch_metadata )
+    //ch_versions = ch_versions.mix(GENOME_METADATA.out.versions)
 
     //
     // MODULE: Uncompress fasta file if needed and set meta based on input params
     //
 
-    INPUT_CHECK.out.param.combine( ch_fasta )
-    | set { ch_genome }
+    //INPUT_CHECK.out.param.combine( ch_fasta )
+    //| set { ch_genome }
 
-    if ( params.fasta.endsWith('.gz') ) {
-        ch_unzipped = GUNZIP_PRIMARY ( ch_genome ).gunzip
-        ch_versions = ch_versions.mix ( GUNZIP_PRIMARY.out.versions.first() )
-    } else {
-        ch_unzipped = ch_genome
-    }
+    //if ( params.fasta.endsWith('.gz') ) {
+      //  ch_unzipped = GUNZIP_PRIMARY ( ch_genome ).gunzip
+        //ch_versions = ch_versions.mix ( GUNZIP_PRIMARY.out.versions.first() )
+    //} else {
+      //  ch_unzipped = ch_genome
+   // }
 
-    ch_unzipped
-    | map { meta, fa -> [ meta + [id: fa.baseName, genome_size: fa.size()], fa] }
-    | set { ch_fasta }
+    //ch_unzipped
+   // | map { meta, fa -> [ meta + [id: fa.baseName, genome_size: fa.size()], fa] }
+    //| set { ch_fasta }
 
 
     // //
@@ -196,8 +196,11 @@ workflow GENOMENOTE {
     //
     // SUBWORKFLOW: Grab blobtoolkit plots via API
     //
+    ch_fasta
+        .map{ file -> tuple([id: "hello"], file)}
+        .set{fasta_typ}
     GET_BLOBTK_PLOTS(
-        ch_fasta,
+        fasta_typ,
         ch_btk_address
     )
 
