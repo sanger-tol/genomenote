@@ -36,8 +36,9 @@ process BLOBTK_PLOT {
     """
 
     stub:
+    def prefix       = task.ext.prefix ?: "${genome_accession}"
+    def VERSION      = "0.6.5"
     """
-    def prefix = task.ext.prefix ?: "${genome_accession}"
     touch ${prefix}.png
 
     cat <<-END_VERSIONS > versions.yml
