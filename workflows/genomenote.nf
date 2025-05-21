@@ -190,7 +190,7 @@ workflow GENOMENOTE {
         ch_flagstat,
         ch_haplotype
     )
-    ch_versions = ch_versions.mix ( GENOME_STATISTICS.out.versions )
+    ch_versions  = ch_versions.mix ( GENOME_STATISTICS.out.versions )
 
 
     //
@@ -200,7 +200,7 @@ workflow GENOMENOTE {
         ch_fasta,
         ch_btk_address
     )
-    ch_versions = ch_versions.mix ( GET_BLOBTK_PLOTS.out.versions )
+    ch_versions  = ch_versions.mix ( GET_BLOBTK_PLOTS.out.versions )
 
 
     //
@@ -214,7 +214,7 @@ workflow GENOMENOTE {
         ch_cool_order,
         params.select_contact_map
     )
-    ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
+    ch_versions  = ch_versions.mix ( CONTACT_MAPS.out.versions )
 
 
     //
