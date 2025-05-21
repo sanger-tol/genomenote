@@ -57,8 +57,6 @@ workflow GET_BLOBTK_PLOTS {
     ch_versions         = ch_versions.mix ( BLOBTK_PLOT_DEFAULT_CHR_ONLY_VIEW.out.versions.first() )
 
 
-
-
     emit:
     grid_view           = BLOBTK_PLOT_GRID_VIEW.out.png
     filtered_grid_view  = BLOBTK_PLOT_GRID_CHR_ONLY_VIEW.out.png
