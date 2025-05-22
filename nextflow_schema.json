@@ -63,9 +63,9 @@
                     "enum": ["higlass", "pretext", "both"],
                     "default": "both"
                 },
-                "blobtk_location": {
+                "btk_location": {
                     "type": "string",
-                    "description": "Web address for you blobtoolkit viewer server"
+                    "description": "Location of the local blobtoolkit \"blobdir\""
                 },
                 "outdir": {
                     "type": "string",

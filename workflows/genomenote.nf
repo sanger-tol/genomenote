@@ -28,7 +28,7 @@ if (params.lineage_db) { ch_lineage_db = Channel.fromPath(params.lineage_db) } e
 if (params.note_template) { ch_note_template = Channel.fromPath(params.note_template) } else { ch_note_template = Channel.empty() }
 if (params.cool_order) { ch_cool_order = Channel.fromPath(params.cool_order) } else { ch_cool_order = Channel.empty() }
 if (params.annotation_set) { ch_gff = Channel.fromPath(params.annotation_set) } else { ch_gff = Channel.empty() }
-if (params.blobtk_location) { ch_btk_address = Channel.fromPath(params.blobtk_location, type: "dir") } else { ch_btk_address = Channel.empty() }
+if (params.btk_location) { ch_btk_address = Channel.fromPath(params.btk_location, type: "dir") } else { ch_btk_address = Channel.empty() }
 
 if (params.biosample_wgs) metadata_inputs.add(params.biosample_wgs) else metadata_inputs.add(null)
 if (params.biosample_hic) metadata_inputs.add(params.biosample_hic) else metadata_inputs.add(null)
@@ -164,7 +164,7 @@ workflow GENOMENOTE {
         ch_unzipped = GUNZIP_PRIMARY ( ch_genome ).gunzip
         ch_versions = ch_versions.mix ( GUNZIP_PRIMARY.out.versions.first() )
     } else {
-      //  ch_unzipped = ch_genome
+        ch_unzipped = ch_genome
     }
 
     ch_unzipped
