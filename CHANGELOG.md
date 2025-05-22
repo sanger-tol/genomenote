@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Addition of support for a _single_ haplotype assembly sourced from the samplesheet.csv.
 - Remove biosample_wgs as a required parameter.
 - Added support for providing an API key to NCBI datasets.
+- Added the blobtk module.
+  - This module creates plots via calls to the blobtoolkit server or local blobdir.
+- Added the `btk_location` to provide the path of the blobdir, if not provided the module will not run.
 
 ### Parameters
 
@@ -24,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | ------------- | -------------------- |
 |               | --busco_lineage      |
 |               | --select_contact_map |
+|               | --btk_location       |
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 
