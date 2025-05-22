@@ -4,15 +4,8 @@
 
 include { GET_CHROMLIST           } from '../../modules/local/ncbidatasets/get_chromlist'
 include { SAMTOOLS_VIEW           } from '../../modules/nf-core/samtools/view/main'
-include { BEDTOOLS_BAMTOBED       } from '../../modules/nf-core/bedtools/bamtobed/main'
-include { GNU_SORT as BED_SORT    } from '../../modules/nf-core/gnu/sort/main'
-include { GNU_SORT as FILTER_SORT } from '../../modules/nf-core/gnu/sort/main'
-include { FILTER_BED              } from '../../modules/local/filter/bed'
-include { COOLER_CLOAD            } from '../../modules/nf-core/cooler/cload/main'
-include { COOLER_ZOOMIFY          } from '../../modules/nf-core/cooler/zoomify/main'
-include { COOLER_DUMP             } from '../../modules/nf-core/cooler/dump/main'
-include { UPLOAD_HIGLASS_DATA     } from '../../modules/local/upload_higlass_data'
-include { GENERATE_HIGLASS_LINK   } from '../../modules/local/generate_higlass_link'
+include { HIGLASS_GENERATION      } from './higlass_generation'
+include { PRETEXT_GENERATION      } from './pretext_generation'
 
 workflow CONTACT_MAPS {
     take:
@@ -21,92 +14,76 @@ workflow CONTACT_MAPS {
     summary_seq                               // channel: [ meta, summary ]
     cool_bin                                  // channel: val(cooler_bins)
     cool_order                                // path: /path/to/file
+    select_contact_map                        // params.select_contact_map
 
 
     main:
-    ch_versions = Channel.empty()
-    ch_higlass_link = Channel.empty()
+    ch_versions     = Channel.empty()
 
     // Extract the ordered chromosome list
-    GET_CHROMLIST ( summary_seq, cool_order.ifEmpty([]) )
-    ch_versions = ch_versions.mix ( GET_CHROMLIST.out.versions.first() )
+    GET_CHROMLIST (
+        summary_seq,
+        cool_order.ifEmpty([])
+    )
+    ch_versions     = ch_versions.mix ( GET_CHROMLIST.out.versions.first() )
 
 
     // CRAM to BAM
-    SAMTOOLS_VIEW ( reads, genome.first(), [] )
-    ch_versions = ch_versions.mix ( SAMTOOLS_VIEW.out.versions.first() )
+    SAMTOOLS_VIEW (
+        reads,
+        genome.first(),
+        []
+    )
+    ch_versions     = ch_versions.mix ( SAMTOOLS_VIEW.out.versions.first() )
 
+    //
+    // SUBWORKFLOW: GENERATE THE HIGLASS FILES AND UPLOAD DEPENDING ON USER INPUT
+    //
+    if ( select_contact_map == "higlass" || select_contact_map == "both" ) {
+        HIGLASS_GENERATION (
+            SAMTOOLS_VIEW.out.bam,
+            GET_CHROMLIST.out.list,
+            cool_bin,
+            cool_order
+        )
+        ch_versions = ch_versions.mix ( HIGLASS_GENERATION.out.versions.first() )
 
-    // BAM to Bed
-    BEDTOOLS_BAMTOBED ( SAMTOOLS_VIEW.out.bam )
-    ch_versions = ch_versions.mix ( BEDTOOLS_BAMTOBED.out.versions.first() )
+        cooler_file = HIGLASS_GENERATION.out.cool
+        mcool_file  = HIGLASS_GENERATION.out.mcool
+        grid_file   = HIGLASS_GENERATION.out.grid
+        link_file   = HIGLASS_GENERATION.out.link
+    } else {
+        cooler_file = Channel.empty()
+        mcool_file  = Channel.empty()
+        grid_file   = Channel.empty()
+        link_file   = Channel.empty()
+    }
 
+    //
+    // SUBWORKFLOW: GENERATE PRETEXT SNAPSHOT FILES
+    //
+    if ( select_contact_map == "pretext" || select_contact_map == "both" ) {
+        PRETEXT_GENERATION (
+            genome,
+            GET_CHROMLIST.out.list,
+            SAMTOOLS_VIEW.out.bam
+        )
+        ch_versions = ch_versions.mix ( PRETEXT_GENERATION.out.versions.first() )
 
-    // Sort the bed file by read name
-    BED_SORT ( BEDTOOLS_BAMTOBED.out.bed )
-    ch_versions = ch_versions.mix ( BED_SORT.out.versions.first() )
-
-
-    // Filter the bed file
-    // Pair the consecutive rows
-    FILTER_BED ( BED_SORT.out.sorted )
-    ch_versions = ch_versions.mix ( FILTER_BED.out.versions.first() )
-
-
-    // Sort the filtered bed by chromosome name
-    FILTER_SORT ( FILTER_BED.out.pairs )
-    ch_versions = ch_versions.mix ( FILTER_SORT.out.versions.first() )
-
-
-    // Create the `.cool` file
-    FILTER_SORT.out.sorted
-    | combine ( cool_bin )
-    | map { meta, bed, bin -> [ meta, bed, [], bin ] }
-    | set { ch_cooler }
-
-    GET_CHROMLIST.out.list
-    | map { meta, list -> list }
-    | first
-    | set { ch_chromsizes }
-
-    COOLER_CLOAD ( ch_cooler, ch_chromsizes )
-    ch_versions = ch_versions.mix ( COOLER_CLOAD.out.versions.first() )
-
-
-    // Create the `.mcool` file
-    COOLER_CLOAD.out.cool
-    | map { meta, cool, bin -> [ meta, cool ] }
-    | set { ch_zoomify }
-
-    COOLER_ZOOMIFY ( ch_zoomify )
-    ch_versions = ch_versions.mix ( COOLER_ZOOMIFY.out.versions.first() )
-
-
-    // Create the `.genome` file
-    COOLER_CLOAD.out.cool
-    | map { meta, cool, bin -> [ meta, cool, [] ] }
-    | set { ch_dump }
-
-    COOLER_DUMP ( ch_dump )
-    ch_versions = ch_versions.mix ( COOLER_DUMP.out.versions.first() )
-
-
-    // Optionally add the files to a HiGlass webserver
-
-    if ( params.upload_higlass_data ) {
-        UPLOAD_HIGLASS_DATA (COOLER_ZOOMIFY.out.mcool, COOLER_DUMP.out.bedpe, params.higlass_data_project_dir, params.higlass_upload_directory )
-        ch_versions = ch_versions.mix ( UPLOAD_HIGLASS_DATA.out.versions.first() )
-
-        GENERATE_HIGLASS_LINK (UPLOAD_HIGLASS_DATA.out.file_name, UPLOAD_HIGLASS_DATA.out.map_uuid, UPLOAD_HIGLASS_DATA.out.grid_uuid, params.higlass_url, UPLOAD_HIGLASS_DATA.out.genome_file)
-        ch_versions = ch_versions.mix ( GENERATE_HIGLASS_LINK.out.versions.first() )
-        ch_higlass_link = ch_higlass_link.mix ( GENERATE_HIGLASS_LINK.out.higlass_link.first() )
+        pretext_map = PRETEXT_GENERATION.out.pretext_map
+        pretext_png = PRETEXT_GENERATION.out.pretext_png
+    } else {
+        pretext_map = Channel.empty()
+        pretext_png = Channel.empty()
     }
 
 
     emit:
-    cool     = COOLER_CLOAD.out.cool                    // tuple val(meta), val(cool_bin), path("*.cool")
-    mcool    = COOLER_ZOOMIFY.out.mcool                 // tuple val(meta), path("*.mcool")
-    grid     = COOLER_DUMP.out.bedpe                    // tuple val(meta), path("*.bedpe")
-    link     = ch_higlass_link                          // channel: [ *_higlass_link.csv]
-    versions = ch_versions                              // channel: [ versions.yml ]
+    cool     = cooler_file      // tuple val(meta), val(cool_bin), path("*.cool")
+    mcool    = mcool_file       // tuple val(meta), path("*.mcool")
+    grid     = grid_file        // tuple val(meta), path("*.bedpe")
+    link     = link_file        // channel: [ *_higlass_link.csv]
+    ptxt_map = pretext_map      // tuple val(meta), path("*.pretext")
+    ptxt_png = pretext_png      // tuple val(meta), path("*.pretext")
+    versions = ch_versions      // channel: [ versions.yml ]
 }
