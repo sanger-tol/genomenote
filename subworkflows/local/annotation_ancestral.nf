@@ -54,11 +54,11 @@ workflow ANNOTATION_ANCESTRAL {
 
 
     emit:
-    ancestral_png_plot              = ANCESTRAL_PLOT.out.png_plot
-    ancestral_pdf_plot              = ANCESTRAL_PLOT.out.pdf_plot
-    ancestral_complete_location     = ANCESTRAL_EXTRACT.out.comp_location
-    ancestral_duplicate_location    = ANCESTRAL_EXTRACT.out.dup_location
-    ancestral_summary               = ANCESTRAL_EXTRACT.out.summary
-    versions                        = ch_versions                   // channel: [ versions.yml ]
+    ancestral_png_plot              = ANCESTRAL_PLOT.out.png_plot           // channel: [   [id], file  ]
+    ancestral_pdf_plot              = ANCESTRAL_PLOT.out.pdf_plot           // channel: [   [id], file  ]
+    ancestral_complete_location     = ANCESTRAL_EXTRACT.out.comp_location   // channel: [   [id], file  ]
+    ancestral_duplicate_location    = ANCESTRAL_EXTRACT.out.dup_location    // channel: [   [id], file  ]
+    ancestral_summary               = ANCESTRAL_EXTRACT.out.summary         // channel: [   [id], file  ]
+    versions                        = ch_versions                           // channel: [ versions.yml  ]
 
 }
