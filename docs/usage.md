@@ -16,7 +16,8 @@ These typically include:
 4. Annotation statistics from AGAT and completeness from BUSCO.
 5. Consensus quality and k-mer completeness from MerquryFK - when high-quality reads are available.
 6. Hi-C contact map and chromosomal grid using Cooler, as well as primary mapped percentage from samtools flagstat - when Hi-C reads are provided. These files can be displayed on a [HiGlass](http://higlass.io) server, like the one use by the [Sanger Institute](https://genome-note-higlass.tol.sanger.ac.uk/app).
-7. Pretext map and snapshot
+7. Ancestral Plots are mappings of putative ancestral BUSCO genes onto the chromosmes of the input assembly.
+8. Pretext map and snapshot
 
 ## Genome metadata input
 

@@ -13,6 +13,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [Contact maps](#contact-maps) – Contact matrix created using HiC sequencing data
 - [Genome statistics](#genome-statistics) – Collated assembly information, genome statistics and alignment quality information
 - [Annotation statistics](#annotation-statistics) - Statistics calculated on the annotated protein set for the assembly (if GFF annotation file is provided as input)
+- [Annotation ancestral](#annotation-ancestral) - Ancestral linkage plots
 - [BUSCO](#busco) - BUSCO results
 - [Genome Note](#genome-note) - Data for the generation of a genome-note article.
 - [MultiQC](#multiqc) - Aggregate report describing results from the whole pipeline
@@ -69,6 +70,18 @@ This pipeline can generate some statistics using AGAT and a BUSCO completeness s
 <summary>Output files</summary>
 
 - `gene/` -`<annotation_input_filename>_stats.csv`: collated annotation statistics file
+
+</details>
+
+### Annotation ancestral
+
+This subworkflow uses ancestral linkage tables to plot locations of the putative ancestral chromosomes onto the input species.
+
+<detail markdown="1">
+<summary>Output files</summary>
+
+- `ancestral_plots/` -`<gca_accession>_*_buscopainter.pdf`: PDF copy of the plot.
+- `ancestral_plots/` -`<gca_accession>_*_buscopainter.png`: PNG copy of the plot.
 
 </details>
 
