@@ -12,7 +12,7 @@ include { ANCESTRAL_PLOT        } from '../../modules/local/ancestral/plot'
 
 workflow ANNOTATION_ANCESTRAL {
     take:
-    fasta      // Channel: [ meta, fasta ]
+    fasta                // Channel: [ meta, fasta ]
     ancestral_table      // Channel: file(ancestral_table location)
     busco_full_table     // Channel: [ meta, busco_dir ]
 

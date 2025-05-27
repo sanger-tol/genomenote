@@ -3,9 +3,7 @@ process ANCESTRAL_PLOT {
     tag "$meta.id"
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://community.wave.seqera.io/library/r-optparse_r-scales_r-tidyverse:3285e4530d808c27' :
-        'community.wave.seqera.io/library/r-optparse_r-scales_r-tidyverse:9b4155b6beecffd1' }"
+    container "quay.io/sanger-tol/busco_painter:1.0.0-c2"
 
     input:
     tuple val(meta), path(comp_location)
