@@ -14,7 +14,7 @@ include { FETCH_ENSEMBL_METADATA    }       from '../../modules/local/fetch_ense
 workflow GENOME_METADATA {
     take:
     ch_file_list        // channel: [meta, /path/to/genome_metadata_file_template]
-    
+
     main:
     ch_versions = Channel.empty()
 
@@ -26,7 +26,7 @@ workflow GENOME_METADATA {
         def entries = []
 
         def new_meta = meta + [source: row.source] + [type: row.type] + [ext: row.ext]
-        
+
 
         // Define biosamples with their types
         def biosamples = [
@@ -71,19 +71,19 @@ workflow GENOME_METADATA {
 
     PARSE_METADATA(RUN_WGET.out.file_path)
     ch_versions = ch_versions.mix( PARSE_METADATA.out.versions.first() )
-    
+
 
     // Set channel for running GBIF
     ch_gbif_params = Channel.empty()
 
     ch_file_list
-    | map { meta, it -> 
+    | map { meta, it ->
         def assembly = meta.id
         def species = meta.species
         [assembly, species]
     }
     | set { ch_gbif_params}
-      
+
     // Fetch GBIF metdata using genus, species and id as input channels
     FETCH_GBIF_METADATA( ch_gbif_params )
     ch_versions = ch_versions.mix(FETCH_GBIF_METADATA.out.versions.first() )
@@ -95,38 +95,38 @@ workflow GENOME_METADATA {
 
 
    ch_file_list
-    | map { meta, it -> 
+    | map { meta, it ->
         def assembly = meta.id
         def taxon_id = meta.taxon_id
         [assembly, taxon_id]
     }
-    | set { ch_ensembl_params} 
+    | set { ch_ensembl_params}
 
     // Query Ensembl Metadata API to see if this species has been annotated
     FETCH_ENSEMBL_METADATA ( ch_ensembl_params )
-    ch_versions = ch_versions.mix( FETCH_ENSEMBL_METADATA.out.versions.first() )    
+    ch_versions = ch_versions.mix( FETCH_ENSEMBL_METADATA.out.versions.first() )
 
     PARSE_METADATA.out.file_path
     | map { it -> tuple( it[1] )}
     | set { ch_parsed }
 
     ch_parsed.mix(ch_gbif, FETCH_ENSEMBL_METADATA.out.file_path)
-    | collect  
-    | map { it ->  
+    | collect
+    | map { it ->
         [ it ]
     }
-    | set { ch_parsed_files } 
+    | set { ch_parsed_files }
 
     // Set meta required for file parsing
     ch_file_list
-    | map { meta, it -> 
+    | map { meta, it ->
        [id: meta.id, taxon_id: meta.taxon_id]
     }
     | set {ch_meta}
 
     // combine meta and parsed files
     ch_meta_parsed = ch_meta.combine(ch_parsed_files)
- 
+
 
     COMBINE_METADATA( ch_meta_parsed )
     ch_versions = ch_versions.mix( COMBINE_METADATA.out.versions.first() )
@@ -135,5 +135,5 @@ workflow GENOME_METADATA {
     consistent  = COMBINE_METADATA.out.consistent // channel: [ csv ]
     inconsistent  = COMBINE_METADATA.out.inconsistent // channel: [ csv ]
     versions    = ch_versions.ifEmpty(null) // channel: [versions.yml]
-    
+
 }
