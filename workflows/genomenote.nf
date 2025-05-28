@@ -148,8 +148,15 @@ workflow GENOMENOTE {
     | set { ch_metadata }
 
 
-    GENOME_METADATA ( ch_metadata )
-    ch_versions = ch_versions.mix(GENOME_METADATA.out.versions)
+    if ( ch_note_template ){
+        GENOME_METADATA ( ch_metadata )
+        ch_versions     = ch_versions.mix(GENOME_METADATA.out.versions)
+        ch_consistent   = GENOME_METADATA.out.consistent
+        ch_inconsistent = GENOME_METADATA.out.inconsistent
+    } else {
+        ch_consistent   = Channel.empty()
+        ch_inconsistent = Channel.empty()
+    }
 
     //
     // MODULE: Uncompress fasta file if needed and set meta based on input params
@@ -224,8 +231,8 @@ workflow GENOMENOTE {
     // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
     //
     COMBINE_NOTE_DATA (
-        GENOME_METADATA.out.consistent,
-        GENOME_METADATA.out.inconsistent,
+        ch_consistent,
+        ch_inconsistent,
         GENOME_STATISTICS.out.summary,
         ch_annotation_stats.ifEmpty([[],[]]),
         CONTACT_MAPS.out.link,
