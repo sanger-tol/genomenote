@@ -36,6 +36,7 @@ jobs:
           version: "${{ matrix.NXF_VER }}"
 
       - name: Download test BTK data
+        # File unzips as `GCA_927399515.1`
         run: |
           curl https://tolit.cog.sanger.ac.uk/test-data/resources/genomenote/btk_test_directory.tar.gz | tar xzf -
 
