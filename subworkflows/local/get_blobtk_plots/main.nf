@@ -5,7 +5,8 @@ workflow GET_BLOBTK_PLOTS {
 
     take:
     fasta                    // channel: [meta], path/to/fasta
-    btk_address              // channel: https://blobserver.org
+    btk_local_path           // channel: [path/to/dir]
+    btk_online_path          // channel: https://online.repository_of_btk.datasets
 
     main:
     ch_versions         = Channel.empty()
@@ -14,7 +15,8 @@ workflow GET_BLOBTK_PLOTS {
     // NOTE: other arguments for this module, that effect ALL runs of the module
     //          are to be added in modules.config along with scale-factor,
     //          as this is most likely to be adapted by the end user on personal taste.
-    //
+    //          assembly_level for our purposes can be either 'chromosome' or 'assembled-molecule`
+    //              - The first may include unlocalised units whilst the latter will not.
     blobtk_arguments = [
         [
             name: "BLOB_VIEW",
@@ -22,7 +24,7 @@ workflow GET_BLOBTK_PLOTS {
         ],
         [
             name: "BLOB_CHR_VIEW",
-            args: "-v blob --filter assembly_level=chromosome"
+            args: "-v blob --filter assembly_level=assembled-molecule"
         ],
         [
             name: "GRID_VIEW",
@@ -30,7 +32,7 @@ workflow GET_BLOBTK_PLOTS {
         ],
         [
             name: "GRID_CHR_VIEW_FILTER",
-            args: "-v blob --filter assembly_level=chromosome --shape grid -w 0.01 -x position"
+            args: "-v blob --filter assembly_level=assembled-molecule --shape grid -w 0.01 -x position"
         ]
     ]
 
@@ -40,7 +42,8 @@ workflow GET_BLOBTK_PLOTS {
     //
     BLOBTK_PLOT (
         fasta,
-        btk_address,
+        btk_local_path,
+        btk_online_path,
         blobtk_arguments
     )
     ch_versions         = ch_versions.mix ( BLOBTK_PLOT.out.versions.first() )

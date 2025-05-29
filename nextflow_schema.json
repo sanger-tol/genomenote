@@ -67,6 +67,11 @@
                     "type": "string",
                     "description": "Location of the local blobtoolkit \"blobdir\""
                 },
+                "btk_online_location": {
+                    "type": "string",
+                    "description": "Location of an online blobtoolkit \"blobdir\"",
+                    "pattern": "^https*"
+                },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
