@@ -63,6 +63,10 @@
                     "enum": ["higlass", "pretext", "both"],
                     "default": "both"
                 },
+                "btk_location": {
+                    "type": "string",
+                    "description": "Location of the local blobtoolkit \"blobdir\""
+                },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
