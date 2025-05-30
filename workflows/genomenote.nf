@@ -37,8 +37,15 @@ if (params.biosample_rna) metadata_inputs.add(params.biosample_rna) else metadat
 if (params.btk_location) { ch_btk_address = Channel.fromPath(params.btk_location, type: "dir") } else { ch_btk_address = [] }
 if (params.btk_online_location) {ch_btk_online_address = Channel.of(params.btk_online_location)} else { ch_btk_online_address = []}
 
-// If both channels are [] or both are Channels then kill the pipeline
-if ((ch_btk_address == [] && ch_btk_online_address == []) || (ch_btk_address && ch_btk_online_address)) { exit 1, 'BTK Address not specified or both online and local values have been supplied' }
+// If both channels are [] then return an empty channel to skip the blobtk process
+if (ch_btk_address == [] && ch_btk_online_address == []) {
+    ch_btk_address = Channel.empty()
+}
+
+# If both are valid channels, then error out. We want one or the other!
+if (ch_btk_address && ch_btk_online_address) {
+    exit 1, 'BTK Address not specified or both online and local values have been supplied'
+}
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
