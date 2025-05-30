@@ -1,4 +1,14 @@
 process BLOBTK_PLOT {
+    // A somewhat nuclear option
+    // Linked to issue https://github.com/sanger-tol/genomenote/issues/184
+    // Depending on the blob dataset in use, the grid option may not
+    // work at all. This is down to the version of blobtoolkit used to
+    // generate the blob.
+    // Adding a check would overly complicate the module so for now
+    // we can ignore errors, with the *assumption* it would only kill
+    // runs in which the blobdir doesn't have the right data
+    errorStrategy = 'ignore'
+
     tag "$blobtk_args.name"
     label 'process_single'
 
@@ -7,7 +17,8 @@ process BLOBTK_PLOT {
 
     input:
     tuple val(meta), path(fasta)
-    path(dir_location)
+    path(dir_location)   // Genuine path location must be a path.
+    val(online_location) // HTTPS location needs to remain a value
     each blobtk_args
 
     output:
@@ -21,10 +32,11 @@ process BLOBTK_PLOT {
     def args         = task.ext.args ?: ''
     def prefix       = task.ext.prefix ?: "${meta.id}_${blobtk_args.name}"
     def VERSION      = "0.6.5"
+    def resource     = online_location ?: dir_location
 
     """
     blobtk plot \\
-        -d $dir_location \\
+        -d $resource \\
         $blobtk_args.args \\
         $args \\
         -o ${prefix}.png

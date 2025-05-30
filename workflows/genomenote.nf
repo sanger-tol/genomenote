@@ -28,12 +28,24 @@ if (params.lineage_db) { ch_lineage_db = Channel.fromPath(params.lineage_db) } e
 if (params.note_template) { ch_note_template = Channel.fromPath(params.note_template) } else { ch_note_template = Channel.empty() }
 if (params.cool_order) { ch_cool_order = Channel.fromPath(params.cool_order) } else { ch_cool_order = Channel.empty() }
 if (params.annotation_set) { ch_gff = Channel.fromPath(params.annotation_set) } else { ch_gff = Channel.empty() }
-if (params.btk_location) { ch_btk_address = Channel.fromPath(params.btk_location, type: "dir") } else { ch_btk_address = Channel.empty() }
 
 if (params.biosample_wgs) metadata_inputs.add(params.biosample_wgs) else metadata_inputs.add(null)
 if (params.biosample_hic) metadata_inputs.add(params.biosample_hic) else metadata_inputs.add(null)
 if (params.biosample_rna) metadata_inputs.add(params.biosample_rna) else metadata_inputs.add(null)
 
+// Set btk
+if (params.btk_location) { ch_btk_address = Channel.fromPath(params.btk_location, type: "dir") } else { ch_btk_address = [] }
+if (params.btk_online_location) {ch_btk_online_address = Channel.of(params.btk_online_location)} else { ch_btk_online_address = []}
+
+// If both channels are [] then return an empty channel to skip the blobtk process
+if (ch_btk_address == [] && ch_btk_online_address == []) {
+    ch_btk_address = Channel.empty()
+}
+
+// If both are valid channels, then error out. We want one or the other!
+if (ch_btk_address && ch_btk_online_address) {
+    exit 1, 'BTK Address not specified or both online and local values have been supplied'
+}
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -198,7 +210,8 @@ workflow GENOMENOTE {
     //
     GET_BLOBTK_PLOTS(
         ch_fasta,
-        ch_btk_address
+        ch_btk_address,
+        ch_btk_online_address
     )
     ch_versions  = ch_versions.mix ( GET_BLOBTK_PLOTS.out.versions )
 
