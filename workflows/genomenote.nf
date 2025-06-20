@@ -148,7 +148,7 @@ workflow GENOMENOTE {
     | set { ch_metadata }
 
 
-    if ( ch_note_template ){
+    if ( params.note_template ){
         GENOME_METADATA ( ch_metadata )
         ch_versions     = ch_versions.mix(GENOME_METADATA.out.versions)
         ch_consistent   = GENOME_METADATA.out.consistent
