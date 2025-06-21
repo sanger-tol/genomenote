@@ -235,7 +235,7 @@ workflow GENOMENOTE {
     //              Once there are more options, this should be reviewed for a better system
     //
 
-    if (ch_ancestral_table) {
+    if ( params.ancestral_table ) {
         ANNOTATION_ANCESTRAL (
             ch_fasta,
             ch_ancestral_table,
