@@ -31,7 +31,7 @@ workflow GET_BLOBTK_PLOTS {
             args: "-v blob --shape grid -w 0.01 -x position"
         ],
         [
-            name: "GRID_CHR_VIEW_FILTER",
+            name: "GRID_CHR_VIEW",
             args: "-v blob --filter assembly_level=assembled-molecule --shape grid -w 0.01 -x position"
         ]
     ]
