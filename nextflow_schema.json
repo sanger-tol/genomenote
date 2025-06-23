@@ -65,6 +65,7 @@
                 },
                 "btk_location": {
                     "type": "string",
+                    "format": "directory-path",
                     "description": "Location of the local blobtoolkit \"blobdir\""
                 },
                 "outdir": {
