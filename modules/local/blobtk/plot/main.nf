@@ -19,7 +19,7 @@ process BLOBTK_PLOT {
     tuple val(meta), path(fasta)
     path(dir_location)   // Genuine path location must be a path.
     val(online_location) // HTTPS location needs to remain a value
-    each blobtk_args
+    each blobtk_args    // "each" so that we can easily run the module with different parameters
 
     output:
     tuple val(meta), path("*.png"), emit: png
