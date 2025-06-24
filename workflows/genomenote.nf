@@ -34,6 +34,19 @@ if (params.biosample_wgs) metadata_inputs.add(params.biosample_wgs) else metadat
 if (params.biosample_hic) metadata_inputs.add(params.biosample_hic) else metadata_inputs.add(null)
 if (params.biosample_rna) metadata_inputs.add(params.biosample_rna) else metadata_inputs.add(null)
 
+// Set btk
+if (params.btk_location) { ch_btk_address = Channel.fromPath(params.btk_location, type: "dir") } else { ch_btk_address = [] }
+if (params.btk_online_location) {ch_btk_online_address = Channel.of(params.btk_online_location)} else { ch_btk_online_address = []}
+
+// If no location is set then make it an empty channel to skip the blobtk process
+if (!params.btk_location && !params.btk_online_location) {
+    ch_btk_address = Channel.empty()
+}
+
+// If both are set, then error out. We want one or the other!
+if (params.btk_location && params.btk_online_location) {
+    exit 1, 'BTK Address not specified or both online and local values have been supplied'
+}
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,6 +77,7 @@ include { GENOME_STATISTICS     } from '../subworkflows/local/genome_statistics'
 include { COMBINE_NOTE_DATA     } from '../subworkflows/local/combine_note_data'
 include { ANNOTATION_STATISTICS } from '../subworkflows/local/annotation_statistics'
 include { ANNOTATION_ANCESTRAL  } from '../subworkflows/local/annotation_ancestral'
+include { GET_BLOBTK_PLOTS      } from '../subworkflows/local/get_blobtk_plots/main'
 
 
 /*
@@ -92,7 +106,7 @@ def multiqc_report = []
 
 workflow GENOMENOTE {
 
-    ch_versions = Channel.empty()
+    ch_versions  = Channel.empty()
     ch_annotation_stats = Channel.empty()
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
@@ -107,7 +121,7 @@ workflow GENOMENOTE {
             return [ meta, file ]
     }
     | set { ch_inputs }
-    ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )
+    ch_versions  = ch_versions.mix ( INPUT_CHECK.out.versions )
 
     // Currently we only expect to see ONE haplotype so make this a constraint
     ch_inputs.haplotype
@@ -134,8 +148,8 @@ workflow GENOMENOTE {
     GUNZIP_HAPLOTYPE (
         ch_haplotype.gzipped
     )
-    ch_unzipped = GUNZIP_HAPLOTYPE.out.gunzip
-    ch_versions = ch_versions.mix ( GUNZIP_HAPLOTYPE.out.versions )
+    ch_unzipped  = GUNZIP_HAPLOTYPE.out.gunzip
+    ch_versions  = ch_versions.mix ( GUNZIP_HAPLOTYPE.out.versions )
 
     //
     // NOTE: Mix the unzipped haplotype with the original zipped haplotypes - this exists as a prelude to multi-haplotype support
@@ -184,7 +198,7 @@ workflow GENOMENOTE {
     //
     ch_inputs.hic
     | map{ meta, reads, blank ->
-        flagstat = file( reads.resolveSibling( reads.baseName + ".flagstat" ), checkIfExists: true )
+        flagstat = file( reads.resolveSibling( reads.baseName + ".flagstat" ), checkIfExists: true)
         [ meta, flagstat ]
     }
     | set { ch_flagstat }
@@ -197,7 +211,18 @@ workflow GENOMENOTE {
         ch_flagstat,
         ch_haplotype
     )
-    ch_versions = ch_versions.mix ( GENOME_STATISTICS.out.versions )
+    ch_versions  = ch_versions.mix ( GENOME_STATISTICS.out.versions )
+
+
+    //
+    // SUBWORKFLOW: Grab blobtoolkit plots via API
+    //
+    GET_BLOBTK_PLOTS(
+        ch_fasta,
+        ch_btk_address,
+        ch_btk_online_address
+    )
+    ch_versions  = ch_versions.mix ( GET_BLOBTK_PLOTS.out.versions )
 
 
     //
@@ -211,7 +236,7 @@ workflow GENOMENOTE {
         ch_cool_order,
         params.select_contact_map
     )
-    ch_versions = ch_versions.mix ( CONTACT_MAPS.out.versions )
+    ch_versions  = ch_versions.mix ( CONTACT_MAPS.out.versions )
 
 
     //
