@@ -17,7 +17,7 @@
                         "size": "Large",
                         "weight": "Bolder",
                         "color": "<% if (success) { %>Good<% } else { %>Attention<%} %>",
-                        "text": "sanger-tol/genomenote v${version} - ${runName}",
+                        "text": "nf-core/genomenote v${version} - ${runName}",
                         "wrap": true
                     },
                     {
