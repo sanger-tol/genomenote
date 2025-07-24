@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Enhancements & fixes
 
-- Upgraded the versions of FastK and MerquryFK to address some segmentation-fault issues
+- Upgraded the versions of FastK and MerquryFK to address some segmentation-fault issues.
+- Upgraded the version of the NCBI datasets CLI and implemented a retry-and-backoff strategy
+  to avoid overwhelming the server.
 
 ### Software dependencies
 
@@ -15,6 +17,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 
 | Dependency | Old version | New version                              |
 | ---------- | ----------- | ---------------------------------------- |
+| datasets   | 15.12.0     | 16.22.1                                  |
 | fastk      | 1.2         | ddea6cf254f378db51d22c6eb21af775fa9e1f77 |
 | merquryfk  | 1.2         | 4578fc778098859d78cab5e4b78b27b9a9dd10a4 |
 
