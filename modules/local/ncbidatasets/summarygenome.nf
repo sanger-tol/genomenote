@@ -5,6 +5,8 @@ process NCBIDATASETS_SUMMARYGENOME {
     conda "conda-forge::ncbi-datasets-cli=16.22.1"
     container "docker.io/biocontainers/ncbi-datasets-cli:16.22.1_cv1"
 
+    errorStrategy { sleep(Math.pow(2, task.attempt) * 30 as long); return 'retry' }
+
     input:
     tuple val(meta), path(fasta)
 
