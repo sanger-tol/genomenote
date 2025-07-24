@@ -1,14 +1,29 @@
 Changes in module 'nf-core/merquryfk/merquryfk'
 --- modules/nf-core/merquryfk/merquryfk/main.nf
 +++ modules/nf-core/merquryfk/merquryfk/main.nf
-@@ -41,8 +41,8 @@
+@@ -2,8 +2,10 @@
+     tag "$meta.id"
+     label 'process_medium'
+ 
+-    // WARN: Version information not provided by tool on CLI. Please update version string below when bumping container versions.
+-    container 'ghcr.io/nbisweden/fastk_genescopefk_merquryfk:1.2'
++    // CUSTOM CONTAINER FROM SANGER-TOL CONTAINING
++    // MERQURYFK - DToL RELEASE - 1.1.2
++    // AND UNRELEASED FASTK 1.1.? (commit - 38b07c2e8)
++    container 'quay.io/sanger-tol/fastk:1.1.0-c1'
+ 
+     input:
+     tuple val(meta), path(fastk_hist),path(fastk_ktab),path(assembly),path(haplotigs)
+@@ -41,8 +43,10 @@
      prefix = task.ext.prefix ?: "${meta.id}"
      def mat_ktab = matktab ? "${matktab.find{ it.toString().endsWith(".ktab") }}" : ''
      def pat_ktab = patktab ? "${patktab.find{ it.toString().endsWith(".ktab") }}" : ''
 -    def FASTK_VERSION = 'f18a4e6d2207539f7b84461daebc54530a9559b0' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
 -    def MERQURY_VERSION = '8ae344092df5dcaf83cfb7f90f662597a9b1fc61' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
-+    def FASTK_VERSION = '666652151335353eef2fcd58880bcef5bc2928e1' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
-+    def MERQURY_VERSION = '666652151335353eef2fcd58880bcef5bc2928e1' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
++    // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
++    def FASTK_VERSION = '38b07c2e8eba37f66311faf99b598643492bbf51'
++    // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
++    def MERQURY_VERSION = '4578fc778098859d78cab5e4b78b27b9a9dd10a4'
      """
      MerquryFK \\
          $args \\
