@@ -47,6 +47,24 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | `samtools/faidx`  |             | 1.21                        |
 | `merquryfk`       |             | FK=38b07c2 MFK=1.1.2 R=4.42 |
 
+## [[1.2.6](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.6)] - Pyrenean Mountain Dog (patch 6) - [2025-07-24]
+
+### Enhancements & fixes
+
+- Upgraded the versions of FastK and MerquryFK to address some segmentation-fault issues.
+- Upgraded the version of the NCBI datasets CLI and implemented a retry-and-backoff strategy
+  to avoid overwhelming the server.
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency | Old version | New version                              |
+| ---------- | ----------- | ---------------------------------------- |
+| datasets   | 15.12.0     | 16.22.1                                  |
+| fastk      | 1.2         | ddea6cf254f378db51d22c6eb21af775fa9e1f77 |
+| merquryfk  | 1.2         | 4578fc778098859d78cab5e4b78b27b9a9dd10a4 |
+
 ## [[2.1.1](https://github.com/sanger-tol/genomenote/releases/tag/2.1.1)] - Pembroke Welsh Corgi (patch 1) [2025-03-19]
 
 ### Enhancements & fixes
@@ -54,6 +72,13 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 - Call the `/v2` version of the NCBI datasets API rather than `/v2alpha`
 - Fixed a bug in `FETCH_ENSEMBL_METADATA` when the Ensembl API fails
 - Fixed the runtime requirement of MultiQC
+
+## [[1.2.5](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.5)] - Pyrenean Mountain Dog (patch 5) - [2025-03-19]
+
+### Enhancements & fixes
+
+- Moved over to the NCBI API v2 since the v1 is deprecated
+- Fixed the process name for Busco
 
 ## [[2.1.0](https://github.com/sanger-tol/genomenote/releases/tag/2.1.0)] - Pembroke Welsh Corgi [2024-12-11]
 
@@ -87,6 +112,35 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | `merquryfk` | d00d98157618f4e8d1a9190026b19b471055b22e |                                          |
 | `multiqc`   | 1.14                                     | 1.25.1                                   |
 | `samtools`  | 1.17                                     | 1.21                                     |
+
+> **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
+
+## [[1.2.4](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.4)] - Pyrenean Mountain Dog (patch 4) - [2024-12-09]
+
+### Enhancements & fixes
+
+- Remove defaults from lib/Utils.groovy
+
+## [[1.2.3](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.3)] - Pyrenean Mountain Dog (patch 3) - [2024-12-06]
+
+### Enhancements & fixes
+
+- Update module versions
+- Remove reference to Anaconda repositories
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency  | Old version | New version |
+| ----------- | ----------- | ----------- |
+| `bedtools`  | 2.30.0      | 2.31.1      |
+| `busco   `  | 5.5.0       | 5.7.1       |
+| `cooler`    | 0.8.11      | 0.9.2       |
+| `fastk`     | 1.0.1       | 1.2         |
+| `merquryfk` | 1.0.1       | 1.2         |
+| `multiqc`   | 1.14        | 1.25.1      |
+| `samtools`  | 1.17        | 1.20        |
 
 > **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
 
