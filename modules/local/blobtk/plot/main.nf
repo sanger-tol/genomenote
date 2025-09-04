@@ -9,17 +9,18 @@ process BLOBTK_PLOT {
     // runs in which the blobdir doesn't have the right data
     errorStrategy = 'ignore'
 
-    tag "$blobtk_args.name"
+    tag "$prefix"
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container   = "docker.io/genomehubs/blobtk:0.6.5"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/24/243d043f1c9e152e75dbb0ef8c64022df50efbcaa4e1bbaea36bebd751e84e93/data' :
+        'community.wave.seqera.io/library/blobtk:0.7.1--e3f63bb2cdc8fb96' }"
 
     input:
     tuple val(meta), path(fasta)
     path(dir_location)   // Genuine path location must be a path.
     val(online_location) // HTTPS location needs to remain a value
-    each blobtk_args     // "each" so that we can easily run the module with different parameters
 
     output:
     tuple val(meta), path("*.png"), emit: png
@@ -30,32 +31,38 @@ process BLOBTK_PLOT {
 
     script:
     def args         = task.ext.args ?: ''
-    def prefix       = task.ext.prefix ?: "${meta.id}_${blobtk_args.name}"
-    def VERSION      = "0.6.5"
+    def blobtk_name  = "${meta.blobtk_args.name}"
+    def blobtk_args  = "${meta.blobtk_args.args}"
+
+    prefix       = task.ext.prefix ?: "${meta.id}_${blobtk_name}"
+
+    if ( online_path && local_path ) {
+        error "BLOBTK_PLOT can't use both local_path and online_path, use `[]` as input for the unused channel.
+    }
+
     def resource     = online_location ?: dir_location
 
     """
     blobtk plot \\
         -d $resource \\
-        $blobtk_args.args \\
+        $blobtk_args \\
         $args \\
         -o ${prefix}.png
 
     cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        blobtk: $VERSION
+        "${task.process}":
+            blobtk: \$(blobtk --version | cut -d' ' -f2)
     END_VERSIONS
     """
 
     stub:
     def prefix       = task.ext.prefix ?: "${genome_accession}"
-    def VERSION      = "0.6.5"
     """
     touch ${prefix}.png
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        blobtk: $VERSION
+        blobtk: \$(blobtk --version | cut -d' ' -f2)
     END_VERSIONS
     """
 }
