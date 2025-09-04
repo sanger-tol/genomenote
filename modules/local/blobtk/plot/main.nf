@@ -21,6 +21,7 @@ process BLOBTK_PLOT {
     tuple val(meta), path(fasta)
     path(local_path)   // Genuine path location must be a path.
     val(online_path) // HTTPS location needs to remain a value
+    val extra_args
 
     output:
     tuple val(meta), path("*.png"), emit: png
@@ -39,8 +40,6 @@ process BLOBTK_PLOT {
     resource    = online_path ?: local_path
     prefix      = task.ext.prefix ?: "${meta.id}"
 
-
-
     """
     blobtk plot \\
         -d $resource \\
@@ -54,7 +53,7 @@ process BLOBTK_PLOT {
     """
 
     stub:
-    def prefix       = task.ext.prefix ?: "${genome_accession}"
+    def prefix       = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.png
 
