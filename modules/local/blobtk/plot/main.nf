@@ -37,7 +37,7 @@ process BLOBTK_PLOT {
     prefix       = task.ext.prefix ?: "${meta.id}_${blobtk_name}"
 
     if ( online_path && local_path ) {
-        error "BLOBTK_PLOT can't use both local_path and online_path, use `[]` as input for the unused channel.
+        error "BLOBTK_PLOT can't use both local_path and online_path, use `[]` as input for the unused channel."
     }
 
     def resource     = online_location ?: dir_location
