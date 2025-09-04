@@ -19,8 +19,8 @@ process BLOBTK_PLOT {
 
     input:
     tuple val(meta), path(fasta)
-    path(dir_location)   // Genuine path location must be a path.
-    val(online_location) // HTTPS location needs to remain a value
+    path(local_path)   // Genuine path location must be a path.
+    val(online_path) // HTTPS location needs to remain a value
 
     output:
     tuple val(meta), path("*.png"), emit: png
@@ -40,7 +40,7 @@ process BLOBTK_PLOT {
         error "BLOBTK_PLOT can't use both local_path and online_path, use `[]` as input for the unused channel."
     }
 
-    def resource     = online_location ?: dir_location
+    def resource     = online_path ?: local_path
 
     """
     blobtk plot \\
