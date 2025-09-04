@@ -17,7 +17,7 @@ workflow GET_BLOBTK_PLOTS {
     //          as this is most likely to be adapted by the end user on personal taste.
     //          assembly_level for our purposes can be either 'chromosome' or 'assembled-molecule`
     //              - The first may include unlocalised units whilst the latter will not.
-    blobtk_arguments = [
+    blobtk_arguments = Channel.of([
         [
             name: "BLOB_VIEW",
             args: "-v blob"
@@ -34,20 +34,30 @@ workflow GET_BLOBTK_PLOTS {
             name: "GRID_CHR_VIEW",
             args: "-v blob --filter assembly_level=assembled-molecule --shape grid -w 0.01 -x position"
         ]
-    ]
+    ])
+
+    blobtk_arguments
+        .flatten()
+        .combine(fasta)
+        .map { blob_args, meta, ref ->
+             def meta2 = meta + [blobtk_args: blob_args]
+             [meta2, ref]
+        }
+        .set { ref_blob }
+
 
     //
     // MODULE: Call the specified blobtk server and return grid view of the
     //          assembly position of blob on molecule
     //
     BLOBTK_PLOT (
-        fasta,
-        btk_local_path,
-        btk_online_path,
-        blobtk_arguments
+        ref_blob,
+        btk_local_path.first(),
+        btk_online_path.first()
     )
     ch_versions         = ch_versions.mix ( BLOBTK_PLOT.out.versions.first() )
     ch_images           = BLOBTK_PLOT.out.png.mix ( BLOBTK_PLOT.out.png )
+
 
     emit:
     blobtk_images       = ch_images
