@@ -31,10 +31,8 @@ process BLOBTK_PLOT {
 
     script:
     def args         = task.ext.args ?: ''
-    def blobtk_name  = "${meta.blobtk_args.name}"
-    def blobtk_args  = "${meta.blobtk_args.args}"
 
-    prefix       = task.ext.prefix ?: "${meta.id}_${blobtk_name}"
+    prefix           = task.ext.prefix ?: "${meta.id}"
 
     if ( online_path && local_path ) {
         error "BLOBTK_PLOT can't use both local_path and online_path, use `[]` as input for the unused channel."
@@ -45,7 +43,6 @@ process BLOBTK_PLOT {
     """
     blobtk plot \\
         -d $resource \\
-        $blobtk_args \\
         $args \\
         -o ${prefix}.png
 
