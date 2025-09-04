@@ -36,23 +36,16 @@ workflow GET_BLOBTK_PLOTS {
         ]
     )
 
-    blobtk_arguments
-        .combine(fasta)
-        .map { blob_args, meta, ref ->
-             def meta2 = meta + [blobtk_args: blob_args]
-             [meta2, ref]
-        }
-        .set { ref_blob }
-
 
     //
     // MODULE: Call the specified blobtk server and return grid view of the
     //          assembly position of blob on molecule
     //
     BLOBTK_PLOT (
-        ref_blob,
+        fasta.first(),
         btk_local_path.first(),
-        btk_online_path.first()
+        btk_online_path.first(),
+        blobtk_arguments
     )
     ch_versions         = ch_versions.mix ( BLOBTK_PLOT.out.versions.first() )
     ch_images           = BLOBTK_PLOT.out.png.mix ( BLOBTK_PLOT.out.png )
