@@ -3,7 +3,6 @@
 //
 
 include { PARAMS_CHECK      } from '../../modules/local/params_check'
-include { SAMPLESHEET_CHECK } from '../../modules/local/samplesheet_check'
 
 
 workflow INPUT_CHECK {
@@ -38,11 +37,6 @@ workflow INPUT_CHECK {
     } 
     | set { param }
     
-    SAMPLESHEET_CHECK ( samplesheet )
-        .csv
-        .splitCsv ( header:true, sep:',' )
-        .map { create_data_channel(it, params.assembly) }
-        .set { ch_data }
 
     // set temp key to allow combining channels
     param
@@ -52,7 +46,8 @@ workflow INPUT_CHECK {
         .set { ch_tmp_param }
 
     // add some metadata params to the data channel meta
-    ch_data
+    samplesheet
+        .map { meta, datafile -> [meta.assembly, meta, datafile] }
         .combine(ch_tmp_param, by: 0)
         .map { assembly, meta, sample, meta2 ->
             def new_meta = meta.clone()
@@ -65,18 +60,5 @@ workflow INPUT_CHECK {
     emit:
     data                                   // channel: [ val(meta), data ]
     param                                  // channel: [val(meta)]  
-    versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
-}
-
-
-// Function to get list of [ meta, data ]
-def create_data_channel(LinkedHashMap row, assembly) {
-    // create meta map
-    def meta = [:]
-    meta.id         = row.sample
-    meta.datatype   = row.datatype
-    meta.assembly   = assembly
-
-    // add path(s) of the data file(s) to the meta map
-    return [ meta.assembly, meta, file(row.datafile) ]
+    versions = PARAMS_CHECK.out.versions   // channel: [ versions.yml ]
 }

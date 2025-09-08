@@ -119,7 +119,6 @@ workflow GENOME_STATISTICS {
     | set { ch_pacbio }
 
     ch_pacbio.file
-    | map { meta, bam -> [ meta + [ id: meta.id.split('_')[0..-2].join('_') ], bam ] }
     | groupTuple ( by: [0] )
     | set { ch_fastk }
 

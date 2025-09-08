@@ -1,6 +1,6 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/sanger-tol/genomenote/master/assets/schema_input.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/sanger-tol/genomenote/main/assets/schema_input.json",
     "title": "sanger-tol/genomenote pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
     "type": "array",
@@ -9,28 +9,26 @@
         "properties": {
             "sample": {
                 "type": "string",
+                "description": "Sample identifier",
                 "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces"
+                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "meta": ["id"]
             },
-            "fastq_1": {
+            "datatype": {
                 "type": "string",
-                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "pattern": "^\\S+$",
+                "enum": ["hic", "pacbio", "10x", "haplotype"],
+                "errorMessage": "Data type must be one of: hic, pacbio, 10x, haplotype",
+                "meta": ["datatype"]
             },
-            "fastq_2": {
-                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'",
-                "anyOf": [
-                    {
-                        "type": "string",
-                        "pattern": "^\\S+\\.f(ast)?q\\.gz$"
-                    },
-                    {
-                        "type": "string",
-                        "maxLength": 0
-                    }
-                ]
+            "datafile": {
+                "type": "string",
+                "format": "path",
+                "exists": true,
+                "pattern": "^\\S+$",
+                "errorMessage": "Data path for reads or kmer"
             }
         },
-        "required": ["sample", "fastq_1"]
+        "required": ["sample", "datatype", "datafile"]
     }
 }
