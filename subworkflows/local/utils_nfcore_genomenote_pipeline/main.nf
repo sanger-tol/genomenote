@@ -85,9 +85,23 @@ workflow PIPELINE_INITIALISATION {
         error('BTK Address not specified or both online and local values have been supplied')
     }
 
+    // Transform parameters into channels
+    if (params.lineage_db) {
+        ch_lineage_db = Channel.fromPath(params.lineage_db).first()
+    } else {
+        ch_lineage_db = Channel.empty()
+    }
+    if (params.cool_order) {
+        ch_cool_order = Channel.fromPath(params.cool_order).first()
+    } else {
+        ch_cool_order = Channel.empty()
+    }
+
     emit:
     samplesheet = ch_samplesheet
     metadata    = ch_metadata
+    lineage_db  = ch_lineage_db
+    cool_order  = ch_cool_order
     versions    = ch_versions
 }
 

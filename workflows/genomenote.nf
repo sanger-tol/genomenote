@@ -51,6 +51,8 @@ workflow GENOMENOTE {
     take:
     samplesheet // channel: samplesheet read in from --input
     metadata    // channel: list of accession numbers to retrieve metadata for
+    lineage_db  // channel: path to the Busco lineage, if provided
+    cool_order  // channel: path to the ordered list of chromosomes, if provided
 
     main:
 
@@ -135,7 +137,7 @@ workflow GENOMENOTE {
     GENOME_STATISTICS (
         ch_fasta,
         params.lineage_tax_ids,
-        params.lineage_db ?: Channel.empty(),
+        lineage_db,
         ch_inputs.pacbio,
         ch_flagstat,
         ch_haplotype
@@ -162,7 +164,7 @@ workflow GENOMENOTE {
         ch_inputs.hic,
         GENOME_STATISTICS.out.summary_seq,
         Channel.of(params.binsize),
-        params.cool_order ?: Channel.empty(),
+        cool_order,
         params.select_contact_map
     )
     ch_versions  = ch_versions.mix ( CONTACT_MAPS.out.versions )
@@ -177,7 +179,7 @@ workflow GENOMENOTE {
             Channel.fromPath(params.annotation_set),
             ch_fasta,
             GENOME_STATISTICS.out.ch_busco_lineage,
-            params.lineage_db ?: Channel.empty()
+            lineage_db
         )
         ch_versions = ch_versions.mix ( ANNOTATION_STATISTICS.out.versions )
         ch_annotation_stats = ch_annotation_stats.mix (ANNOTATION_STATISTICS.out.summary)

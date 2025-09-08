@@ -30,6 +30,8 @@ workflow SANGERTOL_GENOMENOTE {
     take:
     samplesheet // channel: samplesheet read in from --input
     metadata    // channel: list of accession numbers to retrieve metadata for
+    lineage_db  // channel: path to the Busco lineage, if provided
+    cool_order  // channel: path to the ordered list of chromosomes, if provided
 
     main:
 
@@ -39,6 +41,8 @@ workflow SANGERTOL_GENOMENOTE {
     GENOMENOTE (
         samplesheet,
         metadata,
+        lineage_db,
+        cool_order,
     )
     emit:
     multiqc_report = GENOMENOTE.out.multiqc_report // channel: /path/to/multiqc_report.html
@@ -70,6 +74,8 @@ workflow {
     SANGERTOL_GENOMENOTE (
         PIPELINE_INITIALISATION.out.samplesheet,
         PIPELINE_INITIALISATION.out.metadata,
+        PIPELINE_INITIALISATION.out.lineage_db,
+        PIPELINE_INITIALISATION.out.cool_order,
     )
     //
     // SUBWORKFLOW: Run completion tasks
