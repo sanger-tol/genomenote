@@ -102,25 +102,6 @@ workflow GENOMENOTE {
     //
     ch_haplotype = ch_unzipped.mix(ch_haplotype.unzipped)
 
-
-    //
-    // SUBWORKFLOW: Read in template of data files to fetch, parse these files and output a list of genome metadata params
-    //
-    ch_file_list = Channel.fromPath("$projectDir/assets/genome_metadata_template.csv")
-    INPUT_CHECK.out.param.combine( ch_file_list )
-    | set { ch_metadata }
-
-
-    if ( params.note_template ){
-        GENOME_METADATA ( ch_metadata )
-        ch_versions     = ch_versions.mix(GENOME_METADATA.out.versions)
-        ch_consistent   = GENOME_METADATA.out.consistent
-        ch_inconsistent = GENOME_METADATA.out.inconsistent
-    } else {
-        ch_consistent   = Channel.empty()
-        ch_inconsistent = Channel.empty()
-    }
-
     //
     // MODULE: Uncompress fasta file if needed and set meta based on input params
     //
@@ -202,19 +183,31 @@ workflow GENOMENOTE {
         ch_annotation_stats = ch_annotation_stats.mix (ANNOTATION_STATISTICS.out.summary)
     }
 
+    if ( params.note_template ){
 
-    //
-    // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
-    //
-    COMBINE_NOTE_DATA (
-        ch_consistent,
-        ch_inconsistent,
-        GENOME_STATISTICS.out.summary,
-        ch_annotation_stats.ifEmpty([[],[]]),
-        CONTACT_MAPS.out.link,
-        params.note_template
-    )
-    ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
+        //
+        // SUBWORKFLOW: Read in template of data files to fetch, parse these files and output a list of genome metadata params
+        //
+        ch_file_list = Channel.fromPath("$projectDir/assets/genome_metadata_template.csv")
+        INPUT_CHECK.out.param.combine( ch_file_list )
+        | set { ch_metadata }
+
+        GENOME_METADATA ( ch_metadata )
+        ch_versions     = ch_versions.mix(GENOME_METADATA.out.versions)
+
+        //
+        // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
+        //
+        COMBINE_NOTE_DATA (
+            GENOME_METADATA.out.consistent,
+            GENOME_METADATA.out.inconsistent,
+            GENOME_STATISTICS.out.summary,
+            ch_annotation_stats.ifEmpty([[],[]]),
+            CONTACT_MAPS.out.link,
+            params.note_template
+        )
+        ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
+    }
 
     //
     // Collate and save software versions
