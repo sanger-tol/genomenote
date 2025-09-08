@@ -145,15 +145,17 @@ workflow GENOMENOTE {
     ch_versions  = ch_versions.mix ( GENOME_STATISTICS.out.versions )
 
 
-    //
-    // SUBWORKFLOW: Grab blobtoolkit plots via API
-    //
-    GET_BLOBTK_PLOTS(
-        ch_fasta,
-        params.btk_location ?: [],
-        params.btk_online_location ?: [],
-    )
-    ch_versions  = ch_versions.mix ( GET_BLOBTK_PLOTS.out.versions )
+    if (params.btk_location || params.btk_online_location) {
+        //
+        // SUBWORKFLOW: Grab blobtoolkit plots via API
+        //
+        GET_BLOBTK_PLOTS(
+            ch_fasta,
+            params.btk_location ?: [],
+            params.btk_online_location ?: [],
+        )
+        ch_versions  = ch_versions.mix ( GET_BLOBTK_PLOTS.out.versions )
+    }
 
 
     //
