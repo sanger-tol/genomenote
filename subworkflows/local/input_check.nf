@@ -24,19 +24,18 @@ workflow INPUT_CHECK {
             bioproject: row.bioproject,
             biosample_wgs: row.wgs_biosample,
         ]
-    
+
         if (row.hic_biosample != "null") {
             meta.biosample_hic = row.hic_biosample
         }
-        
+
         if (row.rna_biosample != "null") {
             meta.biosample_rna = row.rna_biosample
         }
 
         meta
-    } 
+    }
     | set { param }
-    
 
     // set temp key to allow combining channels
     param
@@ -57,6 +56,6 @@ workflow INPUT_CHECK {
 
     emit:
     data                                   // channel: [ val(meta), data ]
-    param                                  // channel: [val(meta)]  
+    param                                  // channel: [val(meta)]
     versions = PARAMS_CHECK.out.versions   // channel: [ versions.yml ]
 }
