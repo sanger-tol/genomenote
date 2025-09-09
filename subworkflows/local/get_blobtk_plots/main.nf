@@ -1,4 +1,4 @@
-include { BLOBTK_PLOT } from '../../../modules/local/blobtk/plot/main'
+include { BLOBTK_PLOT } from '../../../modules/nf-core/blobtk/plot/main'
 
 
 workflow GET_BLOBTK_PLOTS {
