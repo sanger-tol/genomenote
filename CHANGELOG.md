@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the blobtk module.
   - This module creates plots via calls to the blobtoolkit server or local blobdir.
 - Added the `btk_location` and `btk_online_location` to provide the path of the blobdir (local or remote). If not provided the module will be skipped.
+- Dropped support for Conda until FastK is properly released there
 
 ### Parameters
 
