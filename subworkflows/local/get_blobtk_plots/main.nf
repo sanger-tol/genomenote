@@ -38,14 +38,29 @@ workflow GET_BLOBTK_PLOTS {
 
 
     //
+    // LOGIC: combine all the input and split back out so that we have channels * btk_args
+    //
+    ch_blobtk_plot_input = fasta
+        | combine(btk_local_path.map{ it == [] ? "NA" : it })
+        | combine(btk_online_path.map{ it == [] ? "NA" : it})
+        | combine(blobtk_arguments)
+        | multiMap { meta, fasta, local, online, btk_args ->
+            fasta: [meta, fasta]
+            local_path: local == "NA" ? [] : local
+            online_path: online == "NA" ? [] : online
+            args: btk_args
+        }
+
+
+    //
     // MODULE: Call the specified blobtk server and return grid view of the
     //          assembly position of blob on molecule
     //
-    BLOBTK_PLOT (
-        fasta.first(),
-        btk_local_path.first(),
-        btk_online_path.first(),
-        blobtk_arguments
+    BLOBTK_PLOT(
+        ch_blobtk_plot_input.fasta,
+        ch_blobtk_plot_input.local_path,
+        ch_blobtk_plot_input.online_path,
+        ch_blobtk_plot_input.args
     )
     ch_versions         = ch_versions.mix ( BLOBTK_PLOT.out.versions.first() )
     ch_images           = BLOBTK_PLOT.out.png.mix ( BLOBTK_PLOT.out.png )
