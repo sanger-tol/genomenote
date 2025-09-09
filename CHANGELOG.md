@@ -11,8 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Addition of GenescopeFK histogram plots and related data #181 [#157](https://github.com/sanger-tol/genomenote/issues/157).
 - Support for CLI provided Busco lineage to override the NCBI auto generated one.
 - Addition of the Ancestral Element Analysis (Annotation Ancestral) subworkflow
-  - This only works for Lepidoptera (for now)
-  - The lepidoptera_annotation_table.tsv has been added
+  - Refer to <https://github.com/sanger-tol/busco_painter> for more information about the tool and its configuration. That repository also contains a complete annotation table for _Lepidoptera_.
 - Refactor of the CONTACT_MAPS subworkflow to support both/either HIGLASS or PRETEXT map generation #183.
   - Split the logic for either method into HIGLASS_GENERATION and PRETEXT_GENERATION.
   - Addition of `select_contact_map` to select `higlass`, `pretext`, `both` for generation.
@@ -50,8 +49,8 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | `pretextsnapshot`     |             | 0.0.4                       |
 | `samtools/faidx`      |             | 1.21                        |
 | `merquryfk`           |             | FK=38b07c2 MFK=1.1.2 R=4.42 |
-| `buscopainter.py`     |             | 1.0.0                       |
-| `plot_buscopainter.R` |             | 1.0.0                       |
+| `buscopainter.py`     |             | 1.0.1                       |
+| `plot_buscopainter.R` |             | 1.0.1                       |
 | `blobtk_plot`         |             | 0.7.1                       |
 
 ## [[2.1.1](https://github.com/sanger-tol/genomenote/releases/tag/2.1.1)] - Pembroke Welsh Corgi (patch 1) [2025-03-19]
