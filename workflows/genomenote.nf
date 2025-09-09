@@ -35,8 +35,8 @@ if (params.biosample_hic) metadata_inputs.add(params.biosample_hic) else metadat
 if (params.biosample_rna) metadata_inputs.add(params.biosample_rna) else metadata_inputs.add(null)
 
 // Set btk
-if (params.btk_location) { ch_btk_address = Channel.fromPath(params.btk_location, type: "dir") } else { ch_btk_address = [] }
-if (params.btk_online_location) {ch_btk_online_address = Channel.of(params.btk_online_location)} else { ch_btk_online_address = []}
+if (params.btk_location) { ch_btk_address = Channel.fromPath(params.btk_location, type: "dir") } else { ch_btk_address = Channel.of([]) }
+if (params.btk_online_location) {ch_btk_online_address = Channel.of(params.btk_online_location)} else { ch_btk_online_address = Channel.of([])}
 
 // If no location is set then make it an empty channel to skip the blobtk process
 if (!params.btk_location && !params.btk_online_location) {

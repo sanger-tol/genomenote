@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Addition of support for a _single_ haplotype assembly sourced from the samplesheet.csv.
 - Remove biosample_wgs as a required parameter.
 - Added support for providing an API key to NCBI datasets.
-- Added the blobtk module.
+- Added the blobtk_plot nf-core module.
   - This module creates plots via calls to the blobtoolkit server or local blobdir.
 - Added the `btk_location` and `btk_online_location` to provide the path of the blobdir (local or remote). If not provided the module will be skipped.
 
@@ -52,6 +52,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | `merquryfk`           |             | FK=38b07c2 MFK=1.1.2 R=4.42 |
 | `buscopainter.py`     |             | 1.0.0                       |
 | `plot_buscopainter.R` |             | 1.0.0                       |
+| `blobtk_plot`         |             | 0.7.1                       |
 
 ## [[2.1.1](https://github.com/sanger-tol/genomenote/releases/tag/2.1.1)] - Pembroke Welsh Corgi (patch 1) [2025-03-19]
 
