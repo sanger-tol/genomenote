@@ -92,7 +92,7 @@ workflow GENOME_METADATA {
     | set { ch_gbif }
 
 
-   ch_file_list
+    ch_file_list
     | map { meta, it ->
         def assembly = meta.id
         def taxon_id = meta.taxon_id
@@ -118,7 +118,7 @@ workflow GENOME_METADATA {
     // Set meta required for file parsing
     ch_file_list
     | map { meta, it ->
-       [id: meta.id, taxon_id: meta.taxon_id]
+        [id: meta.id, taxon_id: meta.taxon_id]
     }
     | set {ch_meta}
 
