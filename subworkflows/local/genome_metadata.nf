@@ -25,7 +25,7 @@ workflow GENOME_METADATA {
         // Create a list to hold the final entries
         def entries = []
 
-        def new_meta = meta + [source: row.source] + [type: row.type] + [ext: row.ext]
+        def new_meta = meta + [source: row.source, type: row.type, ext: row.ext]
         
 
         // Define biosamples with their types

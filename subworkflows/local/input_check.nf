@@ -33,7 +33,7 @@ workflow INPUT_CHECK {
             meta.biosample_rna = row.rna_biosample
         }
 
-        [meta]
+        meta
     } 
     | set { param }
     
@@ -41,7 +41,7 @@ workflow INPUT_CHECK {
     // set temp key to allow combining channels
     param
         .map { meta ->
-            [meta.id[0], meta]
+            [meta.id, meta]
         }
         .set { ch_tmp_param }
 
@@ -49,11 +49,9 @@ workflow INPUT_CHECK {
     samplesheet
         .map { meta, datafile -> [meta.assembly, meta, datafile] }
         .combine(ch_tmp_param, by: 0)
-        .map { assembly, meta, sample, meta2 ->
-            def new_meta = meta.clone()
-            new_meta.species = meta2.species[0]
-            new_meta.taxon_id = meta2.taxon_id[0]
-            [new_meta, sample]
+        .map { assembly, meta, datafile, meta2 ->
+            def new_meta = meta + [species: meta2.species, taxon_id: meta2.taxon_id]
+            [new_meta, datafile]
         }
         .set { data }
 

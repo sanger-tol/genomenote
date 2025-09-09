@@ -120,7 +120,7 @@ workflow GENOMENOTE {
     }
 
     ch_unzipped
-    | map { meta, fa -> [ meta[0] + [id: fa.baseName, genome_size: fa.size()], fa] }
+    | map { meta, fa -> [ meta + [id: fa.baseName, genome_size: fa.size()], fa] }
     | set { ch_fasta }
 
 
