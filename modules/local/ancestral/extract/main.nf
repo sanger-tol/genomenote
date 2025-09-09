@@ -2,10 +2,8 @@ process ANCESTRAL_EXTRACT {
     tag "$meta.id"
     label 'process_low'
 
-    conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/python:3.9' :
-        'biocontainers/python:3.9' }"
+    // Docker image available at the project github repository
+    container "ghcr.io/sanger-tol/busco_painter:1.0.1"
 
     input:
     tuple val(meta), path(fulltable)
@@ -17,10 +15,11 @@ process ANCESTRAL_EXTRACT {
     tuple val(meta), path("*summary.tsv")                         , emit: summary
     path "versions.yml"                                           , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        error "ANCESTRAL_EXTRACT module does not support Conda. Please use Docker / Singularity / Podman instead."
+    }
+
     def args    = task.ext.args     ?: ''
     def prefix  = task.ext.prefix   ?: "${meta.id}"
 
@@ -29,7 +28,7 @@ process ANCESTRAL_EXTRACT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
+        python: \$(echo \$(python3 --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
         buscopainter.py: \$(buscopainter.py -v)
     END_VERSIONS
     """

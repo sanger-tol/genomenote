@@ -2,8 +2,8 @@ process ANCESTRAL_PLOT {
     label 'process_low'
     tag "$meta.id"
 
-    conda "${moduleDir}/environment.yml"
-    container "quay.io/sanger-tol/busco_painter:1.0.0-c2"
+    // Docker image available at the project github repository
+    container "ghcr.io/sanger-tol/busco_painter:1.0.1"
 
     input:
     tuple val(meta), path(comp_location)
@@ -15,6 +15,10 @@ process ANCESTRAL_PLOT {
     path("versions.yml")        , emit: versions
 
     script:
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        error "ANCESTRAL_PLOT module does not support Conda. Please use Docker / Singularity / Podman instead."
+    }
+
     def args    = task.ext.args     ?: ''
     def prefix  = task.ext.prefix   ?: "${meta.id}"
 
