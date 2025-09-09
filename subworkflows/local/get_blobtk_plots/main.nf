@@ -41,13 +41,13 @@ workflow GET_BLOBTK_PLOTS {
     // LOGIC: combine all the input and split back out so that we have channels * btk_args
     //
     ch_blobtk_plot_input = fasta
-        | combine(btk_local_path.map{ it == [] ? "NA" : it })
-        | combine(btk_online_path.map{ it == [] ? "NA" : it})
+        | combine(btk_local_path.map{ [it] })
+        | combine(btk_online_path.map{ [it] })
         | combine(blobtk_arguments)
         | multiMap { meta, fasta, local, online, btk_args ->
             fasta: [meta, fasta]
-            local_path: local == "NA" ? [] : local
-            online_path: online == "NA" ? [] : online
+            local_path: local
+            online_path: online
             args: btk_args
         }
 
