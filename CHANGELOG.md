@@ -52,7 +52,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | `merquryfk`           |             | FK=38b07c2 MFK=1.1.2 R=4.42 |
 | `buscopainter.py`     |             | 1.0.0                       |
 | `plot_buscopainter.R` |             | 1.0.0                       |
-| `blobtk_plot`         |             | 1.0.0                       |
+| `blobtk_plot`         |             | 0.7.1                       |
 
 ## [[2.1.1](https://github.com/sanger-tol/genomenote/releases/tag/2.1.1)] - Pembroke Welsh Corgi (patch 1) [2025-03-19]
 
