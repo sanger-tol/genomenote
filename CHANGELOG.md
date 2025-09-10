@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Addition of the GFASTATS module and config.
 - Addition of GenescopeFK histogram plots and related data #181 [#157](https://github.com/sanger-tol/genomenote/issues/157).
 - Support for CLI provided Busco lineage to override the NCBI auto generated one.
+- Addition of the Ancestral Element Analysis (Annotation Ancestral) subworkflow
+  - Refer to <https://github.com/sanger-tol/busco_painter> for more information about the tool and its configuration. That repository also contains a complete annotation table for _Lepidoptera_.
 - Refactor of the CONTACT_MAPS subworkflow to support both/either HIGLASS or PRETEXT map generation #183.
   - Split the logic for either method into HIGLASS_GENERATION and PRETEXT_GENERATION.
   - Addition of `select_contact_map` to select `higlass`, `pretext`, `both` for generation.
@@ -17,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Addition of support for a _single_ haplotype assembly sourced from the samplesheet.csv.
 - Remove biosample_wgs as a required parameter.
 - Added support for providing an API key to NCBI datasets.
-- Added the blobtk module.
+- Added the blobtk_plot nf-core module.
   - This module creates plots via calls to the blobtoolkit server or local blobdir.
 - Added the `btk_location` and `btk_online_location` to provide the path of the blobdir (local or remote). If not provided the module will be skipped.
 - Dropped support for Conda until FastK is properly released there
@@ -30,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 |               | --select_contact_map  |
 |               | --btk_location        |
 |               | --btk_online_location |
+|               | --ancestral_table     |
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 
@@ -37,16 +40,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
 
-| Dependency        | Old version | New version                 |
-| ----------------- | ----------- | --------------------------- |
-| `gfastats`        |             | 1.3.1                       |
-| `cat`             |             | 2.3.4                       |
-| `genescopefk`     |             | 1.2                         |
-| `fastk_histex`    |             | 1.1.0                       |
-| `pretextmap`      |             | PM=0.1.9 PG=0.0.9 ST=1.21   |
-| `pretextsnapshot` |             | 0.0.4                       |
-| `samtools/faidx`  |             | 1.21                        |
-| `merquryfk`       |             | FK=38b07c2 MFK=1.1.2 R=4.42 |
+| Dependency            | Old version | New version                 |
+| --------------------- | ----------- | --------------------------- |
+| `gfastats`            |             | 1.3.1                       |
+| `cat`                 |             | 2.3.4                       |
+| `genescopefk`         |             | 1.2                         |
+| `fastk_histex`        |             | 1.1.0                       |
+| `pretextmap`          |             | PM=0.1.9 PG=0.0.9 ST=1.21   |
+| `pretextsnapshot`     |             | 0.0.4                       |
+| `samtools/faidx`      |             | 1.21                        |
+| `merquryfk`           |             | FK=38b07c2 MFK=1.1.2 R=4.42 |
+| `buscopainter.py`     |             | 1.0.1                       |
+| `plot_buscopainter.R` |             | 1.0.1                       |
+| `blobtk_plot`         |             | 0.7.1                       |
 
 ## [[1.2.6](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.6)] - Pyrenean Mountain Dog (patch 6) - [2025-07-24]
 

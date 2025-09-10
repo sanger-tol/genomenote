@@ -19,6 +19,7 @@ include { CONTACT_MAPS          } from '../subworkflows/local/contact_maps'
 include { GENOME_STATISTICS     } from '../subworkflows/local/genome_statistics'
 include { COMBINE_NOTE_DATA     } from '../subworkflows/local/combine_note_data'
 include { ANNOTATION_STATISTICS } from '../subworkflows/local/annotation_statistics'
+include { ANNOTATION_ANCESTRAL  } from '../subworkflows/local/annotation_ancestral'
 include { GET_BLOBTK_PLOTS      } from '../subworkflows/local/get_blobtk_plots/main'
 
 
@@ -49,10 +50,13 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_geno
 workflow GENOMENOTE {
 
     take:
-    samplesheet // channel: samplesheet read in from --input
-    metadata    // channel: list of accession numbers to retrieve metadata for
-    lineage_db  // channel: path to the Busco lineage, if provided
-    cool_order  // channel: path to the ordered list of chromosomes, if provided
+    samplesheet     // channel: samplesheet read in from --input
+    metadata        // channel: list of accession numbers to retrieve metadata for
+    lineage_db      // channel: path to the Busco lineage, if provided
+    ancestral_table // channel: path to the ancestral painting table, if provided
+    cool_order      // channel: path to the ordered list of chromosomes, if provided
+    btk_local_path  // channel: path of a local blobDir, if provided
+    btk_online_path // channel: path of a remote blobDir, if provided
 
     main:
 
@@ -151,8 +155,8 @@ workflow GENOMENOTE {
         //
         GET_BLOBTK_PLOTS(
             ch_fasta,
-            params.btk_location ?: [],
-            params.btk_online_location ?: [],
+            btk_local_path,
+            btk_online_path,
         )
         ch_versions  = ch_versions.mix ( GET_BLOBTK_PLOTS.out.versions )
     }
@@ -211,6 +215,21 @@ workflow GENOMENOTE {
             params.note_template
         )
         ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
+    }
+
+    //
+    // SUBWORKFLOW: Ancestral Element Analysis workflow - generates plots for user provided ancestral element mapping
+    //              Only available for lepidoptera as of April 2025
+    //              Once there are more options, this should be reviewed for a better system
+    //
+
+    if ( params.ancestral_table ) {
+        ANNOTATION_ANCESTRAL (
+            ch_fasta,
+            ancestral_table,
+            GENOME_STATISTICS.out.busco_full_table
+        )
+        ch_versions = ch_versions.mix ( ANNOTATION_ANCESTRAL.out.versions )
     }
 
     //

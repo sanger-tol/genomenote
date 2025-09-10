@@ -96,13 +96,31 @@ workflow PIPELINE_INITIALISATION {
     } else {
         ch_cool_order = Channel.empty()
     }
+    if (params.ancestral_table) {
+        ch_ancestral_table = Channel.fromPath(params.ancestral_table)
+    } else {
+        ch_ancestral_table = Channel.empty()
+    }
+    if (params.btk_location) {
+        ch_btk_local_path = Channel.fromPath(params.btk_location, type: "dir")
+    } else {
+        ch_btk_local_path = Channel.of([])
+    }
+    if (params.btk_online_location) {
+        ch_btk_online_path = Channel.of(params.btk_online_location)
+    } else {
+        ch_btk_online_path = Channel.of([])
+    }
 
     emit:
-    samplesheet = ch_samplesheet
-    metadata    = ch_metadata
-    lineage_db  = ch_lineage_db
-    cool_order  = ch_cool_order
-    versions    = ch_versions
+    samplesheet     = ch_samplesheet
+    metadata        = ch_metadata
+    lineage_db      = ch_lineage_db
+    ancestral_table = ch_ancestral_table
+    btk_local_path  = ch_btk_local_path
+    btk_online_path = ch_btk_online_path
+    cool_order      = ch_cool_order
+    versions        = ch_versions
 }
 
 /*
