@@ -22,9 +22,8 @@
                     },
                     "blobtk/plot": {
                         "branch": "master",
-                        "git_sha": "bc4bd80d170f20fe8d35228c5b880dc5d66019e5",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/blobtk/plot/blobtk-plot.diff"
+                        "git_sha": "83f6c07efc833fb8608a0b3843158e94707155c9",
+                        "installed_by": ["modules"]
                     },
                     "busco/busco": {
                         "branch": "master",
