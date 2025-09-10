@@ -44,7 +44,6 @@ workflow CONTACT_MAPS {
             SAMTOOLS_VIEW.out.bam,
             GET_CHROMLIST.out.list,
             cool_bin,
-            cool_order
         )
         ch_versions = ch_versions.mix ( HIGLASS_GENERATION.out.versions.first() )
 

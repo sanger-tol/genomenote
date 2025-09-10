@@ -1,51 +1,59 @@
-# This CITATION.cff file was generated with cffinit.
-# Visit https://bit.ly/cffinit to generate yours today!
-
-cff-version: 1.2.0
-title: sanger-tol/genomenote v2.2.0
-type: software
 authors:
-    - given-names: Sandra Ruth
-      family-names: Babirye
-      affiliation: Wellcome Sanger Institute
-      orcid: "https://orcid.org/0009-0004-7773-7008"
-    - given-names: Tyler
-      family-names: Chafin
-      affiliation: Wellcome Sanger Institute
-      orcid: "https://orcid.org/0000-0001-8687-5905"
-    - given-names: Chau
-      family-names: Duong
-      affiliation: Wellcome Sanger Institute
-      orcid: "https://orcid.org/0009-0001-0649-2291"
-    - given-names: Matthieu
-      family-names: Muffato
-      affiliation: Wellcome Sanger Institute
-      orcid: "https://orcid.org/0000-0002-7860-3560"
-    - given-names: Damon-Lee
-      name-particle: Bernard
-      family-names: Pointon
-      affiliation: Wellcome Sanger Institute
-      orcid: "https://orcid.org/0000-0003-2949-6719"
-    - given-names: Guoying
-      family-names: Qi
-      affiliation: Wellcome Sanger Institute
-      orcid: "https://orcid.org/0000-0003-1262-8973"
-    - given-names: Cibin
-      family-names: Sadasivan Baby
-      affiliation: Wellcome Sanger Institute
-      orcid: "https://orcid.org/0000-0002-8538-276X"
-    - given-names: Priyanka
-      family-names: Surana
-      affiliation: Wellcome Sanger Institute
-      orcid: "https://orcid.org/0000-0002-7167-0875"
-    - given-names: Bethan
-      family-names: Yates
-      affiliation: Wellcome Sanger Institute
-      orcid: "https://orcid.org/0000-0003-1658-1762"
-identifiers:
-    - type: doi
-      value: 10.5281/zenodo.7949384
-repository-code: "https://github.com/sanger-tol/genomenote"
+  - affiliation: Wellcome Sanger Institute
+    email: babiryesandrachana@gmail.com
+    family-names: Babirye
+    given-names: Sandra Ruth
+    orcid: https://orcid.org/0009-0004-7773-7008
+    website: https://github.com/SandraBabirye
+  - affiliation: Wellcome Sanger Institute
+    email: tc25@sanger.ac.uk
+    family-names: Chafin
+    given-names: Tyler
+    orcid: https://orcid.org/0000-0001-8687-5905
+    website: https://github.com/tkchafin
+  - affiliation: Wellcome Sanger Institute
+    family-names: Duong
+    given-names: Chau
+    orcid: https://orcid.org/0009-0001-0649-2291
+    website: https://github.com/reichan1998
+  - affiliation: Wellcome Sanger Institute
+    email: mm49@sanger.ac.uk
+    family-names: Muffato
+    given-names: Matthieu
+    orcid: https://orcid.org/0000-0002-7860-3560
+    website: https://github.com/muffato
+  - affiliation: Wellcome Sanger Institute
+    email: dp24@sanger.ac.uk
+    family-names: Pointon
+    given-names: Damon-Lee Bernard
+    orcid: https://orcid.org/0000-0003-2949-6719
+    website: https://github.com/DLBPointon
+  - affiliation: Wellcome Sanger Institute
+    email: 729395+gq1@users.noreply.github.com
+    family-names: Qi
+    given-names: Guoying
+    orcid: https://orcid.org/0000-0003-1262-8973
+    website: https://github.com/gq1
+  - affiliation: Wellcome Sanger Institute
+    email: ps22@sanger.ac.uk
+    family-names: Surana
+    given-names: Priyanka
+    orcid: https://orcid.org/0000-0002-7167-0875
+    website: https://github.com/priyanka-surana
+  - affiliation: Wellcome Sanger Institute
+    email: by3@sanger.ac.uk
+    family-names: Yates
+    given-names: Bethan
+    orcid: https://orcid.org/0000-0003-1658-1762
+    website: https://github.com/BethYates
+cff-version: 1.2.0
+date-released: "2025-09-09"
+doi: 10.5281/zenodo.7949384
 license: MIT
+message: If you use this software, please cite it using the metadata from this file
+  and all references from CITATIONS.md .
+repository-code: https://github.com/sanger-tol/genomenote
+title: sanger-tol/genomenote v2.2.0 - German Doberman [2025-MM-DD]
+type: software
+url: https://pipelines.tol.sanger.ac.uk/genomenote
 version: 2.2.0
-date-released: "2022-10-07"

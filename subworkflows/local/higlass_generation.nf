@@ -13,7 +13,6 @@ workflow HIGLASS_GENERATION {
     bam_tuple
     chrom_list
     cool_bin
-    cool_order
 
     main:
     ch_versions = Channel.empty()

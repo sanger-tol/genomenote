@@ -1,4 +1,3 @@
-repository_type: pipeline
 lint:
   files_exist:
     - assets/nf-core-genomenote_logo_light.png
@@ -14,11 +13,25 @@ lint:
     - lib/NfcoreTemplate.groovy
     - .github/CONTRIBUTING.md
     - .github/workflows/branch.yml
+    - .github/PULL_REQUEST_TEMPLATE.md
     - .github/workflows/linting.yml
+  multiqc_config:
+    - report_comment
   nextflow_config:
     - manifest.name
     - manifest.homePage
-  multiqc_config:
-    - report_comment
-  actions_ci: false
-  template_strings: False
+  template_strings: false
+nf_core_version: 3.2.1
+repository_type: pipeline
+template:
+  author: "@priyanka-surana"
+  description: Creating standarised genome assembly publications
+  force: false
+  is_nfcore: false
+  name: genomenote
+  org: sanger-tol
+  outdir: .
+  skip_features:
+    - igenomes
+    - fastqc
+  version: 2.2.0

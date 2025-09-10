@@ -1,65 +1,8 @@
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    VALIDATE INPUTS
+    IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-
-def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
-
-// Validate input parameters
-WorkflowGenomenote.initialise(params, log)
-
-// Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.lineage_db, params.fasta, params.lineage_tax_ids ]
-for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
-
-// Mandatory parameters formatting and channeling
-metadata_inputs = [ params.assembly ]
-
-ch_input = Channel.fromPath(params.input)
-ch_fasta = Channel.fromPath(params.fasta)
-ch_bin   = Channel.of(params.binsize)
-ch_kmer  = Channel.of(params.kmer_size)
-
-if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.lineage_tax_ids) } else { exit 1, 'Mapping BUSCO lineage equivalent taxon_ids not specified' }
-
-// Check optional parameters
-if (params.lineage_db)      { ch_lineage_db = Channel.fromPath(params.lineage_db) } else { ch_lineage_db = Channel.empty() }
-if (params.note_template)   { ch_note_template = Channel.fromPath(params.note_template) } else { ch_note_template = Channel.empty() }
-if (params.cool_order)      { ch_cool_order = Channel.fromPath(params.cool_order) } else { ch_cool_order = Channel.empty() }
-if (params.annotation_set)  { ch_gff = Channel.fromPath(params.annotation_set) } else { ch_gff = Channel.empty()}
-if (params.ancestral_table) { ch_ancestral_table = Channel.fromPath(params.ancestral_table) } else { ch_ancestral_table = Channel.empty() }
-
-if (params.biosample_wgs) metadata_inputs.add(params.biosample_wgs) else metadata_inputs.add(null)
-if (params.biosample_hic) metadata_inputs.add(params.biosample_hic) else metadata_inputs.add(null)
-if (params.biosample_rna) metadata_inputs.add(params.biosample_rna) else metadata_inputs.add(null)
-
-// Set btk
-if (params.btk_location) { ch_btk_address = Channel.fromPath(params.btk_location, type: "dir") } else { ch_btk_address = Channel.of([]) }
-if (params.btk_online_location) {ch_btk_online_address = Channel.of(params.btk_online_location)} else { ch_btk_online_address = Channel.of([])}
-
-// If no location is set then make it an empty channel to skip the blobtk process
-if (!params.btk_location && !params.btk_online_location) {
-    ch_btk_address = Channel.empty()
-}
-
-// If both are set, then error out. We want one or the other!
-if (params.btk_location && params.btk_online_location) {
-    exit 1, 'BTK Address not specified or both online and local values have been supplied'
-}
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    CONFIG FILES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-ch_metdata_input           = Channel.of( metadata_inputs )
-ch_file_list               = Channel.fromPath("$projectDir/assets/genome_metadata_template.csv")
-ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
-ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
-ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -91,9 +34,12 @@ include { GET_BLOBTK_PLOTS      } from '../subworkflows/local/get_blobtk_plots/m
 //
 include { GUNZIP as GUNZIP_PRIMARY    } from '../modules/nf-core/gunzip/main'
 include { GUNZIP as GUNZIP_HAPLOTYPE  } from '../modules/nf-core/gunzip/main'
-include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 
+include { paramsSummaryMap       } from 'plugin/nf-schema'
+include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_genomenote_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,17 +47,23 @@ include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// Info required for completion email and summary
-def multiqc_report = []
-
 workflow GENOMENOTE {
 
-    ch_versions  = Channel.empty()
-    ch_annotation_stats = Channel.empty()
-    //
-    // SUBWORKFLOW: Read in samplesheet, validate and stage input files
-    //
-    INPUT_CHECK ( ch_input, ch_metdata_input ).data
+    take:
+    samplesheet     // channel: samplesheet read in from --input
+    metadata        // channel: list of accession numbers to retrieve metadata for
+    lineage_db      // channel: path to the Busco lineage, if provided
+    ancestral_table // channel: path to the ancestral painting table, if provided
+    cool_order      // channel: path to the ordered list of chromosomes, if provided
+    btk_local_path  // channel: path of a local blobDir, if provided
+    btk_online_path // channel: path of a remote blobDir, if provided
+
+    main:
+
+    ch_versions = Channel.empty()
+    ch_multiqc_files = Channel.empty()
+
+    INPUT_CHECK ( samplesheet, metadata).data
     | branch { meta, file ->
         hic : meta.datatype == 'hic'
             return [ meta, file, [] ]
@@ -156,29 +108,12 @@ workflow GENOMENOTE {
     //
     ch_haplotype = ch_unzipped.mix(ch_haplotype.unzipped)
 
-
-    //
-    // SUBWORKFLOW: Read in template of data files to fetch, parse these files and output a list of genome metadata params
-    //
-    INPUT_CHECK.out.param.combine( ch_file_list )
-    | set { ch_metadata }
-
-
-    if ( params.note_template ){
-        GENOME_METADATA ( ch_metadata )
-        ch_versions     = ch_versions.mix(GENOME_METADATA.out.versions)
-        ch_consistent   = GENOME_METADATA.out.consistent
-        ch_inconsistent = GENOME_METADATA.out.inconsistent
-    } else {
-        ch_consistent   = Channel.empty()
-        ch_inconsistent = Channel.empty()
-    }
-
     //
     // MODULE: Uncompress fasta file if needed and set meta based on input params
     //
 
-    INPUT_CHECK.out.param.combine( ch_fasta )
+    INPUT_CHECK.out.param
+    | map { meta -> [meta, params.fasta] }
     | set { ch_genome }
 
     if ( params.fasta.endsWith('.gz') ) {
@@ -205,8 +140,8 @@ workflow GENOMENOTE {
 
     GENOME_STATISTICS (
         ch_fasta,
-        ch_lineage_tax_ids,
-        ch_lineage_db,
+        params.lineage_tax_ids,
+        lineage_db,
         ch_inputs.pacbio,
         ch_flagstat,
         ch_haplotype
@@ -214,15 +149,17 @@ workflow GENOMENOTE {
     ch_versions  = ch_versions.mix ( GENOME_STATISTICS.out.versions )
 
 
-    //
-    // SUBWORKFLOW: Grab blobtoolkit plots via API
-    //
-    GET_BLOBTK_PLOTS(
-        ch_fasta,
-        ch_btk_address,
-        ch_btk_online_address
-    )
-    ch_versions  = ch_versions.mix ( GET_BLOBTK_PLOTS.out.versions )
+    if (params.btk_location || params.btk_online_location) {
+        //
+        // SUBWORKFLOW: Grab blobtoolkit plots via API
+        //
+        GET_BLOBTK_PLOTS(
+            ch_fasta,
+            btk_local_path,
+            btk_online_path,
+        )
+        ch_versions  = ch_versions.mix ( GET_BLOBTK_PLOTS.out.versions )
+    }
 
 
     //
@@ -232,8 +169,8 @@ workflow GENOMENOTE {
         ch_fasta,
         ch_inputs.hic,
         GENOME_STATISTICS.out.summary_seq,
-        ch_bin,
-        ch_cool_order,
+        Channel.of(params.binsize),
+        cool_order,
         params.select_contact_map
     )
     ch_versions  = ch_versions.mix ( CONTACT_MAPS.out.versions )
@@ -242,17 +179,43 @@ workflow GENOMENOTE {
     //
     // SUBWORKFLOW : Obtain feature statistics from the annotation file : GFF
     //
+    ch_annotation_stats = Channel.empty()
     if ( params.annotation_set ) {
         ANNOTATION_STATISTICS (
-            ch_gff,
+            Channel.fromPath(params.annotation_set),
             ch_fasta,
             GENOME_STATISTICS.out.ch_busco_lineage,
-            ch_lineage_db
+            lineage_db
         )
         ch_versions = ch_versions.mix ( ANNOTATION_STATISTICS.out.versions )
         ch_annotation_stats = ch_annotation_stats.mix (ANNOTATION_STATISTICS.out.summary)
     }
 
+    if ( params.note_template ){
+
+        //
+        // SUBWORKFLOW: Read in template of data files to fetch, parse these files and output a list of genome metadata params
+        //
+        ch_file_list = Channel.fromPath("$projectDir/assets/genome_metadata_template.csv")
+        INPUT_CHECK.out.param.combine( ch_file_list )
+        | set { ch_metadata }
+
+        GENOME_METADATA ( ch_metadata )
+        ch_versions     = ch_versions.mix(GENOME_METADATA.out.versions)
+
+        //
+        // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
+        //
+        COMBINE_NOTE_DATA (
+            GENOME_METADATA.out.consistent,
+            GENOME_METADATA.out.inconsistent,
+            GENOME_STATISTICS.out.summary,
+            ch_annotation_stats.ifEmpty([[],[]]),
+            CONTACT_MAPS.out.link,
+            params.note_template
+        )
+        ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
+    }
 
     //
     // SUBWORKFLOW: Ancestral Element Analysis workflow - generates plots for user provided ancestral element mapping
@@ -263,46 +226,53 @@ workflow GENOMENOTE {
     if ( params.ancestral_table ) {
         ANNOTATION_ANCESTRAL (
             ch_fasta,
-            ch_ancestral_table,
+            ancestral_table,
             GENOME_STATISTICS.out.busco_full_table
         )
         ch_versions = ch_versions.mix ( ANNOTATION_ANCESTRAL.out.versions )
     }
 
-
     //
-    // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
+    // Collate and save software versions
     //
-    COMBINE_NOTE_DATA (
-        ch_consistent,
-        ch_inconsistent,
-        GENOME_STATISTICS.out.summary,
-        ch_annotation_stats.ifEmpty([[],[]]),
-        CONTACT_MAPS.out.link,
-        ch_note_template
-    )
-    ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
-
-
-    //
-    // MODULE: Combine different versions.yml
-    //
-    CUSTOM_DUMPSOFTWAREVERSIONS ( ch_versions.unique().collectFile(name: 'collated_versions.yml') )
-
+    softwareVersionsToYAML(ch_versions)
+        .collectFile(
+            storeDir: "${params.outdir}/pipeline_info",
+            name:  'genomenote_software_'  + 'mqc_'  + 'versions.yml',
+            sort: true,
+            newLine: true
+        ).set { ch_collated_versions }
 
     //
     // MODULE: MultiQC
     //
-    workflow_summary    = WorkflowGenomenote.paramsSummaryMultiqc(workflow, summary_params)
-    ch_workflow_summary = Channel.value(workflow_summary)
+    ch_multiqc_config        = Channel.fromPath(
+        "$projectDir/assets/multiqc_config.yml", checkIfExists: true)
+    ch_multiqc_custom_config = params.multiqc_config ?
+        Channel.fromPath(params.multiqc_config, checkIfExists: true) :
+        Channel.empty()
+    ch_multiqc_logo          = params.multiqc_logo ?
+        Channel.fromPath(params.multiqc_logo, checkIfExists: true) :
+        Channel.empty()
 
-    methods_description    = WorkflowGenomenote.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description)
-    ch_methods_description = Channel.value(methods_description)
+    summary_params      = paramsSummaryMap(
+        workflow, parameters_schema: "nextflow_schema.json")
+    ch_workflow_summary = Channel.value(paramsSummaryMultiqc(summary_params))
+    ch_multiqc_files = ch_multiqc_files.mix(
+        ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    ch_multiqc_custom_methods_description = params.multiqc_methods_description ?
+        file(params.multiqc_methods_description, checkIfExists: true) :
+        file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
+    ch_methods_description                = Channel.value(
+        methodsDescriptionText(ch_multiqc_custom_methods_description))
 
-    ch_multiqc_files = Channel.empty()
-    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+    ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
+    ch_multiqc_files = ch_multiqc_files.mix(
+        ch_methods_description.collectFile(
+            name: 'methods_description_mqc.yaml',
+            sort: true
+        )
+    )
     ch_multiqc_files = ch_multiqc_files.mix(ch_flagstat.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(GENOME_STATISTICS.out.multiqc.collect{it[1]}.ifEmpty([]))
 
@@ -314,25 +284,11 @@ workflow GENOMENOTE {
         [],
         []
     )
-    multiqc_report = MULTIQC.out.report.toList()
 
-}
+    emit:
+    multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
+    versions       = ch_versions                 // channel: [ path(versions.yml) ]
 
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    COMPLETION EMAIL AND SUMMARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-workflow.onComplete {
-    if (params.email || params.email_on_fail) {
-        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
-    }
-    NfcoreTemplate.summary(workflow, params, log)
-    if (params.hook_url) {
-        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
-    }
 }
 
 
