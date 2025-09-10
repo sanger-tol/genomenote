@@ -24,18 +24,19 @@ ch_kmer  = Channel.of(params.kmer_size)
 if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.lineage_tax_ids) } else { exit 1, 'Mapping BUSCO lineage equivalent taxon_ids not specified' }
 
 // Check optional parameters
-if (params.lineage_db) { ch_lineage_db = Channel.fromPath(params.lineage_db) } else { ch_lineage_db = Channel.empty() }
-if (params.note_template) { ch_note_template = Channel.fromPath(params.note_template) } else { ch_note_template = Channel.empty() }
-if (params.cool_order) { ch_cool_order = Channel.fromPath(params.cool_order) } else { ch_cool_order = Channel.empty() }
-if (params.annotation_set) { ch_gff = Channel.fromPath(params.annotation_set) } else { ch_gff = Channel.empty() }
+if (params.lineage_db)      { ch_lineage_db = Channel.fromPath(params.lineage_db) } else { ch_lineage_db = Channel.empty() }
+if (params.note_template)   { ch_note_template = Channel.fromPath(params.note_template) } else { ch_note_template = Channel.empty() }
+if (params.cool_order)      { ch_cool_order = Channel.fromPath(params.cool_order) } else { ch_cool_order = Channel.empty() }
+if (params.annotation_set)  { ch_gff = Channel.fromPath(params.annotation_set) } else { ch_gff = Channel.empty()}
+if (params.ancestral_table) { ch_ancestral_table = Channel.fromPath(params.ancestral_table) } else { ch_ancestral_table = Channel.empty() }
 
 if (params.biosample_wgs) metadata_inputs.add(params.biosample_wgs) else metadata_inputs.add(null)
 if (params.biosample_hic) metadata_inputs.add(params.biosample_hic) else metadata_inputs.add(null)
 if (params.biosample_rna) metadata_inputs.add(params.biosample_rna) else metadata_inputs.add(null)
 
 // Set btk
-if (params.btk_location) { ch_btk_address = Channel.fromPath(params.btk_location, type: "dir") } else { ch_btk_address = [] }
-if (params.btk_online_location) {ch_btk_online_address = Channel.of(params.btk_online_location)} else { ch_btk_online_address = []}
+if (params.btk_location) { ch_btk_address = Channel.fromPath(params.btk_location, type: "dir") } else { ch_btk_address = Channel.of([]) }
+if (params.btk_online_location) {ch_btk_online_address = Channel.of(params.btk_online_location)} else { ch_btk_online_address = Channel.of([])}
 
 // If no location is set then make it an empty channel to skip the blobtk process
 if (!params.btk_location && !params.btk_online_location) {
@@ -75,6 +76,7 @@ include { CONTACT_MAPS          } from '../subworkflows/local/contact_maps'
 include { GENOME_STATISTICS     } from '../subworkflows/local/genome_statistics'
 include { COMBINE_NOTE_DATA     } from '../subworkflows/local/combine_note_data'
 include { ANNOTATION_STATISTICS } from '../subworkflows/local/annotation_statistics'
+include { ANNOTATION_ANCESTRAL  } from '../subworkflows/local/annotation_ancestral'
 include { GET_BLOBTK_PLOTS      } from '../subworkflows/local/get_blobtk_plots/main'
 
 
@@ -249,6 +251,22 @@ workflow GENOMENOTE {
         )
         ch_versions = ch_versions.mix ( ANNOTATION_STATISTICS.out.versions )
         ch_annotation_stats = ch_annotation_stats.mix (ANNOTATION_STATISTICS.out.summary)
+    }
+
+
+    //
+    // SUBWORKFLOW: Ancestral Element Analysis workflow - generates plots for user provided ancestral element mapping
+    //              Only available for lepidoptera as of April 2025
+    //              Once there are more options, this should be reviewed for a better system
+    //
+
+    if ( params.ancestral_table ) {
+        ANNOTATION_ANCESTRAL (
+            ch_fasta,
+            ch_ancestral_table,
+            GENOME_STATISTICS.out.busco_full_table
+        )
+        ch_versions = ch_versions.mix ( ANNOTATION_ANCESTRAL.out.versions )
     }
 
 

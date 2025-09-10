@@ -20,6 +20,12 @@
                         "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
                         "installed_by": ["modules"]
                     },
+                    "blobtk/plot": {
+                        "branch": "master",
+                        "git_sha": "bc4bd80d170f20fe8d35228c5b880dc5d66019e5",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/blobtk/plot/blobtk-plot.diff"
+                    },
                     "busco/busco": {
                         "branch": "master",
                         "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",

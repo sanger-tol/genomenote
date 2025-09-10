@@ -1,4 +1,4 @@
-include { BLOBTK_PLOT } from '../../../modules/local/blobtk/plot/main'
+include { BLOBTK_PLOT } from '../../../modules/nf-core/blobtk/plot/main'
 
 
 workflow GET_BLOBTK_PLOTS {
@@ -17,7 +17,7 @@ workflow GET_BLOBTK_PLOTS {
     //          as this is most likely to be adapted by the end user on personal taste.
     //          assembly_level for our purposes can be either 'chromosome' or 'assembled-molecule`
     //              - The first may include unlocalised units whilst the latter will not.
-    blobtk_arguments = [
+    blobtk_arguments = Channel.of(
         [
             name: "BLOB_VIEW",
             args: "-v blob"
@@ -34,20 +34,37 @@ workflow GET_BLOBTK_PLOTS {
             name: "GRID_CHR_VIEW",
             args: "-v blob --filter assembly_level=assembled-molecule --shape grid -w 0.01 -x position"
         ]
-    ]
+    )
+
+
+    //
+    // LOGIC: combine all the input and split back out so that we have channels * btk_args
+    //
+    ch_blobtk_plot_input = fasta
+        | combine(btk_local_path.map{ [it] })
+        | combine(btk_online_path.map{ [it] })
+        | combine(blobtk_arguments)
+        | multiMap { meta, fasta, local, online, btk_args ->
+            fasta: [meta, fasta]
+            local_path: local
+            online_path: online
+            args: btk_args
+        }
+
 
     //
     // MODULE: Call the specified blobtk server and return grid view of the
     //          assembly position of blob on molecule
     //
-    BLOBTK_PLOT (
-        fasta,
-        btk_local_path,
-        btk_online_path,
-        blobtk_arguments
+    BLOBTK_PLOT(
+        ch_blobtk_plot_input.fasta,
+        ch_blobtk_plot_input.local_path,
+        ch_blobtk_plot_input.online_path,
+        ch_blobtk_plot_input.args
     )
     ch_versions         = ch_versions.mix ( BLOBTK_PLOT.out.versions.first() )
     ch_images           = BLOBTK_PLOT.out.png.mix ( BLOBTK_PLOT.out.png )
+
 
     emit:
     blobtk_images       = ch_images
