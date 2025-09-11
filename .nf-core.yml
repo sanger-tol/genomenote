@@ -1,5 +1,4 @@
 lint:
-  actions_ci: false
   files_exist:
     - assets/nf-core-genomenote_logo_light.png
     - docs/images/nf-core-genomenote_logo_light.png
@@ -14,6 +13,7 @@ lint:
     - lib/NfcoreTemplate.groovy
     - .github/CONTRIBUTING.md
     - .github/workflows/branch.yml
+    - .github/PULL_REQUEST_TEMPLATE.md
     - .github/workflows/linting.yml
   multiqc_config:
     - report_comment
@@ -21,7 +21,7 @@ lint:
     - manifest.name
     - manifest.homePage
   template_strings: false
-nf_core_version: 3.2.1
+nf_core_version: 3.3.2
 repository_type: pipeline
 template:
   author: "@priyanka-surana"
