@@ -116,29 +116,27 @@
                 }
             },
             [
-                "GCA_963859965.1_buscopainter_complete_location.tsv_buscopainter.pdf:md5,4df8824ff87f42d918e697a5c94497a7",
-                "fragmented_busco_sequences.tar.gz:md5,a6b4c6b7bee8010138e5f244095f889b",
-                "hmmer_output.tar.gz:md5,53553a90e9386fd3f84d33ab0b90df5d",
-                "multi_copy_busco_sequences.tar.gz:md5,2b1c4f1c5b0e728a98dc406807026c7d",
-                "short_summary.json:md5,bc23d4c29671921153e7d963825717c9",
-                "short_summary.txt:md5,7fe6ff44ef0dc070285963cc8cd197d3",
-                "single_copy_busco_sequences.tar.gz:md5,861ed1b58569ba3e0df7f15bcff8978c",
-                "GCA_963859965.1_ilCerPisi1.cool:md5,ad76deb022798682de69a41c557961f4",
-                "GCA_963859965.1_ilCerPisi1.mcool:md5,b8bf3a83d57ffe3ec7072071ed4d2969",
-                "Ceramica_pisi-GCA_963859965.1-2024_04-genes.gff3.stats.csv:md5,2fe590e4ff9ee09507edb196b0d313de",
-                "GCA_963859965.1.docx:md5,0319752cd7de85aa67f08641d14091d4",
-                "GCA_963859965.1_genome_note_consistent.csv:md5,b2cb741ecf5b2aba80e20de1e45eef00"
+                "ancestral_plots/GCA_963859965.1_buscopainter_complete_location.tsv_buscopainter.pdf",
+                "busco/lepidoptera_odb10/fragmented_busco_sequences.tar.gz",
+                "busco/lepidoptera_odb10/hmmer_output.tar.gz",
+                "busco/lepidoptera_odb10/multi_copy_busco_sequences.tar.gz",
+                "busco/lepidoptera_odb10/short_summary.json",
+                "busco/lepidoptera_odb10/short_summary.txt",
+                "busco/lepidoptera_odb10/single_copy_busco_sequences.tar.gz",
+                "contact_maps/higlass/GCA_963859965.1_ilCerPisi1.cool",
+                "contact_maps/higlass/GCA_963859965.1_ilCerPisi1.mcool",
+                "gene/Ceramica_pisi-GCA_963859965.1-2024_04-genes.gff3.stats.csv",
+                "genome_note/GCA_963859965.1.docx",
+                "genome_note/GCA_963859965.1_genome_note_consistent.csv",
+                "multiqc/multiqc_report.html"
             ],
             [
-                "multiqc_report.html:md5,b624fd454cccaf3446c1bb8da459a6f7"
-            ],
-            [
-                "ilCerPisi1_linear_plot.png:md5,e0977c490b773d62f1dfa1553404275b",
-                "ilCerPisi1_log_plot.png:md5,7958e0f85d8096c492278e4fb97393a2",
-                "ilCerPisi1_model.txt:md5,b6e4f0aee658f57cca11728b2587dbb8",
-                "ilCerPisi1_summary.txt:md5,cffdfe970bfdcb4c5a6a9f9f1448e484",
-                "ilCerPisi1_transformed_linear_plot.png:md5,92f3983b46dc5e5d9ece40425d36e237",
-                "ilCerPisi1_transformed_log_plot.png:md5,1743bbc666b633b5cf6cc31fb0e7ef0a"
+                "ilCerPisi1_linear_plot.png:md5,427fb3caec678f39dd0891d95fbca2ce",
+                "ilCerPisi1_log_plot.png:md5,7748e1787ad766cb05ec025d0d3f6582",
+                "ilCerPisi1_model.txt:md5,917efcc7f332a39517778ff51c286822",
+                "ilCerPisi1_summary.txt:md5,e6fb307b12144b88c8a22d44f51dea5f",
+                "ilCerPisi1_transformed_linear_plot.png:md5,6f5ca03078757c95046e02b9196c62dc",
+                "ilCerPisi1_transformed_log_plot.png:md5,37ee0aea738e74166feabc7685c587d0"
             ],
             [
                 "GCA_963859965.1.assembly_summary:md5,edd4cdba05800960c0ca80378e1e5e9d",
@@ -162,19 +160,19 @@
                 "GCA_963859965.1_genome_note_inconsistent.csv:md5,ba336957b84a2b78ae95ca6412bd50c7"
             ],
             [
-                "GCA_963859965.1.csv:md5,d91f1bcec24d3cdec70fcb8eb9cb383a"
+                "GCA_963859965.1.csv:md5,46d7c6e77673dd44e0fb7b82c0ac92d8"
             ],
             [
                 "GCA_963859965.1_ilCerPisi1_standardFullMap.png:md5,198a4106e7c896ff378651f9acdc913e",
                 "GCA_963859965.1_ilCerPisi1_standard_pi.pretext:md5,ebabd182607b4dd244e394064b048413"
             ],
             [
-                "GCA_963859965.1_ilCerPisi1.mcool:md5,b8bf3a83d57ffe3ec7072071ed4d2969"
+                "GCA_963859965.1_ilCerPisi1.bedpe:md5,ef15e0650aa9f69b86add7af93e0c843"
             ],
             [
-                "full_table.tsv:md5,144513efe5a14247932f5126b90c29e9",
-                "missing_busco_list.tsv:md5,241ddb556f1c0a640792b3a8267103a3",
-                "short_summary.tsv:md5,9f1d9997ea29737a13bd3a62cdc2fa9e"
+                "full_table.tsv:md5,fce75ec52ae1439468687be3f2d33d76",
+                "missing_busco_list.tsv:md5,80efd306c1bd3828d5e30569da741de5",
+                "short_summary.tsv:md5,75e84aec981d4e24d2a294a259669014"
             ],
             [
                 "GCA_963859965.1_GCA_963859965.1_BLOB_CHR_VIEW.png:md5,3acd989e799266386ece265c1214c9f9",
@@ -187,6 +185,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-09-11T16:59:24.316528255"
+        "timestamp": "2025-09-12T13:43:59.773227216"
     }
 }
