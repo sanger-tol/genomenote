@@ -67,4 +67,3 @@ workflow ANNOTATION_STATISTICS {
     versions = ch_versions                       // channel: [ versions.yml ]
 
 }
-
