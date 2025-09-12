@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Enhancements & fixes
 
 - Update of the NF-core template to 3.3.2. #168
-    - Implements NF-test for pipeline wide testing. #169
+  - Implements NF-test for pipeline wide testing. #169
 - Addition of the GFASTATS module and config.
 - Addition of GenescopeFK histogram plots and related data #181 [#157](https://github.com/sanger-tol/genomenote/issues/157).
 - Support for CLI provided Busco lineage to override the NCBI auto generated one.
@@ -112,7 +112,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 
 | Dependency  | Old version                              | New version                              |
 | ----------- | ---------------------------------------- | ---------------------------------------- |
-| `agat`      |                                          | 1.4.0                                    |
+| `agat`      |                                          | 1.4.2                                    |
 | `bedtools`  | 2.30.0                                   | 2.31.1                                   |
 | `busco`     | 5.5.0                                    | 5.7.1                                    |
 | `cooler`    | 0.8.11                                   | 0.9.2                                    |
