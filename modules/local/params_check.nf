@@ -11,8 +11,8 @@ process PARAMS_CHECK {
     tuple val(assembly), val(wgs_biosample), val(hic_biosample), val(rna_biosample)
 
     output:
-    path '*.csv', emit: csv
-    path "versions.yml", emit: versions
+    path '*.csv',           emit: csv
+    path "versions.yml",    emit: versions
 
     script:
     """
@@ -29,4 +29,3 @@ process PARAMS_CHECK {
     END_VERSIONS
     """
 }
-

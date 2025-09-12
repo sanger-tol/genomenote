@@ -12,17 +12,17 @@ process EXTRACT_ANNOTATION_STATISTICS_INFO{
     tuple val(meta3), path(busco_stats)
 
     output:
-    tuple val (meta), path("*.csv") , emit: csv
-    path "versions.yml", emit: versions
+    tuple val (meta), path("*.csv") ,   emit: csv
+    path "versions.yml",                emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def prefix = task.ext.prefix ?: meta.filename
+    def prefix      = task.ext.prefix ?: meta.filename
     def output_file = "${prefix}.stats.csv"
-    """
 
+    """
     extract_annotation_statistics_info.py \\
         $basic_stats \\
         $other_stats \\
@@ -35,4 +35,3 @@ process EXTRACT_ANNOTATION_STATISTICS_INFO{
     END_VERSIONS
     """
 }
-
