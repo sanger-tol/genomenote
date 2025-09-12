@@ -27,6 +27,7 @@ nextflow_pipeline {
             def stable_name_files = getAllFilesFromDir(
                 params.outdir,
                 includeDir: true,
+                relative: true,
                 include: [
                     // Meta Data changes between runs
                     "ancestral_plots/GCA_963859965.1_buscopainter_complete_location.tsv_buscopainter.pdf",
