@@ -128,15 +128,15 @@
                 "gene/Ceramica_pisi-GCA_963859965.1-2024_04-genes.gff3.stats.csv",
                 "genome_note/GCA_963859965.1.docx",
                 "genome_note/GCA_963859965.1_genome_note_consistent.csv",
+                "genomescope/ilCerPisi1_linear_plot.png",
+                "genomescope/ilCerPisi1_log_plot.png",
+                "genomescope/ilCerPisi1_transformed_linear_plot.png",
+                "genomescope/ilCerPisi1_transformed_log_plot.png",
                 "multiqc/multiqc_report.html"
             ],
             [
-                "ilCerPisi1_linear_plot.png:md5,427fb3caec678f39dd0891d95fbca2ce",
-                "ilCerPisi1_log_plot.png:md5,7748e1787ad766cb05ec025d0d3f6582",
                 "ilCerPisi1_model.txt:md5,917efcc7f332a39517778ff51c286822",
-                "ilCerPisi1_summary.txt:md5,e6fb307b12144b88c8a22d44f51dea5f",
-                "ilCerPisi1_transformed_linear_plot.png:md5,6f5ca03078757c95046e02b9196c62dc",
-                "ilCerPisi1_transformed_log_plot.png:md5,37ee0aea738e74166feabc7685c587d0"
+                "ilCerPisi1_summary.txt:md5,e6fb307b12144b88c8a22d44f51dea5f"
             ],
             [
                 "GCA_963859965.1.assembly_summary:md5,edd4cdba05800960c0ca80378e1e5e9d",
@@ -185,6 +185,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-09-12T13:43:59.773227216"
+        "timestamp": "2025-09-17T15:01:33.731877634"
     }
 }

@@ -44,11 +44,15 @@ nextflow_pipeline {
                     "contact_maps/higlass/GCA_963859965.1_ilCerPisi1.mcool",
 
                     // MultiQC
-                    "multiqc/multiqc_report.html"
+                    "multiqc/multiqc_report.html",
+
+                    // Genomescope PNGs
+                    "genomescope/*_plot.png"
+
                 ]
             )
 
-            def genomescope     = getAllFilesFromDir(params.outdir, include: ["genomescope/*"])
+            def genomescope_txt = getAllFilesFromDir(params.outdir, include: ["genomescope/*.txt"])
             def genome_stats    = getAllFilesFromDir(params.outdir, include: ["genome_stats/*"])
             def genome_note_1   = getAllFilesFromDir(params.outdir, include: ["genome_note/*_inconsistent.csv"])
             def genome_note_2   = getAllFilesFromDir(params.outdir, include: ["genome_note/GCA_963859965.1.csv"])
@@ -72,7 +76,7 @@ nextflow_pipeline {
                     stable_name_files,
 
                     // All files with stable contents
-                    genomescope,
+                    genomescope_txt,
                     genome_stats,
                     genome_note_1,
                     genome_note_2,
