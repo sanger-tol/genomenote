@@ -165,16 +165,7 @@
                 "        \"Percent gaps\": \"0.001%\",",
                 "        \"Scaffold N50\": \"29673206\",",
                 "        \"Contigs N50\": \"24534995\"",
-                "    },",
-                "    \"metrics\": {",
-                "        \"Number of scaffolds\": \"3\",",
-                "        \"Number of contigs\": \"7\",",
-                "        \"Total length\": \"58977870\",",
-                "        \"Percent gaps\": \"0.001%\",",
-                "        \"Scaffold N50\": \"29673206\",",
-                "        \"Contigs N50\": \"24534995\"",
-                "    }",
-                "}"
+                "    },"
             ],
             "BUSCO_PROTEIN_SCORES,\"C:7.7%[S:5.1%,D:2.6%],F:0.2%,M:92.1%,n:5286\"",
             "CHR_TABLE,[{\"Chromosome\": \"1\", \"Length\": \"29.67\", \"GC\": \"38\", \"Accession\": \"OY982528.1\"}, {\"Chromosome\": \"2\", \"Length\": \"29.29\", \"GC\": \"38\", \"Accession\": \"OY982529.1\"}, {\"Chromosome\": \"3\", \"Length\": \"28.08\", \"GC\": \"38\", \"Accession\": \"OY982530.1\"}, {\"Chromosome\": \"4\", \"Length\": \"27.00\", \"GC\": \"38.5\", \"Accession\": \"OY982531.1\"}, {\"Chromosome\": \"5\", \"Length\": \"26.83\", \"GC\": \"37.5\", \"Accession\": \"OY982532.1\"}, {\"Chromosome\": \"6\", \"Length\": \"26.61\", \"GC\": \"38\", \"Accession\": \"OY982533.1\"}, {\"Chromosome\": \"7\", \"Length\": \"26.52\", \"GC\": \"37.5\", \"Accession\": \"OY982534.1\"}, {\"Chromosome\": \"8\", \"Length\": \"26.25\", \"GC\": \"38\", \"Accession\": \"OY982535.1\"}, {\"Chromosome\": \"9\", \"Length\": \"26.11\", \"GC\": \"38\", \"Accession\": \"OY982536.1\"}, {\"Chromosome\": \"10\", \"Length\": \"25.82\", \"GC\": \"38\", \"Accession\": \"OY982537.1\"}, {\"Chromosome\": \"11\", \"Length\": \"24.99\", \"GC\": \"38\", \"Accession\": \"OY982538.1\"}, {\"Chromosome\": \"12\", \"Length\": \"24.89\", \"GC\": \"38\", \"Accession\": \"OY982539.1\"}, {\"Chromosome\": \"13\", \"Length\": \"24.87\", \"GC\": \"38\", \"Accession\": \"OY982540.1\"}, {\"Chromosome\": \"14\", \"Length\": \"24.74\", \"GC\": \"37.5\", \"Accession\": \"OY982541.1\"}, {\"Chromosome\": \"15\", \"Length\": \"24.02\", \"GC\": \"37.5\", \"Accession\": \"OY982542.1\"}, {\"Chromosome\": \"16\", \"Length\": \"23.69\", \"GC\": \"38\", \"Accession\": \"OY982543.1\"}, {\"Chromosome\": \"17\", \"Length\": \"23.33\", \"GC\": \"38\", \"Accession\": \"OY982544.1\"}, {\"Chromosome\": \"18\", \"Length\": \"22.96\", \"GC\": \"38.5\", \"Accession\": \"OY982545.1\"}, {\"Chromosome\": \"19\", \"Length\": \"22.74\", \"GC\": \"38\", \"Accession\": \"OY982546.1\"}, {\"Chromosome\": \"20\", \"Length\": \"22.54\", \"GC\": \"38.5\", \"Accession\": \"OY982547.1\"}, {\"Chromosome\": \"21\", \"Length\": \"21.82\", \"GC\": \"38.5\", \"Accession\": \"OY982548.1\"}, {\"Chromosome\": \"22\", \"Length\": \"21.54\", \"GC\": \"38\", \"Accession\": \"OY982549.1\"}, {\"Chromosome\": \"23\", \"Length\": \"20.79\", \"GC\": \"38\", \"Accession\": \"OY982550.1\"}, {\"Chromosome\": \"24\", \"Length\": \"19.00\", \"GC\": \"38\", \"Accession\": \"OY982551.1\"}, {\"Chromosome\": \"25\", \"Length\": \"18.97\", \"GC\": \"38\", \"Accession\": \"OY982552.1\"}, {\"Chromosome\": \"26\", \"Length\": \"16.06\", \"GC\": \"38.5\", \"Accession\": \"OY982553.1\"}, {\"Chromosome\": \"27\", \"Length\": \"16.06\", \"GC\": \"39.5\", \"Accession\": \"OY982554.1\"}, {\"Chromosome\": \"28\", \"Length\": \"15.12\", \"GC\": \"38.5\", \"Accession\": \"OY982555.1\"}, {\"Chromosome\": \"29\", \"Length\": \"15.00\", \"GC\": \"39.5\", \"Accession\": \"OY982556.1\"}, {\"Chromosome\": \"30\", \"Length\": \"14.10\", \"GC\": \"39\", \"Accession\": \"OY982557.1\"}, {\"Chromosome\": \"Z\", \"Length\": \"40.62\", \"GC\": \"38\", \"Accession\": \"OY982527.1\"}]",
@@ -225,6 +216,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-09-18T14:03:22.466791855"
+        "timestamp": "2025-09-18T18:05:03.665337199"
     }
 }

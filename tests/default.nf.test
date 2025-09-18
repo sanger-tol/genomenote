@@ -60,7 +60,7 @@ nextflow_pipeline {
 
             // BUSCO results information
             def busco_short_json    = file("${params.outdir}/busco/lepidoptera_odb10/short_summary.json")
-                                            .readLines()[56..88]
+                                            .readLines()[56..79]
 
             // Get the BUSCO Score some of the gene lengths change by 1
             def genes_stats_csv     = file("${params.outdir}/gene/Ceramica_pisi-GCA_963859965.1-2024_04-genes.gff3.stats.csv")
@@ -106,7 +106,6 @@ nextflow_pipeline {
                     higlass_output,
                     busco_output,
                     btk_plot_output
-
                 ).match() }
             )
         }
