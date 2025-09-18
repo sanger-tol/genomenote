@@ -25,41 +25,58 @@ nextflow_pipeline {
                     "ancestral_plots/GCA_963859965.1_buscopainter_complete_location.tsv_buscopainter.pdf",
 
                     // Reporting a differing number of Exons per run (difference is 1)
-                    "gene/Ceramica_pisi-GCA_963859965.1-2024_04-genes.gff3.stats.csv",
                     "genome_note/GCA_963859965.1.docx",
-                    "genome_note/GCA_963859965.1_genome_note_consistent.csv",
 
-                    // Use of `./tmp/nxf.{UNIQUE_STRING}/busco...` paths through file
-                    "busco/lepidoptera_odb10/short_summary.json",
-                    "busco/lepidoptera_odb10/short_summary.txt",
-
-                    // Tar files
+                    // Tar files - Order of files change on a per run basis
                     "busco/lepidoptera_odb10/fragmented_busco_sequences.tar.gz",
                     "busco/lepidoptera_odb10/hmmer_output.tar.gz",
                     "busco/lepidoptera_odb10/multi_copy_busco_sequences.tar.gz",
                     "busco/lepidoptera_odb10/single_copy_busco_sequences.tar.gz",
 
-                    // Contact maps
+                    // Contact maps - Binary file
                     "contact_maps/higlass/GCA_963859965.1_ilCerPisi1.cool",
                     "contact_maps/higlass/GCA_963859965.1_ilCerPisi1.mcool",
 
                     // MultiQC
                     "multiqc/multiqc_report.html",
 
-                    // Genomescope PNGs
+                    // Genomescope PNGs - Binary file
                     "genomescope/*_plot.png"
 
                 ]
             )
 
-            def genomescope_txt = getAllFilesFromDir(params.outdir, include: ["genomescope/*.txt"])
-            def genome_stats    = getAllFilesFromDir(params.outdir, include: ["genome_stats/*"])
-            def genome_note_1   = getAllFilesFromDir(params.outdir, include: ["genome_note/*_inconsistent.csv"])
-            def genome_note_2   = getAllFilesFromDir(params.outdir, include: ["genome_note/GCA_963859965.1.csv"])
-            def pretext_output  = getAllFilesFromDir(params.outdir, include: ["contact_maps/pretext/*"])
-            def higlass_output  = getAllFilesFromDir(params.outdir, include: ["contact_maps/higlass/*.bedpe"])
-            def busco_output    = getAllFilesFromDir(params.outdir, include: ["busco/lepidoptera_odb10/*.tsv"])
-            def btk_plot_output = getAllFilesFromDir(params.outdir, include: ["blobtoolkit_plots/*.png"])
+            // Describes residual Error of run
+            def genomescope_model   = file("${params.outdir}/genomescope/ilCerPisi1_model.txt")
+                                            .readLines()[14]
+
+            // Lines that define the run
+            def genomescope_summary = file("${params.outdir}/genomescope/ilCerPisi1_summary.txt")
+                                            .readLines()[0..6]
+
+            // BUSCO results line
+            def busco_short_txt     = file("${params.outdir}/busco/lepidoptera_odb10/short_summary.txt")
+                                            .readLines()[8]
+
+            // BUSCO results information
+            def busco_short_json    = file("${params.outdir}/busco/lepidoptera_odb10/short_summary.json")
+                                            .readLines()[56..88]
+
+            // Get the BUSCO Score some of the gene lengths change by 1
+            def genes_stats_csv     = file("${params.outdir}/gene/Ceramica_pisi-GCA_963859965.1-2024_04-genes.gff3.stats.csv")
+                                            .readLines()[17]
+
+            // Get the chromosome table
+            def genome_note_consis  = file("${params.outdir}/genome_note/GCA_963859965.1_genome_note_consistent.csv")
+                                            .readLines()[20]
+
+            def genome_stats        = getAllFilesFromDir(params.outdir, include: ["genome_stats/*"])
+            def genome_note_1       = getAllFilesFromDir(params.outdir, include: ["genome_note/*_inconsistent.csv"])
+            def genome_note_2       = getAllFilesFromDir(params.outdir, include: ["genome_note/GCA_963859965.1.csv"])
+            def pretext_output      = getAllFilesFromDir(params.outdir, include: ["contact_maps/pretext/*"])
+            def higlass_output      = getAllFilesFromDir(params.outdir, include: ["contact_maps/higlass/*.bedpe"])
+            def busco_output        = getAllFilesFromDir(params.outdir, include: ["busco/lepidoptera_odb10/*.tsv"])
+            def btk_plot_output     = getAllFilesFromDir(params.outdir, include: ["blobtoolkit_plots/*.png"])
 
             // stable_path: All files in ${params.outdir}/ with stable content
             def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
@@ -76,7 +93,12 @@ nextflow_pipeline {
                     stable_name_files,
 
                     // All files with stable contents
-                    genomescope_txt,
+                    genomescope_model,
+                    genomescope_summary,
+                    busco_short_txt,
+                    busco_short_json,
+                    genes_stats_csv,
+                    genome_note_consis,
                     genome_stats,
                     genome_note_1,
                     genome_note_2,
