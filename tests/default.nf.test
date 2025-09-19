@@ -54,6 +54,10 @@ nextflow_pipeline {
             def genomescope_summary = file("${params.outdir}/genomescope/ilCerPisi1_summary.txt")
                                             .readLines()[0..6]
 
+            // Get the BUSCO Score some of the gene lengths change by 1
+            def genes_stats_csv     = file("${params.outdir}/gene/Ceramica_pisi-GCA_963859965.1-2024_04-genes.gff3.stats.csv")
+                                            .readLines()[17]
+
             // BUSCO results line
             def busco_short_txt     = file("${params.outdir}/busco/lepidoptera_odb10/short_summary.txt")
                                             .readLines()[8]
@@ -62,20 +66,32 @@ nextflow_pipeline {
             def busco_short_json    = file("${params.outdir}/busco/lepidoptera_odb10/short_summary.json")
                                             .readLines()[56..79]
 
-            // Get the BUSCO Score some of the gene lengths change by 1
-            def genes_stats_csv     = file("${params.outdir}/gene/Ceramica_pisi-GCA_963859965.1-2024_04-genes.gff3.stats.csv")
-                                            .readLines()[17]
+            // Missing busco list normally contains dates
+            def busco_missing       = file("${params.outdir}/busco/lepidoptera_odb10/missing_busco_list.tsv")
+                                            .readLines()[2..9]
+
+            // File looks to be same in all
+            // Length of file is always 2 though.
+            def busco_short_sum     = file("${params.outdir}/busco/lepidoptera_odb10/short_summary.tsv")
+                                            .readLines()
+
+            //
+            def busco_full_table    = file("${params.outdir}/busco/lepidoptera_odb10/full_table.tsv")
+                                            .readLines()[2..9]
 
             // Get the chromosome table
             def genome_note_consis  = file("${params.outdir}/genome_note/GCA_963859965.1_genome_note_consistent.csv")
                                             .readLines()[20]
 
+            // Get genome size info
+            def genome_note_summary = file("${params.outdir}/genome_note/GCA_963859965.1.csv")
+                                            .readLines()[19..50]
+
+
             def genome_stats        = getAllFilesFromDir(params.outdir, include: ["genome_stats/*"])
-            def genome_note_1       = getAllFilesFromDir(params.outdir, include: ["genome_note/*_inconsistent.csv"])
-            def genome_note_2       = getAllFilesFromDir(params.outdir, include: ["genome_note/GCA_963859965.1.csv"])
+            def genome_note_csv     = getAllFilesFromDir(params.outdir, include: ["genome_note/*_inconsistent.csv"])
             def pretext_output      = getAllFilesFromDir(params.outdir, include: ["contact_maps/pretext/*"])
             def higlass_output      = getAllFilesFromDir(params.outdir, include: ["contact_maps/higlass/*.bedpe"])
-            def busco_output        = getAllFilesFromDir(params.outdir, include: ["busco/lepidoptera_odb10/*.tsv"])
             def btk_plot_output     = getAllFilesFromDir(params.outdir, include: ["blobtoolkit_plots/*.png"])
 
             // stable_path: All files in ${params.outdir}/ with stable content
@@ -95,16 +111,19 @@ nextflow_pipeline {
                     // All files with stable contents
                     genomescope_model,
                     genomescope_summary,
+                    genes_stats_csv,
                     busco_short_txt,
                     busco_short_json,
+                    busco_missing,
+                    busco_short_sum[1].startsWith("GCA_963859965.1"),
+d                   busco_full_table,
                     genes_stats_csv,
                     genome_note_consis,
+                    genome_note_summary,
                     genome_stats,
-                    genome_note_1,
-                    genome_note_2,
+                    genome_note_csv,
                     pretext_output,
                     higlass_output,
-                    busco_output,
                     btk_plot_output
                 ).match() }
             )

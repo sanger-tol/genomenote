@@ -140,6 +140,7 @@
                 "name prefix = ilCerPisi1",
                 ""
             ],
+            "BUSCO_PROTEIN_SCORES,\"C:7.7%[S:5.1%,D:2.6%],F:0.2%,M:92.1%,n:5286\"",
             "\tC:7.7%[S:7.6%,D:0.1%],F:0.0%,M:92.3%,n:5286\t   ",
             [
                 "    \"results\": {",
@@ -167,8 +168,63 @@
                 "        \"Contigs N50\": \"24534995\"",
                 "    },"
             ],
+            [
+                "# Busco id",
+                "0at7088",
+                "10001at7088",
+                "10003at7088",
+                "10006at7088",
+                "1000at7088",
+                "10013at7088",
+                "10014at7088"
+            ],
+            true,
+            
+                "# Busco id\tStatus\tSequence\tGene Start\tGene End\tStrand\tScore\tLength\tOrthoDB url\tDescription",
+                "0at7088\tMissing",
+                "1at7088\tMissing",
+                "2at7088\tMissing",
+                "3at7088\tMissing",
+                "4at7088\tMissing",
+                "6at7088\tMissing",
+                "11at7088\tMissing"
+            ],
             "BUSCO_PROTEIN_SCORES,\"C:7.7%[S:5.1%,D:2.6%],F:0.2%,M:92.1%,n:5286\"",
             "CHR_TABLE,[{\"Chromosome\": \"1\", \"Length\": \"29.67\", \"GC\": \"38\", \"Accession\": \"OY982528.1\"}, {\"Chromosome\": \"2\", \"Length\": \"29.29\", \"GC\": \"38\", \"Accession\": \"OY982529.1\"}, {\"Chromosome\": \"3\", \"Length\": \"28.08\", \"GC\": \"38\", \"Accession\": \"OY982530.1\"}, {\"Chromosome\": \"4\", \"Length\": \"27.00\", \"GC\": \"38.5\", \"Accession\": \"OY982531.1\"}, {\"Chromosome\": \"5\", \"Length\": \"26.83\", \"GC\": \"37.5\", \"Accession\": \"OY982532.1\"}, {\"Chromosome\": \"6\", \"Length\": \"26.61\", \"GC\": \"38\", \"Accession\": \"OY982533.1\"}, {\"Chromosome\": \"7\", \"Length\": \"26.52\", \"GC\": \"37.5\", \"Accession\": \"OY982534.1\"}, {\"Chromosome\": \"8\", \"Length\": \"26.25\", \"GC\": \"38\", \"Accession\": \"OY982535.1\"}, {\"Chromosome\": \"9\", \"Length\": \"26.11\", \"GC\": \"38\", \"Accession\": \"OY982536.1\"}, {\"Chromosome\": \"10\", \"Length\": \"25.82\", \"GC\": \"38\", \"Accession\": \"OY982537.1\"}, {\"Chromosome\": \"11\", \"Length\": \"24.99\", \"GC\": \"38\", \"Accession\": \"OY982538.1\"}, {\"Chromosome\": \"12\", \"Length\": \"24.89\", \"GC\": \"38\", \"Accession\": \"OY982539.1\"}, {\"Chromosome\": \"13\", \"Length\": \"24.87\", \"GC\": \"38\", \"Accession\": \"OY982540.1\"}, {\"Chromosome\": \"14\", \"Length\": \"24.74\", \"GC\": \"37.5\", \"Accession\": \"OY982541.1\"}, {\"Chromosome\": \"15\", \"Length\": \"24.02\", \"GC\": \"37.5\", \"Accession\": \"OY982542.1\"}, {\"Chromosome\": \"16\", \"Length\": \"23.69\", \"GC\": \"38\", \"Accession\": \"OY982543.1\"}, {\"Chromosome\": \"17\", \"Length\": \"23.33\", \"GC\": \"38\", \"Accession\": \"OY982544.1\"}, {\"Chromosome\": \"18\", \"Length\": \"22.96\", \"GC\": \"38.5\", \"Accession\": \"OY982545.1\"}, {\"Chromosome\": \"19\", \"Length\": \"22.74\", \"GC\": \"38\", \"Accession\": \"OY982546.1\"}, {\"Chromosome\": \"20\", \"Length\": \"22.54\", \"GC\": \"38.5\", \"Accession\": \"OY982547.1\"}, {\"Chromosome\": \"21\", \"Length\": \"21.82\", \"GC\": \"38.5\", \"Accession\": \"OY982548.1\"}, {\"Chromosome\": \"22\", \"Length\": \"21.54\", \"GC\": \"38\", \"Accession\": \"OY982549.1\"}, {\"Chromosome\": \"23\", \"Length\": \"20.79\", \"GC\": \"38\", \"Accession\": \"OY982550.1\"}, {\"Chromosome\": \"24\", \"Length\": \"19.00\", \"GC\": \"38\", \"Accession\": \"OY982551.1\"}, {\"Chromosome\": \"25\", \"Length\": \"18.97\", \"GC\": \"38\", \"Accession\": \"OY982552.1\"}, {\"Chromosome\": \"26\", \"Length\": \"16.06\", \"GC\": \"38.5\", \"Accession\": \"OY982553.1\"}, {\"Chromosome\": \"27\", \"Length\": \"16.06\", \"GC\": \"39.5\", \"Accession\": \"OY982554.1\"}, {\"Chromosome\": \"28\", \"Length\": \"15.12\", \"GC\": \"38.5\", \"Accession\": \"OY982555.1\"}, {\"Chromosome\": \"29\", \"Length\": \"15.00\", \"GC\": \"39.5\", \"Accession\": \"OY982556.1\"}, {\"Chromosome\": \"30\", \"Length\": \"14.10\", \"GC\": \"39\", \"Accession\": \"OY982557.1\"}, {\"Chromosome\": \"Z\", \"Length\": \"40.62\", \"GC\": \"38\", \"Accession\": \"OY982527.1\"}]",
+            [
+                "##Chromosome,Length,GC_Percent,Accession",
+                "1,29.67,38,OY982528.1",
+                "2,29.29,38,OY982529.1",
+                "3,28.08,38,OY982530.1",
+                "4,27.00,38.5,OY982531.1",
+                "5,26.83,37.5,OY982532.1",
+                "6,26.61,38,OY982533.1",
+                "7,26.52,37.5,OY982534.1",
+                "8,26.25,38,OY982535.1",
+                "9,26.11,38,OY982536.1",
+                "10,25.82,38,OY982537.1",
+                "11,24.99,38,OY982538.1",
+                "12,24.89,38,OY982539.1",
+                "13,24.87,38,OY982540.1",
+                "14,24.74,37.5,OY982541.1",
+                "15,24.02,37.5,OY982542.1",
+                "16,23.69,38,OY982543.1",
+                "17,23.33,38,OY982544.1",
+                "18,22.96,38.5,OY982545.1",
+                "19,22.74,38,OY982546.1",
+                "20,22.54,38.5,OY982547.1",
+                "21,21.82,38.5,OY982548.1",
+                "22,21.54,38,OY982549.1",
+                "23,20.79,38,OY982550.1",
+                "24,19.00,38,OY982551.1",
+                "25,18.97,38,OY982552.1",
+                "26,16.06,38.5,OY982553.1",
+                "27,16.06,39.5,OY982554.1",
+                "28,15.12,38.5,OY982555.1",
+                "29,15.00,39.5,OY982556.1",
+                "30,14.10,39,OY982557.1",
+                "Z,40.62,38,OY982527.1"
+            ],
             [
                 "GCA_963859965.1.assembly_summary:md5,edd4cdba05800960c0ca80378e1e5e9d",
                 "ilCerPisi1.GCA_963859965.1.qv:md5,ad3e830e58f32f9f5d8ce11f415308ac",
@@ -191,19 +247,11 @@
                 "GCA_963859965.1_genome_note_inconsistent.csv:md5,ba336957b84a2b78ae95ca6412bd50c7"
             ],
             [
-                "GCA_963859965.1.csv:md5,46d7c6e77673dd44e0fb7b82c0ac92d8"
-            ],
-            [
                 "GCA_963859965.1_ilCerPisi1_standardFullMap.png:md5,198a4106e7c896ff378651f9acdc913e",
                 "GCA_963859965.1_ilCerPisi1_standard_pi.pretext:md5,ebabd182607b4dd244e394064b048413"
             ],
             [
                 "GCA_963859965.1_ilCerPisi1.bedpe:md5,ef15e0650aa9f69b86add7af93e0c843"
-            ],
-            [
-                "full_table.tsv:md5,fce75ec52ae1439468687be3f2d33d76",
-                "missing_busco_list.tsv:md5,80efd306c1bd3828d5e30569da741de5",
-                "short_summary.tsv:md5,75e84aec981d4e24d2a294a259669014"
             ],
             [
                 "GCA_963859965.1_GCA_963859965.1_BLOB_CHR_VIEW.png:md5,3acd989e799266386ece265c1214c9f9",
@@ -216,6 +264,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-09-18T18:05:03.665337199"
+        "timestamp": "2025-09-19T14:37:48.040881786"
     }
 }
