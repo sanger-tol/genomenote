@@ -116,7 +116,7 @@ nextflow_pipeline {
                     busco_short_json,
                     busco_missing,
                     busco_short_sum[1].startsWith("GCA_963859965.1"),
-d                   busco_full_table,
+                    busco_full_table,
                     genes_stats_csv,
                     genome_note_consis,
                     genome_note_summary,
