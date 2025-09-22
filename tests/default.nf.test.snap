@@ -179,7 +179,7 @@
                 "10014at7088"
             ],
             true,
-            
+            [
                 "# Busco id\tStatus\tSequence\tGene Start\tGene End\tStrand\tScore\tLength\tOrthoDB url\tDescription",
                 "0at7088\tMissing",
                 "1at7088\tMissing",
