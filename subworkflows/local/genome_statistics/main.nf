@@ -88,7 +88,8 @@ workflow GENOME_STATISTICS {
         "genome",
         ch_lineage,
         lineage_db.ifEmpty([]),
-        []
+        [],
+        false
     )
     ch_versions         = ch_versions.mix ( BUSCO.out.versions.first() )
 

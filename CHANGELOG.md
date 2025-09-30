@@ -26,6 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This module creates plots via calls to the blobtoolkit server or local blobdir.
 - Added the `btk_location` and `btk_online_location` to provide the path of the blobdir (local or remote). If not provided the module will be skipped.
 - Dropped support for Conda until FastK is properly released there
+- Updated BUSCO from 5.7.1 to 6.0.0
+  - Updated `GENOME_STATISTICS` and `ANNOTATION_STATISTICS` to add new param for busco.
+- Updated notes in `ANNOTATION_STATISTICS`
 
 ### Parameters
 
@@ -56,6 +59,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | `buscopainter.py`     |             | 1.0.1                       |
 | `plot_buscopainter.R` |             | 1.0.1                       |
 | `blobtk_plot`         |             | 0.7.1                       |
+| `busco_busco`         | 5.7.1       | 6.0.0                       |
 
 ## [[1.2.6](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.6)] - Pyrenean Mountain Dog (patch 6) - [2025-07-24]
 

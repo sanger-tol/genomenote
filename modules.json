@@ -27,7 +27,7 @@
                     },
                     "busco/busco": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "36c6c8445284e021d95ce30cdf743baef66b21aa",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/busco/busco/busco-busco.diff"
                     },
