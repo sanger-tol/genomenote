@@ -130,34 +130,34 @@
                 "genomescope/ilCerPisi1_transformed_log_plot.png",
                 "multiqc/multiqc_report.html"
             ],
-            "Residual standard error: 84740 on 987 degrees of freedom",
+            "Residual standard error: 85200 on 977 degrees of freedom",
             [
                 "GenomeScope version 2.0",
                 "input file = ilCerPisi1.hist",
                 "output directory = .",
                 "p = 2",
-                "k = 31",
+                "k = 11",
                 "name prefix = ilCerPisi1",
                 ""
             ],
             "BUSCO_PROTEIN_SCORES,\"C:7.7%[S:5.1%,D:2.6%],F:0.2%,M:92.1%,n:5286\"",
-            "\tC:7.8%[S:7.7%,D:0.1%],F:0.0%,M:92.2%,n:5286\t   ",
+            "\tC:7.8%[S:7.7%,D:0.1%],F:0.0%,M:92.1%,n:5286,E:8.7%\t   ",
             [
-                "    },",
-                "    \"results\": {",
-                "        \"one_line_summary\": \"C:7.8%[S:7.7%,D:0.1%],F:0.0%,M:92.2%,n:5286\",",
                 "        \"Complete percentage\": 7.8,",
-                "        \"Complete BUSCOs\": 410,",
+                "        \"Complete BUSCOs\": 414,",
                 "        \"Single copy percentage\": 7.7,",
-                "        \"Single copy BUSCOs\": 405,",
+                "        \"Single copy BUSCOs\": 409,",
                 "        \"Multi copy percentage\": 0.1,",
                 "        \"Multi copy BUSCOs\": 5,",
                 "        \"Fragmented percentage\": 0.0,",
-                "        \"Fragmented BUSCOs\": 1,",
-                "        \"Missing percentage\": 92.2,",
-                "        \"Missing BUSCOs\": 4875,",
+                "        \"Fragmented BUSCOs\": 2,",
+                "        \"Missing percentage\": 92.1,",
+                "        \"Missing BUSCOs\": 4870,",
                 "        \"n_markers\": 5286,",
                 "        \"domain\": \"eukaryota\",",
+                "        \"avg_identity\": 0.86,",
+                "        \"internal_stop_codon_count\": 36,",
+                "        \"internal_stop_codon_percent\": 8.7,",
                 "        \"Number of scaffolds\": \"3\",",
                 "        \"Number of contigs\": \"7\",",
                 "        \"Total length\": \"58977870\",",
@@ -264,6 +264,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-09-30T13:49:31.719348368"
+        "timestamp": "2025-09-30T14:43:34.05508136"
     }
 }
