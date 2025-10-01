@@ -1,12 +1,12 @@
-include { BEDTOOLS_BAMTOBED       } from '../../modules/nf-core/bedtools/bamtobed/main'
-include { GNU_SORT as BED_SORT    } from '../../modules/nf-core/gnu/sort/main'
-include { GNU_SORT as FILTER_SORT } from '../../modules/nf-core/gnu/sort/main'
-include { FILTER_BED              } from '../../modules/local/filter/bed'
-include { COOLER_CLOAD            } from '../../modules/nf-core/cooler/cload/main'
-include { COOLER_ZOOMIFY          } from '../../modules/nf-core/cooler/zoomify/main'
-include { COOLER_DUMP             } from '../../modules/nf-core/cooler/dump/main'
-include { UPLOAD_HIGLASS_DATA     } from '../../modules/local/upload_higlass_data'
-include { GENERATE_HIGLASS_LINK   } from '../../modules/local/generate_higlass_link'
+include { BEDTOOLS_BAMTOBED       } from '../../../modules/nf-core/bedtools/bamtobed/main'
+include { GNU_SORT as BED_SORT    } from '../../../modules/nf-core/gnu/sort/main'
+include { GNU_SORT as FILTER_SORT } from '../../../modules/nf-core/gnu/sort/main'
+include { FILTER_BED              } from '../../../modules/local/filter/bed'
+include { COOLER_CLOAD            } from '../../../modules/nf-core/cooler/cload/main'
+include { COOLER_ZOOMIFY          } from '../../../modules/nf-core/cooler/zoomify/main'
+include { COOLER_DUMP             } from '../../../modules/nf-core/cooler/dump/main'
+include { UPLOAD_HIGLASS_DATA     } from '../../../modules/local/upload_higlass_data'
+include { GENERATE_HIGLASS_LINK   } from '../../../modules/local/generate_higlass_link'
 
 workflow HIGLASS_GENERATION {
     take:

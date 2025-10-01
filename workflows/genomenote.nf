@@ -13,13 +13,13 @@
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK           } from '../subworkflows/local/input_check'
-include { GENOME_METADATA       } from '../subworkflows/local/genome_metadata'
-include { CONTACT_MAPS          } from '../subworkflows/local/contact_maps'
-include { GENOME_STATISTICS     } from '../subworkflows/local/genome_statistics'
-include { COMBINE_NOTE_DATA     } from '../subworkflows/local/combine_note_data'
-include { ANNOTATION_STATISTICS } from '../subworkflows/local/annotation_statistics'
-include { ANNOTATION_ANCESTRAL  } from '../subworkflows/local/annotation_ancestral'
+include { INPUT_CHECK           } from '../subworkflows/local/input_check/main'
+include { GENOME_METADATA       } from '../subworkflows/local/genome_metadata/main'
+include { CONTACT_MAPS          } from '../subworkflows/local/contact_maps/main'
+include { GENOME_STATISTICS     } from '../subworkflows/local/genome_statistics/main'
+include { COMBINE_NOTE_DATA     } from '../subworkflows/local/combine_note_data/main'
+include { ANNOTATION_STATISTICS } from '../subworkflows/local/annotation_statistics/main'
+include { ANNOTATION_ANCESTRAL  } from '../subworkflows/local/annotation_ancestral/main'
 include { GET_BLOBTK_PLOTS      } from '../subworkflows/local/get_blobtk_plots/main'
 
 

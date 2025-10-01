@@ -1,6 +1,6 @@
-include { SAMTOOLS_FAIDX    } from '../../modules/nf-core/samtools/faidx/main'
-include { PRETEXTMAP        } from '../../modules/nf-core/pretextmap/main'
-include { PRETEXTSNAPSHOT   } from '../../modules/nf-core/pretextsnapshot/main'
+include { SAMTOOLS_FAIDX    } from '../../../modules/nf-core/samtools/faidx/main'
+include { PRETEXTMAP        } from '../../../modules/nf-core/pretextmap/main'
+include { PRETEXTSNAPSHOT   } from '../../../modules/nf-core/pretextsnapshot/main'
 
 workflow PRETEXT_GENERATION {
     take:

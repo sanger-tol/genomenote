@@ -2,10 +2,10 @@
 // Prepare contact maps using aligned reads
 //
 
-include { GET_CHROMLIST           } from '../../modules/local/ncbidatasets/get_chromlist'
-include { SAMTOOLS_VIEW           } from '../../modules/nf-core/samtools/view/main'
-include { HIGLASS_GENERATION      } from './higlass_generation'
-include { PRETEXT_GENERATION      } from './pretext_generation'
+include { GET_CHROMLIST           } from '../../../modules/local/ncbidatasets/get_chromlist'
+include { SAMTOOLS_VIEW           } from '../../../modules/nf-core/samtools/view/main'
+include { HIGLASS_GENERATION      } from '../higlass_generation/main'
+include { PRETEXT_GENERATION      } from '../pretext_generation/main'
 
 workflow CONTACT_MAPS {
     take:

@@ -1,13 +1,13 @@
 //
 // NF-CORE MODULE IMPORT BLOCK
 //
-include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/samtools/faidx/main'
+include { SAMTOOLS_FAIDX        } from '../../../modules/nf-core/samtools/faidx/main'
 
 //
 // LOCAL MODULE IMPORT BLOCK
 //
-include { ANCESTRAL_EXTRACT     } from '../../modules/local/ancestral/extract'
-include { ANCESTRAL_PLOT        } from '../../modules/local/ancestral/plot'
+include { ANCESTRAL_EXTRACT     } from '../../../modules/local/ancestral/extract'
+include { ANCESTRAL_PLOT        } from '../../../modules/local/ancestral/plot'
 
 
 workflow ANNOTATION_ANCESTRAL {

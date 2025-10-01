@@ -2,17 +2,17 @@
 // Create genome statistics table for genome notes
 //
 
-include { NCBIDATASETS_SUMMARYGENOME as SUMMARYGENOME   } from '../../modules/local/ncbidatasets/summarygenome'
-include { NCBIDATASETS_SUMMARYGENOME as SUMMARYSEQUENCE } from '../../modules/local/ncbidatasets/summarygenome'
-include { NCBI_GET_ODB                                  } from '../../modules/local/ncbidatasets/get_odb'
-include { BUSCO_BUSCO as BUSCO                          } from '../../modules/nf-core/busco/busco/main'
-include { RESTRUCTUREBUSCODIR                           } from '../../modules/local/restructurebuscodir'
-include { FASTK_FASTK                                   } from '../../modules/nf-core/fastk/fastk/main'
-include { CREATETABLE                                   } from '../../modules/local/createtable'
-include { FASTK_HISTEX                                  } from '../../modules/nf-core/fastk/histex/main'
-include { GENESCOPEFK                                   } from '../../modules/nf-core/genescopefk/main'
-include { GFASTATS                                      } from '../../modules/nf-core/gfastats/main'
-include { MERQURYFK_MERQURYFK                           } from '../../modules/nf-core/merquryfk/merquryfk/main'
+include { NCBIDATASETS_SUMMARYGENOME as SUMMARYGENOME   } from '../../../modules/local/ncbidatasets/summarygenome'
+include { NCBIDATASETS_SUMMARYGENOME as SUMMARYSEQUENCE } from '../../../modules/local/ncbidatasets/summarygenome'
+include { NCBI_GET_ODB                                  } from '../../../modules/local/ncbidatasets/get_odb'
+include { BUSCO_BUSCO as BUSCO                          } from '../../../modules/nf-core/busco/busco/main'
+include { RESTRUCTUREBUSCODIR                           } from '../../../modules/local/restructurebuscodir'
+include { FASTK_FASTK                                   } from '../../../modules/nf-core/fastk/fastk/main'
+include { CREATETABLE                                   } from '../../../modules/local/createtable'
+include { FASTK_HISTEX                                  } from '../../../modules/nf-core/fastk/histex/main'
+include { GENESCOPEFK                                   } from '../../../modules/nf-core/genescopefk/main'
+include { GFASTATS                                      } from '../../../modules/nf-core/gfastats/main'
+include { MERQURYFK_MERQURYFK                           } from '../../../modules/nf-core/merquryfk/merquryfk/main'
 
 workflow GENOME_STATISTICS {
     take:
@@ -88,7 +88,8 @@ workflow GENOME_STATISTICS {
         "genome",
         ch_lineage,
         lineage_db.ifEmpty([]),
-        []
+        [],
+        false
     )
     ch_versions         = ch_versions.mix ( BUSCO.out.versions.first() )
 
@@ -252,4 +253,3 @@ workflow GENOME_STATISTICS {
     versions            = ch_versions                               // channel: [ versions.yml ]
 
 }
-

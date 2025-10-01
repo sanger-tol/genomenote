@@ -2,7 +2,7 @@
 // Check input samplesheet and get read channels
 //
 
-include { PARAMS_CHECK      } from '../../modules/local/params_check'
+include { PARAMS_CHECK      } from '../../../modules/local/params_check'
 
 
 workflow INPUT_CHECK {

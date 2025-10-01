@@ -4,11 +4,11 @@
 // Fetch genome metadata for genome notes
 //
 
-include { RUN_WGET                  }       from '../../modules/local/run_wget'
-include { PARSE_METADATA            }       from '../../modules/local/parse_metadata'
-include { COMBINE_METADATA          }       from '../../modules/local/combine_metadata'
-include { FETCH_GBIF_METADATA       }       from '../../modules/local/fetch_gbif_metadata'
-include { FETCH_ENSEMBL_METADATA    }       from '../../modules/local/fetch_ensembl_metadata'
+include { RUN_WGET                  }       from '../../../modules/local/run_wget'
+include { PARSE_METADATA            }       from '../../../modules/local/parse_metadata'
+include { COMBINE_METADATA          }       from '../../../modules/local/combine_metadata'
+include { FETCH_GBIF_METADATA       }       from '../../../modules/local/fetch_gbif_metadata'
+include { FETCH_ENSEMBL_METADATA    }       from '../../../modules/local/fetch_ensembl_metadata'
 
 
 workflow GENOME_METADATA {

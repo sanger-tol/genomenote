@@ -3,10 +3,10 @@
 //
 // Combine output to produce genome note doc and optionally write data back to genome dates database
 //
-include { PARSE_METADATA                    }       from '../../modules/local/parse_metadata'
-include { COMBINE_STATISTICS_AND_METADATA   }       from '../../modules/local/combine_statistics_and_metadata'
-include { POPULATE_TEMPLATE                 }       from '../../modules/local/populate_template'
-include { WRITE_TO_GENOME_NOTES_DB          }       from '../../modules/local/write_to_database'
+include { PARSE_METADATA                    }       from '../../../modules/local/parse_metadata'
+include { COMBINE_STATISTICS_AND_METADATA   }       from '../../../modules/local/combine_statistics_and_metadata'
+include { POPULATE_TEMPLATE                 }       from '../../../modules/local/populate_template'
+include { WRITE_TO_GENOME_NOTES_DB          }       from '../../../modules/local/write_to_database'
 
 workflow COMBINE_NOTE_DATA {
     take:
