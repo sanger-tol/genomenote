@@ -167,6 +167,7 @@ workflow GENOMENOTE {
     //
     CONTACT_MAPS (
         ch_fasta,
+        ch_haplotype,
         ch_inputs.hic,
         GENOME_STATISTICS.out.summary_seq,
         Channel.of(params.binsize),
