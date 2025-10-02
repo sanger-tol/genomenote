@@ -2,14 +2,17 @@
 // Prepare contact maps using aligned reads
 //
 
-include { GET_CHROMLIST           } from '../../../modules/local/ncbidatasets/get_chromlist'
-include { SAMTOOLS_VIEW           } from '../../../modules/nf-core/samtools/view/main'
-include { HIGLASS_GENERATION      } from '../higlass_generation/main'
-include { PRETEXT_GENERATION      } from '../pretext_generation/main'
+include { GET_CHROMLIST                                     } from '../../../modules/local/ncbidatasets/get_chromlist'
+include { SAMTOOLS_VIEW                                     } from '../../../modules/nf-core/samtools/view/main'
+include { HIGLASS_GENERATION                                } from '../higlass_generation/main'
+include { PRETEXT_GENERATION                                } from '../pretext_generation/main'
+include { PRETEXT_GENERATION as COMBINED_PRETEXT_GENERATION } from '../pretext_generation/main'
+include { CAT_CAT                                           } from '../../../modules/nf-core/cat/cat/main'
 
 workflow CONTACT_MAPS {
     take:
-    genome                                    // channel: [ meta, fasta ]
+    primary_assembly                          // channel: [ meta, fasta ]
+    haplotype_assembly                        // channel: [ meta, fasta ]
     reads                                     // channel: [ meta, reads, [] ]
     summary_seq                               // channel: [ meta, summary ]
     cool_bin                                  // channel: val(cooler_bins)
@@ -19,6 +22,8 @@ workflow CONTACT_MAPS {
 
     main:
     ch_versions     = Channel.empty()
+    pretext_map     = Channel.empty()
+    pretext_png     = Channel.empty()
 
     // Extract the ordered chromosome list
     GET_CHROMLIST (
@@ -31,7 +36,7 @@ workflow CONTACT_MAPS {
     // CRAM to BAM
     SAMTOOLS_VIEW (
         reads,
-        genome.first(),
+        primary_assembly.first(),
         []
     )
     ch_versions     = ch_versions.mix ( SAMTOOLS_VIEW.out.versions.first() )
@@ -59,21 +64,60 @@ workflow CONTACT_MAPS {
     }
 
     //
-    // SUBWORKFLOW: GENERATE PRETEXT SNAPSHOT FILES
+    // SUBWORKFLOW: GENERATE PRETEXT MAP AND SNAPSHOT FILES
     //
     if ( select_contact_map == "pretext" || select_contact_map == "both" ) {
         PRETEXT_GENERATION (
-            genome,
+            primary_assembly,
             GET_CHROMLIST.out.list,
             SAMTOOLS_VIEW.out.bam
         )
         ch_versions = ch_versions.mix ( PRETEXT_GENERATION.out.versions.first() )
 
-        pretext_map = PRETEXT_GENERATION.out.pretext_map
-        pretext_png = PRETEXT_GENERATION.out.pretext_png
-    } else {
-        pretext_map = Channel.empty()
-        pretext_png = Channel.empty()
+        pretext_map.mix( PRETEXT_GENERATION.out.pretext_map )
+        pretext_png.mix( PRETEXT_GENERATION.out.pretext_png )
+    }
+
+
+    //
+    // SUBWORKFLOW: GENERATE A COMBINED PRETEXT MAP AND SNAPSHOT FILES
+    //              USING HAP1 AND HAP2
+    //
+    if (
+        (select_contact_map == "pretext" || select_contact_map == "both" ) &&
+        params.combined_maps
+    ) {
+
+        primary_assembly.view()
+        haplotype_assembly.view()
+
+        primary_assembly
+            .combine ( haplotype_assembly )
+            .map { meta_1, primary, meta_2, haplotype ->
+                // This will mean the output files for everything downstream
+                // will contain combined to differentiate them
+                def new_meta = meta_1 + [id: "${meta_1.id}_combined"]
+                [new_meta, [primary, haplotype]]
+            }
+            .set { merge_channel }
+
+        merge_channel.view()
+
+        CAT_CAT (
+            merge_channel
+        )
+        ch_versions = ch_versions.mix ( CAT_CAT.out.versions.first() )
+
+
+        COMBINED_PRETEXT_GENERATION (
+            CAT_CAT.out.file_out,
+            [[],[]],
+            SAMTOOLS_VIEW.out.bam
+        )
+        ch_versions = ch_versions.mix ( COMBINED_PRETEXT_GENERATION.out.versions.first() )
+
+        pretext_map.mix( COMBINED_PRETEXT_GENERATION.out.pretext_map )
+        pretext_png.mix( COMBINED_PRETEXT_GENERATION.out.pretext_png )
     }
 
 
