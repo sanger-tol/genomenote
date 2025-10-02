@@ -1,22 +1,28 @@
-Changes in module 'nf-core/busco/busco'
+Changes in component 'nf-core/busco/busco'
+'modules/nf-core/busco/busco/meta.yml' is unchanged
+'modules/nf-core/busco/busco/environment.yml' is unchanged
+Changes in 'busco/busco/main.nf':
 --- modules/nf-core/busco/busco/main.nf
 +++ modules/nf-core/busco/busco/main.nf
 @@ -1,6 +1,5 @@
  process BUSCO_BUSCO {
--    tag "$meta.id"
+-    tag "${meta.id}"
 -    label 'process_medium'
 +    tag "${meta.id}_${lineage}"
  
      conda "${moduleDir}/environment.yml"
-     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-@@ -37,7 +36,7 @@
-     def prefix = task.ext.prefix ?: "${meta.id}-${lineage}"
-     def busco_config = config_file ? "--config $config_file" : ''
-     def busco_lineage = lineage.equals('auto') ? '--auto-lineage' : "--lineage_dataset ${lineage}"
+     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+@@ -51,7 +50,7 @@
+     def busco_lineage = lineage in ['auto', 'auto_prok', 'auto_euk']
+         ? lineage.replaceFirst('auto', '--auto-lineage').replaceAll('_', '-')
+         : "--lineage_dataset ${lineage}"
 -    def busco_lineage_dir = busco_lineages_path ? "--download_path ${busco_lineages_path}" : ''
 +    def busco_lineage_dir = busco_lineages_path ? "--download_path ${busco_lineages_path} --offline" : ''
-     """
-     # Nextflow changes the container --entrypoint to /bin/bash (container default entrypoint: /usr/local/env-execute)
-     # Check for container variable initialisation script and source it.
+     def intermediate_files = [
+         './*-busco/*/auto_lineage',
+         './*-busco/*/**/{miniprot,hmmer,.bbtools}_output',
 
+'modules/nf-core/busco/busco/tests/nextflow.config' is unchanged
+'modules/nf-core/busco/busco/tests/main.nf.test' is unchanged
+'modules/nf-core/busco/busco/tests/main.nf.test.snap' is unchanged
 ************************************************************
