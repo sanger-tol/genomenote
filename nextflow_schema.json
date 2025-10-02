@@ -139,6 +139,13 @@
                     "description": "Path to annotation file :gff.",
                     "help_text": "You will need to specify the path to the annotation file as eith gff or gff.gz.",
                     "fa_icon": "fas fa-file-code"
+                },
+                "combined_maps": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fas far fa-file-code",
+                    "description": "Generate a combined PretextMap using both hap1 and 2.",
+                    "help_text": "By using this flag a second PretextMap is generated, representing the combined genomic assembly."
                 }
             }
         },
