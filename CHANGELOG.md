@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated BUSCO from 5.7.1 to 6.0.0
   - Updated `GENOME_STATISTICS` and `ANNOTATION_STATISTICS` to add new param for busco.
 - Updated notes in `ANNOTATION_STATISTICS`
+- Addition of a `COMBINED_PRETEXT_GENERATION` to create a pretextmap of a combined hap1/hap2 assembly.
 
 ### Parameters
 
@@ -39,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 |               | --btk_location        |
 |               | --btk_online_location |
 |               | --ancestral_table     |
+|               | --combined_maps       |
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 
@@ -60,6 +62,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | `plot_buscopainter.R` |             | 1.0.1                       |
 | `blobtk_plot`         |             | 0.7.1                       |
 | `busco_busco`         | 5.7.1       | 6.0.0                       |
+| `cat_cat`             |             | 2.3.4                       |
 
 ## [[1.2.6](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.6)] - Pyrenean Mountain Dog (patch 6) - [2025-07-24]
 
