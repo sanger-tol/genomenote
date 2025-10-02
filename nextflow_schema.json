@@ -30,6 +30,11 @@
                     "pattern": "^\\S+\\.tsv$",
                     "description": "TSV containing mappings for ancestral elements to busco genes."
                 },
+                "ancestral_busco_lineage": {
+                    "type": "string",
+                    "description": "The odb10 used for the ancestral busco mapping (Only odb10 is currently supported).",
+                    "pattern": "._odb10$"
+                },
                 "binsize": {
                     "type": "integer",
                     "default": 1000,
@@ -63,7 +68,7 @@
                 "busco_lineage": {
                     "type": "string",
                     "description": "Override the BUSCO database used for the assembly assessment.",
-                    "pattern": "._odb10$"
+                    "pattern": "._odb(10|12)$"
                 },
                 "select_contact_map": {
                     "type": "string",

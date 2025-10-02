@@ -1,7 +1,7 @@
 {
     "-profile test": {
         "content": [
-            70,
+            71,
             {
                 "AGAT_SPSTATISTICS": {
                     "agat": "v1.4.1"
@@ -264,6 +264,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-09-30T14:43:34.05508136"
+        "timestamp": "2025-10-02T12:34:47.644693859"
     }
 }

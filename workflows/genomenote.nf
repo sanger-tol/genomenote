@@ -223,11 +223,12 @@ workflow GENOMENOTE {
     //              Once there are more options, this should be reviewed for a better system
     //
 
-    if ( params.ancestral_table ) {
+    if ( params.ancestral_table && params.ancestral_busco_lineage ) {
         ANNOTATION_ANCESTRAL (
             ch_fasta,
             ancestral_table,
-            GENOME_STATISTICS.out.busco_full_table
+            params.ancestral_busco_lineage,
+            lineage_db
         )
         ch_versions = ch_versions.mix ( ANNOTATION_ANCESTRAL.out.versions )
     }

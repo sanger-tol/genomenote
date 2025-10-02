@@ -2,6 +2,7 @@
 // NF-CORE MODULE IMPORT BLOCK
 //
 include { SAMTOOLS_FAIDX        } from '../../../modules/nf-core/samtools/faidx/main'
+include { BUSCO_BUSCO as BUSCO  } from '../../../modules/nf-core/busco/busco/main'
 
 //
 // LOCAL MODULE IMPORT BLOCK
@@ -14,10 +15,27 @@ workflow ANNOTATION_ANCESTRAL {
     take:
     fasta                // Channel: [ meta, fasta ]
     ancestral_table      // Channel: file(ancestral_table location)
-    busco_full_table     // Channel: [ meta, busco_dir ]
+    ch_ancestral_lineage // Channel:
+    lineage_db           // Channel:
+
 
     main:
     ch_versions                     = Channel.empty()
+
+
+    //
+    // MODULE: RUN BUSCO SOLELY FOR ANCESTRAL NOW THAT THE TWO CAN USE
+    //          DIFFERING ODB VERSIONS
+    //
+    BUSCO (
+        fasta,
+        "genome",
+        ch_ancestral_lineage,
+        lineage_db.ifEmpty([]),
+        [],
+        false
+    )
+    ch_versions         = ch_versions.mix ( BUSCO.out.versions.first() )
 
 
     //
@@ -25,7 +43,7 @@ workflow ANNOTATION_ANCESTRAL {
     //         THIS IS THE BUSCOPAINTER.PY SCRIPT
     //
     ANCESTRAL_EXTRACT(
-        busco_full_table,
+        BUSCO.out.full_table,
         ancestral_table
     )
     ch_versions                     = ch_versions.mix(ANCESTRAL_EXTRACT.out.versions)
