@@ -88,8 +88,16 @@ workflow CONTACT_MAPS {
         params.combined_maps
     ) {
 
-        primary_assembly.view()
-        haplotype_assembly.view()
+        //
+        // LOGIC: RENAME THE META'S BAM META CONTROLS NAMING IN PRETEXTMAP
+        //
+        SAMTOOLS_VIEW.out.bam
+            .map { meta, bam ->
+                def new_meta = meta + [id: "${meta.id}_combined"]
+                [new_meta, bam]
+            }
+            .set { combined_bam }
+
 
         primary_assembly
             .combine ( haplotype_assembly )
@@ -101,8 +109,10 @@ workflow CONTACT_MAPS {
             }
             .set { merge_channel }
 
-        merge_channel.view()
 
+        //
+        // MODULE: CONCATENATE THE PRIMARY AND HAPLOTYPE ASSEMBLIES
+        //
         CAT_CAT (
             merge_channel
         )
@@ -112,7 +122,7 @@ workflow CONTACT_MAPS {
         COMBINED_PRETEXT_GENERATION (
             CAT_CAT.out.file_out,
             [[],[]],
-            SAMTOOLS_VIEW.out.bam
+            combined_bam
         )
         ch_versions = ch_versions.mix ( COMBINED_PRETEXT_GENERATION.out.versions.first() )
 
