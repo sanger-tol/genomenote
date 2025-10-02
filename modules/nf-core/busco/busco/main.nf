@@ -1,6 +1,5 @@
 process BUSCO_BUSCO {
-    tag "${meta.id}"
-    label 'process_medium'
+    tag "${meta.id}_${lineage}"
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
@@ -51,7 +50,7 @@ process BUSCO_BUSCO {
     def busco_lineage = lineage in ['auto', 'auto_prok', 'auto_euk']
         ? lineage.replaceFirst('auto', '--auto-lineage').replaceAll('_', '-')
         : "--lineage_dataset ${lineage}"
-    def busco_lineage_dir = busco_lineages_path ? "--download_path ${busco_lineages_path}" : ''
+    def busco_lineage_dir = busco_lineages_path ? "--download_path ${busco_lineages_path} --offline" : ''
     def intermediate_files = [
         './*-busco/*/auto_lineage',
         './*-busco/*/**/{miniprot,hmmer,.bbtools}_output',
