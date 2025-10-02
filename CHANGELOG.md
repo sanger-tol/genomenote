@@ -29,7 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated BUSCO from 5.7.1 to 6.0.0
   - Updated `GENOME_STATISTICS` and `ANNOTATION_STATISTICS` to add new param for busco.
 - Updated notes in `ANNOTATION_STATISTICS`
-- Addition of a `COMBINED_PRETEXT_GENERATION` to create a pretextmap of a combined hap1/hap2 assembly.
+- Addition of `--ancestral_busco_lineage` as a separate busco odb10 input for the ancestral alignment.
+- `--busco_lineage` will now accept odb10 or odb12 lineages.
 
 ### Parameters
 
@@ -40,7 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 |               | --btk_location        |
 |               | --btk_online_location |
 |               | --ancestral_table     |
-|               | --combined_maps       |
+|               | --ancestral_busco_lineage       |
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 

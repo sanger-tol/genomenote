@@ -28,7 +28,7 @@ jobs:
   nf-test-changes:
     name: nf-test-changes
     runs-on: # use GitHub runners
-      - "ubuntu-latest"
+      - "ubuntu2204-8c"
     outputs:
       shard: ${{ steps.set-shards.outputs.shard }}
       total_shards: ${{ steps.set-shards.outputs.total_shards }}
