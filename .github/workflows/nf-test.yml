@@ -61,7 +61,7 @@ jobs:
     needs: [nf-test-changes]
     if: ${{ needs.nf-test-changes.outputs.total_shards != '0' }}
     runs-on: # use GitHub runners
-      - "ubuntu-latest"
+      - "ubuntu2204-c"
     strategy:
       fail-fast: false
       matrix:
