@@ -32,7 +32,7 @@ def get_odb_version(file_name):
         return "_odb10"
     elif "odb12" in file_name:
         return "_odb12"
-    else
+    else:
         sys.exit("Not a recognised ODB")
 
 
