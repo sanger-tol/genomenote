@@ -28,10 +28,10 @@ nextflow_pipeline {
                     "genome_note/GCA_963859965.1.docx",
 
                     // Tar files - Order of files change on a per run basis
-                    "busco/lepidoptera_odb10/fragmented_busco_sequences.tar.gz",
-                    "busco/lepidoptera_odb10/hmmer_output.tar.gz",
-                    "busco/lepidoptera_odb10/multi_copy_busco_sequences.tar.gz",
-                    "busco/lepidoptera_odb10/single_copy_busco_sequences.tar.gz",
+                    "busco/lepidoptera_odb12/fragmented_busco_sequences.tar.gz",
+                    "busco/lepidoptera_odb12/hmmer_output.tar.gz",
+                    "busco/lepidoptera_odb12/multi_copy_busco_sequences.tar.gz",
+                    "busco/lepidoptera_odb12/single_copy_busco_sequences.tar.gz",
 
                     // Contact maps - Binary file
                     "contact_maps/higlass/GCA_963859965.1_ilCerPisi1.cool",
@@ -59,24 +59,24 @@ nextflow_pipeline {
                                             .readLines()[17]
 
             // BUSCO results line
-            def busco_short_txt     = file("${params.outdir}/busco/lepidoptera_odb10/short_summary.txt")
+            def busco_short_txt     = file("${params.outdir}/busco/lepidoptera_odb12/short_summary.txt")
                                             .readLines()[8]
 
             // BUSCO results information
-            def busco_short_json    = file("${params.outdir}/busco/lepidoptera_odb10/short_summary.json")
+            def busco_short_json    = file("${params.outdir}/busco/lepidoptera_odb12/short_summary.json")
                                             .readLines()[56..79]
 
             // Missing busco list normally contains dates
-            def busco_missing       = file("${params.outdir}/busco/lepidoptera_odb10/missing_busco_list.tsv")
+            def busco_missing       = file("${params.outdir}/busco/lepidoptera_odb12/missing_busco_list.tsv")
                                             .readLines()[2..9]
 
             // File looks to be same in all
             // Length of file is always 2 though.
-            def busco_short_sum     = file("${params.outdir}/busco/lepidoptera_odb10/short_summary.tsv")
+            def busco_short_sum     = file("${params.outdir}/busco/lepidoptera_odb12/short_summary.tsv")
                                             .readLines()
 
             //
-            def busco_full_table    = file("${params.outdir}/busco/lepidoptera_odb10/full_table.tsv")
+            def busco_full_table    = file("${params.outdir}/busco/lepidoptera_odb12/full_table.tsv")
                                             .readLines()[2..9]
 
             // Get the chromosome table
