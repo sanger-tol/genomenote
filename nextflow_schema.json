@@ -32,8 +32,8 @@
                 },
                 "ancestral_busco_lineage": {
                     "type": "string",
-                    "description": "The odb10 used for the ancestral busco mapping (Only odb10 is currently supported).",
-                    "pattern": "._odb10$"
+                    "description": "The busco lineage used for ancestral painting (must match --ancestral_table).",
+                    "pattern": "._odb1[02]$"
                 },
                 "binsize": {
                     "type": "integer",
