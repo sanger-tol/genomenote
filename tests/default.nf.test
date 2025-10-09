@@ -64,7 +64,7 @@ nextflow_pipeline {
 
             // BUSCO results information
             def busco_short_json    = file("${params.outdir}/busco/lepidoptera_odb12/short_summary.json")
-                                            .readLines()[56..79]
+                                            .readLines()[58..81]
 
             // Missing busco list normally contains dates
             def busco_missing       = file("${params.outdir}/busco/lepidoptera_odb12/missing_busco_list.tsv")
