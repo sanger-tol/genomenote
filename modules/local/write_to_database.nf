@@ -6,7 +6,7 @@ process WRITE_TO_GENOME_NOTES_DB {
     label 'process_single'
 
     conda "conda-forge::python=3.9.1"
-    container "gitlab-registry.internal.sanger.ac.uk/tol-it/software/docker-images-test/tol_sdk:0.12.5-c1"
+    container "gitlab-registry.internal.sanger.ac.uk/tol-it/software/docker-images/tol_sdk:0.12.5-c1"
     input:
     tuple val(meta), path(param_data)
     val api_url
