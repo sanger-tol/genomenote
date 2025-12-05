@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/sanger-tol/genomenote/master/nextflow_schema.json",
+    "$id": "https://raw.githubusercontent.com/sanger-tol/genomenote/main/nextflow_schema.json",
     "title": "sanger-tol/genomenote pipeline parameters",
     "description": "Creating standarised genome assembly publications",
     "type": "object",

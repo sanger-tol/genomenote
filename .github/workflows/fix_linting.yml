@@ -12,7 +12,7 @@ jobs:
       github.repository == 'sanger-tol/genomenote'
     runs-on: ubuntu-latest
     steps:
-      # Use the @nf-core-bot token to check out so we can push later
+      # Use the @sanger-tolsoft token to check out so we can push later
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           token: ${{ secrets.sangertolsoft_access_token }}
