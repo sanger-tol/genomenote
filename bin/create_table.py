@@ -144,9 +144,9 @@ def extract_busco(file_in, writer):
 
     lineage_dataset_name = data.get("lineage_dataset", {}).get("name", math.nan)
     results_summary = data.get("results", {}).get("one_line_summary", math.nan)
-    results_complete = data.get("results", {}).get("Complete", math.nan)
-    results_single_copy = data.get("results", {}).get("Single copy", math.nan)
-    results_duplicated = data.get("results", {}).get("Multi copy", math.nan)
+    results_complete = data.get("results", {}).get("Complete percentage", math.nan)
+    results_single_copy = data.get("results", {}).get("Single copy percentage", math.nan)
+    results_duplicated = data.get("results", {}).get("Multi copy percentage", math.nan)
     results_n_markers = data.get("results", {}).get("n_markers", math.nan)
 
     writer.writerow(["##BUSCO", lineage_dataset_name])
