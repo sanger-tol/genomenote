@@ -6,9 +6,22 @@ nextflow_pipeline {
 
     test("-profile test") {
 
+        setup {
+            println "Downloading reduced Busco database..."
+            def busco_mockdb_url = "https://tolit.cog.sanger.ac.uk/test-data/resources/busco/genomenote.GCA_963859965.1.2025-12-08.tar.gz"
+            def busco_command = ['bash', '-c', "curl -L --retry 5 ${busco_mockdb_url} | tar xzf - -C ${launchDir}"]
+            def busco_proc = busco_command.execute()
+            busco_proc.waitFor()
+
+            if (busco_proc.exitValue() != 0) {
+                throw new RuntimeException("Error - failed to download Busco mock db: ${busco_proc.err.text}")
+            }
+        }
+
         when {
             params {
-                outdir = "$outputDir"
+                outdir     = "$outputDir"
+                lineage_db = "${launchDir}/genomenote.GCA_963859965.1.2025-12-08"
             }
         }
 
@@ -125,5 +138,10 @@ nextflow_pipeline {
                 ).match() }
             )
         }
+
+        cleanup {
+            new File("${launchDir}/GCA_963859965.1.2025-12-08").deleteDir()
+        }
+
     }
 }
