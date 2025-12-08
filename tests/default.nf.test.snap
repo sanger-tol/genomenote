@@ -42,7 +42,7 @@
                     "python": "3.9.5"
                 },
                 "FASTK_FASTK": {
-                    "fastk": "666652151335353eef2fcd58880bcef5bc2928e1"
+                    "fastk": "ddea6cf254f378db51d22c6eb21af775fa9e1f77"
                 },
                 "FASTK_HISTEX": {
                     "fastk": 1.1
@@ -56,7 +56,7 @@
                 },
                 "GENESCOPEFK": {
                     "genescope": "380815c420f50171f9234a0fd1ff426b39829b91",
-                    "r": "4.2.0"
+                    "r": "4.4.3"
                 },
                 "GET_CHROMLIST": {
                     "bash": "4.2.25(1)-release"
@@ -77,7 +77,7 @@
                     "gunzip": 1.1
                 },
                 "MERQURYFK_MERQURYFK": {
-                    "fastk": "38b07c2e8eba37f66311faf99b598643492bbf51",
+                    "fastk": "ddea6cf254f378db51d22c6eb21af775fa9e1f77",
                     "merquryfk": "4578fc778098859d78cab5e4b78b27b9a9dd10a4",
                     "r": "4.4.3"
                 },
@@ -140,24 +140,24 @@
                 "name prefix = ilCerPisi1",
                 ""
             ],
-            "BUSCO_PROTEIN_SCORES,\"C:7.2%[S:4.5%,D:2.6%],F:0.3%,M:92.6%,n:5760\"",
-            "\tC:7.3%[S:7.3%,D:0.0%],F:0.0%,M:92.7%,n:5760,E:6.2%\t   ",
+            "BUSCO_PROTEIN_SCORES,\"C:66.7%[S:66.7%,D:0.0%],F:0.0%,M:33.3%,n:15\"",
+            "\tC:66.7%[S:66.7%,D:0.0%],F:0.0%,M:33.3%,n:15\t   ",
             [
-                "        \"Complete percentage\": 7.3,",
-                "        \"Complete BUSCOs\": 422,",
-                "        \"Single copy percentage\": 7.3,",
-                "        \"Single copy BUSCOs\": 420,",
+                "        \"Complete percentage\": 66.7,",
+                "        \"Complete BUSCOs\": 10,",
+                "        \"Single copy percentage\": 66.7,",
+                "        \"Single copy BUSCOs\": 10,",
                 "        \"Multi copy percentage\": 0.0,",
-                "        \"Multi copy BUSCOs\": 2,",
+                "        \"Multi copy BUSCOs\": 0,",
                 "        \"Fragmented percentage\": 0.0,",
-                "        \"Fragmented BUSCOs\": 1,",
-                "        \"Missing percentage\": 92.7,",
-                "        \"Missing BUSCOs\": 5337,",
-                "        \"n_markers\": 5760,",
+                "        \"Fragmented BUSCOs\": 0,",
+                "        \"Missing percentage\": 33.3,",
+                "        \"Missing BUSCOs\": 5,",
+                "        \"n_markers\": 15,",
                 "        \"domain\": \"eukaryota\",",
-                "        \"avg_identity\": 0.87,",
-                "        \"internal_stop_codon_count\": 26,",
-                "        \"internal_stop_codon_percent\": 6.2,",
+                "        \"avg_identity\": 0.92,",
+                "        \"internal_stop_codon_count\": 0,",
+                "        \"internal_stop_codon_percent\": 0,",
                 "        \"Number of scaffolds\": \"3\",",
                 "        \"Number of contigs\": \"7\",",
                 "        \"Total length\": \"58977870\",",
@@ -169,27 +169,27 @@
                 "        \"Number of scaffolds\": \"3\","
             ],
             [
+                "# The lineage dataset is: lepidoptera_odb12 (Creation date: 2025-07-01, number of genomes: 79, number of BUSCOs: 15)",
                 "# Busco id",
                 "100550at7088",
                 "109721at7088",
                 "110079at7088",
                 "110136at7088",
-                "110211at7088",
-                "110247at7088",
-                "110283at7088"
+                "110211at7088"
             ],
             true,
             [
+                "# The lineage dataset is: lepidoptera_odb12 (Creation date: 2025-07-01, number of genomes: 79, number of BUSCOs: 15)",
                 "# Busco id\tStatus\tSequence\tGene Start\tGene End\tStrand\tScore\tLength\tOrthoDB url\tDescription",
-                "679at7088\tMissing",
-                "5028at7088\tMissing",
-                "8111at7088\tMissing",
-                "8928at7088\tMissing",
-                "9004at7088\tMissing",
-                "9933at7088\tMissing",
-                "12492at7088\tMissing"
+                "100550at7088\tMissing",
+                "109721at7088\tMissing",
+                "110079at7088\tMissing",
+                "110136at7088\tMissing",
+                "110211at7088\tMissing",
+                "119170at7088\tComplete\tOY982529.1\t19515646\t19518563\t+\t357.5\t188\thttps://www.orthodb.org/?query=119170at7088\tlarval cuticle protein LCP-22",
+                "123136at7088\tComplete\tOY982528.1\t25885846\t25894371\t+\t463.5\t201\thttps://www.orthodb.org/?query=123136at7088\tRas-related protein Rab-30"
             ],
-            "BUSCO_PROTEIN_SCORES,\"C:7.2%[S:4.5%,D:2.6%],F:0.3%,M:92.6%,n:5760\"",
+            "BUSCO_PROTEIN_SCORES,\"C:66.7%[S:66.7%,D:0.0%],F:0.0%,M:33.3%,n:15\"",
             "CHR_TABLE,[{\"Chromosome\": \"1\", \"Length\": \"29.67\", \"GC\": \"38\", \"Accession\": \"OY982528.1\"}, {\"Chromosome\": \"2\", \"Length\": \"29.29\", \"GC\": \"38\", \"Accession\": \"OY982529.1\"}, {\"Chromosome\": \"3\", \"Length\": \"28.08\", \"GC\": \"38\", \"Accession\": \"OY982530.1\"}, {\"Chromosome\": \"4\", \"Length\": \"27.00\", \"GC\": \"38.5\", \"Accession\": \"OY982531.1\"}, {\"Chromosome\": \"5\", \"Length\": \"26.83\", \"GC\": \"37.5\", \"Accession\": \"OY982532.1\"}, {\"Chromosome\": \"6\", \"Length\": \"26.61\", \"GC\": \"38\", \"Accession\": \"OY982533.1\"}, {\"Chromosome\": \"7\", \"Length\": \"26.52\", \"GC\": \"37.5\", \"Accession\": \"OY982534.1\"}, {\"Chromosome\": \"8\", \"Length\": \"26.25\", \"GC\": \"38\", \"Accession\": \"OY982535.1\"}, {\"Chromosome\": \"9\", \"Length\": \"26.11\", \"GC\": \"38\", \"Accession\": \"OY982536.1\"}, {\"Chromosome\": \"10\", \"Length\": \"25.82\", \"GC\": \"38\", \"Accession\": \"OY982537.1\"}, {\"Chromosome\": \"11\", \"Length\": \"24.99\", \"GC\": \"38\", \"Accession\": \"OY982538.1\"}, {\"Chromosome\": \"12\", \"Length\": \"24.89\", \"GC\": \"38\", \"Accession\": \"OY982539.1\"}, {\"Chromosome\": \"13\", \"Length\": \"24.87\", \"GC\": \"38\", \"Accession\": \"OY982540.1\"}, {\"Chromosome\": \"14\", \"Length\": \"24.74\", \"GC\": \"37.5\", \"Accession\": \"OY982541.1\"}, {\"Chromosome\": \"15\", \"Length\": \"24.02\", \"GC\": \"37.5\", \"Accession\": \"OY982542.1\"}, {\"Chromosome\": \"16\", \"Length\": \"23.69\", \"GC\": \"38\", \"Accession\": \"OY982543.1\"}, {\"Chromosome\": \"17\", \"Length\": \"23.33\", \"GC\": \"38\", \"Accession\": \"OY982544.1\"}, {\"Chromosome\": \"18\", \"Length\": \"22.96\", \"GC\": \"38.5\", \"Accession\": \"OY982545.1\"}, {\"Chromosome\": \"19\", \"Length\": \"22.74\", \"GC\": \"38\", \"Accession\": \"OY982546.1\"}, {\"Chromosome\": \"20\", \"Length\": \"22.54\", \"GC\": \"38.5\", \"Accession\": \"OY982547.1\"}, {\"Chromosome\": \"21\", \"Length\": \"21.82\", \"GC\": \"38.5\", \"Accession\": \"OY982548.1\"}, {\"Chromosome\": \"22\", \"Length\": \"21.54\", \"GC\": \"38\", \"Accession\": \"OY982549.1\"}, {\"Chromosome\": \"23\", \"Length\": \"20.79\", \"GC\": \"38\", \"Accession\": \"OY982550.1\"}, {\"Chromosome\": \"24\", \"Length\": \"19.00\", \"GC\": \"38\", \"Accession\": \"OY982551.1\"}, {\"Chromosome\": \"25\", \"Length\": \"18.97\", \"GC\": \"38\", \"Accession\": \"OY982552.1\"}, {\"Chromosome\": \"26\", \"Length\": \"16.06\", \"GC\": \"38.5\", \"Accession\": \"OY982553.1\"}, {\"Chromosome\": \"27\", \"Length\": \"16.06\", \"GC\": \"39.5\", \"Accession\": \"OY982554.1\"}, {\"Chromosome\": \"28\", \"Length\": \"15.12\", \"GC\": \"38.5\", \"Accession\": \"OY982555.1\"}, {\"Chromosome\": \"29\", \"Length\": \"15.00\", \"GC\": \"39.5\", \"Accession\": \"OY982556.1\"}, {\"Chromosome\": \"30\", \"Length\": \"14.10\", \"GC\": \"39\", \"Accession\": \"OY982557.1\"}, {\"Chromosome\": \"Z\", \"Length\": \"40.62\", \"GC\": \"38\", \"Accession\": \"OY982527.1\"}]",
             [
                 "##Chromosome,Length,GC_Percent,Accession",
@@ -261,9 +261,9 @@
             ]
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-10-02T12:34:47.644693859"
+        "timestamp": "2025-12-08T15:10:21.399269646"
     }
 }
