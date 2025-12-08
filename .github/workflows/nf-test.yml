@@ -61,7 +61,7 @@ jobs:
     needs: [nf-test-changes]
     if: ${{ needs.nf-test-changes.outputs.total_shards != '0' }}
     runs-on: # use GitHub runners
-      - "ubuntu-latest-4-cores"
+      - "ubuntu-latest"
     strategy:
       fail-fast: false
       matrix:
@@ -84,6 +84,9 @@ jobs:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           fetch-depth: 0
+
+      - name: Clean up Disk space
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
 
       - name: Run nf-test
         id: run_nf_test
