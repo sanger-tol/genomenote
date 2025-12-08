@@ -60,7 +60,8 @@
                     "genescopefk": {
                         "branch": "master",
                         "git_sha": "a4d916a39231897a49c903089a548704c09b8ef3",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/genescopefk/genescopefk.diff"
                     },
                     "gfastats": {
                         "branch": "master",

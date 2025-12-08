@@ -3,15 +3,10 @@ process MERQURYFK_MERQURYFK {
     label 'process_medium'
 
     // WARN: Version information not provided by tool on CLI. Please update version string below when bumping container versions.
-    
-    // CUSTOM CONTAINER FROM SANGER-TOL CONTAINING 
-    // MERQURYFK - DToL RELEASE - 1.1.2
-    // AND UNRELEASED FASTK 1.1.? (commit - 38b07c2e8)
-    
     container 'quay.io/sanger-tol/fastk:1.1.0-c1'
 
     input:
-    tuple val(meta), path(fastk_hist),path(fastk_ktab),path(assembly),path(haplotigs)
+    tuple val(meta) , path(fastk_hist),path(fastk_ktab), path(assembly), path(haplotigs)
     tuple val(meta2), path(mathaptab) // optional, trio mode
     tuple val(meta3), path(pathaptab) // optional, trio mode
 
@@ -53,7 +48,7 @@ process MERQURYFK_MERQURYFK {
     mat_hapktab = mathaptab  ? "${mathaptab.find{ it.toString().endsWith(".ktab") }}"  : ''
     pat_hapktab = pathaptab  ? "${pathaptab.find{ it.toString().endsWith(".ktab") }}"  : ''
     // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
-    def FASTK_VERSION = '38b07c2e8eba37f66311faf99b598643492bbf51'
+    def FASTK_VERSION = 'ddea6cf254f378db51d22c6eb21af775fa9e1f77'
     // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     def MERQURY_VERSION = '4578fc778098859d78cab5e4b78b27b9a9dd10a4'
     """
@@ -75,9 +70,9 @@ process MERQURYFK_MERQURYFK {
     END_VERSIONS
     """
     stub:
-    prefix = task.ext.prefix ?: "${meta.id}"
+    prefix              = task.ext.prefix ?: "${meta.id}"
     // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
-    def FASTK_VERSION = '38b07c2e8eba37f66311faf99b598643492bbf51' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+    def FASTK_VERSION   = 'ddea6cf254f378db51d22c6eb21af775fa9e1f77' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     def MERQURY_VERSION = '4578fc778098859d78cab5e4b78b27b9a9dd10a4' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
