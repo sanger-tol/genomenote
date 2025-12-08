@@ -4,14 +4,24 @@ nextflow_pipeline {
     script "../main.nf"
     tag "pipeline"
 
-    // Test profile arguments
-    config "../conf/test.config"
-
     test("-profile test") {
+
+        setup {
+            println "Downloading reduced Busco database..."
+            def busco_mockdb_url = "https://tolit.cog.sanger.ac.uk/test-data/resources/busco/genomenote.GCA_963859965.1.2025-12-08.tar.gz"
+            def busco_command = ['bash', '-c', "curl -L --retry 5 ${busco_mockdb_url} | tar xzf - -C ${launchDir}"]
+            def busco_proc = busco_command.execute()
+            busco_proc.waitFor()
+
+            if (busco_proc.exitValue() != 0) {
+                throw new RuntimeException("Error - failed to download Busco mock db: ${busco_proc.err.text}")
+            }
+        }
 
         when {
             params {
-                outdir  = "$outputDir"
+                outdir     = "$outputDir"
+                lineage_db = "${launchDir}/genomenote.GCA_963859965.1.2025-12-08"
             }
         }
 
@@ -68,7 +78,7 @@ nextflow_pipeline {
 
             // Missing busco list normally contains dates
             def busco_missing       = file("${params.outdir}/busco/lepidoptera_odb12/missing_busco_list.tsv")
-                                            .readLines()[2..9]
+                                            .readLines()[1..7]
 
             // File looks to be same in all
             // Length of file is always 2 though.
@@ -77,7 +87,7 @@ nextflow_pipeline {
 
             //
             def busco_full_table    = file("${params.outdir}/busco/lepidoptera_odb12/full_table.tsv")
-                                            .readLines()[2..9]
+                                            .readLines()[1..9]
 
             // Get the chromosome table
             def genome_note_consis  = file("${params.outdir}/genome_note/GCA_963859965.1_genome_note_consistent.csv")
@@ -128,5 +138,10 @@ nextflow_pipeline {
                 ).match() }
             )
         }
+
+        cleanup {
+            new File("${launchDir}/GCA_963859965.1.2025-12-08").deleteDir()
+        }
+
     }
 }

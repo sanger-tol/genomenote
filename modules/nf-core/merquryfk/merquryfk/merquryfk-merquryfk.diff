@@ -3,7 +3,7 @@ Changes in component 'nf-core/merquryfk/merquryfk'
 Changes in 'merquryfk/merquryfk/main.nf':
 --- modules/nf-core/merquryfk/merquryfk/main.nf
 +++ modules/nf-core/merquryfk/merquryfk/main.nf
-@@ -3,13 +3,15 @@
+@@ -3,10 +3,7 @@
      label 'process_medium'
  
      // WARN: Version information not provided by tool on CLI. Please update version string below when bumping container versions.
@@ -11,20 +11,11 @@ Changes in 'merquryfk/merquryfk/main.nf':
 -    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
 -        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/9f/9f0bee9bfacd05665a9b1a11dd087dbf1be41ac3e640931c38c914a2390642cf/data' :
 -        'community.wave.seqera.io/library/fastk_merquryfk_r-cowplot_r-ggplot2_r-viridis:f9994edc2270683c' }"
-+    
-+    // CUSTOM CONTAINER FROM SANGER-TOL CONTAINING 
-+    // MERQURYFK - DToL RELEASE - 1.1.2
-+    // AND UNRELEASED FASTK 1.1.? (commit - 38b07c2e8)
-+    
 +    container 'quay.io/sanger-tol/fastk:1.1.0-c1'
  
      input:
--    tuple val(meta) , path(fastk_hist),path(fastk_ktab), path(assembly), path(haplotigs)
-+    tuple val(meta), path(fastk_hist),path(fastk_ktab),path(assembly),path(haplotigs)
-     tuple val(meta2), path(mathaptab) // optional, trio mode
-     tuple val(meta3), path(pathaptab) // optional, trio mode
- 
-@@ -40,16 +42,20 @@
+     tuple val(meta) , path(fastk_hist),path(fastk_ktab), path(assembly), path(haplotigs)
+@@ -40,16 +37,20 @@
          log.error("Error: Only one of the maternal and paternal hap tabs have been provided!")
      }
  
@@ -41,24 +32,23 @@ Changes in 'merquryfk/merquryfk/main.nf':
 -
      // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
 -    def FASTK_VERSION   = '1.1.0'
-+    def FASTK_VERSION = '38b07c2e8eba37f66311faf99b598643492bbf51'
++    def FASTK_VERSION = 'ddea6cf254f378db51d22c6eb21af775fa9e1f77'
      // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
 -    def MERQURY_VERSION = '1.1.1'
 +    def MERQURY_VERSION = '4578fc778098859d78cab5e4b78b27b9a9dd10a4'
      """
      MerquryFK \\
          $args \\
-@@ -68,13 +74,12 @@
+@@ -68,13 +69,12 @@
          r: \$( R --version | sed '1!d; s/.*version //; s/ .*//' )
      END_VERSIONS
      """
 -
      stub:
--    prefix              = task.ext.prefix ?: "${meta.id}"
-+    prefix = task.ext.prefix ?: "${meta.id}"
+     prefix              = task.ext.prefix ?: "${meta.id}"
      // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
 -    def FASTK_VERSION   = '1.1.0'
-+    def FASTK_VERSION = '38b07c2e8eba37f66311faf99b598643492bbf51' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
++    def FASTK_VERSION   = 'ddea6cf254f378db51d22c6eb21af775fa9e1f77' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
      // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
 -    def MERQURY_VERSION = '1.1.1'
 +    def MERQURY_VERSION = '4578fc778098859d78cab5e4b78b27b9a9dd10a4' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
