@@ -50,7 +50,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 
 | Dependency            | Old version | New version                 |
 | --------------------- | ----------- | --------------------------- |
-| `gfastats`            |             | 1.3.1                       |
+| `gfastats`            |             | 1.3.10                      |
 | `cat`                 |             | 2.3.4                       |
 | `genescopefk`         |             | 1.2                         |
 | `fastk_histex`        |             | 1.1.0                       |
@@ -62,6 +62,10 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | `plot_buscopainter.R` |             | 1.0.1                       |
 | `blobtk_plot`         |             | 0.7.1                       |
 | `busco_busco`         | 5.7.1       | 6.0.0                       |
+| `datasets`            | 15.12.0     | 16.22.1                     |
+| `agat`                | 1.4.0       | 1.4.2                       |
+| MultiQC               | 1.25.1      | 1.32                        |
+| samtools              |             | 1.21                        |
 
 ## [[1.2.6](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.6)] - Pyrenean Mountain Dog (patch 6) - [2025-07-24]
 
