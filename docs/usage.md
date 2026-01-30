@@ -82,7 +82,7 @@ Here are the expected data files for each data type:
 | ------------------ | -------------------------------------------------------------- |
 | `hic`              | Either `bam` or `cram` aligned reads                           |
 | `pacbio` and `10x` | Either the FASTK `kmer` directory or the unaligned `bam` files |
-| `haplotype`        | The Fasta file of the alternatipe haplotype                    |
+| `haplotype`        | The Fasta file of the alternative haplotype                    |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
