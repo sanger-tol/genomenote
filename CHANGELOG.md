@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Enhancements & fixes
 
-- Update of the NF-core template to 3.3.2. #168
+- Update of the NF-core template to 3.5.1. #168 and #154
   - Implements NF-test for pipeline wide testing. #169
   - Updating the structure of the subworkflows folder.
 - Addition of the GFASTATS module and config.
