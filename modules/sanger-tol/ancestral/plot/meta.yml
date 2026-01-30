@@ -1,0 +1,79 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "ancestral_plot"
+description: |
+  Plot ancestrally linked busco genes from ancestral extract output.
+keywords:
+  - pdf
+  - png
+  - ancestral
+  - busco
+  - plot
+tools:
+  - plot_buscopainter:
+      description: |
+        Scripts to extract ancestrally linked busco genes.
+      homepage: https://github.com/sanger-tol/busco_painter
+      documentation: https://github.com/sanger-tol/busco_painter
+      licence: ["GPL v2.0"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - comp_location:
+        type: file
+        description: |
+          Complete location busco painter output.
+        pattern: "*.tsv"
+        ontologies:
+          - edam: http://edamontology.org/format_3475 # TSV
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing smaple information
+          e.g. `[ id:'sample1' ]`
+    - fai:
+        type: file
+        description: |
+          Assembly index file
+        pattern: "*.fai"
+        ontologies: []
+output:
+  png_plot:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_buscopainter.png":
+          type: file
+          description: |
+            A PNG plot showing busco gene linkage maps.
+          ontologies:
+            - edam: http://edamontology.org/format_3603 # PNG
+  pdf_plot:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_buscopainter.pdf":
+          type: file
+          description: |
+            A PDF plot showing busco gene linkage maps.
+          ontologies:
+            - edam: http://edamontology.org/format_3508 # PDF
+
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+authors:
+  - "@DLBPointon"
+maintainers:
+  - "@DLBPointon"

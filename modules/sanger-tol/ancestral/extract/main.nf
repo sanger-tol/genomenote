@@ -7,13 +7,16 @@ process ANCESTRAL_EXTRACT {
 
     input:
     tuple val(meta), path(fulltable)
-    path(ancestraltable)
+    tuple val(meta2), path(ancestraltable)
 
     output:
     tuple val(meta), path("*buscopainter_complete_location.tsv")  , emit: comp_location
     tuple val(meta), path("*buscopainter_duplicated_location.tsv"), emit: dup_location
     tuple val(meta), path("*summary.tsv")                         , emit: summary
     path "versions.yml"                                           , emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {

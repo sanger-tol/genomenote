@@ -7,8 +7,8 @@ include { BUSCO_BUSCO as BUSCO  } from '../../../modules/nf-core/busco/busco/mai
 //
 // LOCAL MODULE IMPORT BLOCK
 //
-include { ANCESTRAL_EXTRACT     } from '../../../modules/local/ancestral/extract'
-include { ANCESTRAL_PLOT        } from '../../../modules/local/ancestral/plot'
+include { ANCESTRAL_EXTRACT     } from '../../../modules/sanger-tol/ancestral/extract'
+include { ANCESTRAL_PLOT        } from '../../../modules/sanger-tol/ancestral/plot'
 
 
 workflow ANNOTATION_ANCESTRAL {
