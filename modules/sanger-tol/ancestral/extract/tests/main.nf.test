@@ -54,7 +54,7 @@ nextflow_process {
                 """
                 input[0] = Channel.of(
                     [
-                        [ id:'test-full-tabl' ], // meta map
+                        [ id:'test-full-table' ], // meta map
                         file(params.modules_testdata_base_path + 'resources/genomenote/ancestral_data/GCA_963859965.1_busco_full_table.tsv', checkIfExists: true)
                     ]
                 )

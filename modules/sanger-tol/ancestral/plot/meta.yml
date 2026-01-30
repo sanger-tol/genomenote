@@ -32,7 +32,7 @@ input:
   - - meta2:
         type: map
         description: |
-          Groovy Map containing smaple information
+          Groovy Map containing sample information
           e.g. `[ id:'sample1' ]`
     - fai:
         type: file
