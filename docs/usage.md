@@ -16,12 +16,12 @@ These typically include:
 4. Annotation statistics from AGAT and completeness from BUSCO.
 5. Consensus quality and k-mer completeness from MerquryFK - when high-quality reads are available.
 6. Hi-C contact map and chromosomal grid using Cooler, as well as primary mapped percentage from samtools flagstat - when Hi-C reads are provided. These files can be displayed on a [HiGlass](http://higlass.io) server, like the one use by the [Sanger Institute](https://genome-note-higlass.tol.sanger.ac.uk/app).
-7. Ancestral Plots are mappings of putative ancestral BUSCO genes onto the chromosmes of the input assembly.
+7. Ancestral Plots are mappings of putative ancestral BUSCO genes onto the chromosomes of the input assembly.
 8. Pretext map and snapshot
 
 ## Genome metadata input
 
-The assembly accession for the genome you would like to analyse along with the biosample acession(s) linked to this genome assembly are optional paramters.
+The assembly accession for the genome you would like to analyse along, optionally, with the biosample accession(s) linked to this genome assembly.
 
 ```bash
 --assembly '[assembly accession]'
@@ -180,7 +180,7 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
 - `test`
   - A profile with a minimal configuration for automated testing
   - Includes links to test data so needs no other parameters
-  - Runs withing minutes
+  - Runs within minutes
 - `test_full`
   - A profile with a complete configuration for automated testing
   - Includes links to test data so needs no other parameters
@@ -243,7 +243,7 @@ NXF_OPTS='-Xms1g -Xmx4g'
 
 ## For internal Sanger use only
 
-If you wish to run the optional step that writes genome metatdata key value-pairs to a genome notes databases you will need to set the parameter "write_to_portal" to true and provide the base url for the REST API that writes to the database.
+If you wish to run the optional step that writes genome metadata key value-pairs to a genome notes databases you will need to set the parameter "write_to_portal" to true and provide the base url for the REST API that writes to the database.
 
 ```bash
    --write_to_portal_db 'true'
