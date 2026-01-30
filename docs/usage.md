@@ -21,7 +21,7 @@ These typically include:
 
 ## Genome metadata input
 
-The assembly accession for the genome you would like to analyse along, optionally, with the biosample accession(s) linked to this genome assembly.
+The assembly accession for the genome you would like to analyse, optionally with the biosample accession(s) linked to this genome assembly.
 
 ```bash
 --assembly '[assembly accession]'
