@@ -136,6 +136,22 @@
                     }
                 }
             }
+        },
+        "https://github.com/sanger-tol/nf-core-modules.git": {
+            "modules": {
+                "sanger-tol": {
+                    "ancestral/extract": {
+                        "branch": "main",
+                        "git_sha": "006011139ed98264e0fd161d60801d62476162df",
+                        "installed_by": ["modules"]
+                    },
+                    "ancestral/plot": {
+                        "branch": "main",
+                        "git_sha": "6ed770244dd4f8098a1e374727bbf0f1e04a3ae4",
+                        "installed_by": ["modules"]
+                    }
+                }
+            }
         }
     }
 }
