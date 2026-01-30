@@ -131,7 +131,7 @@ workflow PIPELINE_INITIALISATION {
         ch_cool_order = Channel.empty()
     }
     if (params.ancestral_table) {
-        ch_ancestral_table = Channel.fromPath(params.ancestral_table)
+        ch_ancestral_table = Channel.fromPath(params.ancestral_table).map { path -> [[id: path.getBaseName()], path] }
     } else {
         ch_ancestral_table = Channel.empty()
     }
