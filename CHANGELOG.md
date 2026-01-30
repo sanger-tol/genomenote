@@ -3,11 +3,11 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [[2.2.0](https://github.com/sanger-tol/genomenote/releases/tag/2.2.0)] - German Doberman [2025-MM-DD]
+## [[2.2.0](https://github.com/sanger-tol/genomenote/releases/tag/2.2.0)] - German Doberman [2026-01-30]
 
 ### Enhancements & fixes
 
-- Update of the NF-core template to 3.3.2. #168
+- Update of the NF-core template to 3.5.1. #168 and #154
   - Implements NF-test for pipeline wide testing. #169
   - Updating the structure of the subworkflows folder.
 - Addition of the GFASTATS module and config.
@@ -32,13 +32,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Parameters
 
-| Old parameter | New parameter         |
-| ------------- | --------------------- |
-|               | --busco_lineage       |
-|               | --select_contact_map  |
-|               | --btk_location        |
-|               | --btk_online_location |
-|               | --ancestral_table     |
+| Old parameter | New parameter             |
+| ------------- | ------------------------- |
+|               | --busco_lineage           |
+|               | --select_contact_map      |
+|               | --btk_location            |
+|               | --btk_online_location     |
+|               | --ancestral_table         |
+|               | --ancestral_busco_lineage |
+|               | --annotation_set          |
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 
@@ -48,7 +50,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 
 | Dependency            | Old version | New version                 |
 | --------------------- | ----------- | --------------------------- |
-| `gfastats`            |             | 1.3.1                       |
+| `gfastats`            |             | 1.3.10                      |
 | `cat`                 |             | 2.3.4                       |
 | `genescopefk`         |             | 1.2                         |
 | `fastk_histex`        |             | 1.1.0                       |
@@ -60,6 +62,10 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | `plot_buscopainter.R` |             | 1.0.1                       |
 | `blobtk_plot`         |             | 0.7.1                       |
 | `busco_busco`         | 5.7.1       | 6.0.0                       |
+| `datasets`            | 15.12.0     | 16.22.1                     |
+| `agat`                | 1.4.0       | 1.4.2                       |
+| MultiQC               | 1.25.1      | 1.32                        |
+| samtools              |             | 1.21                        |
 
 ## [[1.2.6](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.6)] - Pyrenean Mountain Dog (patch 6) - [2025-07-24]
 
