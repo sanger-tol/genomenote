@@ -1,0 +1,30 @@
+{
+    "GCA_963859965.1 - tsv - fai - stub": {
+        "content": [
+            "buscopainter_complete_location.tsv_buscopainter.pdf",
+            "buscopainter_complete_location.tsv_buscopainter.png",
+            [
+                "versions.yml:md5,1dcd83e7dc8c5843c7004c702f61dc7d"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2025-10-08T13:35:36.350754611"
+    },
+    "GCA_963859965.1 - tsv - fai": {
+        "content": [
+            "buscopainter_complete_location.tsv_buscopainter.pdf",
+            "buscopainter_complete_location.tsv_buscopainter.png",
+            [
+                "versions.yml:md5,1dcd83e7dc8c5843c7004c702f61dc7d"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2025-10-08T13:35:26.542896992"
+    }
+}

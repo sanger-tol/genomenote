@@ -3,6 +3,88 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[2.2.0](https://github.com/sanger-tol/genomenote/releases/tag/2.2.0)] - German Doberman [2026-01-30]
+
+### Enhancements & fixes
+
+- Update of the NF-core template to 3.5.1. #168 and #154
+  - Implements NF-test for pipeline wide testing. #169
+  - Updating the structure of the subworkflows folder.
+- Addition of the GFASTATS module and config.
+- Addition of GenescopeFK histogram plots and related data #181 [#157](https://github.com/sanger-tol/genomenote/issues/157).
+- Support for CLI provided Busco lineage to override the NCBI auto generated one.
+- Addition of the Ancestral Element Analysis (Annotation Ancestral) subworkflow
+  - Refer to <https://github.com/sanger-tol/busco_painter> for more information about the tool and its configuration. That repository also contains a complete annotation table for _Lepidoptera_.
+- Refactor of the CONTACT_MAPS subworkflow to support both/either HIGLASS or PRETEXT map generation #183.
+  - Split the logic for either method into HIGLASS_GENERATION and PRETEXT_GENERATION.
+  - Addition of `select_contact_map` to select `higlass`, `pretext`, `both` for generation.
+- Addition of MerquryFK module and config.
+- Addition of support for a _single_ haplotype assembly sourced from the samplesheet.csv.
+- Remove biosample_wgs as a required parameter.
+- Added support for providing an API key to NCBI datasets.
+- Added the blobtk_plot nf-core module.
+  - This module creates plots via calls to the blobtoolkit server or local blobdir.
+- Added the `btk_location` and `btk_online_location` to provide the path of the blobdir (local or remote). If not provided the module will be skipped.
+- Dropped support for Conda until FastK is properly released there
+- Updated BUSCO from 5.7.1 to 6.0.0
+  - Updated `GENOME_STATISTICS` and `ANNOTATION_STATISTICS` to add new param for busco.
+- Updated notes in `ANNOTATION_STATISTICS`
+
+### Parameters
+
+| Old parameter | New parameter             |
+| ------------- | ------------------------- |
+|               | --busco_lineage           |
+|               | --select_contact_map      |
+|               | --btk_location            |
+|               | --btk_online_location     |
+|               | --ancestral_table         |
+|               | --ancestral_busco_lineage |
+|               | --annotation_set          |
+
+> **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency            | Old version | New version                 |
+| --------------------- | ----------- | --------------------------- |
+| `gfastats`            |             | 1.3.10                      |
+| `cat`                 |             | 2.3.4                       |
+| `genescopefk`         |             | 1.2                         |
+| `fastk_histex`        |             | 1.1.0                       |
+| `pretextmap`          |             | PM=0.1.9 PG=0.0.9 ST=1.21   |
+| `pretextsnapshot`     |             | 0.0.4                       |
+| `samtools/faidx`      |             | 1.21                        |
+| `merquryfk`           |             | FK=38b07c2 MFK=1.1.2 R=4.42 |
+| `buscopainter.py`     |             | 1.0.1                       |
+| `plot_buscopainter.R` |             | 1.0.1                       |
+| `blobtk_plot`         |             | 0.7.1                       |
+| `busco_busco`         | 5.7.1       | 6.0.0                       |
+| `datasets`            | 15.12.0     | 16.22.1                     |
+| `agat`                | 1.4.0       | 1.4.2                       |
+| MultiQC               | 1.25.1      | 1.32                        |
+| samtools              |             | 1.21                        |
+
+## [[1.2.6](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.6)] - Pyrenean Mountain Dog (patch 6) - [2025-07-24]
+
+### Enhancements & fixes
+
+- Upgraded the versions of FastK and MerquryFK to address some segmentation-fault issues.
+- Upgraded the version of the NCBI datasets CLI and implemented a retry-and-backoff strategy
+  to avoid overwhelming the server.
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency | Old version | New version                              |
+| ---------- | ----------- | ---------------------------------------- |
+| datasets   | 15.12.0     | 16.22.1                                  |
+| fastk      | 1.2         | ddea6cf254f378db51d22c6eb21af775fa9e1f77 |
+| merquryfk  | 1.2         | 4578fc778098859d78cab5e4b78b27b9a9dd10a4 |
+
 ## [[2.1.1](https://github.com/sanger-tol/genomenote/releases/tag/2.1.1)] - Pembroke Welsh Corgi (patch 1) [2025-03-19]
 
 ### Enhancements & fixes
@@ -10,6 +92,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Call the `/v2` version of the NCBI datasets API rather than `/v2alpha`
 - Fixed a bug in `FETCH_ENSEMBL_METADATA` when the Ensembl API fails
 - Fixed the runtime requirement of MultiQC
+
+## [[1.2.5](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.5)] - Pyrenean Mountain Dog (patch 5) - [2025-03-19]
+
+### Enhancements & fixes
+
+- Moved over to the NCBI API v2 since the v1 is deprecated
+- Fixed the process name for Busco
 
 ## [[2.1.0](https://github.com/sanger-tol/genomenote/releases/tag/2.1.0)] - Pembroke Welsh Corgi [2024-12-11]
 
@@ -34,7 +123,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 
 | Dependency  | Old version                              | New version                              |
 | ----------- | ---------------------------------------- | ---------------------------------------- |
-| `agat`      |                                          | 1.4.0                                    |
+| `agat`      |                                          | 1.4.2                                    |
 | `bedtools`  | 2.30.0                                   | 2.31.1                                   |
 | `busco`     | 5.5.0                                    | 5.7.1                                    |
 | `cooler`    | 0.8.11                                   | 0.9.2                                    |
@@ -43,6 +132,35 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | `merquryfk` | d00d98157618f4e8d1a9190026b19b471055b22e |                                          |
 | `multiqc`   | 1.14                                     | 1.25.1                                   |
 | `samtools`  | 1.17                                     | 1.21                                     |
+
+> **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
+
+## [[1.2.4](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.4)] - Pyrenean Mountain Dog (patch 4) - [2024-12-09]
+
+### Enhancements & fixes
+
+- Remove defaults from lib/Utils.groovy
+
+## [[1.2.3](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.3)] - Pyrenean Mountain Dog (patch 3) - [2024-12-06]
+
+### Enhancements & fixes
+
+- Update module versions
+- Remove reference to Anaconda repositories
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency  | Old version | New version |
+| ----------- | ----------- | ----------- |
+| `bedtools`  | 2.30.0      | 2.31.1      |
+| `busco   `  | 5.5.0       | 5.7.1       |
+| `cooler`    | 0.8.11      | 0.9.2       |
+| `fastk`     | 1.0.1       | 1.2         |
+| `merquryfk` | 1.0.1       | 1.2         |
+| `multiqc`   | 1.14        | 1.25.1      |
+| `samtools`  | 1.17        | 1.20        |
 
 > **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
 

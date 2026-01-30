@@ -12,7 +12,7 @@ def parse_args(args=None):
 
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
     parser.add_argument("--assembly", required=True, help="The INSDC accession for the assembly")
-    parser.add_argument("--wgs_biosample", required=True, help="The biosample accession for the WGS data")
+    parser.add_argument("--wgs_biosample", required=False, help="The biosample accession for the WGS data")
     parser.add_argument("--hic_biosample", required=False, help="The biosample accession for the Hi-C data")
     parser.add_argument("--rna_biosample", required=False, help="The biosample accession for the RNASeq data")
     parser.add_argument("--output", required=True, help="Output file path")
@@ -52,23 +52,24 @@ def fetch_assembly_data(assembly, wgs_biosample, hic_biosample, rna_biosample, o
             raise AssertionError(f"Could not determine the Bioproject linked to this assembly {assembly}\n")
 
         # Validate wgs_biosample
-        wgs_url = f"https://www.ebi.ac.uk/ena/portal/api/search?query=sample_accession%3D%22{wgs_biosample}%22&result=sample&fields=sample_accession%2Ctax_id&limit=0&download=true&format=json"
-        wgs_response = requests.get(wgs_url)
+        if wgs_biosample and wgs_biosample != "null":
+            wgs_url = f"https://www.ebi.ac.uk/ena/portal/api/search?query=sample_accession%3D%22{wgs_biosample}%22&result=sample&fields=sample_accession%2Ctax_id&limit=0&download=true&format=json"
+            wgs_response = requests.get(wgs_url)
 
-        if wgs_response.status_code == 200:
-            wgs_data = wgs_response.json()
-            tax_id = wgs_data[0].get("tax_id")
+            if wgs_response.status_code == 200:
+                wgs_data = wgs_response.json()
+                tax_id = wgs_data[0].get("tax_id")
 
-            if tax_id != taxon_id:
-                raise AssertionError(
-                    f"The WGS biosample taxon id: {tax_id} does not match the assembly taxon id: {taxon_id}\n"
-                )
+                if tax_id != taxon_id:
+                    raise AssertionError(
+                        f"The WGS biosample taxon id: {tax_id} does not match the assembly taxon id: {taxon_id}\n"
+                    )
+                else:
+                    params.append(wgs_biosample)
+                    header.append("wgs_biosample")
+
             else:
-                params.append(wgs_biosample)
-                header.append("wgs_biosample")
-
-        else:
-            raise AssertionError(f"The WGS biosample id: {wgs_biosample} could not retrieved from ENA\n")
+                raise AssertionError(f"The WGS biosample id: {wgs_biosample} could not retrieved from ENA\n")
 
         # Validate hic_biosample
         if hic_biosample and hic_biosample != "null":

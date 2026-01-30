@@ -3,7 +3,7 @@ process FASTK_FASTK {
     label 'process_medium'
 
     // WARN: Version information not provided by tool on CLI. Please update version string below when bumping container versions.
-    container 'ghcr.io/nbisweden/fastk_genescopefk_merquryfk:1.2'
+    container 'quay.io/sanger-tol/fastk:1.1.0-c1'
 
     input:
     tuple val(meta), path(reads)
@@ -24,7 +24,7 @@ process FASTK_FASTK {
     }
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def FASTK_VERSION = '666652151335353eef2fcd58880bcef5bc2928e1' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+    def FASTK_VERSION = 'ddea6cf254f378db51d22c6eb21af775fa9e1f77' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     FastK \\
         $args \\
@@ -49,7 +49,7 @@ process FASTK_FASTK {
     }
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def FASTK_VERSION = 'f18a4e6d2207539f7b84461daebc54530a9559b0' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+    def FASTK_VERSION = 'ddea6cf254f378db51d22c6eb21af775fa9e1f77' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
 
     def touch_ktab = args.contains('-t') ? "touch ${prefix}_fk.ktab .${prefix}_fk.ktab.1" : ''
     def touch_prof = args.contains('-p') ? "touch ${prefix}_fk.prof .${prefix}_fk.pidx.1" : ''

@@ -1,0 +1,94 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "ancestral_extract"
+description: |
+  Extracts ancestrally linked busco genes from a busco full table file.
+keywords:
+  - busco
+  - tsv
+  - ancestral
+  - extract
+tools:
+  - busco_painter:
+      description: |
+        Scripts to extract ancestrally linked busco genes.
+      homepage: https://github.com/sanger-tol/busco_painter
+      documentation: https://github.com/sanger-tol/busco_painter
+      licence: ["GPL v2.0"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - fulltable:
+        type: file
+        description: |
+          BUSCO full table tsv file.
+        pattern: "*.tsv"
+        ontologies:
+          - edam: http://edamontology.org/format_3475 # TSV
+
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - ancestraltable:
+        type: file
+        description: |
+          A reference TSV containing ancestrally linked genes.
+        pattern: "*.tsv"
+        ontologies:
+          - edam: http://edamontology.org/format_3475 # TSV
+output:
+  comp_location:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*buscopainter_complete_location.tsv":
+          type: file
+          description: |
+            TSV containing complete busco's thought to be ancestrally linked.
+          ontologies:
+            - edam: http://edamontology.org/format_3475 # TSV
+
+  dup_location:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*buscopainter_duplicated_location.tsv":
+          type: file
+          description: |
+            TSV containing duplicated busco's thought to be ancestrally linked.
+          ontologies:
+            - edam: http://edamontology.org/format_3475 # TSV
+
+  summary:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*summary.tsv":
+          type: file
+          description: |
+            TSV containing a complete summary of results.
+          ontologies:
+            - edam: http://edamontology.org/format_3003
+
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+authors:
+  - "@DLBPointon"
+maintainers:
+  - "@DLBPointon"

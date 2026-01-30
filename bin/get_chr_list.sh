@@ -26,4 +26,3 @@ if [[ -n "$ord_list" ]]; then
 
     cp "$new_lst" "$filter_lst"
 fi
-

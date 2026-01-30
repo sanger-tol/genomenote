@@ -2,7 +2,7 @@ process UPLOAD_HIGLASS_DATA {
     tag "$meta.id"
     label 'process_single'
 
-    container "docker.io/bitnami/kubectl:1.27"
+    container "docker.io/rancher/kubectl:v1.27.16"
 
     input:
     tuple val(meta), path(mcool)

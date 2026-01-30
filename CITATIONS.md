@@ -34,15 +34,21 @@
 
 - [FastK](https://github.com/thegenemyers/FASTK)
 
+- [GeneScopeFK](https://github.com/thegenemyers/GENESCOPE.FK)
+
+- [GFastats](https://github.com/vgl-hub/gfastats)
+
+  > Giulio Formenti, Linelle Abueg, Angelo Brajuka, Nadolina Brajuka, Cristóbal Gallardo-Alba, Alice Giani, Olivier Fedrigo, Erich D Jarvis, Gfastats: conversion, evaluation and manipulation of genome sequences using assembly graphs, Bioinformatics, Volume 38, Issue 17, September 2022, Pages 4214–4216, https://doi.org/10.1093/bioinformatics/btac460
+
 - [GFFREAD](https://github.com/gpertea/gffread)
 
   > Pertea G and Pertea M. "GFF Utilities: GffRead and GffCompare [version 1; peer review: 3 approved]". F1000Research 2020, 9:304 https://doi.org/10.12688/f1000research.23297.1
 
 - [MerquryFK](https://github.com/thegenemyers/MERQURY.FK)
 
-- [MultiQC](https://multiqc.info)
+- [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
 
-  > Ewels, Philip, et al. “MultiQC: Summarize Analysis Results for Multiple Tools and Samples in a Single Report.” Bioinformatics, vol. 32, no. 19, 2016, pp. 3047–3048., https://doi.org/10.1093/bioinformatics/btw354.
+  > Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.
 
 - [NCBI Datasets CLI](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/download-and-install/)
 
@@ -70,8 +76,8 @@
 
 - [Docker](https://www.docker.com)
 
-  > Merkel, Dirk, et al. “Docker: Lightweight Linux Containers for Consistent Development and Deployment.", Association for Computing Machinery, vol. 2014, no. 239, Mar. 2014.
+  > Merkel, D. (2014). Docker: lightweight linux containers for consistent development and deployment. Linux Journal, 2014(239), 2. doi: 10.5555/2600239.2600241.
 
-- [Singularity](https://docs.sylabs.io/guides/latest/user-guide/)
+- [Singularity](https://pubmed.ncbi.nlm.nih.gov/28494014/)
 
-  > Kurtzer, Gregory M., et al. “Singularity: Scientific containers for mobility of compute.", PLOS ONE, vol. 12, no. 5, May 2017, pp. e0177459, https://doi.org/10.1371/journal.pone.0177459.
+  > Kurtzer GM, Sochat V, Bauer MW. Singularity: Scientific containers for mobility of compute. PLoS One. 2017 May 11;12(5):e0177459. doi: 10.1371/journal.pone.0177459. eCollection 2017. PubMed PMID: 28494014; PubMed Central PMCID: PMC5426675.

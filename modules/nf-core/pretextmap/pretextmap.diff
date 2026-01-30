@@ -1,0 +1,37 @@
+Changes in component 'nf-core/pretextmap'
+'modules/nf-core/pretextmap/meta.yml' is unchanged
+Changes in 'pretextmap/main.nf':
+--- modules/nf-core/pretextmap/main.nf
++++ modules/nf-core/pretextmap/main.nf
+@@ -4,13 +4,12 @@
+     label 'process_single'
+ 
+     conda "${moduleDir}/environment.yml"
+-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+-        'https://depot.galaxyproject.org/singularity/mulled-v2-f3591ce8609c7b3b33e5715333200aa5c163aa61%3A44321ab4d64f0b6d0c93abbd1406369d1b3da684-0':
+-        'biocontainers/mulled-v2-f3591ce8609c7b3b33e5715333200aa5c163aa61:44321ab4d64f0b6d0c93abbd1406369d1b3da684-0' }"
++    container "quay.io/sanger-tol/pretext:0.0.9-yy5-c2"
+ 
+     input:
+     tuple val(meta), path(input)
+-    tuple val(meta2), path(fasta), path(fai)
++    tuple val(meta2), path(fasta)
++    tuple val(meta3), path(fai)
+ 
+     output:
+     tuple val(meta), path("*.pretext")  , emit: pretext
+
+Changes in 'pretextmap/environment.yml':
+--- modules/nf-core/pretextmap/environment.yml
++++ modules/nf-core/pretextmap/environment.yml
+@@ -5,4 +5,5 @@
+   - bioconda
+ dependencies:
+   - bioconda::pretextmap=0.1.9
+-  - bioconda::samtools=1.17
++  - bioconda::pretextgraph=0.0.9
++  - bioconda::samtools=1.21
+
+'modules/nf-core/pretextmap/tests/main.nf.test' is unchanged
+'modules/nf-core/pretextmap/tests/main.nf.test.snap' is unchanged
+************************************************************
