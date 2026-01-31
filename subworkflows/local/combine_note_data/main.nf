@@ -21,15 +21,13 @@ workflow COMBINE_NOTE_DATA {
     main:
     ch_versions = channel.empty()
 
-    ch_summary
-    | map {  meta, json ->
+    ch_summary_meta = ch_summary.map {  meta, json ->
         [ meta + [
             ext:    "csv",
             source: "genome",
             type:   "summary",
         ], json ]
     }
-    | set { ch_summary_meta }
 
 
     PARSE_METADATA(ch_summary_meta)
@@ -38,19 +36,15 @@ workflow COMBINE_NOTE_DATA {
     COMBINE_STATISTICS_AND_METADATA(ch_params_consistent, ch_params_inconsistent, PARSE_METADATA.out.file_path, ch_annotation_summary)
     ch_versions = ch_versions.mix( COMBINE_STATISTICS_AND_METADATA.out.versions.first() )
 
-    ch_higlass
-    | map { it -> [ [id: params.assembly] , it ] }
-
     // Add higlass url to the parsed dataset
-    COMBINE_STATISTICS_AND_METADATA.out.consistent.concat(ch_higlass)
-    .map { it ->
-        it[1]
-    }
-    .collectFile(name: 'combined.csv', sort: false) { it ->
-        it.text
-    }
-    .map { it -> [ [id: params.assembly] , it ] }
-    .set { ch_parsed }
+    ch_parsed = COMBINE_STATISTICS_AND_METADATA.out.consistent.concat(ch_higlass)
+        .map { it ->
+            it[1]
+        }
+        .collectFile(name: 'combined.csv', sort: false) { it ->
+            it.text
+        }
+        .map { it -> [ [id: params.assembly] , it ] }
 
     POPULATE_TEMPLATE( ch_parsed, ch_note_template )
     ch_versions = ch_versions.mix( POPULATE_TEMPLATE.out.versions.first() )

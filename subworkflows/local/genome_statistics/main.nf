@@ -71,11 +71,10 @@ workflow GENOME_STATISTICS {
         //
         // LOGIC: FORMAT NCBI GET ODB OUTPUT INTO A CHANNEL OF val(lepidoptera_odb10) READY FOR BUSCO INPUT.
         //
-        NCBI_GET_ODB.out.csv
-        | map { _meta, csv -> csv }
-        | splitCsv()
-        | map { row -> row[1] }
-        | set { ch_lineage }
+        ch_lineage = NCBI_GET_ODB.out.csv
+            .map { _meta, csv -> csv }
+            .splitCsv()
+            .map { row -> row[1] }
 
     }
 
@@ -99,11 +98,11 @@ workflow GENOME_STATISTICS {
     //
     RESTRUCTUREBUSCODIR(
         BUSCO.out.batch_summary
-        | combine ( ch_lineage )
-        | join ( BUSCO.out.short_summaries_txt, remainder: true )
-        | join ( BUSCO.out.short_summaries_json, remainder: true )
-        | join ( BUSCO.out.busco_dir )
-        | map { meta, batch_summary, lineage, short_summaries_txt, short_summaries_json, busco_dir -> [meta, lineage, batch_summary, short_summaries_txt ?: [], short_summaries_json ?: [], busco_dir] }
+            .combine ( ch_lineage )
+            .join ( BUSCO.out.short_summaries_txt, remainder: true )
+            .join ( BUSCO.out.short_summaries_json, remainder: true )
+            .join ( BUSCO.out.busco_dir )
+            .map { meta, batch_summary, lineage, short_summaries_txt, short_summaries_json, busco_dir -> [meta, lineage, batch_summary, short_summaries_txt ?: [], short_summaries_json ?: [], busco_dir] }
     )
     ch_versions         = ch_versions.mix ( RESTRUCTUREBUSCODIR.out.versions.first() )
 
@@ -111,17 +110,15 @@ workflow GENOME_STATISTICS {
     //
     // LOGIC: Prepare channels for FastK, collect files in directory create list for FASTK
     //
-    pacbio
-    | branch {
-        _meta, file ->
-            dir: file.isDirectory()
-            file: true
-    }
-    | set { ch_pacbio }
+    ch_pacbio = pacbio
+        .branch {
+            _meta, file ->
+                dir: file.isDirectory()
+                file: true
+        }
 
-    ch_pacbio.file
-    | groupTuple ( by: [0] )
-    | set { ch_fastk }
+    ch_fastk = ch_pacbio.file
+        .groupTuple ( by: [0] )
 
 
     //
@@ -149,26 +146,23 @@ workflow GENOME_STATISTICS {
     //
     // LOGIC: Define channel for MERQURKFK
     //
-    FASTK_FASTK.out.hist
-    | join ( FASTK_FASTK.out.ktab )
-    | set { ch_combo }
+    ch_combo = FASTK_FASTK.out.hist
+        .join ( FASTK_FASTK.out.ktab )
 
-    ch_pacbio.dir
-    | map { meta, dir -> [
-        meta,
-        dir.listFiles().findAll { file -> file.toString().endsWith(".hist") } .collect(),
-        dir.listFiles().findAll { file -> file.toString().contains(".ktab") } .collect(),
-    ] }
-    | set { ch_grab }
+    ch_grab = ch_pacbio.dir
+        .map { meta, dir -> [
+            meta,
+            dir.listFiles().findAll { file -> file.toString().endsWith(".hist") } .collect(),
+            dir.listFiles().findAll { file -> file.toString().contains(".ktab") } .collect(),
+        ] }
 
-    ch_combo
-    | mix ( ch_grab )
-    | combine ( genome )
-    | combine ( haplotype.ifEmpty([[],[]]) )
-    | map { meta, hist, ktab, meta2, fasta, _meta3, hap_fasta ->
-        [ meta + [genome_size: meta2.genome_size], hist, ktab, fasta, hap_fasta ]
-    }
-    | set { ch_merq }
+    ch_merq = ch_combo
+        .mix ( ch_grab )
+        .combine ( genome )
+        .combine ( haplotype.ifEmpty([[],[]]) )
+        .map { meta, hist, ktab, meta2, fasta, _meta3, hap_fasta ->
+            [ meta + [genome_size: meta2.genome_size], hist, ktab, fasta, hap_fasta ]
+        }
 
 
     // This is only temporarily removed so I'm leaving it here for now
@@ -184,32 +178,25 @@ workflow GENOME_STATISTICS {
     //
     // LOGIC: PREPARE FOR THE FOR Combined table
     //
-    SUMMARYGENOME.out.summary
-    | join ( SUMMARYSEQUENCE.out.summary )
-    | set { ch_summary }
+    ch_summary = SUMMARYGENOME.out.summary
+        .join ( SUMMARYSEQUENCE.out.summary )
 
-    BUSCO.out.short_summaries_json
-    | ifEmpty ( [ [], [] ] )
-    | set { ch_busco }
+    ch_busco = BUSCO.out.short_summaries_json
+        .ifEmpty ( [ [], [] ] )
 
     // This is only temporarily removed so I'm leaving it here for now
-    MERQURYFK_MERQURYFK.out.qv
-    | join ( MERQURYFK_MERQURYFK.out.stats )
-    | map { meta, qv, comp -> [ meta + [ id: "merq" ], qv, comp ] }
-    | groupTuple ()
-    | ifEmpty ( [ [], [], [] ] )
-    | set { ch_merqury }
+    ch_merqury = MERQURYFK_MERQURYFK.out.qv
+        .join ( MERQURYFK_MERQURYFK.out.stats )
+        .map { meta, qv, comp -> [ meta + [ id: "merq" ], qv, comp ] }
+        .groupTuple ()
+        .ifEmpty ( [ [], [], [] ] )
 
-    flagstat
-    // Queue channel of tuple(meta, file)
-    | toList
-    // Value channel of list(tuple(meta, file))
-    | map { lmf -> [
+    ch_flagstat = flagstat
+        .toList()
+        .map { lmf -> [
             lmf.collect { it[0] },
             lmf.collect { it[1] },
         ] }
-    // Now channel of tuple(list(meta), list(file))
-    | set { ch_flagstat }
 
 
     //
@@ -227,9 +214,8 @@ workflow GENOME_STATISTICS {
     //
     // LOGIC: BUSCO results for MULTIQC
     //
-    BUSCO.out.short_summaries_txt
-    | ifEmpty ( [ [], [] ] )
-    | set { multiqc }
+    multiqc = BUSCO.out.short_summaries_txt
+        .ifEmpty ( [ [], [] ] )
 
 
     emit:

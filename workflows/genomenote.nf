@@ -63,8 +63,8 @@ workflow GENOMENOTE {
     ch_versions = channel.empty()
     ch_multiqc_files = channel.empty()
 
-    INPUT_CHECK ( samplesheet, metadata).data
-    | branch { meta, file ->
+    ch_inputs = INPUT_CHECK ( samplesheet, metadata).data
+        .branch { meta, file ->
         hic : meta.datatype == 'hic'
             return [ meta, file, [] ]
         pacbio : meta.datatype == 'pacbio' || meta.datatype == '10x'
@@ -72,7 +72,6 @@ workflow GENOMENOTE {
         haplotype : meta.datatype == 'haplotype'
             return [ meta, file ]
     }
-    | set { ch_inputs }
     ch_versions  = ch_versions.mix ( INPUT_CHECK.out.versions )
 
     // Currently we only expect to see ONE haplotype so make this a constraint
@@ -90,12 +89,11 @@ workflow GENOMENOTE {
     //
     // MODULE: Unzip the input haplotype if zipped
     //
-    ch_inputs.haplotype
-    | branch { _meta, fasta ->
-        gzipped: fasta.name.endsWith('.gz')
-        unzipped: true
-    }
-    | set { ch_haplotype }
+    ch_haplotype = ch_inputs.haplotype
+        .branch { _meta, fasta ->
+            gzipped: fasta.name.endsWith('.gz')
+            unzipped: true
+        }
 
     GUNZIP_HAPLOTYPE (
         ch_haplotype.gzipped
@@ -112,9 +110,8 @@ workflow GENOMENOTE {
     // MODULE: Uncompress fasta file if needed and set meta based on input params
     //
 
-    INPUT_CHECK.out.param
-    | map { meta -> [meta, params.fasta] }
-    | set { ch_genome }
+    ch_genome = INPUT_CHECK.out.param
+        .map { meta -> [meta, params.fasta] }
 
     if ( params.fasta.endsWith('.gz') ) {
         ch_unzipped = GUNZIP_PRIMARY ( ch_genome ).gunzip
@@ -123,20 +120,18 @@ workflow GENOMENOTE {
         ch_unzipped = ch_genome
     }
 
-    ch_unzipped
-    | map { meta, fa -> [ meta + [id: fa.baseName, genome_size: fa.size()], fa] }
-    | set { ch_fasta }
+    ch_fasta = ch_unzipped
+        .map { meta, fa -> [ meta + [id: fa.baseName, genome_size: fa.size()], fa] }
 
 
     //
     // SUBWORKFLOW: Create genome statistics table
     //
-    ch_inputs.hic
-    | map{ meta, reads, _blank ->
-        def flagstat = file( reads.resolveSibling( reads.baseName + ".flagstat" ), checkIfExists: true)
-        [ meta, flagstat ]
-    }
-    | set { ch_flagstat }
+    ch_flagstat = ch_inputs.hic
+        .map{ meta, reads, _blank ->
+            def flagstat = file( reads.resolveSibling( reads.baseName + ".flagstat" ), checkIfExists: true)
+            [ meta, flagstat ]
+        }
 
     GENOME_STATISTICS (
         ch_fasta,
@@ -197,8 +192,7 @@ workflow GENOMENOTE {
         // SUBWORKFLOW: Read in template of data files to fetch, parse these files and output a list of genome metadata params
         //
         ch_file_list = channel.fromPath("$projectDir/assets/genome_metadata_template.csv")
-        INPUT_CHECK.out.param.combine( ch_file_list )
-        | set { ch_metadata }
+        ch_metadata = INPUT_CHECK.out.param.combine( ch_file_list )
 
         GENOME_METADATA ( ch_metadata )
         ch_versions     = ch_versions.mix(GENOME_METADATA.out.versions)

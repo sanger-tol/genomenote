@@ -40,33 +40,29 @@ workflow HIGLASS_GENERATION {
 
 
     // Create the `.cool` file
-    FILTER_SORT.out.sorted
-    | combine ( cool_bin )
-    | map { meta, bed, bin -> [ meta, bed, [], bin ] }
-    | set { ch_cooler }
+    ch_cooler = FILTER_SORT.out.sorted
+        .combine ( cool_bin )
+        .map { meta, bed, bin -> [ meta, bed, [], bin ] }
 
-    chrom_list
-    | map { _meta, list -> list }
-    | first
-    | set { ch_chromsizes }
+    ch_chromsizes = chrom_list
+        .map { _meta, list -> list }
+        .first()
 
     COOLER_CLOAD ( ch_cooler, ch_chromsizes )
     ch_versions = ch_versions.mix ( COOLER_CLOAD.out.versions.first() )
 
 
     // Create the `.mcool` file
-    COOLER_CLOAD.out.cool
-    | map { meta, cool, _bin -> [ meta, cool ] }
-    | set { ch_zoomify }
+    ch_zoomify = COOLER_CLOAD.out.cool
+        .map { meta, cool, _bin -> [ meta, cool ] }
 
     COOLER_ZOOMIFY ( ch_zoomify )
     ch_versions = ch_versions.mix ( COOLER_ZOOMIFY.out.versions.first() )
 
 
     // Create the `.genome` file
-    COOLER_CLOAD.out.cool
-    | map { meta, cool, _bin -> [ meta, cool, [] ] }
-    | set { ch_dump }
+    ch_dump = COOLER_CLOAD.out.cool
+        .map { meta, cool, _bin -> [ meta, cool, [] ] }
 
     COOLER_DUMP ( ch_dump )
     ch_versions = ch_versions.mix ( COOLER_DUMP.out.versions.first() )
@@ -88,6 +84,6 @@ workflow HIGLASS_GENERATION {
     cool     = COOLER_CLOAD.out.cool                    // tuple val(meta), val(cool_bin), path("*.cool")
     mcool    = COOLER_ZOOMIFY.out.mcool                 // tuple val(meta), path("*.mcool")
     grid     = COOLER_DUMP.out.bedpe                    // tuple val(meta), path("*.bedpe")
-    link     = ch_higlass_link                          // channel: [ *_higlass_link.csv]
+    link     = ch_higlass_link                          // tuple val(meta), path("*_higlass_link.csv")
     versions = ch_versions                              // channel: [ versions.yml ]
 }

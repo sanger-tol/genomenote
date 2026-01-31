@@ -13,46 +13,43 @@ workflow INPUT_CHECK {
 
     main:
 
-    PARAMS_CHECK ( cli_params )
+    param = PARAMS_CHECK ( cli_params )
         .csv
         .splitCsv (header:true, sep: ',')
-    |   map { row ->
-        def meta = [
-            id: row.assembly,
-            species: row.species,
-            taxon_id: row.taxon_id,
-            bioproject: row.bioproject,
-            biosample_wgs: row.wgs_biosample,
-        ]
+        .map { row ->
+            def meta = [
+                id: row.assembly,
+                species: row.species,
+                taxon_id: row.taxon_id,
+                bioproject: row.bioproject,
+                biosample_wgs: row.wgs_biosample,
+            ]
 
-        if (row.hic_biosample != "null") {
-            meta.biosample_hic = row.hic_biosample
+            if (row.hic_biosample != "null") {
+                meta.biosample_hic = row.hic_biosample
+            }
+
+            if (row.rna_biosample != "null") {
+                meta.biosample_rna = row.rna_biosample
+            }
+
+            meta
         }
-
-        if (row.rna_biosample != "null") {
-            meta.biosample_rna = row.rna_biosample
-        }
-
-        meta
-    }
-    | set { param }
 
     // set temp key to allow combining channels
-    param
+    ch_tmp_param = param
         .map { meta ->
             [meta.id, meta]
         }
-        .set { ch_tmp_param }
 
     // add some metadata params to the data channel meta
-    samplesheet
+    data = samplesheet
         .map { meta, datafile -> [meta.assembly, meta, datafile] }
         .combine(ch_tmp_param, by: 0)
         .map { _assembly, meta, datafile, meta2 ->
             def new_meta = meta + [species: meta2.species, taxon_id: meta2.taxon_id]
             [new_meta, datafile]
         }
-        .set { data }
 
     emit:
     data                                   // channel: [ val(meta), data ]

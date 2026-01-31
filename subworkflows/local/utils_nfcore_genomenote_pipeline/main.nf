@@ -100,10 +100,9 @@ workflow PIPELINE_INITIALISATION {
     // Create channel from input file provided through params.input
     //
 
-    channel
+    ch_samplesheet = channel
         .fromList(samplesheetToList(input, "${projectDir}/assets/schema_input.json"))
         .map { meta, datafile -> [meta + [assembly: params.assembly], datafile] }
-        .set { ch_samplesheet }
 
     //
     // Create channel from all accession numbers

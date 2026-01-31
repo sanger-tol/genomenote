@@ -22,11 +22,9 @@ workflow ANNOTATION_STATISTICS {
     //
     // LOGIC: Map the GFF channel to create a tuple with metadata and the file
     //
-    gff
-    | map { file ->
+    ch_gff_tupple = gff.map { file ->
         [ [ 'id': params.assembly + '_annotation', 'ext': "gff", 'filename': file.baseName ], file ]
     }
-    | set { ch_gff_tupple }
 
 
     //
@@ -53,9 +51,7 @@ workflow ANNOTATION_STATISTICS {
     AGAT_SPSTATISTICS(ch_gff_unzipped)
     ch_versions = ch_versions.mix ( AGAT_SPSTATISTICS.out.versions.first() )
 
-    genome
-    | map { _meta, fasta -> fasta }
-    | set { ch_fasta }
+    ch_fasta = genome.map { _meta, fasta -> fasta }
 
 
     //

@@ -19,9 +19,9 @@ workflow GENOME_METADATA {
     ch_versions = channel.empty()
 
     // Define channel for RUN_WGET
-    ch_file_list
-    | splitCsv(header: ['source', 'type', 'url', 'ext'], skip: 1)
-    | flatMap { meta, row ->
+    file_list = ch_file_list
+        .splitCsv(header: ['source', 'type', 'url', 'ext'], skip: 1)
+        .flatMap { meta, row ->
         // Create a list to hold the final entries
         def entries = []
 
@@ -61,8 +61,7 @@ workflow GENOME_METADATA {
         }
         return entries
     }
-    | unique()
-    | set { file_list }
+        .unique()
 
     // Fetch files
     RUN_WGET ( file_list )
@@ -74,53 +73,47 @@ workflow GENOME_METADATA {
     // Set channel for running GBIF
     ch_gbif_params = channel.empty()
 
-    ch_file_list
-    | map { meta, _it ->
+    ch_gbif_params = ch_file_list
+        .map { meta, _it ->
         def assembly = meta.id
         def species = meta.species
         [assembly, species]
     }
-    | set { ch_gbif_params}
 
     // Fetch GBIF metdata using genus, species and id as input channels
     FETCH_GBIF_METADATA( ch_gbif_params )
     ch_versions = ch_versions.mix(FETCH_GBIF_METADATA.out.versions.first() )
 
     // Combining the two output channels into one  channel
-    FETCH_GBIF_METADATA.out.file_path
-    | map { it -> tuple( it )}
-    | set { ch_gbif }
+    ch_gbif = FETCH_GBIF_METADATA.out.file_path
+        .map { it -> tuple( it )}
 
 
-    ch_file_list
-    | map { meta, _it ->
+    ch_ensembl_params = ch_file_list
+        .map { meta, _it ->
         def assembly = meta.id
         def taxon_id = meta.taxon_id
         [assembly, taxon_id]
     }
-    | set { ch_ensembl_params}
 
     // Query Ensembl Metadata API to see if this species has been annotated
     FETCH_ENSEMBL_METADATA ( ch_ensembl_params )
     ch_versions = ch_versions.mix( FETCH_ENSEMBL_METADATA.out.versions.first() )
 
-    PARSE_METADATA.out.file_path
-    | map { it -> tuple( it[1] )}
-    | set { ch_parsed }
+    ch_parsed = PARSE_METADATA.out.file_path
+        .map { it -> tuple( it[1] )}
 
-    ch_parsed.mix(ch_gbif, FETCH_ENSEMBL_METADATA.out.file_path)
-    | collect
-    | map { it ->
-        [ it ]
-    }
-    | set { ch_parsed_files }
+    ch_parsed_files = ch_parsed.mix(ch_gbif, FETCH_ENSEMBL_METADATA.out.file_path)
+        .collect()
+        .map { it ->
+            [ it ]
+        }
 
     // Set meta required for file parsing
-    ch_file_list
-    | map { meta, _it ->
+    ch_meta = ch_file_list
+        .map { meta, _it ->
         [id: meta.id, taxon_id: meta.taxon_id]
     }
-    | set {ch_meta}
 
     // combine meta and parsed files
     ch_meta_parsed = ch_meta.combine(ch_parsed_files)
