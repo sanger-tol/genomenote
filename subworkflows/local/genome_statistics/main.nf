@@ -194,8 +194,8 @@ workflow GENOME_STATISTICS {
     ch_flagstat = flagstat
         .toList()
         .map { lmf -> [
-            lmf.collect { it[0] },
-            lmf.collect { it[1] },
+            lmf.collect { meta, _file -> meta },
+            lmf.collect { _meta, file -> file },
         ] }
 
 

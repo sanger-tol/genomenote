@@ -27,8 +27,8 @@ process CREATETABLE {
     def bus = busco ? "--busco ${busco}" : ""
     def mqv = qv ? "--qv ${qv}" : ""
     def mco = completeness ? "--completeness ${completeness}" : ""
-    def hic = meta3s.collect { "--hic " + it.id } .join(' ')
-    def fst = (flagstats instanceof List ? flagstats : [flagstats]).collect { "--flagstat " + it } .join(' ')
+    def hic = meta3s.collect { flagstat_meta -> "--hic " + flagstat_meta.id } .join(' ')
+    def fst = (flagstats instanceof List ? flagstats : [flagstats]).collect { path -> "--flagstat " + path } .join(' ')
     """
     create_table.py \\
         $gen \\
