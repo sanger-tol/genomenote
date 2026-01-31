@@ -19,7 +19,7 @@ workflow COMBINE_NOTE_DATA {
 
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     ch_summary
     | map {  meta, json ->
@@ -56,7 +56,7 @@ workflow COMBINE_NOTE_DATA {
     ch_versions = ch_versions.mix( POPULATE_TEMPLATE.out.versions.first() )
 
     if ( params.write_to_portal ) {
-        ch_api_url = Channel.of(params.genome_notes_api)
+        ch_api_url = channel.of(params.genome_notes_api)
         WRITE_TO_GENOME_NOTES_DB( COMBINE_STATISTICS_AND_METADATA.out.consistent, ch_api_url )
         ch_versions = ch_versions.mix( WRITE_TO_GENOME_NOTES_DB.out.versions.first() )
     }

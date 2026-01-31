@@ -8,7 +8,7 @@ workflow PRETEXT_GENERATION {
     bam_tuple       // Channel [ val(meta), path(file)      ]
 
     main:
-    ch_versions     = Channel.empty()
+    ch_versions     = channel.empty()
 
     //
     // MODULE: GENERATE FAI FILE FROM FASTA

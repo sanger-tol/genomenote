@@ -25,7 +25,7 @@ workflow GENOME_STATISTICS {
 
 
     main:
-    ch_versions         = Channel.empty()
+    ch_versions         = channel.empty()
 
 
     //
@@ -59,7 +59,7 @@ workflow GENOME_STATISTICS {
 
 
     if (params.busco_lineage) {
-        ch_lineage      = Channel.of(params.busco_lineage)
+        ch_lineage      = channel.of(params.busco_lineage)
     } else {
         //
         // MODULE: GET RAW ODB LINEAGE VALUE

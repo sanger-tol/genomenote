@@ -169,7 +169,7 @@ workflow GENOMENOTE {
         ch_fasta,
         ch_inputs.hic,
         GENOME_STATISTICS.out.summary_seq,
-        Channel.of(params.binsize),
+        channel.of(params.binsize),
         cool_order,
         params.select_contact_map
     )
@@ -179,10 +179,10 @@ workflow GENOMENOTE {
     //
     // SUBWORKFLOW : Obtain feature statistics from the annotation file : GFF
     //
-    ch_annotation_stats = Channel.empty()
+    ch_annotation_stats = channel.empty()
     if ( params.annotation_set ) {
         ANNOTATION_STATISTICS (
-            Channel.fromPath(params.annotation_set),
+            channel.fromPath(params.annotation_set),
             ch_fasta,
             GENOME_STATISTICS.out.ch_busco_lineage,
             lineage_db
@@ -196,7 +196,7 @@ workflow GENOMENOTE {
         //
         // SUBWORKFLOW: Read in template of data files to fetch, parse these files and output a list of genome metadata params
         //
-        ch_file_list = Channel.fromPath("$projectDir/assets/genome_metadata_template.csv")
+        ch_file_list = channel.fromPath("$projectDir/assets/genome_metadata_template.csv")
         INPUT_CHECK.out.param.combine( ch_file_list )
         | set { ch_metadata }
 
@@ -236,7 +236,7 @@ workflow GENOMENOTE {
     //
     // Collate and save software versions
     //
-    def topic_versions = Channel.topic("versions")
+    def topic_versions = channel.topic("versions")
         .distinct()
         .branch { entry ->
             versions_file: entry instanceof Path

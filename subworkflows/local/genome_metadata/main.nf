@@ -16,7 +16,7 @@ workflow GENOME_METADATA {
     ch_file_list        // channel: [meta, /path/to/genome_metadata_file_template]
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     // Define channel for RUN_WGET
     ch_file_list
@@ -72,7 +72,7 @@ workflow GENOME_METADATA {
     ch_versions = ch_versions.mix( PARSE_METADATA.out.versions.first() )
 
     // Set channel for running GBIF
-    ch_gbif_params = Channel.empty()
+    ch_gbif_params = channel.empty()
 
     ch_file_list
     | map { meta, it ->

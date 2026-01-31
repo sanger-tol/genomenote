@@ -15,8 +15,8 @@ workflow HIGLASS_GENERATION {
     cool_bin
 
     main:
-    ch_versions = Channel.empty()
-    ch_higlass_link = Channel.empty()
+    ch_versions = channel.empty()
+    ch_higlass_link = channel.empty()
 
     // BAM to Bed
     BEDTOOLS_BAMTOBED ( bam_tuple )

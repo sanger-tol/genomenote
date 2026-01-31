@@ -9,7 +9,7 @@ workflow GET_BLOBTK_PLOTS {
     btk_online_path          // channel: https://online.repository_of_btk.datasets
 
     main:
-    ch_versions         = Channel.empty()
+    ch_versions         = channel.empty()
 
     //
     // NOTE: other arguments for this module, that effect ALL runs of the module
@@ -17,7 +17,7 @@ workflow GET_BLOBTK_PLOTS {
     //          as this is most likely to be adapted by the end user on personal taste.
     //          assembly_level for our purposes can be either 'chromosome' or 'assembled-molecule`
     //              - The first may include unlocalised units whilst the latter will not.
-    blobtk_arguments = Channel.of(
+    blobtk_arguments = channel.of(
         [
             name: "BLOB_VIEW",
             args: "-v blob"

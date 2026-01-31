@@ -18,7 +18,7 @@ workflow CONTACT_MAPS {
 
 
     main:
-    ch_versions     = Channel.empty()
+    ch_versions     = channel.empty()
 
     // Extract the ordered chromosome list
     GET_CHROMLIST (
@@ -52,10 +52,10 @@ workflow CONTACT_MAPS {
         grid_file   = HIGLASS_GENERATION.out.grid
         link_file   = HIGLASS_GENERATION.out.link
     } else {
-        cooler_file = Channel.empty()
-        mcool_file  = Channel.empty()
-        grid_file   = Channel.empty()
-        link_file   = Channel.empty()
+        cooler_file = channel.empty()
+        mcool_file  = channel.empty()
+        grid_file   = channel.empty()
+        link_file   = channel.empty()
     }
 
     //
@@ -71,8 +71,8 @@ workflow CONTACT_MAPS {
         pretext_map = PRETEXT_GENERATION.out.pretext_map
         pretext_png = PRETEXT_GENERATION.out.pretext_png
     } else {
-        pretext_map = Channel.empty()
-        pretext_png = Channel.empty()
+        pretext_map = channel.empty()
+        pretext_png = channel.empty()
     }
 
 

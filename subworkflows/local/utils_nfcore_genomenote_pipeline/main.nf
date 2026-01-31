@@ -112,7 +112,7 @@ workflow PIPELINE_INITIALISATION {
     metadata_inputs.add( params.biosample_wgs ?: null )
     metadata_inputs.add( params.biosample_hic ?: null )
     metadata_inputs.add( params.biosample_rna ?: null )
-    ch_metadata = Channel.of(metadata_inputs)
+    ch_metadata = channel.of(metadata_inputs)
 
     // If both are set, then error out. We want one or the other!
     if (params.btk_location && params.btk_online_location) {
@@ -121,29 +121,29 @@ workflow PIPELINE_INITIALISATION {
 
     // Transform parameters into channels
     if (params.lineage_db) {
-        ch_lineage_db = Channel.fromPath(params.lineage_db).first()
+        ch_lineage_db = channel.fromPath(params.lineage_db).first()
     } else {
-        ch_lineage_db = Channel.empty()
+        ch_lineage_db = channel.empty()
     }
     if (params.cool_order) {
-        ch_cool_order = Channel.fromPath(params.cool_order).first()
+        ch_cool_order = channel.fromPath(params.cool_order).first()
     } else {
-        ch_cool_order = Channel.empty()
+        ch_cool_order = channel.empty()
     }
     if (params.ancestral_table) {
-        ch_ancestral_table = Channel.fromPath(params.ancestral_table).map { path -> [[id: path.getBaseName()], path] }
+        ch_ancestral_table = channel.fromPath(params.ancestral_table).map { path -> [[id: path.getBaseName()], path] }
     } else {
-        ch_ancestral_table = Channel.empty()
+        ch_ancestral_table = channel.empty()
     }
     if (params.btk_location) {
-        ch_btk_local_path = Channel.fromPath(params.btk_location, type: "dir")
+        ch_btk_local_path = channel.fromPath(params.btk_location, type: "dir")
     } else {
-        ch_btk_local_path = Channel.of([])
+        ch_btk_local_path = channel.of([])
     }
     if (params.btk_online_location) {
-        ch_btk_online_path = Channel.of(params.btk_online_location)
+        ch_btk_online_path = channel.of(params.btk_online_location)
     } else {
-        ch_btk_online_path = Channel.of([])
+        ch_btk_online_path = channel.of([])
     }
 
     emit:
