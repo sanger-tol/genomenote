@@ -156,8 +156,8 @@ workflow GENOME_STATISTICS {
     ch_pacbio.dir
     | map { meta, dir -> [
         meta,
-        dir.listFiles().findAll { it.toString().endsWith(".hist") } .collect(),
-        dir.listFiles().findAll { it.toString().contains(".ktab") } .collect(),
+        dir.listFiles().findAll { file -> file.toString().endsWith(".hist") } .collect(),
+        dir.listFiles().findAll { file -> file.toString().contains(".ktab") } .collect(),
     ] }
     | set { ch_grab }
 

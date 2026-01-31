@@ -292,8 +292,8 @@ workflow GENOMENOTE {
             sort: true
         )
     )
-    ch_multiqc_files = ch_multiqc_files.mix(ch_flagstat.collect{it[1]}.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(GENOME_STATISTICS.out.multiqc.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_flagstat.collect{ _meta, file -> file}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(GENOME_STATISTICS.out.multiqc.collect{ _meta, file -> file}.ifEmpty([]))
 
     MULTIQC (
         ch_multiqc_files.collect(),
