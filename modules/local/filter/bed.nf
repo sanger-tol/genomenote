@@ -18,7 +18,6 @@ process FILTER_BED {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     filter_bed.sh $bed ${prefix}_filtered.pairs

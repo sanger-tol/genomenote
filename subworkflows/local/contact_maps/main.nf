@@ -64,7 +64,6 @@ workflow CONTACT_MAPS {
     if ( select_contact_map == "pretext" || select_contact_map == "both" ) {
         PRETEXT_GENERATION (
             genome,
-            GET_CHROMLIST.out.list,
             SAMTOOLS_VIEW.out.bam
         )
         ch_versions = ch_versions.mix ( PRETEXT_GENERATION.out.versions.first() )

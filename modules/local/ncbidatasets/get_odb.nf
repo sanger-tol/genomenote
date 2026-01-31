@@ -19,7 +19,6 @@ process NCBI_GET_ODB {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     get_odb.py $ncbi_summary $lineage_tax_ids ${prefix}.busco_odb.csv

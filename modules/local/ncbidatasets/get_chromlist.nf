@@ -19,7 +19,6 @@ process GET_CHROMLIST {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     get_chr_list.sh $json ${prefix}_chrom.list $ord

@@ -5,7 +5,6 @@ include { PRETEXTSNAPSHOT   } from '../../../modules/nf-core/pretextsnapshot/mai
 workflow PRETEXT_GENERATION {
     take:
     genome          // Channel [ val(meta), path(file)      ]
-    chrom_list      // Channel [ val(meta), path(file)      ]
     bam_tuple       // Channel [ val(meta), path(file)      ]
 
     main:
