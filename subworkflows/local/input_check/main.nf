@@ -17,7 +17,7 @@ workflow INPUT_CHECK {
         .csv
         .splitCsv (header:true, sep: ',')
     |   map { row ->
-        meta = [
+        def meta = [
             id: row.assembly,
             species: row.species,
             taxon_id: row.taxon_id,
