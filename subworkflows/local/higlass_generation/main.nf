@@ -46,7 +46,7 @@ workflow HIGLASS_GENERATION {
     | set { ch_cooler }
 
     chrom_list
-    | map { meta, list -> list }
+    | map { _meta, list -> list }
     | first
     | set { ch_chromsizes }
 
@@ -56,7 +56,7 @@ workflow HIGLASS_GENERATION {
 
     // Create the `.mcool` file
     COOLER_CLOAD.out.cool
-    | map { meta, cool, bin -> [ meta, cool ] }
+    | map { meta, cool, _bin -> [ meta, cool ] }
     | set { ch_zoomify }
 
     COOLER_ZOOMIFY ( ch_zoomify )
@@ -65,7 +65,7 @@ workflow HIGLASS_GENERATION {
 
     // Create the `.genome` file
     COOLER_CLOAD.out.cool
-    | map { meta, cool, bin -> [ meta, cool, [] ] }
+    | map { meta, cool, _bin -> [ meta, cool, [] ] }
     | set { ch_dump }
 
     COOLER_DUMP ( ch_dump )

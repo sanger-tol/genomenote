@@ -48,7 +48,7 @@ workflow INPUT_CHECK {
     samplesheet
         .map { meta, datafile -> [meta.assembly, meta, datafile] }
         .combine(ch_tmp_param, by: 0)
-        .map { assembly, meta, datafile, meta2 ->
+        .map { _assembly, meta, datafile, meta2 ->
             def new_meta = meta + [species: meta2.species, taxon_id: meta2.taxon_id]
             [new_meta, datafile]
         }

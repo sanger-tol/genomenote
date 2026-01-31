@@ -75,7 +75,7 @@ workflow GENOME_METADATA {
     ch_gbif_params = channel.empty()
 
     ch_file_list
-    | map { meta, it ->
+    | map { meta, _it ->
         def assembly = meta.id
         def species = meta.species
         [assembly, species]
@@ -93,7 +93,7 @@ workflow GENOME_METADATA {
 
 
     ch_file_list
-    | map { meta, it ->
+    | map { meta, _it ->
         def assembly = meta.id
         def taxon_id = meta.taxon_id
         [assembly, taxon_id]
@@ -117,7 +117,7 @@ workflow GENOME_METADATA {
 
     // Set meta required for file parsing
     ch_file_list
-    | map { meta, it ->
+    | map { meta, _it ->
         [id: meta.id, taxon_id: meta.taxon_id]
     }
     | set {ch_meta}

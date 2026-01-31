@@ -54,7 +54,7 @@ workflow ANNOTATION_STATISTICS {
     ch_versions = ch_versions.mix ( AGAT_SPSTATISTICS.out.versions.first() )
 
     genome
-    | map { meta, fasta -> fasta }
+    | map { _meta, fasta -> fasta }
     | set { ch_fasta }
 
 

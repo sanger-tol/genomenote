@@ -72,7 +72,7 @@ workflow GENOME_STATISTICS {
         // LOGIC: FORMAT NCBI GET ODB OUTPUT INTO A CHANNEL OF val(lepidoptera_odb10) READY FOR BUSCO INPUT.
         //
         NCBI_GET_ODB.out.csv
-        | map { meta, csv -> csv }
+        | map { _meta, csv -> csv }
         | splitCsv()
         | map { row -> row[1] }
         | set { ch_lineage }
@@ -113,7 +113,7 @@ workflow GENOME_STATISTICS {
     //
     pacbio
     | branch {
-        meta, file ->
+        _meta, file ->
             dir: file.isDirectory()
             file: true
     }
@@ -165,8 +165,8 @@ workflow GENOME_STATISTICS {
     | mix ( ch_grab )
     | combine ( genome )
     | combine ( haplotype.ifEmpty([[],[]]) )
-    | map { meta, hist, ktab, meta2, fasta, meta3, haplotype ->
-        [ meta + [genome_size: meta2.genome_size], hist, ktab, fasta, haplotype ]
+    | map { meta, hist, ktab, meta2, fasta, _meta3, hap_fasta ->
+        [ meta + [genome_size: meta2.genome_size], hist, ktab, fasta, hap_fasta ]
     }
     | set { ch_merq }
 

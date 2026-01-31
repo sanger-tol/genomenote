@@ -78,7 +78,7 @@ workflow GENOMENOTE {
     // Currently we only expect to see ONE haplotype so make this a constraint
     ch_inputs.haplotype
         // Remove meta otherwise collect() will include it as if it were an haplotype
-        .map { meta, haplotype -> haplotype }
+        .map { _meta, haplotype -> haplotype }
         .collect()
         .map { haplotype_tuples ->
             if (haplotype_tuples.size() > 1) {
@@ -91,7 +91,7 @@ workflow GENOMENOTE {
     // MODULE: Unzip the input haplotype if zipped
     //
     ch_inputs.haplotype
-    | branch { meta, fasta ->
+    | branch { _meta, fasta ->
         gzipped: fasta.name.endsWith('.gz')
         unzipped: true
     }
@@ -132,8 +132,8 @@ workflow GENOMENOTE {
     // SUBWORKFLOW: Create genome statistics table
     //
     ch_inputs.hic
-    | map{ meta, reads, blank ->
-        flagstat = file( reads.resolveSibling( reads.baseName + ".flagstat" ), checkIfExists: true)
+    | map{ meta, reads, _blank ->
+        def flagstat = file( reads.resolveSibling( reads.baseName + ".flagstat" ), checkIfExists: true)
         [ meta, flagstat ]
     }
     | set { ch_flagstat }
