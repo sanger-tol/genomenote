@@ -101,7 +101,7 @@ workflow PIPELINE_INITIALISATION {
     //
 
     channel
-        .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
+        .fromList(samplesheetToList(input, "${projectDir}/assets/schema_input.json"))
         .map { meta, datafile -> [meta + [assembly: params.assembly], datafile] }
         .set { ch_samplesheet }
 
