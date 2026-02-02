@@ -1,3 +1,5 @@
-sample,fastq_1,fastq_2
-SAMPLE_PAIRED_END,/path/to/fastq/files/AEG588A1_S1_L002_R1_001.fastq.gz,/path/to/fastq/files/AEG588A1_S1_L002_R2_001.fastq.gz
-SAMPLE_SINGLE_END,/path/to/fastq/files/AEG588A4_S4_L003_R1_001.fastq.gz,
+sample,datatype,datafile
+ilCerPisi1,pacbio,https://tolit.cog.sanger.ac.uk/test-data/Ceramica_pisi/genomic_data/ilCerPisi1/pacbio/m84047_230817_174414_s3.ccs.bc2048.subsampled.bam
+ilCerPisi1,pacbio,https://tolit.cog.sanger.ac.uk/test-data/Ceramica_pisi/genomic_data/ilCerPisi1/pacbio/m64097e_230309_154741.ccs.bc1012_BAK8A_OA--bc1012_BAK8A_OA.subsampled.bam
+ilCerPisi1,hic,https://tolit.cog.sanger.ac.uk/test-data/Ceramica_pisi/analysis/ilCerPisi1.1/read_mapping/hic/GCA_963859965.1.unmasked.hic.ilCerPisi2.subsampled.cram
+ilCerPisi1,haplotype,https://tolit.cog.sanger.ac.uk/test-data/Ceramica_pisi/assembly/release/ilCerPisi1.1/insdc/GCA_963859975.1_alt.fasta.gz

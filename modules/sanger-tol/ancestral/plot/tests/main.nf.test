@@ -1,0 +1,95 @@
+
+nextflow_process {
+
+    name "Test Process ANCESTRAL_PLOT"
+    script "../main.nf"
+    process "ANCESTRAL_PLOT"
+
+    tag "modules"
+    tag "modules_sangertol"
+    tag "ancestral"
+    tag "ancestral/plot"
+
+    config './nextflow.config'
+
+    test("GCA_963859965.1 - tsv - fai") {
+
+        when {
+            params {
+                ancestral_plot_args  = "-m True -d True"
+            }
+
+            process {
+                """
+                input[0] = Channel.of(
+                    [
+                        [ id:'test' ], // meta map
+                        file(params.modules_testdata_base_path + 'resources/genomenote/ancestral_data/buscopainter_complete_location.tsv', checkIfExists: true)
+                    ]
+                )
+
+                input[1] = Channel.of(
+                    [
+                        [ id:'test' ], // meta map
+                        file(params.modules_testdata_base_path + 'resources/genomenote/ancestral_data/GCA_963859965.1.fasta.fai', checkIfExists: true)
+                    ]
+                )
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    file(process.out.pdf_plot.get(0).get(1)).getName(),
+                    file(process.out.png_plot.get(0).get(1)).getName(),
+                    process.out.versions
+                ).match() }
+            )
+        }
+
+    }
+
+    test("GCA_963859965.1 - tsv - fai - stub") {
+
+        options "-stub"
+
+        when {
+            params {
+                ancestral_plot_args  = "-m True -d True"
+            }
+
+            process {
+                """
+                input[0] = Channel.of(
+                    [
+                        [ id:'test' ], // meta map
+                        file(params.modules_testdata_base_path + 'resources/genomenote/ancestral_data/buscopainter_complete_location.tsv', checkIfExists: true)
+                    ]
+                )
+
+                input[1] = Channel.of(
+                    [
+                        [ id:'test' ], // meta map
+                        file(params.modules_testdata_base_path + 'resources/genomenote/ancestral_data/GCA_963859965.1.fasta.fai', checkIfExists: true)
+                    ]
+                )
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    file(process.out.pdf_plot.get(0).get(1)).getName(),
+                    file(process.out.png_plot.get(0).get(1)).getName(),
+                    process.out.versions
+                ).match() }
+            )
+        }
+
+    }
+
+}

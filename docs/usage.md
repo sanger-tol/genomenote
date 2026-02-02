@@ -1,10 +1,42 @@
 # sanger-tol/genomenote: Usage
 
+## :warning: Please read this documentation on the sanger-tol website: [https://pipelines.tol.sanger.ac.uk/genomenote/usage](https://pipelines.tol.sanger.ac.uk/genomenote/usage)
+
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
 ## Introduction
 
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
+The [sanger-tol/genomenote](https://pipelines.tol.sanger.ac.uk/genomenote) pipeline collates various sources of assembly statistics and information to support the publication of a Genome Note.
+
+These typically include:
+
+1. Assembly metadata from COPO, ENA, GoaT, GBIF and NCBI
+2. Assembly information, statistics and chromosome details from NCBI datasets.
+3. Genome completeness from BUSCO.
+4. Annotation statistics from AGAT and completeness from BUSCO.
+5. Consensus quality and k-mer completeness from MerquryFK - when high-quality reads are available.
+6. Hi-C contact map and chromosomal grid using Cooler, as well as primary mapped percentage from samtools flagstat - when Hi-C reads are provided. These files can be displayed on a [HiGlass](http://higlass.io) server, like the one use by the [Sanger Institute](https://genome-note-higlass.tol.sanger.ac.uk/app).
+7. Ancestral Plots are mappings of putative ancestral BUSCO genes onto the chromosomes of the input assembly.
+8. Pretext map and snapshot
+
+## Genome metadata input
+
+The assembly accession for the genome you would like to analyse, optionally with the biosample accession(s) linked to this genome assembly.
+
+```bash
+--assembly '[assembly accession]'
+--biosample_wgs '[biosample accession of the biosample used to produce the genomic sequence]'
+--biosample_hic '[biosample accession of the biosample used to produce the HiC data]'
+--biosample_rna '[biosample accession of the biosample used to produce the RNASeq data]
+```
+
+## Annotation input
+
+If you want to generate statistics on the geneset annotated for the assembly you will need to supply a GFF3 file of the predicted gene sequences. The assembly region names used in this file must match the assembly regions names used in the assembly fasta file provided with --fasta
+
+```bash
+--annotation_set '[Path to annotation file :gff]
+```
 
 ## Samplesheet input
 
@@ -16,37 +48,41 @@ You will need to create a samplesheet with information about the samples you wou
 
 ### Multiple runs of the same sample
 
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
+The `sample` identifiers have to be the same when you have re-sequenced the same sample using different technologies. Below is an example for the same sample sequenced using HiC and PacBio sequencing technology:
 
 ```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
+sample,datatype,datafile
+sample1,hic,/path/to/aligned/cram
+sample1,pacbio,/path/to/unaligned/bam
+sample1,haplotype,/path/to/haplotype/assembly/fasta{.gz}
 ```
 
 ### Full samplesheet
 
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
+The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
 
-A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
+A final samplesheet file consisting of both HiC and PacBio data may look something like the one below. This is for 1 sample, where `sample1` has been sequenced twice.
 
 ```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
-CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
+sample,datatype,datafile
+sample1,hic,/path/to/aligned/cram
+sample1,pacbio,/path/to/unaligned/bam
+sample1,haplotype,/path/to/haplotype/assembly/fasta{.gz}
 ```
 
-| Column    | Description                                                                                                                                                                            |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+| Column     | Description                                                                                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`   | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
+| `datatype` | Type of data. Must be `hic`, `pacbio`, `10x` or `haplotype`                                                                                                                            |
+| `datafile` | Full path to the data location.                                                                                                                                                        |
+
+Here are the expected data files for each data type:
+
+| `datatype`         | `datafile`                                                     |
+| ------------------ | -------------------------------------------------------------- |
+| `hic`              | Either `bam` or `cram` aligned reads                           |
+| `pacbio` and `10x` | Either the FASTK `kmer` directory or the unaligned `bam` files |
+| `haplotype`        | The Fasta file of the alternative haplotype                    |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
@@ -55,7 +91,7 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run sanger-tol/genomenote --input ./samplesheet.csv --outdir ./results  -profile docker
+nextflow run sanger-tol/genomenote --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta --assembly GCA_922984935.2 -profile docker
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -85,9 +121,10 @@ nextflow run sanger-tol/genomenote -profile docker -params-file params.yaml
 with:
 
 ```yaml title="params.yaml"
-input: './samplesheet.csv'
-outdir: './results/'
-<...>
+input: "./samplesheet.csv"
+outdir: "./results/"
+fasta: "./genome.fasta"
+assembly: "GCA_922984935.2"
 ```
 
 You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
@@ -125,7 +162,7 @@ Use this parameter to choose a configuration profile. Profiles can give configur
 Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Podman, Shifter, Charliecloud, Apptainer, Conda) - see below.
 
 > [!IMPORTANT]
-> We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
+> We require the use of containers such as Docker or Singularity as Conda is _not_ supported. You will get the added benefit of full pipeline reproducibility.
 
 The pipeline also dynamically loads configurations from [https://github.com/nf-core/configs](https://github.com/nf-core/configs) when it runs, making multiple config profiles for various institutional clusters available at run time. For more information and to check if your system is supported, please see the [nf-core/configs documentation](https://github.com/nf-core/configs#documentation).
 
@@ -134,9 +171,6 @@ They are loaded in sequence, so later profiles can overwrite earlier profiles.
 
 If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended, since it can lead to different results on different machines dependent on the computer environment.
 
-- `test`
-  - A profile with a complete configuration for automated testing
-  - Includes links to test data so needs no other parameters
 - `docker`
   - A generic configuration profile to be used with [Docker](https://docker.com/)
 - `singularity`
@@ -151,8 +185,13 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
   - A generic configuration profile to be used with [Apptainer](https://apptainer.org/)
 - `wave`
   - A generic configuration profile to enable [Wave](https://seqera.io/wave/) containers. Use together with one of the above (requires Nextflow ` 24.03.0-edge` or later).
-- `conda`
-  - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter, Charliecloud, or Apptainer.
+- `test`
+  - A profile with a minimal configuration for automated testing
+  - Includes links to test data so needs no other parameters
+  - Runs within minutes
+- `test_full`
+  - A profile with a complete configuration for automated testing
+  - Includes links to test data so needs no other parameters
 
 ### `-resume`
 
@@ -208,4 +247,36 @@ We recommend adding the following line to your environment to limit this (typica
 
 ```bash
 NXF_OPTS='-Xms1g -Xmx4g'
+```
+
+## For internal Sanger use only
+
+If you wish to run the optional step that writes genome metadata key value-pairs to a genome notes databases you will need to set the parameter "write_to_portal" to true and provide the base url for the REST API that writes to the database.
+
+```bash
+   --write_to_portal_db 'true'
+   --genome_notes_api '[URL for Genome Notes Portal API]'
+```
+
+You will also need to set a nextflow secret to store the API key belonging to your user.
+
+```bash
+  nextflow secrets set TOL_API_KEY '[API key]'
+```
+
+If you want to populate a genome notes template file with the key-value pairs generated by this pipeline you will need to pass the path to the template file as the "note_template" parameter. Templates may be either docx or xml format.
+
+```bash
+   --note_template '[URL for Genome Notes Portal API]'
+```
+
+If you wish to run the optional step that writes the .mcool and .genome files produced by the contact_maps subworkflow to a kubernetes hosted higlass server you will need to set the parameter "upload_higlass_data" to true and provide the configuration information for the kubernetes deployment.
+
+```bash
+   --upload_higlass_data 'true'
+   --higlass_upload_directory  '[Path to ingress directory for kubernetes]'
+   --higlass_data_project_dir '[Directory structure to be used for Higlass data, suggestions is to use /<project-name>/<taxon-group>]'
+   --higlass_deployment_name '[ Name of Higlass Deployment in kubernetes]'
+   --higlass_namespace '[Name of the namespace used for Higlass Deployment in Kubernetes]'
+   --higlass_kubeconfig '[path to kubeconfig file]'
 ```
