@@ -10,10 +10,10 @@ process ANCESTRAL_EXTRACT {
     tuple val(meta2), path(ancestraltable)
 
     output:
-    tuple val(meta), path("*buscopainter_complete_location.tsv")  , emit: comp_location
-    tuple val(meta), path("*buscopainter_duplicated_location.tsv"), emit: dup_location
-    tuple val(meta), path("*summary.tsv")                         , emit: summary
-    path "versions.yml"                                           , emit: versions
+    tuple val(meta), path("*_complete_location.tsv")  , emit: comp_location
+    tuple val(meta), path("*_duplicated_location.tsv"), emit: dup_location
+    tuple val(meta), path("*_summary.tsv")            , emit: summary
+    path "versions.yml"                               , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -27,7 +27,7 @@ process ANCESTRAL_EXTRACT {
     def prefix  = task.ext.prefix   ?: "${meta.id}"
 
     """
-    buscopainter.py -r $ancestraltable -q $fulltable
+    buscopainter.py -r $ancestraltable -q $fulltable -p $prefix $args
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -39,8 +39,8 @@ process ANCESTRAL_EXTRACT {
     stub:
     def prefix  = task.ext.prefix   ?: "${meta.id}"
     """
-    touch ${prefix}_buscopainter_complete_location.tsv
-    touch ${prefix}_buscopainter_duplicated_location.tsv
+    touch ${prefix}_complete_location.tsv
+    touch ${prefix}_duplicated_location.tsv
     touch ${prefix}_summary.tsv
 
     cat <<-END_VERSIONS > versions.yml

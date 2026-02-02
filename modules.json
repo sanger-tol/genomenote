@@ -142,12 +142,12 @@
                 "sanger-tol": {
                     "ancestral/extract": {
                         "branch": "main",
-                        "git_sha": "006011139ed98264e0fd161d60801d62476162df",
+                        "git_sha": "8046a87011cff32f871ed9234801270fa15e7f40",
                         "installed_by": ["modules"]
                     },
                     "ancestral/plot": {
                         "branch": "main",
-                        "git_sha": "6ed770244dd4f8098a1e374727bbf0f1e04a3ae4",
+                        "git_sha": "ac0fc48df659b3a6cca0fc2b0346af41162caabb",
                         "installed_by": ["modules"]
                     }
                 }

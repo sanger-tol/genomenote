@@ -11,7 +11,7 @@ keywords:
 tools:
   - plot_buscopainter:
       description: |
-        Scripts to extract ancestrally linked busco genes.
+        Generate BUSCO ancestral linkage plots (PDF/PNG) from the ancestrally linked BUSCO TSV produced by the extract module.
       homepage: https://github.com/sanger-tol/busco_painter
       documentation: https://github.com/sanger-tol/busco_painter
       licence: ["GPL v2.0"]
