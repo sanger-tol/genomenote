@@ -19,14 +19,11 @@ process COMBINE_METADATA {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = []
     def prefix = task.ext.prefix ?: meta.id
-    for (item in  file_list){
-        def file = item
+    def args = file_list.collectMany { item ->
         def file_ext = item.getExtension()
         def file_name = "--" + item.getName().minus("${prefix}_").minus(".${file_ext}").toLowerCase() + "_file"
-        args.add(file_name)
-        args.add(file)
+        [file_name, item]
     }
 
     """
