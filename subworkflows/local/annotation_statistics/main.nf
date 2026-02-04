@@ -57,7 +57,6 @@ workflow ANNOTATION_STATISTICS {
     // MODULE: Obtaining the protein fasta file from the gff3
     //
     GFFREAD(ch_gff_unzipped, ch_fasta)
-    ch_versions = ch_versions.mix ( GFFREAD.out.versions.first() )
 
 
     //

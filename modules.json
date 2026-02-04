@@ -70,7 +70,7 @@
                     },
                     "gffread": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "51f2b493a7ff28b40a9f99faca64245521f2bb24",
                         "installed_by": ["modules"]
                     },
                     "gnu/sort": {
