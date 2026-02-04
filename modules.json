@@ -59,7 +59,7 @@
                     },
                     "genescopefk": {
                         "branch": "master",
-                        "git_sha": "a4d916a39231897a49c903089a548704c09b8ef3",
+                        "git_sha": "1dc923c6ab82ab0c33f82247799a8ae4b7f9ca4b",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/genescopefk/genescopefk.diff"
                     },

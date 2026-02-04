@@ -13,4 +13,7 @@ Changes in 'genescopefk/main.nf':
      input:
      tuple val(meta), path(fastk_histex_histogram)
 
+'modules/nf-core/genescopefk/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/genescopefk/tests/nextflow.config' is unchanged
+'modules/nf-core/genescopefk/tests/main.nf.test' is unchanged
 ************************************************************
