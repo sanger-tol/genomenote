@@ -2,7 +2,7 @@
 process WRITE_TO_GENOME_NOTES_DB {
     secret 'TOL_API_KEY'
 
-    tag = ""
+    tag "${meta.id}"
     label 'process_single'
 
     conda "conda-forge::python=3.9.1"
