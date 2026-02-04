@@ -99,7 +99,6 @@ workflow GENOMENOTE {
         ch_haplotype.gzipped
     )
     ch_unzipped  = GUNZIP_HAPLOTYPE.out.gunzip
-    ch_versions  = ch_versions.mix ( GUNZIP_HAPLOTYPE.out.versions )
 
     //
     // NOTE: Mix the unzipped haplotype with the original zipped haplotypes - this exists as a prelude to multi-haplotype support
@@ -115,7 +114,6 @@ workflow GENOMENOTE {
 
     if ( params.fasta.endsWith('.gz') ) {
         ch_unzipped = GUNZIP_PRIMARY ( ch_genome ).gunzip
-        ch_versions = ch_versions.mix ( GUNZIP_PRIMARY.out.versions.first() )
     } else {
         ch_unzipped = ch_genome
     }

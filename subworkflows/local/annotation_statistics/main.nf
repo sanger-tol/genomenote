@@ -32,7 +32,6 @@ workflow ANNOTATION_STATISTICS {
     //
     if (params.annotation_set.endsWith('.gz')) {
         ch_gff_unzipped = GUNZIP(ch_gff_tupple).gunzip
-        ch_versions = ch_versions.mix ( GUNZIP.out.versions.first() )
     } else {
         ch_gff_unzipped = ch_gff_tupple
     }
