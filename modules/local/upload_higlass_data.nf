@@ -11,9 +11,9 @@ process UPLOAD_HIGLASS_DATA {
     path(upload_dir)
 
     output:
-    env map_uuid, emit: map_uuid
-    env grid_uuid, emit: grid_uuid
-    env file_name, emit: file_name
+    env 'map_uuid', emit: map_uuid
+    env 'grid_uuid', emit: grid_uuid
+    env 'file_name', emit: file_name
     tuple val(meta2), path(genome), emit: genome_file
     path "versions.yml", emit: versions
 
