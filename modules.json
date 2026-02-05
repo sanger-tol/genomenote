@@ -48,20 +48,18 @@
                     },
                     "fastk/fastk": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/fastk/fastk/fastk-fastk.diff"
+                        "git_sha": "9678889112458c22cf237769be1465774467e798",
+                        "installed_by": ["modules"]
                     },
                     "fastk/histex": {
                         "branch": "master",
-                        "git_sha": "26ae0455fc69b3fbf542ec506c71bce44ddddc4e",
+                        "git_sha": "9678889112458c22cf237769be1465774467e798",
                         "installed_by": ["modules"]
                     },
                     "genescopefk": {
                         "branch": "master",
                         "git_sha": "575e1a4b51a9bad7a8cd1316a88fb85684ef7c7b",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/genescopefk/genescopefk.diff"
+                        "installed_by": ["modules"]
                     },
                     "gfastats": {
                         "branch": "master",
@@ -85,7 +83,7 @@
                     },
                     "merquryfk/merquryfk": {
                         "branch": "master",
-                        "git_sha": "05954dab2ff481bcb999f24455da29a5828af08d",
+                        "git_sha": "575e1a4b51a9bad7a8cd1316a88fb85684ef7c7b",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/merquryfk/merquryfk/merquryfk-merquryfk.diff"
                     },

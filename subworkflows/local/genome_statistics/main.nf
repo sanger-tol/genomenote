@@ -125,14 +125,12 @@ workflow GENOME_STATISTICS {
     // MODULE: RUN FASTK KMER COUNTING TO GENERATE HISTOGRAM DATA
     //
     FASTK_FASTK ( ch_fastk )
-    ch_versions         = ch_versions.mix ( FASTK_FASTK.out.versions.first() )
 
 
     //
     // MODULE: HISTEX generates a histogram in -h given intervals
     //
     FASTK_HISTEX( FASTK_FASTK.out.hist )
-    ch_versions         = ch_versions.mix(FASTK_HISTEX.out.versions)
 
 
     //
@@ -140,7 +138,6 @@ workflow GENOME_STATISTICS {
     //          outputs a correct estimate of genome size and % repetitiveness
     //
     GENESCOPEFK( FASTK_HISTEX.out.hist )
-    ch_versions         = ch_versions.mix(GENESCOPEFK.out.versions)
 
 
     //
@@ -172,7 +169,6 @@ workflow GENOME_STATISTICS {
         [[],[]],
         [[],[]]
     )
-    ch_versions = ch_versions.mix ( MERQURYFK_MERQURYFK.out.versions.first() )
 
 
     //
