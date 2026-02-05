@@ -55,7 +55,7 @@
                     "requests": "2.26.0"
                 },
                 "GENESCOPEFK": {
-                    "genescope": "380815c420f50171f9234a0fd1ff426b39829b91",
+                    "genescopefk": "380815c420f50171f9234a0fd1ff426b39829b91",
                     "r": "4.4.3"
                 },
                 "GET_CHROMLIST": {
@@ -68,13 +68,13 @@
                     "gffread": "0.12.7"
                 },
                 "GUNZIP": {
-                    "gunzip": 1.1
+                    "gunzip": 1.13
                 },
                 "GUNZIP_HAPLOTYPE": {
-                    "gunzip": 1.1
+                    "gunzip": 1.13
                 },
                 "GUNZIP_PRIMARY": {
-                    "gunzip": 1.1
+                    "gunzip": 1.13
                 },
                 "MERQURYFK_MERQURYFK": {
                     "fastk": "ddea6cf254f378db51d22c6eb21af775fa9e1f77",
@@ -264,6 +264,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2025-12-08T15:10:21.399269646"
+        "timestamp": "2026-02-05T18:24:38.200936563"
     }
 }
