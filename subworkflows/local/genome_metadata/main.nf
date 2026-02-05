@@ -74,49 +74,30 @@ workflow GENOME_METADATA {
     ch_gbif_params = channel.empty()
 
     ch_gbif_params = ch_file_list
-        .map { meta, _it ->
-        def assembly = meta.id
-        def species = meta.species
-        [assembly, species]
-    }
+        .map { meta, _path -> [meta.id, meta.species] }
 
     // Fetch GBIF metdata using genus, species and id as input channels
     FETCH_GBIF_METADATA( ch_gbif_params )
     ch_versions = ch_versions.mix(FETCH_GBIF_METADATA.out.versions.first() )
 
-    // Combining the two output channels into one  channel
-    ch_gbif = FETCH_GBIF_METADATA.out.file_path
-        .map { it -> tuple( it )}
-
-
     ch_ensembl_params = ch_file_list
-        .map { meta, _it ->
-        def assembly = meta.id
-        def taxon_id = meta.taxon_id
-        [assembly, taxon_id]
-    }
+        .map { meta, _path -> [meta.id, meta.taxon_id] }
 
     // Query Ensembl Metadata API to see if this species has been annotated
     FETCH_ENSEMBL_METADATA ( ch_ensembl_params )
     ch_versions = ch_versions.mix( FETCH_ENSEMBL_METADATA.out.versions.first() )
 
-    ch_parsed = PARSE_METADATA.out.file_path
-        .map { it -> tuple( it[1] )}
-
-    ch_parsed_files = ch_parsed.mix(ch_gbif, FETCH_ENSEMBL_METADATA.out.file_path)
+    ch_parsed_files = PARSE_METADATA.out.file_path
+        .map { _meta, file -> tuple( file )}
+        .mix(FETCH_GBIF_METADATA.out.file_path)
+        .mix(FETCH_ENSEMBL_METADATA.out.file_path)
         .collect()
-        .map { it ->
-            [ it ]
-        }
+        .map { files -> [files] }
 
-    // Set meta required for file parsing
-    ch_meta = ch_file_list
-        .map { meta, _it ->
-        [id: meta.id, taxon_id: meta.taxon_id]
-    }
-
-    // combine meta and parsed files
-    ch_meta_parsed = ch_meta.combine(ch_parsed_files)
+    // Set meta required for file parsing and combine with parsed files
+    ch_meta_parsed = ch_file_list
+        .map { meta, _path -> [id: meta.id, taxon_id: meta.taxon_id] }
+        .combine(ch_parsed_files)
 
 
     COMBINE_METADATA( ch_meta_parsed )
