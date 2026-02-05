@@ -1,17 +1,17 @@
 process GENERATE_HIGLASS_LINK {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     conda "conda-forge::requests=2.26.0"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/requests:2.26.0':
-        'biocontainers/requests:2.26.0' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/requests:2.26.0'
+        : 'biocontainers/requests:2.26.0'}"
 
     input:
-    val(file_name)
-    val(map_uuid)
-    val(grid_uuid)
-    val(server)
+    val file_name
+    val map_uuid
+    val grid_uuid
+    val server
     tuple val(meta), path(genome)
 
     output:
@@ -21,15 +21,16 @@ process GENERATE_HIGLASS_LINK {
     when:
     task.ext.when == null || task.ext.when
 
-    script: // This script is bundled with the pipeline, in nf-core/genomenote/bin/
+    script:
+    // This script is bundled with the pipeline, in nf-core/genomenote/bin/
     def prefix = task.ext.prefix ?: meta.id
     """
     generate_higlass_link.py \\
-        $file_name \\
-        $map_uuid \\
-        $grid_uuid \\
-        $server \\
-        $genome \\
+        ${file_name} \\
+        ${map_uuid} \\
+        ${grid_uuid} \\
+        ${server} \\
+        ${genome} \\
         ${prefix}_higlass_link.csv
 
 

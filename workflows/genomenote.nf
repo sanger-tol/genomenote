@@ -13,14 +13,14 @@
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK           } from '../subworkflows/local/input_check/main'
-include { GENOME_METADATA       } from '../subworkflows/local/genome_metadata/main'
-include { CONTACT_MAPS          } from '../subworkflows/local/contact_maps/main'
-include { GENOME_STATISTICS     } from '../subworkflows/local/genome_statistics/main'
-include { COMBINE_NOTE_DATA     } from '../subworkflows/local/combine_note_data/main'
-include { ANNOTATION_STATISTICS } from '../subworkflows/local/annotation_statistics/main'
-include { ANNOTATION_ANCESTRAL  } from '../subworkflows/local/annotation_ancestral/main'
-include { GET_BLOBTK_PLOTS      } from '../subworkflows/local/get_blobtk_plots/main'
+include { INPUT_CHECK                } from '../subworkflows/local/input_check/main'
+include { GENOME_METADATA            } from '../subworkflows/local/genome_metadata/main'
+include { CONTACT_MAPS               } from '../subworkflows/local/contact_maps/main'
+include { GENOME_STATISTICS          } from '../subworkflows/local/genome_statistics/main'
+include { COMBINE_NOTE_DATA          } from '../subworkflows/local/combine_note_data/main'
+include { ANNOTATION_STATISTICS      } from '../subworkflows/local/annotation_statistics/main'
+include { ANNOTATION_ANCESTRAL       } from '../subworkflows/local/annotation_ancestral/main'
+include { GET_BLOBTK_PLOTS           } from '../subworkflows/local/get_blobtk_plots/main'
 
 
 /*
@@ -32,14 +32,14 @@ include { GET_BLOBTK_PLOTS      } from '../subworkflows/local/get_blobtk_plots/m
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { GUNZIP as GUNZIP_PRIMARY    } from '../modules/nf-core/gunzip/main'
-include { GUNZIP as GUNZIP_HAPLOTYPE  } from '../modules/nf-core/gunzip/main'
-include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
+include { GUNZIP as GUNZIP_PRIMARY   } from '../modules/nf-core/gunzip/main'
+include { GUNZIP as GUNZIP_HAPLOTYPE } from '../modules/nf-core/gunzip/main'
+include { MULTIQC                    } from '../modules/nf-core/multiqc/main'
 
-include { paramsSummaryMap       } from 'plugin/nf-schema'
-include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_genomenote_pipeline'
+include { paramsSummaryMap           } from 'plugin/nf-schema'
+include { paramsSummaryMultiqc       } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML     } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText     } from '../subworkflows/local/utils_nfcore_genomenote_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,14 +48,13 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_geno
 */
 
 workflow GENOMENOTE {
-
     take:
-    samplesheet     // channel: samplesheet read in from --input
-    metadata        // channel: list of accession numbers to retrieve metadata for
-    lineage_db      // channel: path to the Busco lineage, if provided
+    samplesheet // channel: samplesheet read in from --input
+    metadata // channel: list of accession numbers to retrieve metadata for
+    lineage_db // channel: path to the Busco lineage, if provided
     ancestral_table // channel: path to the ancestral painting table, if provided
-    cool_order      // channel: path to the ordered list of chromosomes, if provided
-    btk_local_path  // channel: path of a local blobDir, if provided
+    cool_order // channel: path to the ordered list of chromosomes, if provided
+    btk_local_path // channel: path of a local blobDir, if provided
     btk_online_path // channel: path of a remote blobDir, if provided
 
     main:
@@ -63,25 +62,23 @@ workflow GENOMENOTE {
     ch_versions = channel.empty()
     ch_multiqc_files = channel.empty()
 
-    ch_inputs = INPUT_CHECK ( samplesheet, metadata).data
-        .branch { meta, file ->
-        hic : meta.datatype == 'hic'
-            return [ meta, file, [] ]
-        pacbio : meta.datatype == 'pacbio' || meta.datatype == '10x'
-            return [ meta, file ]
-        haplotype : meta.datatype == 'haplotype'
-            return [ meta, file ]
+    ch_inputs = INPUT_CHECK(samplesheet, metadata).data.branch { meta, file ->
+        hic: meta.datatype == 'hic'
+        return [meta, file, []]
+        pacbio: meta.datatype == 'pacbio' || meta.datatype == '10x'
+        return [meta, file]
+        haplotype: meta.datatype == 'haplotype'
+        return [meta, file]
     }
-    ch_versions  = ch_versions.mix ( INPUT_CHECK.out.versions )
+    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     // Currently we only expect to see ONE haplotype so make this a constraint
     ch_inputs.haplotype
-        // Remove meta otherwise collect() will include it as if it were an haplotype
         .map { _meta, haplotype -> haplotype }
         .collect()
         .map { haplotype_tuples ->
             if (haplotype_tuples.size() > 1) {
-                error "Multiple haplotype files detected (${haplotype_tuples}) and is not yet supported. Please only provide one haplotype file"
+                error("Multiple haplotype files detected (${haplotype_tuples}) and is not yet supported. Please only provide one haplotype file")
             }
         }
 
@@ -89,16 +86,15 @@ workflow GENOMENOTE {
     //
     // MODULE: Unzip the input haplotype if zipped
     //
-    ch_haplotype = ch_inputs.haplotype
-        .branch { _meta, fasta ->
-            gzipped: fasta.name.endsWith('.gz')
-            unzipped: true
-        }
+    ch_haplotype = ch_inputs.haplotype.branch { _meta, fasta ->
+        gzipped: fasta.name.endsWith('.gz')
+        unzipped: true
+    }
 
-    GUNZIP_HAPLOTYPE (
+    GUNZIP_HAPLOTYPE(
         ch_haplotype.gzipped
     )
-    ch_unzipped  = GUNZIP_HAPLOTYPE.out.gunzip
+    ch_unzipped = GUNZIP_HAPLOTYPE.out.gunzip
 
     //
     // NOTE: Mix the unzipped haplotype with the original zipped haplotypes - this exists as a prelude to multi-haplotype support
@@ -109,37 +105,35 @@ workflow GENOMENOTE {
     // MODULE: Uncompress fasta file if needed and set meta based on input params
     //
 
-    ch_genome = INPUT_CHECK.out.param
-        .map { meta -> [meta, params.fasta] }
+    ch_genome = INPUT_CHECK.out.param.map { meta -> [meta, params.fasta] }
 
-    if ( params.fasta.endsWith('.gz') ) {
-        ch_unzipped = GUNZIP_PRIMARY ( ch_genome ).gunzip
-    } else {
+    if (params.fasta.endsWith('.gz')) {
+        ch_unzipped = GUNZIP_PRIMARY(ch_genome).gunzip
+    }
+    else {
         ch_unzipped = ch_genome
     }
 
-    ch_fasta = ch_unzipped
-        .map { meta, fa -> [ meta + [id: fa.baseName, genome_size: fa.size()], fa] }
+    ch_fasta = ch_unzipped.map { meta, fa -> [meta + [id: fa.baseName, genome_size: fa.size()], fa] }
 
 
     //
     // SUBWORKFLOW: Create genome statistics table
     //
-    ch_flagstat = ch_inputs.hic
-        .map{ meta, reads, _blank ->
-            def flagstat = file( reads.resolveSibling( reads.baseName + ".flagstat" ), checkIfExists: true)
-            [ meta, flagstat ]
-        }
+    ch_flagstat = ch_inputs.hic.map { meta, reads, _blank ->
+        def flagstat = file(reads.resolveSibling(reads.baseName + ".flagstat"), checkIfExists: true)
+        [meta, flagstat]
+    }
 
-    GENOME_STATISTICS (
+    GENOME_STATISTICS(
         ch_fasta,
         params.lineage_tax_ids,
         lineage_db,
         ch_inputs.pacbio,
         ch_flagstat,
-        ch_haplotype
+        ch_haplotype,
     )
-    ch_versions  = ch_versions.mix ( GENOME_STATISTICS.out.versions )
+    ch_versions = ch_versions.mix(GENOME_STATISTICS.out.versions)
 
 
     if (params.btk_location || params.btk_online_location) {
@@ -151,62 +145,62 @@ workflow GENOMENOTE {
             btk_local_path,
             btk_online_path,
         )
-        ch_versions  = ch_versions.mix ( GET_BLOBTK_PLOTS.out.versions )
+        ch_versions = ch_versions.mix(GET_BLOBTK_PLOTS.out.versions)
     }
 
 
     //
     // SUBWORKFLOW: Create contact map matrices from HiC alignment files
     //
-    CONTACT_MAPS (
+    CONTACT_MAPS(
         ch_fasta,
         ch_inputs.hic,
         GENOME_STATISTICS.out.summary_seq,
         channel.of(params.binsize),
         cool_order,
-        params.select_contact_map
+        params.select_contact_map,
     )
-    ch_versions  = ch_versions.mix ( CONTACT_MAPS.out.versions )
+    ch_versions = ch_versions.mix(CONTACT_MAPS.out.versions)
 
 
     //
     // SUBWORKFLOW : Obtain feature statistics from the annotation file : GFF
     //
     ch_annotation_stats = channel.empty()
-    if ( params.annotation_set ) {
-        ANNOTATION_STATISTICS (
+    if (params.annotation_set) {
+        ANNOTATION_STATISTICS(
             channel.fromPath(params.annotation_set),
             ch_fasta,
             GENOME_STATISTICS.out.ch_busco_lineage,
-            lineage_db
+            lineage_db,
         )
-        ch_versions = ch_versions.mix ( ANNOTATION_STATISTICS.out.versions )
-        ch_annotation_stats = ch_annotation_stats.mix (ANNOTATION_STATISTICS.out.summary)
+        ch_versions = ch_versions.mix(ANNOTATION_STATISTICS.out.versions)
+        ch_annotation_stats = ch_annotation_stats.mix(ANNOTATION_STATISTICS.out.summary)
     }
 
-    if ( params.note_template ){
+    if (params.note_template) {
 
         //
         // SUBWORKFLOW: Read in template of data files to fetch, parse these files and output a list of genome metadata params
         //
-        ch_file_list = channel.fromPath("$projectDir/assets/genome_metadata_template.csv")
-        ch_metadata = INPUT_CHECK.out.param.combine( ch_file_list )
+        ch_file_list = channel.fromPath("${projectDir}/assets/genome_metadata_template.csv")
+        ch_metadata = INPUT_CHECK.out.param.combine(ch_file_list)
 
-        GENOME_METADATA ( ch_metadata )
-        ch_versions     = ch_versions.mix(GENOME_METADATA.out.versions)
+        GENOME_METADATA(ch_metadata)
+        ch_versions = ch_versions.mix(GENOME_METADATA.out.versions)
 
         //
         // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
         //
-        COMBINE_NOTE_DATA (
+        COMBINE_NOTE_DATA(
             GENOME_METADATA.out.consistent,
             GENOME_METADATA.out.inconsistent,
             GENOME_STATISTICS.out.summary,
-            ch_annotation_stats.ifEmpty([[],[]]),
+            ch_annotation_stats.ifEmpty([[], []]),
             CONTACT_MAPS.out.link,
-            params.note_template
+            params.note_template,
         )
-        ch_versions = ch_versions.mix ( COMBINE_NOTE_DATA.out.versions )
+        ch_versions = ch_versions.mix(COMBINE_NOTE_DATA.out.versions)
     }
 
     //
@@ -215,14 +209,14 @@ workflow GENOMENOTE {
     //              Once there are more options, this should be reviewed for a better system
     //
 
-    if ( params.ancestral_table && params.ancestral_busco_lineage ) {
-        ANNOTATION_ANCESTRAL (
+    if (params.ancestral_table && params.ancestral_busco_lineage) {
+        ANNOTATION_ANCESTRAL(
             ch_fasta,
             ancestral_table,
             params.ancestral_busco_lineage,
-            lineage_db
+            lineage_db,
         )
-        ch_versions = ch_versions.mix ( ANNOTATION_ANCESTRAL.out.versions )
+        ch_versions = ch_versions.mix(ANNOTATION_ANCESTRAL.out.versions)
     }
 
     //
@@ -237,9 +231,9 @@ workflow GENOMENOTE {
 
     def topic_versions_string = topic_versions.versions_tuple
         .map { process, tool, version ->
-            [ process[process.lastIndexOf(':')+1..-1], "  ${tool}: ${version}" ]
+            [process[process.lastIndexOf(':') + 1..-1], "  ${tool}: ${version}"]
         }
-        .groupTuple(by:0)
+        .groupTuple(by: 0)
         .map { process, tool_versions ->
             tool_versions.unique().sort()
             "${process}:\n${tool_versions.join('\n')}"
@@ -249,62 +243,61 @@ workflow GENOMENOTE {
         .mix(topic_versions_string)
         .collectFile(
             storeDir: "${params.outdir}/pipeline_info",
-            name:  'genomenote_software_'  + 'mqc_'  + 'versions.yml',
+            name: 'genomenote_software_' + 'mqc_' + 'versions.yml',
             sort: true,
-            newLine: true
-        ).set { ch_collated_versions }
+            newLine: true,
+        )
+        .set { ch_collated_versions }
 
     //
     // MODULE: MultiQC
     //
-    ch_multiqc_config        = channel.fromPath(
-        "$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-    ch_multiqc_custom_config = params.multiqc_config ?
-        channel.fromPath(params.multiqc_config, checkIfExists: true) :
-        channel.empty()
-    ch_multiqc_logo          = params.multiqc_logo ?
-        channel.fromPath(params.multiqc_logo, checkIfExists: true) :
-        channel.empty()
+    ch_multiqc_config = channel.fromPath(
+        "${projectDir}/assets/multiqc_config.yml",
+        checkIfExists: true
+    )
+    ch_multiqc_custom_config = params.multiqc_config
+        ? channel.fromPath(params.multiqc_config, checkIfExists: true)
+        : channel.empty()
+    ch_multiqc_logo = params.multiqc_logo
+        ? channel.fromPath(params.multiqc_logo, checkIfExists: true)
+        : channel.empty()
 
-    summary_params      = paramsSummaryMap(
-        workflow, parameters_schema: "nextflow_schema.json")
+    summary_params = paramsSummaryMap(
+        workflow,
+        parameters_schema: "nextflow_schema.json"
+    )
     ch_workflow_summary = channel.value(paramsSummaryMultiqc(summary_params))
     ch_multiqc_files = ch_multiqc_files.mix(
-        ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_custom_methods_description = params.multiqc_methods_description ?
-        file(params.multiqc_methods_description, checkIfExists: true) :
-        file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-    ch_methods_description                = channel.value(
-        methodsDescriptionText(ch_multiqc_custom_methods_description))
+        ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml')
+    )
+    ch_multiqc_custom_methods_description = params.multiqc_methods_description
+        ? file(params.multiqc_methods_description, checkIfExists: true)
+        : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
+    ch_methods_description = channel.value(
+        methodsDescriptionText(ch_multiqc_custom_methods_description)
+    )
 
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
     ch_multiqc_files = ch_multiqc_files.mix(
         ch_methods_description.collectFile(
             name: 'methods_description_mqc.yaml',
-            sort: true
+            sort: true,
         )
     )
-    ch_multiqc_files = ch_multiqc_files.mix(ch_flagstat.collect{ _meta, file -> file}.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(GENOME_STATISTICS.out.multiqc.collect{ _meta, file -> file}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_flagstat.collect { _meta, file -> file }.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(GENOME_STATISTICS.out.multiqc.collect { _meta, file -> file }.ifEmpty([]))
 
-    MULTIQC (
+    MULTIQC(
         ch_multiqc_files.collect(),
         ch_multiqc_config.toList(),
         ch_multiqc_custom_config.toList(),
         ch_multiqc_logo.toList(),
         [],
-        []
+        [],
     )
 
     emit:
     multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
-    versions       = ch_versions                 // channel: [ path(versions.yml) ]
-
+    versions       = ch_versions // channel: [ path(versions.yml) ]
 }
-
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    THE END
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/

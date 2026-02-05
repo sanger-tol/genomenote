@@ -16,23 +16,22 @@ include { MERQURYFK_MERQURYFK                           } from '../../../modules
 
 workflow GENOME_STATISTICS {
     take:
-    genome                 // channel: [ meta, fasta ]
-    lineage_tax_ids        // channel: /path/to/lineage_tax_ids
-    lineage_db             // channel: /path/to/buscoDB
-    pacbio                 // channel: [ meta, kmer_db or reads ]
-    flagstat               // channel: [ meta, flagstat ]
-    haplotype              // channel: [ meta, fasta ]
-
+    genome // channel: [ meta, fasta ]
+    lineage_tax_ids // channel: /path/to/lineage_tax_ids
+    lineage_db // channel: /path/to/buscoDB
+    pacbio // channel: [ meta, kmer_db or reads ]
+    flagstat // channel: [ meta, flagstat ]
+    haplotype // channel: [ meta, fasta ]
 
     main:
-    ch_versions         = channel.empty()
+    ch_versions = channel.empty()
 
 
     //
     // MODULE: Genome summary statistics
     //
-    SUMMARYGENOME ( genome )
-    ch_versions         = ch_versions.mix ( SUMMARYGENOME.out.versions.first() )
+    SUMMARYGENOME(genome)
+    ch_versions = ch_versions.mix(SUMMARYGENOME.out.versions.first())
 
 
     //
@@ -43,29 +42,30 @@ workflow GENOME_STATISTICS {
         "",
         "",
         "",
-        [[],[]],
-        [[],[]],
-        [[],[]],
-        [[],[]]
+        [[], []],
+        [[], []],
+        [[], []],
+        [[], []],
     )
-    ch_versions         = ch_versions.mix( GFASTATS.out.versions )
+    ch_versions = ch_versions.mix(GFASTATS.out.versions)
 
 
     //
     // MODULE: Sequence summary statistics
     //
-    SUMMARYSEQUENCE ( genome )
-    ch_versions         = ch_versions.mix ( SUMMARYSEQUENCE.out.versions.first() )
+    SUMMARYSEQUENCE(genome)
+    ch_versions = ch_versions.mix(SUMMARYSEQUENCE.out.versions.first())
 
 
     if (params.busco_lineage) {
-        ch_lineage      = channel.of(params.busco_lineage)
-    } else {
+        ch_lineage = channel.of(params.busco_lineage)
+    }
+    else {
         //
         // MODULE: GET RAW ODB LINEAGE VALUE
         //
-        NCBI_GET_ODB ( SUMMARYGENOME.out.summary, lineage_tax_ids )
-        ch_versions     = ch_versions.mix ( NCBI_GET_ODB.out.versions.first() )
+        NCBI_GET_ODB(SUMMARYGENOME.out.summary, lineage_tax_ids)
+        ch_versions = ch_versions.mix(NCBI_GET_ODB.out.versions.first())
 
 
         //
@@ -75,163 +75,151 @@ workflow GENOME_STATISTICS {
             .map { _meta, csv -> csv }
             .splitCsv()
             .map { row -> row[1] }
-
     }
 
 
     //
     // MODULE: RUN BUSCO
     //
-    BUSCO (
+    BUSCO(
         genome,
         "genome",
         ch_lineage,
         lineage_db.ifEmpty([]),
         [],
-        false
+        false,
     )
-    ch_versions         = ch_versions.mix ( BUSCO.out.versions.first() )
+    ch_versions = ch_versions.mix(BUSCO.out.versions.first())
 
 
     //
     // MODULE: Tidy up the BUSCO output directories before publication
     //
     RESTRUCTUREBUSCODIR(
-        BUSCO.out.batch_summary
-            .combine ( ch_lineage )
-            .join ( BUSCO.out.short_summaries_txt, remainder: true )
-            .join ( BUSCO.out.short_summaries_json, remainder: true )
-            .join ( BUSCO.out.busco_dir )
-            .map { meta, batch_summary, lineage, short_summaries_txt, short_summaries_json, busco_dir -> [meta, lineage, batch_summary, short_summaries_txt ?: [], short_summaries_json ?: [], busco_dir] }
+        BUSCO.out.batch_summary.combine(ch_lineage).join(BUSCO.out.short_summaries_txt, remainder: true).join(BUSCO.out.short_summaries_json, remainder: true).join(BUSCO.out.busco_dir).map { meta, batch_summary, lineage, short_summaries_txt, short_summaries_json, busco_dir -> [meta, lineage, batch_summary, short_summaries_txt ?: [], short_summaries_json ?: [], busco_dir] }
     )
-    ch_versions         = ch_versions.mix ( RESTRUCTUREBUSCODIR.out.versions.first() )
+    ch_versions = ch_versions.mix(RESTRUCTUREBUSCODIR.out.versions.first())
 
 
     //
     // LOGIC: Prepare channels for FastK, collect files in directory create list for FASTK
     //
-    ch_pacbio = pacbio
-        .branch {
-            _meta, file ->
-                dir: file.isDirectory()
-                file: true
-        }
+    ch_pacbio = pacbio.branch { _meta, file ->
+        dir: file.isDirectory()
+        file: true
+    }
 
-    ch_fastk = ch_pacbio.file
-        .groupTuple ( by: [0] )
+    ch_fastk = ch_pacbio.file.groupTuple(by: [0])
 
 
     //
     // MODULE: RUN FASTK KMER COUNTING TO GENERATE HISTOGRAM DATA
     //
-    FASTK_FASTK ( ch_fastk )
+    FASTK_FASTK(ch_fastk)
 
 
     //
     // MODULE: HISTEX generates a histogram in -h given intervals
     //
-    FASTK_HISTEX( FASTK_FASTK.out.hist )
+    FASTK_HISTEX(FASTK_FASTK.out.hist)
 
 
     //
     // MODULE: GENESCOPEFK PLOT THE KMER HISTOGRAM and
     //          outputs a correct estimate of genome size and % repetitiveness
     //
-    GENESCOPEFK( FASTK_HISTEX.out.hist )
+    GENESCOPEFK(FASTK_HISTEX.out.hist)
 
 
     //
     // LOGIC: Define channel for MERQURKFK
     //
-    ch_combo = FASTK_FASTK.out.hist
-        .join ( FASTK_FASTK.out.ktab )
+    ch_combo = FASTK_FASTK.out.hist.join(FASTK_FASTK.out.ktab)
 
-    ch_grab = ch_pacbio.dir
-        .map { meta, dir -> [
+    ch_grab = ch_pacbio.dir.map { meta, dir ->
+        [
             meta,
-            dir.listFiles().findAll { file -> file.toString().endsWith(".hist") } .collect(),
-            dir.listFiles().findAll { file -> file.toString().contains(".ktab") } .collect(),
-        ] }
+            dir.listFiles().findAll { file -> file.toString().endsWith(".hist") }.collect(),
+            dir.listFiles().findAll { file -> file.toString().contains(".ktab") }.collect(),
+        ]
+    }
 
     ch_merq = ch_combo
-        .mix ( ch_grab )
-        .combine ( genome )
-        .combine ( haplotype.ifEmpty([[],[]]) )
+        .mix(ch_grab)
+        .combine(genome)
+        .combine(haplotype.ifEmpty([[], []]))
         .map { meta, hist, ktab, meta2, fasta, _meta3, hap_fasta ->
-            [ meta + [genome_size: meta2.genome_size], hist, ktab, fasta, hap_fasta ]
+            [meta + [genome_size: meta2.genome_size], hist, ktab, fasta, hap_fasta]
         }
 
 
     // This is only temporarily removed so I'm leaving it here for now
     // // MerquryFK
-    MERQURYFK_MERQURYFK (
+    MERQURYFK_MERQURYFK(
         ch_merq,
-        [[],[]],
-        [[],[]]
+        [[], []],
+        [[], []],
     )
 
 
     //
     // LOGIC: PREPARE FOR THE FOR Combined table
     //
-    ch_summary = SUMMARYGENOME.out.summary
-        .join ( SUMMARYSEQUENCE.out.summary )
+    ch_summary = SUMMARYGENOME.out.summary.join(SUMMARYSEQUENCE.out.summary)
 
-    ch_busco = BUSCO.out.short_summaries_json
-        .ifEmpty ( [ [], [] ] )
+    ch_busco = BUSCO.out.short_summaries_json.ifEmpty([[], []])
 
     // This is only temporarily removed so I'm leaving it here for now
     ch_merqury = MERQURYFK_MERQURYFK.out.qv
-        .join ( MERQURYFK_MERQURYFK.out.stats )
-        .map { meta, qv, comp -> [ meta + [ id: "merq" ], qv, comp ] }
-        .groupTuple ()
-        .ifEmpty ( [ [], [], [] ] )
+        .join(MERQURYFK_MERQURYFK.out.stats)
+        .map { meta, qv, comp -> [meta + [id: "merq"], qv, comp] }
+        .groupTuple()
+        .ifEmpty([[], [], []])
 
     ch_flagstat = flagstat
         .toList()
-        .map { lmf -> [
-            lmf.collect { meta, _file -> meta },
-            lmf.collect { _meta, file -> file },
-        ] }
+        .map { lmf ->
+            [
+                lmf.collect { meta, _file -> meta },
+                lmf.collect { _meta, file -> file },
+            ]
+        }
 
 
     //
     // MODULE: CREATETABLE ( ch_summary, ch_busco, ch_merqury, ch_flagstat )
     //
-    CREATETABLE (
+    CREATETABLE(
         ch_summary,
         ch_busco,
         ch_merqury,
-        ch_flagstat
+        ch_flagstat,
     )
-    ch_versions         = ch_versions.mix ( CREATETABLE.out.versions.first() )
+    ch_versions = ch_versions.mix(CREATETABLE.out.versions.first())
 
 
     //
     // LOGIC: BUSCO results for MULTIQC
     //
-    multiqc = BUSCO.out.short_summaries_txt
-        .ifEmpty ( [ [], [] ] )
-
+    multiqc = BUSCO.out.short_summaries_txt.ifEmpty([[], []])
 
     emit:
-    summary_seq         = SUMMARYSEQUENCE.out.summary               // channel: [ meta, summary ]
-    summary             = CREATETABLE.out.csv                       // channel: [ csv ]
-    multiqc                                                         // channel: [ meta, summary ]
-    ch_busco_lineage    = ch_lineage                                // channel: [ lineage_name ]
-    ch_gfastats         = GFASTATS.out.assembly_summary             // channel: [ meta, assembly_summary ]
-    ch_kmer_cov         = GENESCOPEFK.out.kmer_cov                  // channel: [ meta, kmer_coverage ]
-    ch_linear_plot      = GENESCOPEFK.out.linear_plot               // channel: [ meta, linear_plot ]
-    ch_log_plot         = GENESCOPEFK.out.log_plot                  // channel: [ meta, log_plot ]
-    ch_model            = GENESCOPEFK.out.model                     // channel: [ meta, model ]
-    ch_summary          = GENESCOPEFK.out.summary                   // channel: [ meta, summary ]
-    ch_trans_lin_plot   = GENESCOPEFK.out.transformed_linear_plot   // channel: [ meta, transformed_linear_plot ]
-    ch_trans_log_plot   = GENESCOPEFK.out.transformed_log_plot      // channel: [ meta, transformed_log_plot ]
-    busco_full_table    = BUSCO.out.full_table                      // channel: [ meta, busco_dir ]
-    ch_complete_stats   = MERQURYFK_MERQURYFK.out.stats             // channel: [ meta, completeness_stats ]
-    ch_bed              = MERQURYFK_MERQURYFK.out.bed               // channel: [ meta, bed ]
-    ch_qv               = MERQURYFK_MERQURYFK.out.qv                // channel: [ meta, qv ]
-    ch_assembly_qv      = MERQURYFK_MERQURYFK.out.assembly_qv       // channel: [ meta, assembly_qv ]
-    versions            = ch_versions                               // channel: [ versions.yml ]
-
+    summary_seq       = SUMMARYSEQUENCE.out.summary // channel: [ meta, summary ]
+    summary           = CREATETABLE.out.csv // channel: [ csv ]
+    multiqc // channel: [ meta, summary ]
+    ch_busco_lineage  = ch_lineage // channel: [ lineage_name ]
+    ch_gfastats       = GFASTATS.out.assembly_summary // channel: [ meta, assembly_summary ]
+    ch_kmer_cov       = GENESCOPEFK.out.kmer_cov // channel: [ meta, kmer_coverage ]
+    ch_linear_plot    = GENESCOPEFK.out.linear_plot // channel: [ meta, linear_plot ]
+    ch_log_plot       = GENESCOPEFK.out.log_plot // channel: [ meta, log_plot ]
+    ch_model          = GENESCOPEFK.out.model // channel: [ meta, model ]
+    ch_summary        = GENESCOPEFK.out.summary // channel: [ meta, summary ]
+    ch_trans_lin_plot = GENESCOPEFK.out.transformed_linear_plot // channel: [ meta, transformed_linear_plot ]
+    ch_trans_log_plot = GENESCOPEFK.out.transformed_log_plot // channel: [ meta, transformed_log_plot ]
+    busco_full_table  = BUSCO.out.full_table // channel: [ meta, busco_dir ]
+    ch_complete_stats = MERQURYFK_MERQURYFK.out.stats // channel: [ meta, completeness_stats ]
+    ch_bed            = MERQURYFK_MERQURYFK.out.bed // channel: [ meta, bed ]
+    ch_qv             = MERQURYFK_MERQURYFK.out.qv // channel: [ meta, qv ]
+    ch_assembly_qv    = MERQURYFK_MERQURYFK.out.assembly_qv // channel: [ meta, assembly_qv ]
+    versions          = ch_versions // channel: [ versions.yml ]
 }

@@ -3,16 +3,16 @@ process COMBINE_METADATA {
     label 'process_single'
 
     conda "conda-forge::python=3.9.1"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/python:3.9--1' :
-        'quay.io/biocontainers/python:3.9--1' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/python:3.9--1'
+        : 'quay.io/biocontainers/python:3.9--1'}"
 
     input:
     tuple val(meta), path(file_list)
 
     output:
-    tuple val (meta), path("${meta.id}_consistent.csv"), emit: consistent
-    tuple val (meta), path("${meta.id}_inconsistent.csv"), emit: inconsistent
+    tuple val(meta), path("${meta.id}_consistent.csv"), emit: consistent
+    tuple val(meta), path("${meta.id}_inconsistent.csv"), emit: inconsistent
     path "versions.yml", emit: versions
 
     when:

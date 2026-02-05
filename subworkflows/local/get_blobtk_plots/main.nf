@@ -2,14 +2,13 @@ include { BLOBTK_PLOT } from '../../../modules/nf-core/blobtk/plot/main'
 
 
 workflow GET_BLOBTK_PLOTS {
-
     take:
-    fasta                    // channel: [meta], path/to/fasta
-    btk_local_path           // channel: [path/to/dir]
-    btk_online_path          // channel: https://online.repository_of_btk.datasets
+    fasta // channel: [meta], path/to/fasta
+    btk_local_path // channel: [path/to/dir]
+    btk_online_path // channel: https://online.repository_of_btk.datasets
 
     main:
-    ch_versions         = channel.empty()
+    ch_versions = channel.empty()
 
     //
     // NOTE: other arguments for this module, that effect ALL runs of the module
@@ -20,20 +19,20 @@ workflow GET_BLOBTK_PLOTS {
     blobtk_arguments = channel.of(
         [
             name: "BLOB_VIEW",
-            args: "-v blob"
+            args: "-v blob",
         ],
         [
             name: "BLOB_CHR_VIEW",
-            args: "-v blob --filter assembly_level=assembled-molecule"
+            args: "-v blob --filter assembly_level=assembled-molecule",
         ],
         [
             name: "GRID_VIEW",
-            args: "-v blob --shape grid -w 0.01 -x position"
+            args: "-v blob --shape grid -w 0.01 -x position",
         ],
         [
             name: "GRID_CHR_VIEW",
-            args: "-v blob --filter assembly_level=assembled-molecule --shape grid -w 0.01 -x position"
-        ]
+            args: "-v blob --filter assembly_level=assembled-molecule --shape grid -w 0.01 -x position",
+        ],
     )
 
 
@@ -41,8 +40,8 @@ workflow GET_BLOBTK_PLOTS {
     // LOGIC: combine all the input and split back out so that we have channels * btk_args
     //
     ch_blobtk_plot_input = fasta
-        .combine(btk_local_path.map{ path -> [path] })
-        .combine(btk_online_path.map{ path -> [path] })
+        .combine(btk_local_path.map { path -> [path] })
+        .combine(btk_online_path.map { path -> [path] })
         .combine(blobtk_arguments)
         .multiMap { meta, path, local, online, btk_args ->
             fasta: [meta, path]
@@ -60,13 +59,12 @@ workflow GET_BLOBTK_PLOTS {
         ch_blobtk_plot_input.fasta,
         ch_blobtk_plot_input.local_path,
         ch_blobtk_plot_input.online_path,
-        ch_blobtk_plot_input.args
+        ch_blobtk_plot_input.args,
     )
-    ch_versions         = ch_versions.mix ( BLOBTK_PLOT.out.versions.first() )
-    ch_images           = BLOBTK_PLOT.out.png.mix ( BLOBTK_PLOT.out.png )
-
+    ch_versions = ch_versions.mix(BLOBTK_PLOT.out.versions.first())
+    ch_images = BLOBTK_PLOT.out.png.mix(BLOBTK_PLOT.out.png)
 
     emit:
-    blobtk_images       = ch_images
-    versions            = ch_versions
+    blobtk_images = ch_images
+    versions      = ch_versions
 }

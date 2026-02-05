@@ -2,7 +2,7 @@
 // Check input samplesheet and get read channels
 //
 
-include { PARAMS_CHECK      } from '../../../modules/local/params_check'
+include { PARAMS_CHECK } from '../../../modules/local/params_check'
 
 
 workflow INPUT_CHECK {
@@ -10,12 +10,10 @@ workflow INPUT_CHECK {
     samplesheet // file: /path/to/samplesheet.csv
     cli_params // tuple, see below
 
-
     main:
 
-    param = PARAMS_CHECK ( cli_params )
-        .csv
-        .splitCsv (header:true, sep: ',')
+    param = PARAMS_CHECK(cli_params).csv
+        .splitCsv(header: true, sep: ',')
         .map { row ->
             def meta = [
                 id: row.assembly,
@@ -37,10 +35,9 @@ workflow INPUT_CHECK {
         }
 
     // set temp key to allow combining channels
-    ch_tmp_param = param
-        .map { meta ->
-            [meta.id, meta]
-        }
+    ch_tmp_param = param.map { meta ->
+        [meta.id, meta]
+    }
 
     // add some metadata params to the data channel meta
     data = samplesheet
@@ -52,7 +49,7 @@ workflow INPUT_CHECK {
         }
 
     emit:
-    data                                   // channel: [ val(meta), data ]
-    param                                  // channel: [val(meta)]
-    versions = PARAMS_CHECK.out.versions   // channel: [ versions.yml ]
+    data // channel: [ val(meta), data ]
+    param // channel: [val(meta)]
+    versions = PARAMS_CHECK.out.versions // channel: [ versions.yml ]
 }

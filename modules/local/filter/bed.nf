@@ -1,18 +1,18 @@
 process FILTER_BED {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     conda "bioconda::coreutils=8.25"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/coreutils:8.25--1' :
-        'biocontainers/coreutils:8.25--1' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/coreutils:8.25--1'
+        : 'biocontainers/coreutils:8.25--1'}"
 
     input:
     tuple val(meta), path(bed)
 
     output:
     tuple val(meta), path("*.pairs"), emit: pairs
-    path "versions.yml"             , emit: versions
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -20,7 +20,7 @@ process FILTER_BED {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    filter_bed.sh $bed ${prefix}_filtered.pairs
+    filter_bed.sh ${bed} ${prefix}_filtered.pairs
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
