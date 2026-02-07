@@ -3,23 +3,21 @@ process RESTRUCTUREBUSCODIR {
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
-        'nf-core/ubuntu:20.04' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/ubuntu:20.04'
+        : 'nf-core/ubuntu:20.04'}"
 
     input:
     tuple val(meta), val(lineage), path(batch_summary), path(short_summaries_txt), path(short_summaries_json), path(busco_dir)
 
     output:
     tuple val(meta), path("${lineage}"), emit: clean_busco_dir
-    path "versions.yml"                , emit: versions
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
-    prefix = task.ext.prefix ?: "${meta.id}"
     """
     mkdir ${lineage}
 

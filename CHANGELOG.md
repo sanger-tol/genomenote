@@ -3,6 +3,26 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## TBC
+
+### Enhancements & fixes
+
+- Language fixes to comply with the upcoming strict syntax
+- Pipeline template upgraded to nf-core 3.5.2
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency | Old version                                | New version |
+| ---------- | ------------------------------------------ | ----------- |
+| cooler     | 0.10.2                                     | 0.10.3      |
+| FastK      | `ddea6cf254f378db51d22c6eb21af775fa9e1f77` | 1.2         |
+| MerquryFK  | 1.1.2                                      | 1.2         |
+| R          | 4.4.3                                      | 4.2.3       |
+| Histex     | 1.1                                        | 1.2         |
+| gunzip     | 1.1                                        | 1.13        |
+
 ## [[2.2.0](https://github.com/sanger-tol/genomenote/releases/tag/2.2.0)] - German Doberman [2026-01-30]
 
 ### Enhancements & fixes

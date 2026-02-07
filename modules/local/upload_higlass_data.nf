@@ -1,5 +1,5 @@
 process UPLOAD_HIGLASS_DATA {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     container "docker.io/rancher/kubectl:v1.27.16"
@@ -7,13 +7,13 @@ process UPLOAD_HIGLASS_DATA {
     input:
     tuple val(meta), path(mcool)
     tuple val(meta2), path(genome)
-    val(higlass_data_project_dir)
-    path(upload_dir)
+    val higlass_data_project_dir
+    path upload_dir
 
     output:
-    env map_uuid, emit: map_uuid
-    env grid_uuid, emit: grid_uuid
-    env file_name, emit: file_name
+    env 'map_uuid', emit: map_uuid
+    env 'grid_uuid', emit: grid_uuid
+    env 'file_name', emit: file_name
     tuple val(meta2), path(genome), emit: genome_file
     path "versions.yml", emit: versions
 
@@ -23,32 +23,32 @@ process UPLOAD_HIGLASS_DATA {
     script:
     // Exit if running this module with -profile conda / -profile mamba
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        error "UPLOAD_HIGLASS_DATA modules do not support Conda. Please use Docker / Singularity / Podman instead."
+        error("UPLOAD_HIGLASS_DATA modules do not support Conda. Please use Docker / Singularity / Podman instead.")
     }
     def assembly = "${meta.assembly}"
     def species = "${meta.species}"
-    def project_name = "${higlass_data_project_dir}/${species.replaceAll('\\s','_')}/${assembly}"
+    def project_name = "${higlass_data_project_dir}/${species.replaceAll('\\s', '_')}/${assembly}"
     def file_name = "${assembly}_${meta.id}"
     // uid cannot contain a "."
-    def uid = "${file_name.replaceAll('\\.','_')}"
+    def uid = "${file_name.replaceAll('\\.', '_')}"
 
 
     """
     # Configure kubectl access to the namespace
-    export KUBECONFIG=$params.higlass_kubeconfig
+    export KUBECONFIG=${params.higlass_kubeconfig}
     kubectl config get-contexts
-    kubectl config set-context --current --namespace=$params.higlass_namespace
+    kubectl config set-context --current --namespace=${params.higlass_namespace}
 
     # Find the name of the pod
-    sel=\$(kubectl get deployments.apps $params.higlass_deployment_name --output=json | jq -j '.spec.selector.matchLabels | to_entries | .[] | "\\(.key)=\\(.value),"')
+    sel=\$(kubectl get deployments.apps ${params.higlass_deployment_name} --output=json | jq -j '.spec.selector.matchLabels | to_entries | .[] | "\\(.key)=\\(.value),"')
     sel2=\${sel%?}
     pod_name=\$(kubectl get pod --selector=\$sel2 --output=jsonpath={.items[0].metadata.name})
     echo "\$pod_name"
 
     # Copy the files to the upload area
     mkdir -p ${upload_dir}${project_name}
-    cp -f $mcool ${upload_dir}${project_name}/${file_name}.mcool
-    cp -f $genome ${upload_dir}${project_name}/${file_name}.genome
+    cp -f ${mcool} ${upload_dir}${project_name}/${file_name}.mcool
+    cp -f ${genome} ${upload_dir}${project_name}/${file_name}.genome
 
 
     # Loop over files to load them in Kubernetes
