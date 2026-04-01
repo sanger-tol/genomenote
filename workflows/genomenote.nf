@@ -145,7 +145,6 @@ workflow GENOMENOTE {
             btk_local_path,
             btk_online_path,
         )
-        ch_versions = ch_versions.mix(GET_BLOBTK_PLOTS.out.versions)
     }
 
 
