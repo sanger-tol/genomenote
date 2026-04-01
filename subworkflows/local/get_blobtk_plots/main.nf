@@ -60,6 +60,7 @@ workflow GET_BLOBTK_PLOTS {
         ch_blobtk_plot_input.local_path,
         ch_blobtk_plot_input.online_path,
         ch_blobtk_plot_input.args,
+        params.image_format
     )
     ch_versions = ch_versions.mix(BLOBTK_PLOT.out.versions.first())
     ch_images = BLOBTK_PLOT.out.png.mix(BLOBTK_PLOT.out.png)

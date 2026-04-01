@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Language fixes to comply with the upcoming strict syntax
 - Pipeline template upgraded to nf-core 3.5.2
+- Addition of the `--image_format` flag to change the output format of `blobtk/plot`
+  - Options are `png` or `svg`
 
 ### Software dependencies
 
