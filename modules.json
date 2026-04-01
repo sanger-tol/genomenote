@@ -22,7 +22,7 @@
                     },
                     "blobtk/plot": {
                         "branch": "master",
-                        "git_sha": "3f6bf4bfeffac7de5ee9f1b20fd7b479d4f60dd4",
+                        "git_sha": "02616d1725cc2f97670e25d14d7d1c29d412dffc",
                         "installed_by": ["modules"]
                     },
                     "busco/busco": {
