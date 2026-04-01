@@ -10,13 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": [
-                "input",
-                "assembly",
-                "binsize",
-                "kmer_size",
-                "outdir"
-            ],
+            "required": ["input", "assembly", "binsize", "kmer_size", "outdir"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -79,11 +73,7 @@
                 "select_contact_map": {
                     "type": "string",
                     "description": "Select which contact maps should be generated, higlass, pretext or both",
-                    "enum": [
-                        "higlass",
-                        "pretext",
-                        "both"
-                    ],
+                    "enum": ["higlass", "pretext", "both"],
                     "default": "both"
                 },
                 "btk_location": {
@@ -157,10 +147,7 @@
                 },
                 "image_format": {
                     "type": "string",
-                    "enum": [
-                        "png",
-                        "svg"
-                    ],
+                    "enum": ["png", "svg"],
                     "description": "Select the format of the output images.",
                     "fa_icon": "fas fa-image",
                     "default": "png"
@@ -224,9 +211,7 @@
             "type": "object",
             "fa_icon": "fas fa-dna",
             "description": "Reference genome related files and options required for the workflow.",
-            "required": [
-                "fasta"
-            ],
+            "required": ["fasta"],
             "properties": {
                 "fasta": {
                     "type": "string",
@@ -244,10 +229,7 @@
             "type": "object",
             "fa_icon": "fas fa-database",
             "description": "Define where the pipeline should find databases.",
-            "required": [
-                "fasta",
-                "lineage_tax_ids"
-            ],
+            "required": ["fasta", "lineage_tax_ids"],
             "properties": {
                 "lineage_db": {
                     "type": "string",
@@ -347,14 +329,7 @@
                     "description": "Method used to save pipeline results to output directory.",
                     "help_text": "The Nextflow `publishDir` option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir) for details.",
                     "fa_icon": "fas fa-copy",
-                    "enum": [
-                        "symlink",
-                        "rellink",
-                        "link",
-                        "copy",
-                        "copyNoFollow",
-                        "move"
-                    ],
+                    "enum": ["symlink", "rellink", "link", "copy", "copyNoFollow", "move"],
                     "hidden": true
                 },
                 "email_on_fail": {
@@ -432,10 +407,7 @@
                     "hidden": true
                 },
                 "help": {
-                    "type": [
-                        "boolean",
-                        "string"
-                    ],
+                    "type": ["boolean", "string"],
                     "description": "Display the help message."
                 },
                 "help_full": {
