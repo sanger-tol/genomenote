@@ -8,7 +8,6 @@ workflow GET_BLOBTK_PLOTS {
     btk_online_path // channel: https://online.repository_of_btk.datasets
 
     main:
-    ch_versions = channel.empty()
 
     //
     // NOTE: other arguments for this module, that effect ALL runs of the module
@@ -60,11 +59,10 @@ workflow GET_BLOBTK_PLOTS {
         ch_blobtk_plot_input.local_path,
         ch_blobtk_plot_input.online_path,
         ch_blobtk_plot_input.args,
+        params.image_format
     )
-    ch_versions = ch_versions.mix(BLOBTK_PLOT.out.versions.first())
-    ch_images = BLOBTK_PLOT.out.png.mix(BLOBTK_PLOT.out.png)
+    ch_images = BLOBTK_PLOT.out.png.mix(BLOBTK_PLOT.out.svg)
 
     emit:
     blobtk_images = ch_images
-    versions      = ch_versions
 }

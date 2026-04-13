@@ -253,8 +253,8 @@
                 "GCA_963859965.1_ilCerPisi1.bedpe:md5,ef15e0650aa9f69b86add7af93e0c843"
             ],
             [
-                "GCA_963859965.1_GCA_963859965.1_BLOB_CHR_VIEW.png:md5,3acd989e799266386ece265c1214c9f9",
-                "GCA_963859965.1_GCA_963859965.1_BLOB_VIEW.png:md5,3acd989e799266386ece265c1214c9f9",
+                "GCA_963859965.1_GCA_963859965.1_BLOB_CHR_VIEW.png:md5,147e7413247cbb8f52caae9c7b79400b",
+                "GCA_963859965.1_GCA_963859965.1_BLOB_VIEW.png:md5,147e7413247cbb8f52caae9c7b79400b",
                 "GCA_963859965.1_GCA_963859965.1_GRID_CHR_VIEW.png:md5,1dd41fe93a5644b64817f8ceec461a5f",
                 "GCA_963859965.1_GCA_963859965.1_GRID_VIEW.png:md5,1dd41fe93a5644b64817f8ceec461a5f"
             ]
@@ -263,6 +263,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-02-05T19:12:42.272073587"
+        "timestamp": "2026-04-13T12:58:37.261489043"
     }
 }
