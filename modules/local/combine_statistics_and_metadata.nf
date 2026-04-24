@@ -14,8 +14,8 @@ process COMBINE_STATISTICS_AND_METADATA {
     tuple val(meta4), path(annotation_statistics_params)
 
     output:
-    tuple val(meta), path("${meta.id}_genome_note_consistent.csv"), emit: consistent
-    tuple val(meta), path("${meta.id}_genome_note_inconsistent.csv"), emit: inconsistent
+    tuple val(meta), path("${meta.id}.genome_note_consistent.csv"), emit: consistent
+    tuple val(meta), path("${meta.id}.genome_note_inconsistent.csv"), emit: inconsistent
     path "versions.yml", emit: versions
 
     when:
@@ -30,8 +30,8 @@ process COMBINE_STATISTICS_AND_METADATA {
     --in_consistent ${consistent_params} \\
     --in_inconsistent ${inconsistent_params} \\
     --in_genome_statistics ${genome_statistics_params} \\
-    --out_consistent ${prefix}_genome_note_consistent.csv \\
-    --out_inconsistent ${prefix}_genome_note_inconsistent.csv \\
+    --out_consistent ${prefix}.genome_note_consistent.csv \\
+    --out_inconsistent ${prefix}.genome_note_inconsistent.csv \\
     ${annotation} \\
 
     cat <<-END_VERSIONS > versions.yml
