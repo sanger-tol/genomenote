@@ -36,7 +36,6 @@ def fetch_ensembl_data(taxon, output_file):
         genomes(by_keyword: {species_taxonomy_id: $taxon }) {
             assembly_accession
             scientific_name
-            tol_id
             dataset {
                 name
                 type

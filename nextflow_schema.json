@@ -144,6 +144,13 @@
                     "description": "Path to annotation file :gff.",
                     "help_text": "You will need to specify the path to the annotation file as eith gff or gff.gz.",
                     "fa_icon": "fas fa-file-code"
+                },
+                "image_format": {
+                    "type": "string",
+                    "enum": ["png", "svg"],
+                    "description": "Select the format of the output images.",
+                    "fa_icon": "fas fa-image",
+                    "default": "png"
                 }
             }
         },
