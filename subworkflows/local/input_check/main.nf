@@ -41,7 +41,10 @@ workflow INPUT_CHECK {
 
     // add some metadata params to the data channel meta
     data = samplesheet
-        .map { meta, datafile -> [meta.assembly, meta, datafile] }
+        .map { meta, datafile -> 
+            def new_id = meta.id.replaceAll("/", ".")
+            [meta.assembly, meta + [ "id": new_id, "sample": meta.id ], datafile] 
+        }
         .combine(ch_tmp_param, by: 0)
         .map { _assembly, meta, datafile, meta2 ->
             def new_meta = meta + [species: meta2.species, taxon_id: meta2.taxon_id]
