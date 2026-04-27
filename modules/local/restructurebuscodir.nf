@@ -18,6 +18,7 @@ process RESTRUCTUREBUSCODIR {
     task.ext.when == null || task.ext.when
 
     script:
+    def prefix = task.ext.prefix ?: ''
     """
     mkdir ${lineage}
 
@@ -32,6 +33,13 @@ process RESTRUCTUREBUSCODIR {
     # We run Busco in --tar mode, so these outputs are already compressed
     cp ${busco_dir}/*/run_*/busco_sequences/*.tar.gz  ${lineage}/
     cp ${busco_dir}/*/run_*/hmmer_output.tar.gz       ${lineage}/
+
+    cd ${lineage}
+    for file in *; do
+        [ -f "\$file" ] && mv "\$file" "${prefix}.\$file"
+    done
+    cd ..
+
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

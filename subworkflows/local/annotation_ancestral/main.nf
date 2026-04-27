@@ -15,7 +15,7 @@ workflow ANNOTATION_ANCESTRAL {
     take:
     fasta // Channel: [ meta, fasta ]
     ancestral_table // Channel: file(ancestral_table location)
-    ch_ancestral_lineage // Channel:
+    val_ancestral_lineage // ancestral lineage value to use for BUSCO, e.g. lepidoptera_odb10
     lineage_db // Channel:
 
     main:
@@ -29,7 +29,7 @@ workflow ANNOTATION_ANCESTRAL {
     BUSCO(
         fasta,
         "genome",
-        ch_ancestral_lineage,
+        val_ancestral_lineage,
         lineage_db.ifEmpty([]),
         [],
         false,
@@ -41,8 +41,10 @@ workflow ANNOTATION_ANCESTRAL {
     // MODULE: EXTRACTS ANCESTRALLY LINKED BUSCO GENES FROM FULL TABLE
     //         THIS IS THE BUSCOPAINTER.PY SCRIPT
     //
+    busco_table_meta_mod = BUSCO.out.full_table.map { meta, table -> [ meta + [lineage:val_ancestral_lineage], table ] }
+
     ANCESTRAL_EXTRACT(
-        BUSCO.out.full_table,
+        busco_table_meta_mod,
         ancestral_table,
     )
     ch_versions = ch_versions.mix(ANCESTRAL_EXTRACT.out.versions)
