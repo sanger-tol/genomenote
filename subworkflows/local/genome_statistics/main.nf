@@ -109,8 +109,9 @@ workflow GENOME_STATISTICS {
         file: true
     }
 
-    ch_fastk = ch_pacbio.file.groupTuple(by: [0])
-
+    ch_fastk = ch_pacbio.file
+        .map { meta, files -> [meta + ["run":"${params.merge_output}", "id":"${meta.specimen}.${params.merge_output}", "sample":"${meta.specimen}/${params.merge_output}"], files]}
+        .groupTuple(by: [0])
 
     //
     // MODULE: RUN FASTK KMER COUNTING TO GENERATE HISTOGRAM DATA

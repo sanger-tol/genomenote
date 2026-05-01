@@ -42,8 +42,17 @@ workflow INPUT_CHECK {
     // add some metadata params to the data channel meta
     data = samplesheet
         .map { meta, datafile -> 
-            def new_id = meta.id.replaceAll("/", ".")
-            [meta.assembly, meta + [ "id": new_id, "sample": meta.id ], datafile] 
+
+            def sample = meta.id.toString()
+            def sample_parts = sample.split("/", 2)
+            if (sample.contains("/") && (sample_parts[0] == "" || sample_parts.length < 2 || sample_parts[1] == "")) {
+                error("Sample must be formatted as 'specimen' or 'specimen/run' with non-empty components: ${meta.sample}")
+            }
+            def specimen = sample_parts[0]
+            def run = sample_parts.length > 1 ? sample_parts[1] : ""
+            def new_id = meta.id.replace("/",".")
+
+            [meta.assembly, meta + [ "id": new_id, "sample": meta.id, "specimen": specimen, "run": run ], datafile] 
         }
         .combine(ch_tmp_param, by: 0)
         .map { _assembly, meta, datafile, meta2 ->
@@ -52,12 +61,12 @@ workflow INPUT_CHECK {
         }
     
     // Check for duplicate sample IDs after transformation of slash in the input samplesheet
-    data.map { meta, _ -> meta.id }
-        .collect()
-        .subscribe { list ->
-            def duplicates = list.groupBy { it }.findAll { _, v -> v.size() > 1 }
-            if (duplicates) error "Sample cannot be duplicated (slash (`/`) and dot (`.`) treated as equivalent): ${duplicates.keySet()}"
-        }
+    // data.map { meta, _ -> meta.id }
+    //     .collect()
+    //     .subscribe { list ->
+    //         def duplicates = list.groupBy { it }.findAll { _, v -> v.size() > 1 }
+    //         if (duplicates) error "Sample cannot be duplicated (slash (`/`) and dot (`.`) treated as equivalent): ${duplicates.keySet()}"
+    //     }
 
     emit:
     data // channel: [ val(meta), data ]

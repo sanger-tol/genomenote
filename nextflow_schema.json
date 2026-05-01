@@ -94,6 +94,13 @@
                     "fa_icon": "fas fa-folder-open",
                     "default": "results"
                 },
+                "merge_output": {
+                    "type": "string",
+                    "default": "merge",
+                    "pattern": "^[A-Za-z0-9._-]+$",
+                    "description": "Non-empty string used as the suffix and output directory name for merged data files",
+                    "help_text": "Defines the suffix added to merged file names and name of output directory when multiple read files that share the same specimen are merged. Allowed characters are letters, numbers, dot (.), underscore (_), and hyphen (-)."
+                },
                 "email": {
                     "type": "string",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
