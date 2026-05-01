@@ -17,8 +17,8 @@
             "datatype": {
                 "type": "string",
                 "pattern": "^\\S+$",
-                "enum": ["hic", "pacbio", "10x", "haplotype"],
-                "errorMessage": "Data type must be one of: hic, pacbio, 10x, haplotype",
+                "enum": ["hic", "pacbio", "10x", "haplotype","genes"],
+                "errorMessage": "Data type must be one of: hic, pacbio, 10x, haplotype, genes",
                 "meta": ["datatype"]
             },
             "datafile": {
