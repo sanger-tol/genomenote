@@ -1,5 +1,5 @@
 .DS_Store
 **/*.{pdf,html,tar.gz,cool,mcool,docx}
 **/*short_summary.{json,txt}
-multiqc/**
+multiqc*
 pipeline_info/*.{html,json,txt,yml}
