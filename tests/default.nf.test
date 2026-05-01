@@ -32,15 +32,15 @@ nextflow_pipeline {
             def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
 
             def resolvePath = { pattern ->
-                def matches = getAllFilesFromDir(params.outdir, relative: true, include: [pattern])
+                def matches = getAllFilesFromDir(params.outdir, include: [pattern])
                 assert matches && matches.size() == 1 : "Expected exactly one match for pattern '${pattern}', found ${matches?.size() ?: 0}"
                 matches[0]
             }
 
             // BUSCO results information
-            def busco_short_txt = file("${params.outdir}/${resolvePath('busco/**/*short_summary.txt')}")
+            def busco_short_txt = file("${resolvePath('busco/**/*short_summary.txt')}")
                                             .readLines()[8]
-            def busco_short_json = file("${params.outdir}/${resolvePath('busco/**/*short_summary.json')}")
+            def busco_short_json = file("${resolvePath('busco/**/*short_summary.json')}")
                                             .readLines()[58..81]
             assertAll(
                 { assert workflow.success},
