@@ -69,6 +69,8 @@ workflow GENOMENOTE {
         return [meta, file]
         haplotype: meta.datatype == 'haplotype'
         return [meta, file]
+        genes: meta.datatype == 'genes'
+        return [meta, file]
     }
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
@@ -168,7 +170,7 @@ workflow GENOMENOTE {
     ch_annotation_stats = channel.empty()
     if (params.annotation_set) {
         ANNOTATION_STATISTICS(
-            channel.fromPath(params.annotation_set),
+            ch_inputs.genes,
             ch_fasta,
             GENOME_STATISTICS.out.ch_busco_lineage,
             lineage_db,

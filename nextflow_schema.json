@@ -135,16 +135,6 @@
                     "help_text": "Set this parameter if you have a genome note template file that you wish to populate. Templates may be docx or xml files",
                     "fa_icon": "fas fa-folder-open"
                 },
-                "annotation_set": {
-                    "type": "string",
-                    "format": "file-path",
-                    "exists": true,
-                    "mimetype": "text/plain",
-                    "pattern": "^(?:[\\w/]+/)?\\S+\\.gff3?(?:\\.gz)?$",
-                    "description": "Path to annotation file :gff.",
-                    "help_text": "You will need to specify the path to the annotation file as eith gff or gff.gz.",
-                    "fa_icon": "fas fa-file-code"
-                },
                 "image_format": {
                     "type": "string",
                     "enum": ["png", "svg"],
