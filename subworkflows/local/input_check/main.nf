@@ -41,7 +41,7 @@ workflow INPUT_CHECK {
 
     // add some metadata params to the data channel meta
     data = samplesheet
-        .map { meta, datafile -> 
+        .map { meta, datafile ->
 
             def sample = meta.id.toString()
             def sample_parts = sample.split("/", 2)
@@ -52,14 +52,14 @@ workflow INPUT_CHECK {
             def run = sample_parts.length > 1 ? sample_parts[1] : ""
             def new_id = meta.id.replace("/",".")
 
-            [meta.assembly, meta + [ "id": new_id, "sample": meta.id, "specimen": specimen, "run": run ], datafile] 
+            [meta.assembly, meta + [ "id": new_id, "sample": meta.id, "specimen": specimen, "run": run ], datafile]
         }
         .combine(ch_tmp_param, by: 0)
         .map { _assembly, meta, datafile, meta2 ->
             def new_meta = meta + [species: meta2.species, taxon_id: meta2.taxon_id]
             [new_meta, datafile]
         }
-    
+
     // Check for duplicate sample IDs after transformation of slash in the input samplesheet
     // data.map { meta, _ -> meta.id }
     //     .collect()
