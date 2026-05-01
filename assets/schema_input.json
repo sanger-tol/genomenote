@@ -11,7 +11,7 @@
                 "type": "string",
                 "description": "Sample identifier",
                 "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "errorMessage": "Sample name must be provided, unique (slash (`/`) and dot (`.`) treated as equivalent), and cannot contain spaces",
                 "meta": ["id"]
             },
             "datatype": {
@@ -26,7 +26,7 @@
                 "format": "path",
                 "exists": true,
                 "pattern": "^\\S+$",
-                "errorMessage": "Data path for reads or kmer"
+                "errorMessage": "Data path for reads or kmer must be provided and cannot contain spaces"
             }
         },
         "required": ["sample", "datatype", "datafile"]

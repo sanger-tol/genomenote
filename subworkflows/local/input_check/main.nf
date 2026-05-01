@@ -50,6 +50,14 @@ workflow INPUT_CHECK {
             def new_meta = meta + [species: meta2.species, taxon_id: meta2.taxon_id]
             [new_meta, datafile]
         }
+    
+    // Check for duplicate sample IDs after transformation of slash in the input samplesheet
+    data.map { meta, _ -> meta.id }
+        .collect()
+        .subscribe { list ->
+            def duplicates = list.groupBy { it }.findAll { _, v -> v.size() > 1 }
+            if (duplicates) error "Sample cannot be duplicated (slash (`/`) and dot (`.`) treated as equivalent): ${duplicates.keySet()}"
+        }
 
     emit:
     data // channel: [ val(meta), data ]
