@@ -168,16 +168,14 @@ workflow GENOMENOTE {
     // SUBWORKFLOW : Obtain feature statistics from the annotation file : GFF
     //
     ch_annotation_stats = channel.empty()
-    if (params.annotation_set) {
-        ANNOTATION_STATISTICS(
-            ch_inputs.genes,
-            ch_fasta,
-            GENOME_STATISTICS.out.ch_busco_lineage,
-            lineage_db,
-        )
-        ch_versions = ch_versions.mix(ANNOTATION_STATISTICS.out.versions)
-        ch_annotation_stats = ch_annotation_stats.mix(ANNOTATION_STATISTICS.out.summary)
-    }
+    ANNOTATION_STATISTICS(
+        ch_inputs.genes,
+        ch_fasta,
+        GENOME_STATISTICS.out.ch_busco_lineage,
+        lineage_db,
+    )
+    ch_versions = ch_versions.mix(ANNOTATION_STATISTICS.out.versions)
+    ch_annotation_stats = ch_annotation_stats.mix(ANNOTATION_STATISTICS.out.summary)
 
     if (params.note_template) {
 
