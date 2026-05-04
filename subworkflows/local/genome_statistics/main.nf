@@ -97,8 +97,8 @@ workflow GENOME_STATISTICS {
         .join(BUSCO.out.full_table, remainder: true)
         .join(BUSCO.out.missing_busco_list, remainder: true)
         .join(BUSCO.out.seq_dir)
-        .map { meta, batch_summary, lineage, short_summaries_txt, short_summaries_json, full_table, missing_busco_list, busco_dir -> 
-            [meta, lineage, batch_summary, short_summaries_txt ?: [], short_summaries_json ?: [], full_table ?: [], missing_busco_list ?: [], busco_dir] 
+        .map { meta, batch_summary, lineage, short_summaries_txt, short_summaries_json, full_table, missing_busco_list, busco_dir ->
+            [meta, lineage, batch_summary, short_summaries_txt ?: [], short_summaries_json ?: [], full_table ?: [], missing_busco_list ?: [], busco_dir]
         }
 
     //
