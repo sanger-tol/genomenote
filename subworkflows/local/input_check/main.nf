@@ -64,7 +64,7 @@ workflow INPUT_CHECK {
             def duplicates = list.groupBy { it }.findAll { _, v -> v.size() > 1 }
             if (duplicates) error "Sample cannot be duplicated (slash (`/`) and dot (`.`) treated as equivalent): ${duplicates.keySet().sort().join(', ')}"
         }
-    
+
     // Check if multiple genes are provided
     data.map { meta, _ -> meta.datatype }
         .filter { type -> type == "genes" }
