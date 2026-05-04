@@ -15,34 +15,24 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [Annotation statistics](#annotation-statistics) - Statistics calculated on the annotated protein set for the assembly (if GFF annotation file is provided as input)
 - [Annotation ancestral](#annotation-ancestral) - Ancestral linkage plots
 - [BUSCO](#busco) - BUSCO results
+- [BLOBTOOLKIT plots](blobtoolkit-plots) - Blobtool kit plots
 - [Genome Note](#genome-note) - Data for the generation of a genome-note article.
 - [MultiQC](#multiqc) - Aggregate report describing results from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
-### HiGlass Contact maps
+### Contact maps
 
-This pipeline takes aligned HiC reads to create contact maps and chromosomal grid using Cooler for display on a [HiGlass server](https://higlass.io/).
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `contact_maps/higlass/`
-  - `<sample>.bedpe`: chromosomal grid created from the `.cool` file
-  - `<sample>.cool`: initial contact matrix created
-  - `<sample>.mcool`: final contact matrix for upload
-
-</details>
-
-### PreText Contact maps
-
-This pipeline takes aligned HiC reads to create contact maps and chromosomal grid using PretextMap for display on PretextView or via a pretext snapshot in your preffered image viewer.
+This pipeline takes aligned HiC reads to create contact maps and chromosomal grids using both Cooler and PretextMap, enabling display on a [HiGlass server](https://higlass.io/), in PretextView, or via a pretext snapshot in your preferred image viewer.
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `contact_maps/pretext/`
-  - `<sample>.pretext`: PretextMap for PretextView
-  - `<sample>.png`: Snapshot file
+- `contact_maps/`
+  - `<assembly>.<datatype>.<specimen>.<run>.bedpe`: chromosomal grid created from the `.cool` file
+  - `<assembly>.<datatype>.<specimen>.<run>.cool`: initial contact matrix created
+  - `<assembly>.<datatype>.<specimen>.<run>.mcool`: final contact matrix for upload
+  - `<assembly>.<datatype>.<specimen>.<run>.pretext`: PretextMap for PretextView
+  - `<assembly>.<datatype>.<specimen>.<run>Fullmap.png`: Snapshot file
 
 </details>
 
@@ -54,22 +44,33 @@ This pipeline collates (1) assembly information, statistics and chromosome detai
 <summary>Output files</summary>
 
 - `genome_stats/`
-  - `<gca_accession>.assembly_summary`: a file containing a summary of all data collected through-out the pipeline run.
-  - `<gca_accession>.completeness.stats`: coverage of solid read k-mers by the assemblies and their union (if two are given).
-  - `<gca_accession>.*._only.bed`: a .bed file of the locations where the assemblies have k-mer's not supported by those in the reads.
-  - `<gca_accession>.<assembly>.qv`: error and qv table for each scaffold of the input assemblies.
-  - `<gca_accession>.qv`: error and qv of each assembly as a whole.
+  - `<datattype>/`
+    - `<sample>/`: One directory per sample. If the sample name contains `/`, the path will be nested accordingly (e.g. `project/sample` becomes `project/sample/`).
+      - `<assembly>.gfastats.txt`: Assembly summary statistics for this sample, aggregating metrics collected throughout the pipeline run (e.g. contig count, N50, total length). Any `/` in the sample name is replaced with `.` in the filename.
+      - `genomescope/`
+        - `<assembly>.<datatype>.<specimen>.<run>.genomescope_(linear|log)_plot.png`: K-mer histogram plot on a linear or log scale.
+        - `<assembly>.<datatype>.<specimen>.<run>.genomescope_transformed_(linear|log)_plot.png`: Transformed variant of the above plots, rescaled to improve interpretability.
+        - `<assembly>.<datatype>.<specimen>.<run>.genomescope_model.txt`: Fitted GenomeScope model parameters, including estimated heterozygosity, repeat content, and ploidy.
+        - `<assembly>.<datatype>.<specimen>.<run>.genomescope_summary.txt`: Human-readable summary of genome size and quality estimates derived from the model.
+      - `merqury/`
+        - `<assembly>.<datatype>.<specimen>.<run>.completeness.stats`: K-mer completeness score: the percentage of read k-mers found in the assembly, per haplodatatype.
+        - `<assembly>.<datatype>.<specimen>.<run>.qv`: Assembly-level quality value (QV) score, analogous to a Phred score, reflecting base-level accuracy.
+        - `<assembly>.<datatype>.<specimen>.<run>.spectra-asm.*.png`: K-mer spectra plots coloured by assembly haplodatatype, visually representing completeness and duplication.
+        - `<assembly>.<datatype>.<specimen>.<run>.<target_assembly>.only.bed.gz`: Genomic regions (bgzipped BED) containing k-mers found only in this target haplodatatype and absent from the others.
+        - `<assembly>.<datatype>.<specimen>.<run>.<target_assembly>.qv`: Per-target-haplodatatype quality value score.
+        - `<assembly>.<datatype>.<specimen>.<run>.<target_assembly>.spectra-cn.*.png`: Copy-number spectra plots for this specific target haplodatatype, showing k-mer multiplicity distribution.
 
 </details>
 
 ### Annotation statistics
 
-This pipeline can generate some statistics using AGAT and a BUSCO completeness score on the assembly annotation if a GFF file of protein annotations is given as input. This file should be a GFF3 format file describing the annotated protein set.
+This pipeline can generate statistics using AGAT and a BUSCO completeness score on the assembly annotation if a `genes` row is provided in the samplesheet. The annotation input should be a GFF3 file describing the annotated gene/protein set.
 
-<detail markdown="1">
+<details markdown="1">
 <summary>Output files</summary>
 
-- `gene/` -`<annotation_input_filename>_stats.csv`: collated annotation statistics file
+- `gene/<source>/` (`source` is `sample` of `genes` entry in input samplesheet)
+  - `<assembly>.<source>.csv`: collated annotation statistics file
 
 </details>
 
@@ -77,11 +78,13 @@ This pipeline can generate some statistics using AGAT and a BUSCO completeness s
 
 This subworkflow uses ancestral linkage tables to plot locations of the putative ancestral chromosomes onto the input species.
 
-<detail markdown="1">
+<details markdown="1">
 <summary>Output files</summary>
 
-- `ancestral_plots/` -`<gca_accession>_*_buscopainter.pdf`: PDF copy of the plot.
-- `ancestral_plots/` -`<gca_accession>_*_buscopainter.png`: PNG copy of the plot.
+- `ancestral_plots/` 
+  - `<lineage>/`
+    - `<ancestral_set>/`
+      - `<assembly>.<lineage>.<ancestral_set>.buscopainter.(pdf|png)`: PDF or PNG copy of the plot.
 
 </details>
 
@@ -93,14 +96,21 @@ BUSCO results generated by the pipeline (all BUSCO lineages that match the class
 <summary>Output files</summary>
 
 - `busco/`
-  - `<lineage_name>`
-    - `short_summary.{json|tsv|txt}`: BUSCO scores in various formats.
-    - `full_table.tsv`: list and coordinates of BUSCO genes that could be found
-    - `missing_busco_list.tsv`: BUSCO genes that could not be found
-    - `{single,multi,fragmented}_busco_sequences.tar.gz`: sequence files of the annotated genes.
-    - `hmmer_output.tar.gz`: Scores and outputs from the HMMER searches
+  - `<lineage>`
+    - `<assembly>.<lineage>.short_summary.{json|tsv|txt>`: BUSCO scores in various formats.
+    - `<assembly>.<lineage>.full_table.tsv`: list and coordinates of BUSCO genes that could be found.
+    - `<assembly>.<lineage>.missing_busco_list.tsv`: BUSCO genes that could not be found.
+    - `<assembly>.<lineage>.{single,multi,fragmented>_busco_sequences.tar.gz`: sequence files of the annotated genes.
 
 </details>
+
+### Blobtoolkit Plots
+- `blobtoolkit/`
+  - `plots/`
+    - `<assembly>.blob.png`: Standard GC vs coverage scatter plot showing all sequences in the assembly for contamination detection and quality assessment.
+    - `<assembly>.blob_chr.png`: Chromosome-level blob plot filtered to show only assembled molecules, excluding unlocalized scaffolds.
+    - `<assembly>.grid.png`: Grid-based positional visualization with genomic position on x-axis showing spatial distribution of sequences.
+    - `<assembly>.grid_chr.png`: Chromosome-level grid plot combining positional layout with assembled molecule filtering for publication-quality visualization.
 
 ### Genome Note
 
@@ -110,10 +120,10 @@ Collection of various data into formats suitable for ingesting into a final geno
 <summary>Output files</summary>
 
 - `genome_note/`
-  - `<gca_accession>.csv`: collated genome statistics file
-  - `<gca_accession>.{docx|xml}`: partially completed genome note template file
-  - `<gca_accession>_genome_note_consistent.csv`: a file of genome metadata parameters pulled from various public data repositories where all source agree on the paramter value.
-  - `<gca_accession>_genome_note_inconsistent.csv`: a file of genome metadata parameters, and their sources pulled from various public data repositories where the paramter value differs between data sources.
+  - `<assembly>.csv`: collated genome statistics file
+  - `<assembly>.{docx|xml>`: partially completed genome note template file
+  - `<assembly>_genome_note_consistent.csv`: a file of genome metadata parameters pulled from various public data repositories where all source agree on the paramter value.
+  - `<assembly>_genome_note_inconsistent.csv`: a file of genome metadata parameters, and their sources pulled from various public data repositories where the paramter value differs between data sources.
 
 </details>
 
@@ -122,10 +132,7 @@ Collection of various data into formats suitable for ingesting into a final geno
 <details markdown="1">
 <summary>Output files</summary>
 
-- `multiqc/`
-  - `multiqc_report.html`: a standalone HTML file that can be viewed in your web browser.
-  - `multiqc_data/`: directory containing parsed statistics from the different tools used in the pipeline.
-  - `multiqc_plots/`: directory containing static images from the report in various formats.
+- `multiqc_report.html`: a standalone HTML file that can be viewed in your web browser.
 
 </details>
 
