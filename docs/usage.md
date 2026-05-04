@@ -86,11 +86,11 @@ specimen1,haplotype,/path/to/haplotype/assembly/fasta{.gz}
 ensembl.2024_04,genes,/path/to/annotation.gff3.gz
 ```
 
-| Column     | Description                                                                                                                                                                                                                                                                                                      |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`   | Sample identifier must be unique (slash `/` and `.` are treated equivalent). Please use `specimen/run` when multiple runs exist for one specimen. For annotation sets with datatype as `genes`,`sample` is source of genes (i.e., `ensembl.2024_04`). Spaces in sample names are converted to underscores (`_`). |
-| `datatype` | Type of data. Must be `hic`, `pacbio`, `10x`, `haplotype`, or `genes` (annotation input).                                                                                                                                                                                                                        |
-| `datafile` | Full path to the data location.                                                                                                                                                                                                                                                                                  |
+| Column     | Description                                                                                                                                                                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`   | Sample identifier must be unique (slash `/` and `.` are treated equivalent). Please use `specimen/run` when multiple runs exist for one specimen. For annotation sets with datatype as `genes`, `sample` is source of genes (i.e., `ensembl.2024_04`). Sample names must not contain spaces. |
+| `datatype` | Type of data. Must be `hic`, `pacbio`, `10x`, `haplotype`, or `genes` (annotation input).                                                                                                                                                                                                    |
+| `datafile` | Full path to the data location.                                                                                                                                                                                                                                                              |
 
 Here are the expected data files for each data type:
 
