@@ -41,7 +41,7 @@ workflow INPUT_CHECK {
     // add some metadata params to the data channel meta with inline validation
     def seen_ids = [:]
     def genes_count = 0
-    
+
     data = samplesheet
         .map { meta, datafile ->
             def sample = meta.id.toString()
@@ -55,7 +55,7 @@ workflow INPUT_CHECK {
         .combine(ch_tmp_param, by: 0)
         .map { _assembly, meta, datafile, meta2 ->
             def new_meta = meta + [species: meta2.species, taxon_id: meta2.taxon_id]
-            
+
             // INLINE VALIDATION - Check for duplicate sample IDs
             if (seen_ids.containsKey(new_meta.id)) {
                 error("Sample cannot be duplicated (slash (`/`) and dot (`.`) treated as equivalent): ${new_meta.id}")
