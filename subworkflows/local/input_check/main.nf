@@ -45,9 +45,6 @@ workflow INPUT_CHECK {
 
             def sample = meta.id.toString()
             def sample_parts = sample.split("/", 2)
-            if (sample.contains("/") && (sample_parts[0] == "" || sample_parts.length < 2 || sample_parts[1] == "")) {
-                error("Sample must be formatted as 'specimen' or 'specimen/run' with non-empty components: ${sample}")
-            }
             def specimen = sample_parts[0]
             def run = sample_parts.length > 1 ? sample_parts[1] : ""
             def new_id = meta.id.replace("/",".")

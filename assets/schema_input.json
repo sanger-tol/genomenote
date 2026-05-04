@@ -10,8 +10,8 @@
             "sample": {
                 "type": "string",
                 "description": "Sample identifier",
-                "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "pattern": "^[^\\s/]+(?:/[^\\s/]+)?$",
+                "errorMessage": "Sample name must be formatted as 'specimen' or 'specimen/run' and cannot contain spaces",
                 "meta": ["id"]
             },
             "datatype": {
