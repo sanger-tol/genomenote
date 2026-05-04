@@ -119,10 +119,10 @@
                 "ancestral_plots/lepidoptera_odb10/GCA_963859965.1_buscopainter_complete_location/GCA_963859965.1.lepidoptera_odb10.GCA_963859965.1_buscopainter_complete_location.tsv.buscopainter.png",
                 "blobtoolkit",
                 "blobtoolkit/plots",
-                "blobtoolkit/plots/GCA_963859965.1_GCA_963859965.1_BLOB_CHR_VIEW.png",
-                "blobtoolkit/plots/GCA_963859965.1_GCA_963859965.1_BLOB_VIEW.png",
-                "blobtoolkit/plots/GCA_963859965.1_GCA_963859965.1_GRID_CHR_VIEW.png",
-                "blobtoolkit/plots/GCA_963859965.1_GCA_963859965.1_GRID_VIEW.png",
+                "blobtoolkit/plots/GCA_963859965.1.blob.png",
+                "blobtoolkit/plots/GCA_963859965.1.blob_chr.png",
+                "blobtoolkit/plots/GCA_963859965.1.grid.png",
+                "blobtoolkit/plots/GCA_963859965.1.grid_chr.png",
                 "busco",
                 "busco/lepidoptera_odb12",
                 "busco/lepidoptera_odb12/GCA_963859965.1.lepidoptera_odb12.fragmented_busco_sequences.tar.gz",
@@ -213,10 +213,10 @@
             ],
             [
                 "GCA_963859965.1.lepidoptera_odb10.GCA_963859965.1_buscopainter_complete_location.tsv.buscopainter.png:md5,cdd73e334318cf915df7cf5fa750892a",
-                "GCA_963859965.1_GCA_963859965.1_BLOB_CHR_VIEW.png:md5,147e7413247cbb8f52caae9c7b79400b",
-                "GCA_963859965.1_GCA_963859965.1_BLOB_VIEW.png:md5,147e7413247cbb8f52caae9c7b79400b",
-                "GCA_963859965.1_GCA_963859965.1_GRID_CHR_VIEW.png:md5,1dd41fe93a5644b64817f8ceec461a5f",
-                "GCA_963859965.1_GCA_963859965.1_GRID_VIEW.png:md5,1dd41fe93a5644b64817f8ceec461a5f",
+                "GCA_963859965.1.blob.png:md5,147e7413247cbb8f52caae9c7b79400b",
+                "GCA_963859965.1.blob_chr.png:md5,147e7413247cbb8f52caae9c7b79400b",
+                "GCA_963859965.1.grid.png:md5,1dd41fe93a5644b64817f8ceec461a5f",
+                "GCA_963859965.1.grid_chr.png:md5,1dd41fe93a5644b64817f8ceec461a5f",
                 "GCA_963859965.1.lepidoptera_odb12.full_table.tsv:md5,6d8e1467c24c90a0b1a2c4de9a5a45d5",
                 "GCA_963859965.1.lepidoptera_odb12.missing_busco_list.tsv:md5,7907b15451b96b0da834f1f48e214ec4",
                 "GCA_963859965.1.lepidoptera_odb12.short_summary.tsv:md5,97bf63d6cb79a5255dfd8974aecf406a",
@@ -254,7 +254,7 @@
                 "GCA_963859965.1.pacbio.SAMEA112198456.merge.spectra-cn.st.png:md5,2b25086b5f4aeecd2fcd9a1d10853ef2"
             ]
         ],
-        "timestamp": "2026-05-04T22:19:06.881141",
+        "timestamp": "2026-05-05T00:21:17.05749",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.04.2"

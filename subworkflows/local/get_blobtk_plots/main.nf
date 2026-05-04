@@ -17,19 +17,19 @@ workflow GET_BLOBTK_PLOTS {
     //              - The first may include unlocalised units whilst the latter will not.
     blobtk_arguments = channel.of(
         [
-            name: "BLOB_VIEW",
+            name: "blob",
             args: "-v blob",
         ],
         [
-            name: "BLOB_CHR_VIEW",
+            name: "blob_chr",
             args: "-v blob --filter assembly_level=assembled-molecule",
         ],
         [
-            name: "GRID_VIEW",
+            name: "grid",
             args: "-v blob --shape grid -w 0.01 -x position",
         ],
         [
-            name: "GRID_CHR_VIEW",
+            name: "grid_chr",
             args: "-v blob --filter assembly_level=assembled-molecule --shape grid -w 0.01 -x position",
         ],
     )
