@@ -136,11 +136,11 @@
                 "contact_maps",
                 "contact_maps/SAMEA112198479",
                 "contact_maps/SAMEA112198479/ERR11904130",
-                "contact_maps/SAMEA112198479/ERR11904130/GCA_963859965.1_GCA_963859965.1.hic.SAMEA112198479.ERR11904130.bedpe",
-                "contact_maps/SAMEA112198479/ERR11904130/GCA_963859965.1_GCA_963859965.1.hic.SAMEA112198479.ERR11904130.cool",
-                "contact_maps/SAMEA112198479/ERR11904130/GCA_963859965.1_GCA_963859965.1.hic.SAMEA112198479.ERR11904130.mcool",
-                "contact_maps/SAMEA112198479/ERR11904130/GCA_963859965.1_GCA_963859965.1.hic.SAMEA112198479.ERR11904130.pretext",
-                "contact_maps/SAMEA112198479/ERR11904130/GCA_963859965.1_GCA_963859965.1.hic.SAMEA112198479.ERR11904130FullMap.png",
+                "contact_maps/SAMEA112198479/ERR11904130/GCA_963859965.1.hic.SAMEA112198479.ERR11904130.bedpe",
+                "contact_maps/SAMEA112198479/ERR11904130/GCA_963859965.1.hic.SAMEA112198479.ERR11904130.cool",
+                "contact_maps/SAMEA112198479/ERR11904130/GCA_963859965.1.hic.SAMEA112198479.ERR11904130.mcool",
+                "contact_maps/SAMEA112198479/ERR11904130/GCA_963859965.1.hic.SAMEA112198479.ERR11904130.pretext",
+                "contact_maps/SAMEA112198479/ERR11904130/GCA_963859965.1.hic.SAMEA112198479.ERR11904130FullMap.png",
                 "gene",
                 "gene/ensembl.2024_04",
                 "gene/ensembl.2024_04/GCA_963859965.1.ensembl.2024_04.stats.csv",
@@ -220,9 +220,9 @@
                 "GCA_963859965.1.lepidoptera_odb12.full_table.tsv:md5,6d8e1467c24c90a0b1a2c4de9a5a45d5",
                 "GCA_963859965.1.lepidoptera_odb12.missing_busco_list.tsv:md5,7907b15451b96b0da834f1f48e214ec4",
                 "GCA_963859965.1.lepidoptera_odb12.short_summary.tsv:md5,97bf63d6cb79a5255dfd8974aecf406a",
-                "GCA_963859965.1_GCA_963859965.1.hic.SAMEA112198479.ERR11904130.bedpe:md5,ef15e0650aa9f69b86add7af93e0c843",
-                "GCA_963859965.1_GCA_963859965.1.hic.SAMEA112198479.ERR11904130.pretext:md5,ebabd182607b4dd244e394064b048413",
-                "GCA_963859965.1_GCA_963859965.1.hic.SAMEA112198479.ERR11904130FullMap.png:md5,198a4106e7c896ff378651f9acdc913e",
+                "GCA_963859965.1.hic.SAMEA112198479.ERR11904130.bedpe:md5,ef15e0650aa9f69b86add7af93e0c843",
+                "GCA_963859965.1.hic.SAMEA112198479.ERR11904130.pretext:md5,ebabd182607b4dd244e394064b048413",
+                "GCA_963859965.1.hic.SAMEA112198479.ERR11904130FullMap.png:md5,198a4106e7c896ff378651f9acdc913e",
                 "GCA_963859965.1.ensembl.2024_04.stats.csv:md5,9f8816513f7aed88109531b10d8ae895",
                 "GCA_963859965.1.csv:md5,62962e0a7be12c7785712ee0c224faab",
                 "GCA_963859965.1.genome_note_consistent.csv:md5,31c58a42c36bf99a7bec50e0e29ba473",
@@ -254,7 +254,7 @@
                 "GCA_963859965.1.pacbio.SAMEA112198456.merge.spectra-cn.st.png:md5,2b25086b5f4aeecd2fcd9a1d10853ef2"
             ]
         ],
-        "timestamp": "2026-05-04T21:57:24.377228",
+        "timestamp": "2026-05-04T22:19:06.881141",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.04.2"
