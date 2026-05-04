@@ -4,7 +4,6 @@
 
 include { PARAMS_CHECK } from '../../../modules/local/params_check'
 
-
 workflow INPUT_CHECK {
     take:
     samplesheet // file: /path/to/samplesheet.csv
@@ -39,10 +38,12 @@ workflow INPUT_CHECK {
         [meta.id, meta]
     }
 
-    // add some metadata params to the data channel meta
+    // add some metadata params to the data channel meta with inline validation
+    def seen_ids = [:]
+    def genes_count = 0
+    
     data = samplesheet
         .map { meta, datafile ->
-
             def sample = meta.id.toString()
             def sample_parts = sample.split("/", 2)
             def specimen = sample_parts[0]
@@ -54,25 +55,22 @@ workflow INPUT_CHECK {
         .combine(ch_tmp_param, by: 0)
         .map { _assembly, meta, datafile, meta2 ->
             def new_meta = meta + [species: meta2.species, taxon_id: meta2.taxon_id]
-            [new_meta, datafile]
-        }
-
-    // Check for duplicate sample IDs after transformation of slash in the input samplesheet
-    data.map { meta, _ -> meta.id }
-        .collect()
-        .subscribe { list ->
-            def duplicates = list.groupBy { it }.findAll { _, v -> v.size() > 1 }
-            if (duplicates) error "Sample cannot be duplicated (slash (`/`) and dot (`.`) treated as equivalent): ${duplicates.keySet().sort().join(', ')}"
-        }
-
-    // Check if multiple genes are provided
-    data.map { meta, _ -> meta.datatype }
-        .filter { type -> type == "genes" }
-        .count()
-        .map { size ->
-            if (size > 1) {
-                error("Multiple genes rows detected. Please provide at most one genes row in the samplesheet.")
+            
+            // INLINE VALIDATION - Check for duplicate sample IDs
+            if (seen_ids.containsKey(new_meta.id)) {
+                error("Sample cannot be duplicated (slash (`/`) and dot (`.`) treated as equivalent): ${new_meta.id}")
             }
+            seen_ids[new_meta.id] = true
+
+            // INLINE VALIDATION - Check genes count
+            if (new_meta.datatype == "genes") {
+                genes_count++
+                if (genes_count > 1) {
+                    error("Multiple genes rows detected. Please provide at most one genes row in the samplesheet.")
+                }
+            }
+
+            [new_meta, datafile]
         }
 
     emit:
