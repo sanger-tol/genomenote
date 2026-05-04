@@ -90,7 +90,7 @@
                     "populate_genome_note_template.py": 1.1
                 },
                 "RESTRUCTUREBUSCODIR": {
-                    "tar": "tar)"
+                    "restructurebuscodir": 1.0
                 },
                 "RUN_WGET": {
                     "wget": 1.18
@@ -127,7 +127,6 @@
                 "busco/lepidoptera_odb12",
                 "busco/lepidoptera_odb12/GCA_963859965.1.lepidoptera_odb12.fragmented_busco_sequences.tar.gz",
                 "busco/lepidoptera_odb12/GCA_963859965.1.lepidoptera_odb12.full_table.tsv",
-                "busco/lepidoptera_odb12/GCA_963859965.1.lepidoptera_odb12.hmmer_output.tar.gz",
                 "busco/lepidoptera_odb12/GCA_963859965.1.lepidoptera_odb12.missing_busco_list.tsv",
                 "busco/lepidoptera_odb12/GCA_963859965.1.lepidoptera_odb12.multi_copy_busco_sequences.tar.gz",
                 "busco/lepidoptera_odb12/GCA_963859965.1.lepidoptera_odb12.short_summary.json",
@@ -255,7 +254,7 @@
                 "GCA_963859965.1.pacbio.SAMEA112198456.merge.spectra-cn.st.png:md5,2b25086b5f4aeecd2fcd9a1d10853ef2"
             ]
         ],
-        "timestamp": "2026-05-01T17:01:51.204868",
+        "timestamp": "2026-05-04T21:57:24.377228",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.04.2"

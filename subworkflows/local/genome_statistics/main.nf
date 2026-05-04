@@ -6,7 +6,7 @@ include { NCBIDATASETS_SUMMARYGENOME as SUMMARYGENOME   } from '../../../modules
 include { NCBIDATASETS_SUMMARYGENOME as SUMMARYSEQUENCE } from '../../../modules/local/ncbidatasets/summarygenome'
 include { NCBI_GET_ODB                                  } from '../../../modules/local/ncbidatasets/get_odb'
 include { BUSCO_BUSCO as BUSCO                          } from '../../../modules/nf-core/busco/busco/main'
-include { RESTRUCTUREBUSCODIR                           } from '../../../modules/local/restructurebuscodir'
+include { RESTRUCTUREBUSCODIR                           } from '../../../modules/sanger-tol/restructurebuscodir'
 include { FASTK_FASTK                                   } from '../../../modules/nf-core/fastk/fastk/main'
 include { CREATETABLE                                   } from '../../../modules/local/createtable'
 include { FASTK_HISTEX                                  } from '../../../modules/nf-core/fastk/histex/main'
@@ -90,16 +90,23 @@ workflow GENOME_STATISTICS {
         false,
     )
     ch_versions = ch_versions.mix(BUSCO.out.versions.first())
-
+    busco_out_to_restructure = BUSCO.out.batch_summary
+        .combine(ch_lineage)
+        .join(BUSCO.out.short_summaries_txt, remainder: true)
+        .join(BUSCO.out.short_summaries_json, remainder: true)
+        .join(BUSCO.out.full_table, remainder: true)
+        .join(BUSCO.out.missing_busco_list, remainder: true)
+        .join(BUSCO.out.seq_dir)
+        .map { meta, batch_summary, lineage, short_summaries_txt, short_summaries_json, full_table, missing_busco_list, busco_dir -> 
+            [meta, lineage, batch_summary, short_summaries_txt ?: [], short_summaries_json ?: [], full_table ?: [], missing_busco_list ?: [], busco_dir] 
+        }
 
     //
     // MODULE: Tidy up the BUSCO output directories before publication
     //
     RESTRUCTUREBUSCODIR(
-        BUSCO.out.batch_summary.combine(ch_lineage).join(BUSCO.out.short_summaries_txt, remainder: true).join(BUSCO.out.short_summaries_json, remainder: true).join(BUSCO.out.busco_dir).map { meta, batch_summary, lineage, short_summaries_txt, short_summaries_json, busco_dir -> [meta, lineage, batch_summary, short_summaries_txt ?: [], short_summaries_json ?: [], busco_dir] }
+        busco_out_to_restructure
     )
-    ch_versions = ch_versions.mix(RESTRUCTUREBUSCODIR.out.versions.first())
-
 
     //
     // LOGIC: Prepare channels for FastK, collect files in directory create list for FASTK
