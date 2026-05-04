@@ -11,7 +11,7 @@
                 "type": "string",
                 "description": "Sample identifier",
                 "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided, unique (slash (`/`) and dot (`.`) treated as equivalent), and cannot contain spaces",
+                "errorMessage": "Sample name must be provided and cannot contain spaces",
                 "meta": ["id"]
             },
             "datatype": {

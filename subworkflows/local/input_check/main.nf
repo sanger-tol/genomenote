@@ -46,7 +46,7 @@ workflow INPUT_CHECK {
             def sample = meta.id.toString()
             def sample_parts = sample.split("/", 2)
             if (sample.contains("/") && (sample_parts[0] == "" || sample_parts.length < 2 || sample_parts[1] == "")) {
-                error("Sample must be formatted as 'specimen' or 'specimen/run' with non-empty components: ${meta.sample}")
+                error("Sample must be formatted as 'specimen' or 'specimen/run' with non-empty components: ${sample}")
             }
             def specimen = sample_parts[0]
             def run = sample_parts.length > 1 ? sample_parts[1] : ""
@@ -61,12 +61,12 @@ workflow INPUT_CHECK {
         }
 
     // Check for duplicate sample IDs after transformation of slash in the input samplesheet
-    // data.map { meta, _ -> meta.id }
-    //     .collect()
-    //     .subscribe { list ->
-    //         def duplicates = list.groupBy { it }.findAll { _, v -> v.size() > 1 }
-    //         if (duplicates) error "Sample cannot be duplicated (slash (`/`) and dot (`.`) treated as equivalent): ${duplicates.keySet()}"
-    //     }
+    data.map { meta, _ -> meta.id }
+        .collect()
+        .subscribe { list ->
+            def duplicates = list.groupBy { it }.findAll { _, v -> v.size() > 1 }
+            if (duplicates) error "Sample cannot be duplicated (slash (`/`) and dot (`.`) treated as equivalent): ${duplicates.keySet().sort().join(', ')}"
+        }
 
     emit:
     data // channel: [ val(meta), data ]
