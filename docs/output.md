@@ -45,21 +45,21 @@ This pipeline collates (1) assembly information, statistics and chromosome detai
 <summary>Output files</summary>
 
 - `genome_stats/`
+  - `<assembly>.gfastats.txt`: Assembly summary statistics for this sample, aggregating metrics collected throughout the pipeline run (e.g. contig count, N50, total length). Any `/` in the sample name is replaced with `.` in the filename.
   - `<datatype>/`
     - `<sample>/`: One directory per sample. If the sample name contains `/`, the path will be nested accordingly (e.g. `project/sample` becomes `project/sample/`).
-      - `<assembly>.gfastats.txt`: Assembly summary statistics for this sample, aggregating metrics collected throughout the pipeline run (e.g. contig count, N50, total length). Any `/` in the sample name is replaced with `.` in the filename.
       - `genomescope/`
         - `<assembly>.<datatype>.<specimen>.<run>.genomescope_(linear|log)_plot.png`: K-mer histogram plot on a linear or log scale.
         - `<assembly>.<datatype>.<specimen>.<run>.genomescope_transformed_(linear|log)_plot.png`: Transformed variant of the above plots, rescaled to improve interpretability.
         - `<assembly>.<datatype>.<specimen>.<run>.genomescope_model.txt`: Fitted GenomeScope model parameters, including estimated heterozygosity, repeat content, and ploidy.
         - `<assembly>.<datatype>.<specimen>.<run>.genomescope_summary.txt`: Human-readable summary of genome size and quality estimates derived from the model.
       - `merqury/`
-        - `<assembly>.<datatype>.<specimen>.<run>.completeness.stats`: K-mer completeness score: the percentage of read k-mers found in the assembly, per haplodatatype.
+        - `<assembly>.<datatype>.<specimen>.<run>.completeness.stats`: K-mer completeness score: the percentage of read k-mers found in the assembly, per haplotype.
         - `<assembly>.<datatype>.<specimen>.<run>.qv`: Assembly-level quality value (QV) score, analogous to a Phred score, reflecting base-level accuracy.
-        - `<assembly>.<datatype>.<specimen>.<run>.spectra-asm.*.png`: K-mer spectra plots coloured by assembly haplodatatype, visually representing completeness and duplication.
-        - `<assembly>.<datatype>.<specimen>.<run>.<target_assembly>.only.bed`: Genomic regions (BED) containing k-mers found only in this target haplodatatype and absent from the others.
-        - `<assembly>.<datatype>.<specimen>.<run>.<target_assembly>.qv`: Per-target-haplodatatype quality value score.
-        - `<assembly>.<datatype>.<specimen>.<run>.<target_assembly>.spectra-cn.*.png`: Copy-number spectra plots for this specific target haplodatatype, showing k-mer multiplicity distribution.
+        - `<assembly>.<datatype>.<specimen>.<run>.spectra-asm.*.png`: K-mer spectra plots coloured by assembly haplotype, visually representing completeness and duplication.
+        - `<assembly>.<datatype>.<specimen>.<run>.<target_assembly>.only.bed`: Genomic regions (BED) containing k-mers found only in this target haplotype and absent from the others.
+        - `<assembly>.<datatype>.<specimen>.<run>.<target_assembly>.qv`: Per-target-haplotype quality value score.
+        - `<assembly>.<datatype>.<specimen>.<run>.<target_assembly>.spectra-cn.*.png`: Copy-number spectra plots for this specific target haplotype, showing k-mer multiplicity distribution.
 
 </details>
 
