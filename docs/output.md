@@ -28,11 +28,12 @@ This pipeline takes aligned HiC reads to create contact maps and chromosomal gri
 <summary>Output files</summary>
 
 - `contact_maps/`
-  - `<assembly>.<datatype>.<specimen>.<run>.bedpe`: chromosomal grid created from the `.cool` file
-  - `<assembly>.<datatype>.<specimen>.<run>.cool`: initial contact matrix created
-  - `<assembly>.<datatype>.<specimen>.<run>.mcool`: final contact matrix for upload
-  - `<assembly>.<datatype>.<specimen>.<run>.pretext`: PretextMap for PretextView
-  - `<assembly>.<datatype>.<specimen>.<run>FullMap.png`: Snapshot file
+  - `<sample>/`: One directory per sample. If the sample name contains `/`, the path will be nested accordingly (e.g. `project/sample` becomes `project/sample/`).
+    - `<assembly>.<datatype>.<specimen>.<run>.bedpe`: chromosomal grid created from the `.cool` file
+    - `<assembly>.<datatype>.<specimen>.<run>.cool`: initial contact matrix created
+    - `<assembly>.<datatype>.<specimen>.<run>.mcool`: final contact matrix for upload
+    - `<assembly>.<datatype>.<specimen>.<run>.pretext`: PretextMap for PretextView
+    - `<assembly>.<datatype>.<specimen>.<run>FullMap.png`: Snapshot file
 
 </details>
 
@@ -44,7 +45,7 @@ This pipeline collates (1) assembly information, statistics and chromosome detai
 <summary>Output files</summary>
 
 - `genome_stats/`
-  - `<datattype>/`
+  - `<datatype>/`
     - `<sample>/`: One directory per sample. If the sample name contains `/`, the path will be nested accordingly (e.g. `project/sample` becomes `project/sample/`).
       - `<assembly>.gfastats.txt`: Assembly summary statistics for this sample, aggregating metrics collected throughout the pipeline run (e.g. contig count, N50, total length). Any `/` in the sample name is replaced with `.` in the filename.
       - `genomescope/`
@@ -123,8 +124,8 @@ Collection of various data into formats suitable for ingesting into a final geno
 - `genome_note/`
   - `<assembly>.csv`: collated genome statistics file
   - `<assembly>.{docx|xml}`: partially completed genome note template file
-  - `<assembly>.genome_note_consistent.csv`: a file of genome metadata parameters pulled from various public data repositories where all source agree on the paramter value.
-  - `<assembly>.genome_note_inconsistent.csv`: a file of genome metadata parameters, and their sources pulled from various public data repositories where the paramter value differs between data sources.
+  - `<assembly>.genome_note_consistent.csv`: a file of genome metadata parameters pulled from various public data repositories where all source agree on the parameter value.
+  - `<assembly>.genome_note_inconsistent.csv`: a file of genome metadata parameters, and their sources pulled from various public data repositories where the parameter value differs between data sources.
 
 </details>
 
