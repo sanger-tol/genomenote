@@ -2,6 +2,7 @@ sample,datatype,datafile
 SAMEA112198456/ERR11892487,pacbio,https://tolit.cog.sanger.ac.uk/test-data/Ceramica_pisi/genomic_data/ilCerPisi1/pacbio/m84047_230817_174414_s3.ccs.bc2048.subsampled.bam
 SAMEA112198456/ERR11892488,pacbio,https://tolit.cog.sanger.ac.uk/test-data/Ceramica_pisi/genomic_data/ilCerPisi1/pacbio/m64097e_230309_154741.ccs.bc1012_BAK8A_OA--bc1012_BAK8A_OA.subsampled.bam
 SAMEA112198456_X/ERR11892488,pacbio,https://tolit.cog.sanger.ac.uk/test-data/Ceramica_pisi/genomic_data/ilCerPisi1/pacbio/m64097e_230309_154741.ccs.bc1012_BAK8A_OA--bc1012_BAK8A_OA.subsampled.bam
+SAMEA112198456_dir,pacbio,https://tolit.cog.sanger.ac.uk/test-data/Ceramica_pisi/genomic_data/ilCerPisi1/pacbio/SAMEA112198456.k11.tar.gz
 SAMEA112198479/ERR11904130,hic,https://tolit.cog.sanger.ac.uk/test-data/Ceramica_pisi/analysis/ilCerPisi1.1/read_mapping/hic/GCA_963859965.1.unmasked.hic.ilCerPisi2.subsampled.cram
 ilCerPisi1,haplotype,https://tolit.cog.sanger.ac.uk/test-data/Ceramica_pisi/assembly/release/ilCerPisi1.1/insdc/GCA_963859975.1_alt.fasta.gz
 ensembl.2024_04,genes,https://tolit.cog.sanger.ac.uk/test-data/Ceramica_pisi/annotation/Ceramica_pisi-GCA_963859965.1-2024_04-genes.gff3.gz

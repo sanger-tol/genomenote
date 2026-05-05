@@ -13,6 +13,7 @@ include { FASTK_HISTEX                                  } from '../../../modules
 include { GENESCOPEFK                                   } from '../../../modules/nf-core/genescopefk/main'
 include { GFASTATS                                      } from '../../../modules/nf-core/gfastats/main'
 include { MERQURYFK_MERQURYFK                           } from '../../../modules/nf-core/merquryfk/merquryfk/main'
+include { UNTAR as UNTAR_KMER_DB                        } from '../../../modules/nf-core/untar/main'
 
 workflow GENOME_STATISTICS {
     take:
@@ -113,6 +114,7 @@ workflow GENOME_STATISTICS {
     //
     ch_pacbio = pacbio.branch { _meta, file ->
         dir: file.isDirectory()
+        tar: file.name ==~ /.*\.tar(\.gz)?$/
         file: true
     }
 
@@ -164,7 +166,10 @@ workflow GENOME_STATISTICS {
     //
     ch_combo = FASTK_FASTK.out.hist.join(FASTK_FASTK.out.ktab)
 
-    ch_grab = ch_pacbio.dir.map { meta, dir ->
+    UNTAR_KMER_DB(ch_pacbio.tar)
+    ch_kmer_dir = ch_pacbio.dir.mix(UNTAR_KMER_DB.out.untar)
+
+    ch_grab = ch_kmer_dir.map { meta, dir ->
         [
             meta,
             dir.listFiles().findAll { file -> file.toString().endsWith(".hist") }.collect(),
