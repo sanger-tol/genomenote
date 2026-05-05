@@ -15,6 +15,7 @@ process FASTK_FASTK {
     tuple val(meta), path("*.hist")                      , emit: hist
     tuple val(meta), path("*.ktab*", hidden: true)       , emit: ktab, optional: true
     tuple val(meta), path("*.{prof,pidx}*", hidden: true), emit: prof, optional: true
+    tuple val(meta), path("SOURCE.txt")                  , emit: source_txt, optional: true
     // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     tuple val("${task.process}"), val('fastk'), eval('echo 1.2'), emit: versions_fastk, topic: versions
 
@@ -24,13 +25,15 @@ process FASTK_FASTK {
     script:
     def args      = task.ext.args ?: ''
     def prefix    = task.ext.prefix ?: "${meta.id}"
+    def source_files_args = meta.merge_source ? "&& cat > SOURCE.txt <<'SOURCE_TXT_EOF'\n${meta.merge_source}\nSOURCE_TXT_EOF" : ""
     """
     FastK \\
         $args \\
         -T$task.cpus \\
         -M${task.memory.toGiga()} \\
         -N${prefix} \\
-        $reads
+        $reads \\
+        ${source_files_args}
 
     find . -name '*.ktab*' -exec chmod a+r {} \\;
     """
@@ -40,8 +43,10 @@ process FASTK_FASTK {
     def prefix     = task.ext.prefix ?: "${meta.id}"
     def touch_ktab = args.contains('-t') ? "touch ${prefix}.ktab .${prefix}.ktab.1" : ''
     def touch_prof = args.contains('-p') ? "touch ${prefix}.prof .${prefix}.pidx.1" : ''
+    def source_files_args = meta.merge_source ? "&& cat > SOURCE.txt <<'SOURCE_TXT_EOF'\n${meta.merge_source}\nSOURCE_TXT_EOF" : ""
     """
-    touch ${prefix}.hist
+    touch ${prefix}.hist \\
+    ${source_files_args}
     $touch_ktab
     $touch_prof
 
