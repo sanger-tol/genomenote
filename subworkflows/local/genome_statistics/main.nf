@@ -117,8 +117,28 @@ workflow GENOME_STATISTICS {
     }
 
     ch_fastk = ch_pacbio.file
-        .map { meta, files -> [meta + ["run":"${params.merge_output}", "id":"${meta.specimen}.${params.merge_output}", "sample":"${meta.specimen}/${params.merge_output}"], files]}
-        .groupTuple(by: [0])
+        .map { meta, reads -> [meta.specimen, [meta, reads]] }
+        .groupTuple()
+        .map { specimen, meta_reads ->
+            if (meta_reads.size() == 1) {
+                // Single file - no merge needed
+                return [meta_reads[0][0], meta_reads[0][1]]
+            } else {
+                // Multiple files - merge them
+                def meta_read = meta_reads[0][0]
+                def runs = meta_reads.collect { it[0].run }
+                def meta_merged = meta_read + [
+                    'sample': "${meta_read.specimen}/${params.merge_output}",
+                    'id': "${meta_read.specimen}.${params.merge_output}",
+                    'run': 'merge',
+                    'merge_source': runs.sort().join("\n"),
+                ]
+                def reads = meta_reads
+                    .sort { a, b -> a[0].id <=> b[0].id }
+                    .collect { it[1] }
+                return [meta_merged, reads]
+            }
+        }
 
     //
     // MODULE: RUN FASTK KMER COUNTING TO GENERATE HISTOGRAM DATA
