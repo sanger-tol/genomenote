@@ -40,7 +40,6 @@ workflow INPUT_CHECK {
 
     // add some metadata params to the data channel meta with inline validation
     def seen_ids = [:]
-    def genes_count = 0
 
     data = samplesheet
         .map { meta, datafile ->
@@ -61,14 +60,6 @@ workflow INPUT_CHECK {
                 error("Sample cannot be duplicated (slash (`/`) and dot (`.`) treated as equivalent): ${new_meta.id}")
             }
             seen_ids[new_meta.id] = true
-
-            // INLINE VALIDATION - Check genes count
-            if (new_meta.datatype == "genes") {
-                genes_count++
-                if (genes_count > 1) {
-                    error("Multiple genes rows detected. Please provide at most one genes row in the samplesheet.")
-                }
-            }
 
             [new_meta, datafile]
         }

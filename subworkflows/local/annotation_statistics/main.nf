@@ -22,7 +22,7 @@ workflow ANNOTATION_STATISTICS {
     // LOGIC: Uncompress the gff files if needed
     //
     ch_gff = gff
-        .branch { meta, gff_file ->
+        .branch { _meta, gff_file ->
             gz: gff_file.toString().endsWith('.gz')
             not_gz : true
         }
