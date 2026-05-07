@@ -25,7 +25,7 @@ process FASTK_FASTK {
     script:
     def args      = task.ext.args ?: ''
     def prefix    = task.ext.prefix ?: "${meta.id}"
-    def source_files_args = meta.merge_source ? "&& cat > SOURCE.txt <<'SOURCE_TXT_EOF'\n${meta.merge_source}\nSOURCE_TXT_EOF" : ""
+    def source_files_args = meta.merge_source ? "&& printf \"%s\" \"${meta.merge_source}\" > SOURCE.txt" : ""
     """
     FastK \\
         $args \\
@@ -43,7 +43,7 @@ process FASTK_FASTK {
     def prefix     = task.ext.prefix ?: "${meta.id}"
     def touch_ktab = args.contains('-t') ? "touch ${prefix}.ktab .${prefix}.ktab.1" : ''
     def touch_prof = args.contains('-p') ? "touch ${prefix}.prof .${prefix}.pidx.1" : ''
-    def source_files_args = meta.merge_source ? "&& cat > SOURCE.txt <<'SOURCE_TXT_EOF'\n${meta.merge_source}\nSOURCE_TXT_EOF" : ""
+    def source_files_args = meta.merge_source ? "&& printf \"%s\" \"${meta.merge_source}\" > SOURCE.txt" : ""
     """
     touch ${prefix}.hist \\
     ${source_files_args}
