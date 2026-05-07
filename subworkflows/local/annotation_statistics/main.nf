@@ -49,7 +49,6 @@ workflow ANNOTATION_STATISTICS {
     // MODULE: Obtaining the protein fasta file from the gff3
     //
     GFFREAD(ch_gff_unzipped, ch_fasta)
-    GFFREAD.out.gffread_fasta.view()
 
     //
     // MODULE: Running BUSCO in protein mode
