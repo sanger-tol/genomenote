@@ -29,7 +29,7 @@ This pipeline takes aligned HiC reads to create contact maps and chromosomal gri
 
 - `contact_maps/`
   - `<sample>/`: One directory per sample. If the sample name contains `/`, the path will be nested accordingly (e.g. `project/sample` becomes `project/sample/`).
-    - `<assembly>.<datatype>.<specimen>.<run>.bedpe`: chromosomal grid created from the `.cool` file
+    - `<assembly>.<datatype>.<specimen>.<run>.chromsizes`: chromosomal grid created from the `.cool` file
     - `<assembly>.<datatype>.<specimen>.<run>.cool`: initial contact matrix created
     - `<assembly>.<datatype>.<specimen>.<run>.mcool`: final contact matrix for upload
     - `<assembly>.<datatype>.<specimen>.<run>.pretext`: PretextMap for PretextView
@@ -49,10 +49,10 @@ This pipeline collates (1) assembly information, statistics and chromosome detai
   - `<datatype>/`
     - `<sample>/`: One directory per sample. If the sample name contains `/`, the path will be nested accordingly (e.g. `project/sample` becomes `project/sample/`).
       - `genomescope/`
-        - `<assembly>.<datatype>.<specimen>.<run>.genomescope_(linear|log)_plot.png`: K-mer histogram plot on a linear or log scale.
-        - `<assembly>.<datatype>.<specimen>.<run>.genomescope_transformed_(linear|log)_plot.png`: Transformed variant of the above plots, rescaled to improve interpretability.
-        - `<assembly>.<datatype>.<specimen>.<run>.genomescope_model.txt`: Fitted GenomeScope model parameters, including estimated heterozygosity, repeat content, and ploidy.
-        - `<assembly>.<datatype>.<specimen>.<run>.genomescope_summary.txt`: Human-readable summary of genome size and quality estimates derived from the model.
+        - `<assembly>.<datatype>.<specimen>.<run>.genomescope.(linear|log)_plot.png`: K-mer histogram plot on a linear or log scale.
+        - `<assembly>.<datatype>.<specimen>.<run>.genomescope.transformed_(linear|log)_plot.png`: Transformed variant of the above plots, rescaled to improve interpretability.
+        - `<assembly>.<datatype>.<specimen>.<run>.genomescope.model.txt`: Fitted GenomeScope model parameters, including estimated heterozygosity, repeat content, and ploidy.
+        - `<assembly>.<datatype>.<specimen>.<run>.genomescope.summary.txt`: Human-readable summary of genome size and quality estimates derived from the model.
       - `merqury/`
         - `<assembly>.<datatype>.<specimen>.<run>.completeness.stats`: K-mer completeness score: the percentage of read k-mers found in the assembly, per haplotype.
         - `<assembly>.<datatype>.<specimen>.<run>.qv`: Assembly-level quality value (QV) score, analogous to a Phred score, reflecting base-level accuracy.
@@ -70,8 +70,12 @@ This pipeline can generate statistics using AGAT and a BUSCO completeness score 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `gene/<source>/` (`source` is `sample` of `genes` entry in input samplesheet)
-  - `<assembly>.<source>.stats.csv`: collated annotation statistics file
+- `genes/`
+  - `<source>/` (`source` is `sample` of `genes` entry in input samplesheet)
+    - `<assembly>.genes.<specimen>.agat.sqstats.txt`: AGAT basic annotation statistics (sequence stats).
+    - `<assembly>.genes.<specimen>.agat.spstats.txt`: AGAT protein annotation statistics.
+    - `<assembly>.genes.<specimen>.busco.<lineage>.short_summary.txt`: BUSCO scores in text format for protein completeness.
+    - `<assembly>.genes.<specimen>.busco.<lineage>.short_summary.json`: BUSCO scores in JSON format for protein completeness.
 
 </details>
 
@@ -84,8 +88,9 @@ This subworkflow uses ancestral linkage tables to plot locations of the putative
 
 - `ancestral_plots/`
   - `<lineage>/`
-    - `<complete_location_basename>/` (`complete_location_basename` is the basename of the BUSCOPainter complete-location input, for example `GCA_..._buscopainter_complete_location`)
-      - `*.buscopainter.(pdf|png)`: PDF or PNG copy of the plot.
+    - `<ancestral_table_basename>/` (`ancestral_table_basename` is the basename of the ancestral table file provided, for example `Merian_elements_full_table`)
+      - `<assembly>.<lineage>.<ancestral_table_basename>.buscopainter.pdf`: PDF copy of the ancestral plot.
+      - `<assembly>.<lineage>.<ancestral_table_basename>.buscopainter.png`: PNG copy of the ancestral plot.
 
 </details>
 
