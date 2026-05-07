@@ -34,8 +34,6 @@ The assembly accession for the genome you would like to analyse, optionally with
 
 If you want to generate statistics on the annotated gene set for the assembly, provide the annotation GFF3 as a `genes` row in the samplesheet.
 
-There is no dedicated `--annotation_set` parameter. Annotation input is supplied via `--input` samplesheet rows.
-
 The assembly region names used in the GFF3 file must match the assembly region names used in the assembly FASTA provided with `--fasta`.
 
 For example:

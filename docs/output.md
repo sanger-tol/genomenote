@@ -15,7 +15,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [Annotation statistics](#annotation-statistics) - Statistics calculated on the annotated protein set for the assembly (if GFF annotation file is provided as input)
 - [Annotation ancestral](#annotation-ancestral) - Ancestral linkage plots
 - [BUSCO](#busco) - BUSCO results
-- [BLOBTOOLKIT plots](#blobtoolkit-plots) - Blobtoolkit plots
+- [BlobToolKit plots](#blobtoolkit-plots) - Static BlobToolKit plots
 - [Genome Note](#genome-note) - Data for the generation of a genome-note article.
 - [MultiQC](#multiqc) - Aggregate report describing results from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
@@ -33,7 +33,7 @@ This pipeline takes aligned HiC reads to create contact maps and chromosomal gri
     - `<assembly>.<datatype>.<specimen>.<run>.cool`: initial contact matrix created
     - `<assembly>.<datatype>.<specimen>.<run>.mcool`: final contact matrix for upload
     - `<assembly>.<datatype>.<specimen>.<run>.pretext`: PretextMap for PretextView
-    - `<assembly>.<datatype>.<specimen>.<run>FullMap.png`: Snapshot file
+    - `<assembly>.<datatype>.<specimen>.<run>.pretext.png`: Snapshot file made with Pretext
 
 </details>
 
@@ -84,8 +84,8 @@ This subworkflow uses ancestral linkage tables to plot locations of the putative
 
 - `ancestral_plots/`
   - `<lineage>/`
-    - `<ancestral_set>/`
-      - `<assembly>.<lineage>.<ancestral_set>.buscopainter.(pdf|png)`: PDF or PNG copy of the plot.
+    - `<complete_location_basename>/` (`complete_location_basename` is the basename of the BUSCOPainter complete-location input, for example `GCA_..._buscopainter_complete_location`)
+      - `*.buscopainter.(pdf|png)`: PDF or PNG copy of the plot.
 
 </details>
 
