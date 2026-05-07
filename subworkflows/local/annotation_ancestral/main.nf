@@ -41,7 +41,11 @@ workflow ANNOTATION_ANCESTRAL {
     // MODULE: EXTRACTS ANCESTRALLY LINKED BUSCO GENES FROM FULL TABLE
     //         THIS IS THE BUSCOPAINTER.PY SCRIPT
     //
-    busco_table_meta_mod = BUSCO.out.full_table.map { meta, table -> [ meta + [lineage:val_ancestral_lineage], table ] }
+    busco_table_meta_mod = BUSCO.out.full_table
+        .combine(ancestral_table)
+        .map { meta, table, ancestral_meta, _ancestral_table ->
+            [meta + [lineage: val_ancestral_lineage, ancestral_table: ancestral_meta.id], table]
+        }
 
     ANCESTRAL_EXTRACT(
         busco_table_meta_mod,

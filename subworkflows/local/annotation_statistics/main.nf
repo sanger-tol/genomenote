@@ -22,8 +22,6 @@ workflow ANNOTATION_STATISTICS {
     // LOGIC: Add fasta_id to gff and uncompress the gff files if needed
     //
     ch_gff = gff
-        .combine( genome )
-        .map{ meta, gff_file, meta_genome, fasta -> [meta + [fasta_id:meta_genome.id], gff_file]}
         .branch { meta, gff_file ->
             gz: gff_file.toString().endsWith('.gz')
             not_gz : true
@@ -51,7 +49,7 @@ workflow ANNOTATION_STATISTICS {
     // MODULE: Obtaining the protein fasta file from the gff3
     //
     GFFREAD(ch_gff_unzipped, ch_fasta)
-
+    GFFREAD.out.gffread_fasta.view()
 
     //
     // MODULE: Running BUSCO in protein mode
