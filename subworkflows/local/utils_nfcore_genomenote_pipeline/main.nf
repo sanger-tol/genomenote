@@ -121,7 +121,7 @@ workflow PIPELINE_INITIALISATION {
         ch_lineage_db = channel.fromPath(params.lineage_db).first()
     }
     else {
-        ch_lineage_db = channel.empty()
+        ch_lineage_db = channel.value([])
     }
     if (params.cool_order) {
         ch_cool_order = channel.fromPath(params.cool_order).first()
