@@ -121,7 +121,7 @@ workflow GENOME_STATISTICS {
     ch_fastk = ch_pacbio.file
         .map { meta, reads -> [meta.specimen, [meta, reads]] }
         .groupTuple()
-        .map { specimen, meta_reads ->
+        .map { _specimen, meta_reads ->
             if (meta_reads.size() == 1) {
                 // Single file - no merge needed
                 return [meta_reads[0][0], meta_reads[0][1]]
