@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Addition of the `--image_format` flag to change the output format of `blobtk/plot`
   - Options are `png` or `svg`
 - Updated samplesheet handling to support `sample` values in `specimen/run` format
-- Annotation input is now provided via the samplesheet instead of `params.annotation_sets` (see [usage.md](docs/usage.md))
+- Annotation input is now provided via the samplesheet instead of `--annotation_set` (see [usage.md](docs/usage.md))
 - Added support for PacBio k-mer directories provided as `tar.gz` archives
 - Updated output structure (see [output.md](docs/output.md))
 

@@ -72,10 +72,10 @@ This pipeline can generate statistics using AGAT and a BUSCO completeness score 
 
 - `genes/`
   - `<source>/` (`source` is `sample` of `genes` entry in input samplesheet)
-    - `<assembly>.genes.<specimen>.agat.sqstats.txt`: AGAT basic annotation statistics (sequence stats).
-    - `<assembly>.genes.<specimen>.agat.spstats.txt`: AGAT protein annotation statistics.
-    - `<assembly>.genes.<specimen>.busco.<lineage>.short_summary.txt`: BUSCO scores in text format for protein completeness.
-    - `<assembly>.genes.<specimen>.busco.<lineage>.short_summary.json`: BUSCO scores in JSON format for protein completeness.
+    - `<assembly>.genes.<source>.agat.sqstats.txt`: AGAT basic annotation statistics (sequence stats).
+    - `<assembly>.genes.<source>.agat.spstats.txt`: AGAT protein annotation statistics.
+    - `<assembly>.genes.<source>.busco.<lineage>.short_summary.txt`: BUSCO scores in text format for protein completeness.
+    - `<assembly>.genes.<source>.busco.<lineage>.short_summary.json`: BUSCO scores in JSON format for protein completeness.
 
 </details>
 

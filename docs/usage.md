@@ -38,7 +38,7 @@ The assembly region names used in the GFF3 file must match the assembly region n
 
 For example:
 
-```bash
+```csv
 ensembl.2024_04,genes,/path/to/annotation.gff3.gz
 ```
 

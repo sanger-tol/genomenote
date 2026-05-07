@@ -19,7 +19,7 @@ workflow ANNOTATION_STATISTICS {
 
 
     //
-    // LOGIC: Add fasta_id to gff and uncompress the gff files if needed
+    // LOGIC: Uncompress the gff files if needed
     //
     ch_gff = gff
         .branch { meta, gff_file ->
