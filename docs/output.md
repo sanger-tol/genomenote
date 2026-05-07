@@ -45,7 +45,7 @@ This pipeline collates (1) assembly information, statistics and chromosome detai
 <summary>Output files</summary>
 
 - `genome_stats/`
-  - `<assembly>.gfastats.txt`: Assembly summary statistics for this sample, aggregating metrics collected throughout the pipeline run (e.g. contig count, N50, total length). Any `/` in the sample name is replaced with `.` in the filename.
+  - `<assembly>.gfastats.txt`: Assembly summary statistics for this assembly/accession, aggregating metrics collected throughout the pipeline run (e.g. contig count, N50, total length).
   - `<datatype>/`
     - `<sample>/`: One directory per sample. If the sample name contains `/`, the path will be nested accordingly (e.g. `project/sample` becomes `project/sample/`).
       - `genomescope/`
