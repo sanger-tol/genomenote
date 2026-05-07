@@ -1,7 +1,7 @@
 {
     "-profile test": {
         "content": [
-            77,
+            87,
             {
                 "AGAT_SPSTATISTICS": {
                     "agat": "v1.4.1"
@@ -144,6 +144,13 @@
                 "contact_maps/SAMEA112198479/ERR11904130/GCA_963859965.1.hic.SAMEA112198479.ERR11904130.mcool",
                 "contact_maps/SAMEA112198479/ERR11904130/GCA_963859965.1.hic.SAMEA112198479.ERR11904130.pretext",
                 "contact_maps/SAMEA112198479/ERR11904130/GCA_963859965.1.hic.SAMEA112198479.ERR11904130.pretext.png",
+                "contact_maps/SAMEA112198479_X",
+                "contact_maps/SAMEA112198479_X/ERR11904130",
+                "contact_maps/SAMEA112198479_X/ERR11904130/GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.chromsizes",
+                "contact_maps/SAMEA112198479_X/ERR11904130/GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.cool",
+                "contact_maps/SAMEA112198479_X/ERR11904130/GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.mcool",
+                "contact_maps/SAMEA112198479_X/ERR11904130/GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.pretext",
+                "contact_maps/SAMEA112198479_X/ERR11904130/GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.pretext.png",
                 "genes",
                 "genes/ensembl.2024_04",
                 "genes/ensembl.2024_04/GCA_963859965.1.genes.ensembl.2024_04.agat.spstats.stats.txt",
@@ -278,9 +285,12 @@
                 "GCA_963859965.1.hic.SAMEA112198479.ERR11904130.chromsizes:md5,ef15e0650aa9f69b86add7af93e0c843",
                 "GCA_963859965.1.hic.SAMEA112198479.ERR11904130.pretext:md5,ebabd182607b4dd244e394064b048413",
                 "GCA_963859965.1.hic.SAMEA112198479.ERR11904130.pretext.png:md5,198a4106e7c896ff378651f9acdc913e",
+                "GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.chromsizes:md5,ef15e0650aa9f69b86add7af93e0c843",
+                "GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.pretext:md5,ebabd182607b4dd244e394064b048413",
+                "GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.pretext.png:md5,198a4106e7c896ff378651f9acdc913e",
                 "GCA_963859965.1.genes.ensembl.2024_04.agat.spstats.stats.txt:md5,f94eb9364290e6d3eabe084c67ce9198",
                 "GCA_963859965.1.genes.ensembl.2024_04.agat.sqstats.stats.txt:md5,a7fe991f7434cd6f44b0cabd3802785f",
-                "GCA_963859965.1.csv:md5,267fa82a069047a41a876899fcec01c1",
+                "GCA_963859965.1.csv:md5,c62f77ee35d05e19afc02f5fa042cc08",
                 "GCA_963859965.1.genome_note_consistent.csv:md5,31c58a42c36bf99a7bec50e0e29ba473",
                 "GCA_963859965.1.genome_note_inconsistent.csv:md5,ba336957b84a2b78ae95ca6412bd50c7",
                 "GCA_963859965.1.gfastats.txt:md5,edd4cdba05800960c0ca80378e1e5e9d",
@@ -353,7 +363,7 @@
                 "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.spectra-cn.st.png:md5,2b25086b5f4aeecd2fcd9a1d10853ef2"
             ]
         ],
-        "timestamp": "2026-05-07T14:20:59.994084",
+        "timestamp": "2026-05-07T15:02:45.242874",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.04.2"
