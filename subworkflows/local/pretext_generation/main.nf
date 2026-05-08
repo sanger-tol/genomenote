@@ -28,8 +28,8 @@ workflow PRETEXT_GENERATION {
     //
     PRETEXTMAP(
         bam_tuple,
-        genome,
-        SAMTOOLS_FAIDX.out.fai,
+        genome.collect(),
+        SAMTOOLS_FAIDX.out.fai.collect(),
     )
     ch_versions = ch_versions.mix(PRETEXTMAP.out.versions)
 

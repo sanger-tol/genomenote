@@ -49,7 +49,8 @@
                     "fastk/fastk": {
                         "branch": "master",
                         "git_sha": "9678889112458c22cf237769be1465774467e798",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/fastk/fastk/fastk-fastk.diff"
                     },
                     "fastk/histex": {
                         "branch": "master",
@@ -112,6 +113,11 @@
                         "branch": "master",
                         "git_sha": "2d20463181b1c38981a02e90d3084b5f9fa8d540",
                         "installed_by": ["modules"]
+                    },
+                    "untar": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"]
                     }
                 }
             },
@@ -146,6 +152,11 @@
                     "ancestral/plot": {
                         "branch": "main",
                         "git_sha": "ac0fc48df659b3a6cca0fc2b0346af41162caabb",
+                        "installed_by": ["modules"]
+                    },
+                    "restructurebuscodir": {
+                        "branch": "main",
+                        "git_sha": "8dac7d789fb5ec033c38e69c2553e71cae0dd4c3",
                         "installed_by": ["modules"]
                     }
                 }

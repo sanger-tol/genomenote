@@ -32,10 +32,14 @@ The assembly accession for the genome you would like to analyse, optionally with
 
 ## Annotation input
 
-If you want to generate statistics on the geneset annotated for the assembly you will need to supply a GFF3 file of the predicted gene sequences. The assembly region names used in this file must match the assembly regions names used in the assembly fasta file provided with --fasta
+If you want to generate statistics on the annotated gene set for the assembly, provide the annotation GFF3 as a `genes` row in the samplesheet.
 
-```bash
---annotation_set '[Path to annotation file :gff]
+The assembly region names used in the GFF3 file must match the assembly region names used in the assembly FASTA provided with `--fasta`.
+
+For example:
+
+```csv
+ensembl.2024_04,genes,/path/to/annotation.gff3.gz
 ```
 
 ## Samplesheet input
@@ -48,33 +52,43 @@ You will need to create a samplesheet with information about the samples you wou
 
 ### Multiple runs of the same sample
 
-The `sample` identifiers have to be the same when you have re-sequenced the same sample using different technologies. Below is an example for the same sample sequenced using HiC and PacBio sequencing technology:
+The `sample` identifiers have to be unique.
+
+Use either `specimen` or `specimen/run` format:
+
+- `specimen`: single run.
+- `specimen/run`: multiple runs from the same specimen.
+
+If `specimen/run` is used, both components must be non-empty and only one slash is allowed.
+
+Below is an example for the same specimen sequenced using Hi-C and PacBio technology:
 
 ```csv title="samplesheet.csv"
 sample,datatype,datafile
-sample1,hic,/path/to/aligned/cram
-sample1,pacbio,/path/to/unaligned/bam
-sample1,haplotype,/path/to/haplotype/assembly/fasta{.gz}
+specimen1/run1,hic,/path/to/aligned/cram
+specimen1/run2,pacbio,/path/to/unaligned/bam
+specimen1,haplotype,/path/to/haplotype/assembly/fasta{.gz}
 ```
 
 ### Full samplesheet
 
 The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
 
-A final samplesheet file consisting of both HiC and PacBio data may look something like the one below. This is for 1 sample, where `sample1` has been sequenced twice.
+A final samplesheet file including Hi-C, PacBio, haplotype and annotation input may look like this:
 
 ```csv title="samplesheet.csv"
 sample,datatype,datafile
-sample1,hic,/path/to/aligned/cram
-sample1,pacbio,/path/to/unaligned/bam
-sample1,haplotype,/path/to/haplotype/assembly/fasta{.gz}
+specimen1/run1,hic,/path/to/aligned/cram
+specimen1/run2,pacbio,/path/to/unaligned/bam
+specimen1,haplotype,/path/to/haplotype/assembly/fasta{.gz}
+ensembl.2024_04,genes,/path/to/annotation.gff3.gz
 ```
 
-| Column     | Description                                                                                                                                                                            |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`   | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `datatype` | Type of data. Must be `hic`, `pacbio`, `10x` or `haplotype`                                                                                                                            |
-| `datafile` | Full path to the data location.                                                                                                                                                        |
+| Column     | Description                                                                                                                                                                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`   | Sample identifier must be unique (slash `/` and `.` are treated equivalent). Please use `specimen/run` when multiple runs exist for one specimen. For annotation sets with datatype as `genes`, `sample` is source of genes (i.e., `ensembl.2024_04`). Sample names must not contain spaces. |
+| `datatype` | Type of data. Must be `hic`, `pacbio`, `10x`, `haplotype`, or `genes` (annotation input).                                                                                                                                                                                                    |
+| `datafile` | Full path to the data location.                                                                                                                                                                                                                                                              |
 
 Here are the expected data files for each data type:
 
@@ -83,6 +97,7 @@ Here are the expected data files for each data type:
 | `hic`              | Either `bam` or `cram` aligned reads                           |
 | `pacbio` and `10x` | Either the FASTK `kmer` directory or the unaligned `bam` files |
 | `haplotype`        | The Fasta file of the alternative haplotype                    |
+| `genes`            | Annotation `gff3`/`gff3.gz` file (maximum one row)             |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 

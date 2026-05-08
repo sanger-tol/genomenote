@@ -19,23 +19,15 @@ workflow ANNOTATION_STATISTICS {
 
 
     //
-    // LOGIC: Map the GFF channel to create a tuple with metadata and the file
-    //
-    ch_gff_tupple = gff.map { file ->
-        [['id': params.assembly + '_annotation', 'ext': "gff", 'filename': file.baseName], file]
-    }
-
-
-    //
     // LOGIC: Uncompress the gff files if needed
     //
-    if (params.annotation_set.endsWith('.gz')) {
-        ch_gff_unzipped = GUNZIP(ch_gff_tupple).gunzip
-    }
-    else {
-        ch_gff_unzipped = ch_gff_tupple
-    }
+    ch_gff = gff
+        .branch { _meta, gff_file ->
+            gz: gff_file.toString().endsWith('.gz')
+            not_gz : true
+        }
 
+    ch_gff_unzipped = GUNZIP(ch_gff.gz).gunzip.mix(ch_gff.not_gz)
 
     //
     // MODULE: Basic Annotation summary statistics
@@ -57,7 +49,6 @@ workflow ANNOTATION_STATISTICS {
     // MODULE: Obtaining the protein fasta file from the gff3
     //
     GFFREAD(ch_gff_unzipped, ch_fasta)
-
 
     //
     // MODULE: Running BUSCO in protein mode

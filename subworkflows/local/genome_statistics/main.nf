@@ -6,13 +6,14 @@ include { NCBIDATASETS_SUMMARYGENOME as SUMMARYGENOME   } from '../../../modules
 include { NCBIDATASETS_SUMMARYGENOME as SUMMARYSEQUENCE } from '../../../modules/local/ncbidatasets/summarygenome'
 include { NCBI_GET_ODB                                  } from '../../../modules/local/ncbidatasets/get_odb'
 include { BUSCO_BUSCO as BUSCO                          } from '../../../modules/nf-core/busco/busco/main'
-include { RESTRUCTUREBUSCODIR                           } from '../../../modules/local/restructurebuscodir'
+include { RESTRUCTUREBUSCODIR                           } from '../../../modules/sanger-tol/restructurebuscodir'
 include { FASTK_FASTK                                   } from '../../../modules/nf-core/fastk/fastk/main'
 include { CREATETABLE                                   } from '../../../modules/local/createtable'
 include { FASTK_HISTEX                                  } from '../../../modules/nf-core/fastk/histex/main'
 include { GENESCOPEFK                                   } from '../../../modules/nf-core/genescopefk/main'
 include { GFASTATS                                      } from '../../../modules/nf-core/gfastats/main'
 include { MERQURYFK_MERQURYFK                           } from '../../../modules/nf-core/merquryfk/merquryfk/main'
+include { UNTAR as UNTAR_KMER_DB                        } from '../../../modules/nf-core/untar/main'
 
 workflow GENOME_STATISTICS {
     take:
@@ -90,27 +91,56 @@ workflow GENOME_STATISTICS {
         false,
     )
     ch_versions = ch_versions.mix(BUSCO.out.versions.first())
-
+    busco_out_to_restructure = BUSCO.out.batch_summary
+        .combine(ch_lineage)
+        .join(BUSCO.out.short_summaries_txt, remainder: true)
+        .join(BUSCO.out.short_summaries_json, remainder: true)
+        .join(BUSCO.out.full_table, remainder: true)
+        .join(BUSCO.out.missing_busco_list, remainder: true)
+        .join(BUSCO.out.seq_dir)
+        .map { meta, batch_summary, lineage, short_summaries_txt, short_summaries_json, full_table, missing_busco_list, busco_dir ->
+            [meta, lineage, batch_summary, short_summaries_txt ?: [], short_summaries_json ?: [], full_table ?: [], missing_busco_list ?: [], busco_dir]
+        }
 
     //
     // MODULE: Tidy up the BUSCO output directories before publication
     //
     RESTRUCTUREBUSCODIR(
-        BUSCO.out.batch_summary.combine(ch_lineage).join(BUSCO.out.short_summaries_txt, remainder: true).join(BUSCO.out.short_summaries_json, remainder: true).join(BUSCO.out.busco_dir).map { meta, batch_summary, lineage, short_summaries_txt, short_summaries_json, busco_dir -> [meta, lineage, batch_summary, short_summaries_txt ?: [], short_summaries_json ?: [], busco_dir] }
+        busco_out_to_restructure
     )
-    ch_versions = ch_versions.mix(RESTRUCTUREBUSCODIR.out.versions.first())
-
 
     //
     // LOGIC: Prepare channels for FastK, collect files in directory create list for FASTK
     //
     ch_pacbio = pacbio.branch { _meta, file ->
         dir: file.isDirectory()
+        tar: file.name ==~ /.*\.tar(\.gz)?$/
         file: true
     }
 
-    ch_fastk = ch_pacbio.file.groupTuple(by: [0])
-
+    ch_fastk = ch_pacbio.file
+        .map { meta, reads -> [meta.specimen, [meta, reads]] }
+        .groupTuple()
+        .map { _specimen, meta_reads ->
+            if (meta_reads.size() == 1) {
+                // Single file - no merge needed
+                return [meta_reads[0][0], meta_reads[0][1]]
+            } else {
+                // Multiple files - merge them
+                def meta_read = meta_reads[0][0]
+                def runs = meta_reads.collect { it[0].run }
+                def meta_merged = meta_read + [
+                    'sample': "${meta_read.specimen}/${params.merge_output}",
+                    'id': "${meta_read.specimen}.${params.merge_output}",
+                    'run': 'merge',
+                    'merge_source': runs.sort().join("\n"),
+                ]
+                def reads = meta_reads
+                    .sort { a, b -> a[0].id <=> b[0].id }
+                    .collect { it[1] }
+                return [meta_merged, reads]
+            }
+        }
 
     //
     // MODULE: RUN FASTK KMER COUNTING TO GENERATE HISTOGRAM DATA
@@ -136,7 +166,10 @@ workflow GENOME_STATISTICS {
     //
     ch_combo = FASTK_FASTK.out.hist.join(FASTK_FASTK.out.ktab)
 
-    ch_grab = ch_pacbio.dir.map { meta, dir ->
+    UNTAR_KMER_DB(ch_pacbio.tar)
+    ch_kmer_dir = ch_pacbio.dir.mix(UNTAR_KMER_DB.out.untar)
+
+    ch_grab = ch_kmer_dir.map { meta, dir ->
         [
             meta,
             dir.listFiles().findAll { file -> file.toString().endsWith(".hist") }.collect(),

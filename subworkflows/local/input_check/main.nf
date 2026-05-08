@@ -4,7 +4,6 @@
 
 include { PARAMS_CHECK } from '../../../modules/local/params_check'
 
-
 workflow INPUT_CHECK {
     take:
     samplesheet // file: /path/to/samplesheet.csv
@@ -39,12 +38,29 @@ workflow INPUT_CHECK {
         [meta.id, meta]
     }
 
-    // add some metadata params to the data channel meta
+    // add some metadata params to the data channel meta with inline validation
+    def seen_ids = [:]
+
     data = samplesheet
-        .map { meta, datafile -> [meta.assembly, meta, datafile] }
+        .map { meta, datafile ->
+            def sample = meta.id.toString()
+            def sample_parts = sample.split("/", 2)
+            def specimen = sample_parts[0]
+            def run = sample_parts.length > 1 ? sample_parts[1] : ""
+            def new_id = meta.id.replace("/",".")
+
+            [meta.assembly, meta + [ "id": new_id, "sample": meta.id, "specimen": specimen, "run": run ], datafile]
+        }
         .combine(ch_tmp_param, by: 0)
         .map { _assembly, meta, datafile, meta2 ->
             def new_meta = meta + [species: meta2.species, taxon_id: meta2.taxon_id]
+
+            // INLINE VALIDATION - Check for duplicate sample IDs
+            if (seen_ids.containsKey(new_meta.id)) {
+                error("Sample cannot be duplicated (slash (`/`) and dot (`.`) treated as equivalent): ${new_meta.id}")
+            }
+            seen_ids[new_meta.id] = true
+
             [new_meta, datafile]
         }
 
