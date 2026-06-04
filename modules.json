@@ -154,6 +154,11 @@
                         "git_sha": "ac0fc48df659b3a6cca0fc2b0346af41162caabb",
                         "installed_by": ["modules"]
                     },
+                    "bgziptabix": {
+                        "branch": "main",
+                        "git_sha": "d87a6e1f034a64bfec4befec1d5d9f398c4239ec",
+                        "installed_by": ["modules"]
+                    },
                     "restructurebuscodir": {
                         "branch": "main",
                         "git_sha": "8dac7d789fb5ec033c38e69c2553e71cae0dd4c3",
