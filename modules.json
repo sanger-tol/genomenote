@@ -23,7 +23,8 @@
                     "blobtk/plot": {
                         "branch": "master",
                         "git_sha": "02616d1725cc2f97670e25d14d7d1c29d412dffc",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/blobtk/plot/blobtk-plot.diff"
                     },
                     "busco/busco": {
                         "branch": "master",
@@ -152,6 +153,11 @@
                     "ancestral/plot": {
                         "branch": "main",
                         "git_sha": "ac0fc48df659b3a6cca0fc2b0346af41162caabb",
+                        "installed_by": ["modules"]
+                    },
+                    "bgziptabix": {
+                        "branch": "main",
+                        "git_sha": "d87a6e1f034a64bfec4befec1d5d9f398c4239ec",
                         "installed_by": ["modules"]
                     },
                     "restructurebuscodir": {

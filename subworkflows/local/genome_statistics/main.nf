@@ -13,6 +13,7 @@ include { FASTK_HISTEX                                  } from '../../../modules
 include { GENESCOPEFK                                   } from '../../../modules/nf-core/genescopefk/main'
 include { GFASTATS                                      } from '../../../modules/nf-core/gfastats/main'
 include { MERQURYFK_MERQURYFK                           } from '../../../modules/nf-core/merquryfk/merquryfk/main'
+include { BGZIPTABIX                                    } from '../../../modules/sanger-tol/bgziptabix/main'
 include { UNTAR as UNTAR_KMER_DB                        } from '../../../modules/nf-core/untar/main'
 
 workflow GENOME_STATISTICS {
@@ -186,14 +187,18 @@ workflow GENOME_STATISTICS {
         }
 
 
-    // This is only temporarily removed so I'm leaving it here for now
-    // // MerquryFK
+    // MerquryFK
     MERQURYFK_MERQURYFK(
         ch_merq,
         [[], []],
         [[], []],
     )
 
+    // Compress the BED file
+    ch_bed_with_seq_length = MERQURYFK_MERQURYFK.out.bed
+        .map { meta, bed -> [ meta, (bed instanceof List ? bed : [bed]) ] }
+        .flatMap { meta, beds -> beds.collect { bed -> [meta, bed, 0] } }
+    BGZIPTABIX(ch_bed_with_seq_length, [false, 0, false])
 
     //
     // LOGIC: PREPARE FOR THE FOR Combined table
@@ -251,7 +256,7 @@ workflow GENOME_STATISTICS {
     ch_trans_log_plot = GENESCOPEFK.out.transformed_log_plot // channel: [ meta, transformed_log_plot ]
     busco_full_table  = BUSCO.out.full_table // channel: [ meta, busco_dir ]
     ch_complete_stats = MERQURYFK_MERQURYFK.out.stats // channel: [ meta, completeness_stats ]
-    ch_bed            = MERQURYFK_MERQURYFK.out.bed // channel: [ meta, bed ]
+    ch_bed            = BGZIPTABIX.out.gz_index // channel: [ meta, bed, gzi ]
     ch_qv             = MERQURYFK_MERQURYFK.out.qv // channel: [ meta, qv ]
     ch_assembly_qv    = MERQURYFK_MERQURYFK.out.assembly_qv // channel: [ meta, assembly_qv ]
     versions          = ch_versions // channel: [ versions.yml ]

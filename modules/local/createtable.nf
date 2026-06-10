@@ -39,7 +39,7 @@ process CREATETABLE {
         ${mco} \\
         ${hic} \\
         ${fst} \\
-        --outcsv ${prefix}.csv
+        --outcsv ${prefix}.template_parameters.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
