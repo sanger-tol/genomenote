@@ -123,8 +123,20 @@ workflow GENOMENOTE {
     // SUBWORKFLOW: Create genome statistics table
     //
     ch_flagstat = ch_inputs.hic.map { meta, reads, _blank ->
-        def flagstat = file(reads.resolveSibling(reads.baseName + ".flagstat"), checkIfExists: true)
-        [meta, flagstat]
+
+        // Support flagstat file in the same directory and in the "stats" sub-directory
+        def candidates = [
+            reads.resolveSibling(reads.baseName + ".flagstat"),
+            reads.resolveSibling("stats").resolve(reads.baseName + ".flagstat")
+        ]
+
+        def flagstat = candidates.find { it.exists() }
+
+        if (!flagstat) {
+            throw new FileNotFoundException("Could not find flagstat for ${reads}. Tried:\n" + candidates.join("\n"))
+        }
+
+        [meta, file(flagstat)]
     }
 
     GENOME_STATISTICS(
