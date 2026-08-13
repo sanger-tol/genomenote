@@ -183,7 +183,7 @@ workflow GENOME_STATISTICS {
         .combine(genome)
         .combine(haplotype.ifEmpty([[], []]))
         .map { meta, hist, ktab, meta2, fasta, _meta3, hap_fasta ->
-            [meta + [genome_size: meta2.genome_size], hist, ktab, fasta, hap_fasta]
+            [meta + [genome_size: meta2.genome_size, max_length: meta2.max_length], hist, ktab, fasta, hap_fasta]
         }
 
 
@@ -196,8 +196,8 @@ workflow GENOME_STATISTICS {
 
     // Compress the BED file
     ch_bed_with_seq_length = MERQURYFK_MERQURYFK.out.bed
-        .map { meta, bed -> [ meta, (bed instanceof List ? bed : [bed]) ] }
-        .flatMap { meta, beds -> beds.collect { bed -> [meta, bed, 0] } }
+        .map { meta, bed -> [meta, (bed instanceof List ? bed : [bed])] }
+        .flatMap { meta, beds -> beds.collect { bed -> [meta, bed, meta.max_length] } }
     BGZIPTABIX(ch_bed_with_seq_length, [false, 0, false])
 
     //

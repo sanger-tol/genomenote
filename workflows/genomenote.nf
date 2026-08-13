@@ -117,18 +117,25 @@ workflow GENOMENOTE {
         ch_unzipped = ch_genome
     }
 
-    ch_fasta = ch_unzipped.map { meta, fa -> [meta + [id: fa.baseName, genome_size: fa.size()], fa] }
+    ch_fasta_only = ch_unzipped.map { meta, fa -> [meta + [id: fa.baseName, genome_size: fa.size()], fa] }
 
     //
     // MODULE: INDEX THE INPUT ASSEMBLY
     //
     SAMTOOLS_FAIDX(
-        ch_fasta,
+        ch_fasta_only,
         [[], []],
         false,
     )
-    ch_fasta_fai = ch_fasta.join(SAMTOOLS_FAIDX.out.fai)
     ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
+
+    // Load stats from the .fai file
+    ch_fasta_fai = ch_fasta_only
+        .join(SAMTOOLS_FAIDX.out.fai)
+        .map { meta, fasta, fai ->
+            [meta + get_sequence_map(fai), fasta, fai]
+        }
+    ch_fasta = ch_fasta_fai.map { meta, fasta, _fai -> tuple(meta, fasta) }
 
 
     //
@@ -323,4 +330,30 @@ workflow GENOMENOTE {
     emit:
     multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
     versions       = ch_versions // channel: [ path(versions.yml) ]
+}
+
+// Read the .fai file to extract the number of sequences, the maximum and total sequence length
+// Inspired from https://github.com/nf-core/rnaseq/blob/3.10.1/lib/WorkflowRnaseq.groovy
+def get_sequence_map(fai_file) {
+    def n_sequences = 0
+    def max_length = 0
+    def total_length = 0
+    fai_file.eachLine { line ->
+        def lspl = line.split('\t')
+        // def chrom  = lspl[0]
+        def length = lspl[1].toLong()
+        n_sequences += 1
+        total_length += length
+        if (length > max_length) {
+            max_length = length
+        }
+    }
+
+    def sequence_map = [:]
+    sequence_map.n_sequences = n_sequences
+    sequence_map.total_length = total_length
+    if (n_sequences) {
+        sequence_map.max_length = max_length
+    }
+    return sequence_map
 }
