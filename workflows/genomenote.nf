@@ -34,6 +34,7 @@ include { GET_BLOBTK_PLOTS           } from '../subworkflows/local/get_blobtk_pl
 //
 include { GUNZIP as GUNZIP_PRIMARY   } from '../modules/nf-core/gunzip/main'
 include { GUNZIP as GUNZIP_HAPLOTYPE } from '../modules/nf-core/gunzip/main'
+include { SAMTOOLS_FAIDX             } from '../modules/nf-core/samtools/faidx/main'
 include { MULTIQC                    } from '../modules/nf-core/multiqc/main'
 
 include { paramsSummaryMap           } from 'plugin/nf-schema'
@@ -118,6 +119,17 @@ workflow GENOMENOTE {
 
     ch_fasta = ch_unzipped.map { meta, fa -> [meta + [id: fa.baseName, genome_size: fa.size()], fa] }
 
+    //
+    // MODULE: INDEX THE INPUT ASSEMBLY
+    //
+    SAMTOOLS_FAIDX(
+        ch_fasta,
+        [[], []],
+        false,
+    )
+    ch_fasta_fai = ch_fasta.join(SAMTOOLS_FAIDX.out.fai)
+    ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
+
 
     //
     // SUBWORKFLOW: Create genome statistics table
@@ -166,7 +178,7 @@ workflow GENOMENOTE {
     // SUBWORKFLOW: Create contact map matrices from HiC alignment files
     //
     CONTACT_MAPS(
-        ch_fasta,
+        ch_fasta_fai,
         ch_inputs.hic,
         GENOME_STATISTICS.out.summary_seq,
         channel.of(params.binsize),
@@ -222,7 +234,7 @@ workflow GENOMENOTE {
 
     if (params.ancestral_table && params.ancestral_busco_lineage) {
         ANNOTATION_ANCESTRAL(
-            ch_fasta,
+            ch_fasta_fai,
             ancestral_table,
             params.ancestral_busco_lineage,
             lineage_db,

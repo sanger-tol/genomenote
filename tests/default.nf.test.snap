@@ -1,7 +1,7 @@
 {
     "-profile test": {
         "content": [
-            93,
+            92,
             {
                 "AGAT_SPSTATISTICS": {
                     "agat": "v1.4.1"
@@ -92,6 +92,10 @@
                 },
                 "POPULATE_TEMPLATE": {
                     "populate_genome_note_template.py": 1.1
+                },
+                "PRETEXTMAP": {
+                    "pretextmap": "0.1.9",
+                    "samtools": 1.21
                 },
                 "RESTRUCTUREBUSCODIR": {
                     "restructurebuscodir": 1.0
@@ -403,7 +407,7 @@
                 "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.spectra-cn.st.png:md5,2b25086b5f4aeecd2fcd9a1d10853ef2"
             ]
         ],
-        "timestamp": "2026-06-04T18:44:17.099024048",
+        "timestamp": "2026-08-02T22:54:41.777704321",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
