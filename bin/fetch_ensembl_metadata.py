@@ -28,7 +28,7 @@ def fetch_ensembl_data(taxon, output_file):
     # species has been annotated. Return assmbly accesssion of annotated data and
     # a url linking to that species on the Ensembl Rapid website
 
-    url = "https://beta.ensembl.org/data/graphql"
+    url = "https://www.ensembl.org/data/graphql"
     variables = {"taxon": taxon}
     query = """
     query Annotation($taxon: String)
@@ -66,6 +66,8 @@ def fetch_ensembl_data(taxon, output_file):
         print(url)
         print(query)
         print(variables)
+        print(response.status_code)
+        print(response.text)
         sys.exit(1)
 
     # Write out file even if there is no annotation data to write
