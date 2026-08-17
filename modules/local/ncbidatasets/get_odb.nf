@@ -9,7 +9,7 @@ process NCBI_GET_ODB {
 
     input:
     tuple val(meta), path(ncbi_summary)
-    path lineage_tax_ids
+    path busco_taxid_lineage_mapping
 
     output:
     tuple val(meta), path("*.busco_odb.csv"), emit: csv
@@ -21,7 +21,7 @@ process NCBI_GET_ODB {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    get_odb.py ${ncbi_summary} ${lineage_tax_ids} ${prefix}.busco_odb.csv
+    get_odb.py ${ncbi_summary} ${busco_taxid_lineage_mapping} ${prefix}.busco_odb.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

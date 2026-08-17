@@ -17,7 +17,7 @@
 
 ## Introduction
 
-**sanger-tol/genomenote** is a bioinformatics pipeline that takes aligned HiC reads, creates contact maps and chromosomal grid using Cooler, and display on a [HiGlass server](https://genome-note-higlass.tol.sanger.ac.uk/app). The pipeline also collates (1) assembly information, statistics and chromosome details from NCBI datasets, (2) genome completeness from BUSCO, (3) consensus quality and k-mer completeness from MerquryFK, (4) HiC primary mapped percentage from samtools flagstat and optionally (5) Annotation statistics from AGAT and BUSCO. The pipeline combines the calculated statistics and collated assembly metadata with a template document to output a genome note document.
+**sanger-tol/genomenote** is a bioinformatics pipeline that takes aligned HiC reads, creates contact maps and chromosomal grid using Cooler and/or Pretext. The pipeline also collates (1) assembly information, statistics and chromosome details from NCBI datasets, (2) genome completeness from BUSCO, (3) consensus quality and k-mer completeness from MerquryFK, (4) HiC primary mapped percentage from samtools flagstat and optionally (5) Annotation statistics from AGAT and BUSCO. The pipeline combines the calculated statistics and collated assembly metadata with a template document to output a genome note document.
 
 <!--![sanger-tol/genomenote workflow](https://raw.githubusercontent.com/sanger-tol/genomenote/main/docs/images/sanger-tol-genomenote_workflow.png)-->
 
@@ -49,10 +49,10 @@ nextflow run sanger-tol/genomenote \
    -profile <docker/singularity/.../institute> \
    --input samplesheet.csv \
    --fasta genome.fasta \
-   --assembly GCA_922984935.2 \
-   --biosample_wgs SAMEA112198456 \
-   --biosample_hic SAMEA112198479 \
-   --biosample_rna SAMEA112232914 \
+   --assembly_accession GCA_922984935.2 \
+   --biosample_accession_wgs SAMEA112198456 \
+   --biosample_accession_hic SAMEA112198479 \
+   --biosample_accession_rna SAMEA112232914 \
    --outdir <OUTDIR>
 ```
 

@@ -104,15 +104,15 @@ workflow PIPELINE_INITIALISATION {
     //
 
     ch_samplesheet = channel.fromList(samplesheetToList(input, "${projectDir}/assets/schema_input.json"))
-        .map { meta, datafile -> [meta + [assembly: params.assembly], datafile] }
+        .map { meta, datafile -> [meta + [assembly_accession: params.assembly_accession], datafile] }
 
     //
     // Create channel from all accession numbers
     //
-    metadata_inputs = [params.assembly]
-    metadata_inputs.add(params.biosample_wgs ?: null)
-    metadata_inputs.add(params.biosample_hic ?: null)
-    metadata_inputs.add(params.biosample_rna ?: null)
+    metadata_inputs = [params.assembly_accession]
+    metadata_inputs.add(params.biosample_accession_wgs ?: null)
+    metadata_inputs.add(params.biosample_accession_hic ?: null)
+    metadata_inputs.add(params.biosample_accession_rna ?: null)
     ch_metadata = channel.of(metadata_inputs)
 
     // If both are set, then error out. We want one or the other!
@@ -121,17 +121,17 @@ workflow PIPELINE_INITIALISATION {
     }
 
     // Transform parameters into channels
-    if (params.lineage_db) {
-        ch_lineage_db = channel.fromPath(params.lineage_db).first()
+    if (params.busco_db) {
+        ch_busco_db = channel.fromPath(params.busco_db).first()
     }
     else {
-        ch_lineage_db = channel.value([])
+        ch_busco_db = channel.value([])
     }
-    if (params.cool_order) {
-        ch_cool_order = channel.fromPath(params.cool_order).first()
+    if (params.cooler_seq_order) {
+        ch_cooler_seq_order = channel.fromPath(params.cooler_seq_order).first()
     }
     else {
-        ch_cool_order = channel.empty()
+        ch_cooler_seq_order = channel.empty()
     }
     if (params.ancestral_table) {
         ch_ancestral_table = channel.fromPath(params.ancestral_table).map { path -> [[id: path.getBaseName()], path] }
@@ -153,14 +153,14 @@ workflow PIPELINE_INITIALISATION {
     }
 
     emit:
-    samplesheet     = ch_samplesheet
-    metadata        = ch_metadata
-    lineage_db      = ch_lineage_db
-    ancestral_table = ch_ancestral_table
-    btk_local_path  = ch_btk_local_path
-    btk_online_path = ch_btk_online_path
-    cool_order      = ch_cool_order
-    versions        = ch_versions
+    samplesheet      = ch_samplesheet
+    metadata         = ch_metadata
+    busco_db         = ch_busco_db
+    ancestral_table  = ch_ancestral_table
+    btk_local_path   = ch_btk_local_path
+    btk_online_path  = ch_btk_online_path
+    cooler_seq_order = ch_cooler_seq_order
+    versions         = ch_versions
 }
 
 /*

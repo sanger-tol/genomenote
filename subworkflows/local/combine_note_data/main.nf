@@ -13,7 +13,6 @@ workflow COMBINE_NOTE_DATA {
     ch_params_inconsistent // channel: /path/to/csv/file/consistent_parameters from GENOME_METADATA subworkflow
     ch_summary // channel: /path/to/csv/summary/file from GENOME_STATISTICS subworkflow
     ch_annotation_summary // channel: /path/to/csv/summary/file from ANNOTATION_STATISTICS subworkflow
-    ch_higlass // channel: /path/to/csv/higlass_link from CONTACT_MAPS subworkflow
     ch_note_template // channel: /path/to/genome_note_doc_template
 
     main:
@@ -39,10 +38,9 @@ workflow COMBINE_NOTE_DATA {
 
     // Add higlass url to the parsed dataset
     ch_parsed = COMBINE_STATISTICS_AND_METADATA.out.consistent
-        .concat(ch_higlass)
         .map { _meta, file -> file }
         .collectFile(name: 'combined.csv', sort: false) { file -> file.text }
-        .map { combined_path -> [[id: params.assembly], combined_path] }
+        .map { combined_path -> [[id: params.assembly_accession], combined_path] }
 
     POPULATE_TEMPLATE(ch_parsed, ch_note_template)
     ch_versions = ch_versions.mix(POPULATE_TEMPLATE.out.versions.first())

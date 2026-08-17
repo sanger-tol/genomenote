@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## TBC
+## [[3.0.0](https://github.com/sanger-tol/genomenote/releases/tag/3.0.0)] - Standard Poodle [2026-08-18]
 
 ### Enhancements & fixes
 
@@ -19,14 +19,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed the `--write_to_portal` and `--genome_notes_api` options as the
   Genome Note platform is now expected to _pull_ data from the Genome
   After-Party.
+- Renamed parameters for consistency with the other Genome After-Party pipelines.
+- Removed the option to upload the Cooler contact map to a Kubernetes-hosted HiGlass server
+  as this had no more use.
 
 ### Parameters
 
-| Old parameter      | New parameter |
-| ------------------ | ------------- |
-| --annotation_set   |               |
-| --write_to_portal  |               |
-| --genome_notes_api |               |
+| Old parameter              | New parameter                 |
+| -------------------------- | ----------------------------- |
+| --annotation_set           |                               |
+| --write_to_portal          |                               |
+| --genome_notes_api         |                               |
+| --upload_higlass_data      |                               |
+| --higlass_url              |                               |
+| --higlass_deployment_name  |                               |
+| --higlass_namespace        |                               |
+| --higlass_kubeconfig       |                               |
+| --higlass_upload_directory |                               |
+| --higlass_data_project_dir |                               |
+| --lineage_db               | --busco_db                    |
+| --cool_order               | --cooler_seq_order            |
+| --binsize                  | --cooler_bin_size             |
+| --biosample_wgs            | --biosample_accession_wgs     |
+| --lineage_tax_ids          | --busco_taxid_lineage_mapping |
+| --assembly                 | --assembly_accession          |
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 

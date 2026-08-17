@@ -19,15 +19,15 @@ workflow INPUT_CHECK {
                 species: row.species,
                 taxon_id: row.taxon_id,
                 bioproject: row.bioproject,
-                biosample_wgs: row.wgs_biosample,
+                biosample_accession_wgs: row.wgs_biosample,
             ]
 
             if (row.hic_biosample != "null") {
-                meta.biosample_hic = row.hic_biosample
+                meta.biosample_accession_hic = row.hic_biosample
             }
 
             if (row.rna_biosample != "null") {
-                meta.biosample_rna = row.rna_biosample
+                meta.biosample_accession_rna = row.rna_biosample
             }
 
             meta
@@ -49,7 +49,7 @@ workflow INPUT_CHECK {
             def run = sample_parts.length > 1 ? sample_parts[1] : ""
             def new_id = meta.id.replace("/",".")
 
-            [meta.assembly, meta + [ "id": new_id, "sample": meta.id, "specimen": specimen, "run": run ], datafile]
+            [meta.assembly_accession, meta + [ "id": new_id, "sample": meta.id, "specimen": specimen, "run": run ], datafile]
         }
         .combine(ch_tmp_param, by: 0)
         .map { _assembly, meta, datafile, meta2 ->
