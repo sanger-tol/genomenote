@@ -106,9 +106,9 @@ workflow PIPELINE_INITIALISATION {
     // Create channel from all accession numbers
     //
     metadata_inputs = [params.assembly]
-    metadata_inputs.add(params.biosample_wgs ?: null)
-    metadata_inputs.add(params.biosample_hic ?: null)
-    metadata_inputs.add(params.biosample_rna ?: null)
+    metadata_inputs.add(params.biosample_accession_wgs ?: null)
+    metadata_inputs.add(params.biosample_accession_hic ?: null)
+    metadata_inputs.add(params.biosample_accession_rna ?: null)
     ch_metadata = channel.of(metadata_inputs)
 
     // If both are set, then error out. We want one or the other!

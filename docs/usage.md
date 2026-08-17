@@ -25,9 +25,9 @@ The assembly accession for the genome you would like to analyse, optionally with
 
 ```bash
 --assembly '[assembly accession]'
---biosample_wgs '[biosample accession of the biosample used to produce the genomic sequence]'
---biosample_hic '[biosample accession of the biosample used to produce the HiC data]'
---biosample_rna '[biosample accession of the biosample used to produce the RNASeq data]
+--biosample_accession_wgs '[biosample accession of the biosample used to produce the genomic sequence]'
+--biosample_accession_hic '[biosample accession of the biosample used to produce the HiC data]'
+--biosample_accession_rna '[biosample accession of the biosample used to produce the RNASeq data]
 ```
 
 ## Annotation input

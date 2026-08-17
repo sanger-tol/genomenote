@@ -50,9 +50,9 @@ nextflow run sanger-tol/genomenote \
    --input samplesheet.csv \
    --fasta genome.fasta \
    --assembly GCA_922984935.2 \
-   --biosample_wgs SAMEA112198456 \
-   --biosample_hic SAMEA112198479 \
-   --biosample_rna SAMEA112232914 \
+   --biosample_accession_wgs SAMEA112198456 \
+   --biosample_accession_hic SAMEA112198479 \
+   --biosample_accession_rna SAMEA112232914 \
    --outdir <OUTDIR>
 ```
 
