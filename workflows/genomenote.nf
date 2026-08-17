@@ -160,7 +160,7 @@ workflow GENOMENOTE {
 
     GENOME_STATISTICS(
         ch_fasta,
-        params.lineage_tax_ids,
+        params.busco_taxid_lineage_mapping,
         busco_db,
         ch_inputs.pacbio,
         ch_flagstat,

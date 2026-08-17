@@ -19,7 +19,7 @@ include { UNTAR as UNTAR_KMER_DB                        } from '../../../modules
 workflow GENOME_STATISTICS {
     take:
     genome // channel: [ meta, fasta ]
-    lineage_tax_ids // channel: /path/to/lineage_tax_ids
+    busco_taxid_lineage_mapping // channel: /path/to/busco_taxid_lineage_mapping
     busco_db // channel: /path/to/buscoDB
     pacbio // channel: [ meta, kmer_db or reads ]
     flagstat // channel: [ meta, flagstat ]
@@ -66,7 +66,7 @@ workflow GENOME_STATISTICS {
         //
         // MODULE: GET RAW ODB LINEAGE VALUE
         //
-        NCBI_GET_ODB(SUMMARYGENOME.out.summary, lineage_tax_ids)
+        NCBI_GET_ODB(SUMMARYGENOME.out.summary, busco_taxid_lineage_mapping)
         ch_versions = ch_versions.mix(NCBI_GET_ODB.out.versions.first())
 
 

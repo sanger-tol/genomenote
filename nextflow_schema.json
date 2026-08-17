@@ -214,7 +214,7 @@
             "type": "object",
             "fa_icon": "fas fa-database",
             "description": "Define where the pipeline should find databases.",
-            "required": ["fasta", "lineage_tax_ids"],
+            "required": ["fasta", "busco_taxid_lineage_mapping"],
             "properties": {
                 "busco_db": {
                     "type": "string",
@@ -222,7 +222,7 @@
                     "description": "Local directory where clade-specific BUSCO lineage datasets are stored.",
                     "fa_icon": "fas fa-folder-open"
                 },
-                "lineage_tax_ids": {
+                "busco_taxid_lineage_mapping": {
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
