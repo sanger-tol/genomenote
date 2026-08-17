@@ -34,6 +34,7 @@ include { GET_BLOBTK_PLOTS           } from '../subworkflows/local/get_blobtk_pl
 //
 include { GUNZIP as GUNZIP_PRIMARY   } from '../modules/nf-core/gunzip/main'
 include { GUNZIP as GUNZIP_HAPLOTYPE } from '../modules/nf-core/gunzip/main'
+include { SAMTOOLS_FAIDX             } from '../modules/nf-core/samtools/faidx/main'
 include { MULTIQC                    } from '../modules/nf-core/multiqc/main'
 
 include { paramsSummaryMap           } from 'plugin/nf-schema'
@@ -116,15 +117,45 @@ workflow GENOMENOTE {
         ch_unzipped = ch_genome
     }
 
-    ch_fasta = ch_unzipped.map { meta, fa -> [meta + [id: fa.baseName, genome_size: fa.size()], fa] }
+    ch_fasta_only = ch_unzipped.map { meta, fa -> [meta + [id: fa.baseName, genome_size: fa.size()], fa] }
+
+    //
+    // MODULE: INDEX THE INPUT ASSEMBLY
+    //
+    SAMTOOLS_FAIDX(
+        ch_fasta_only,
+        [[], []],
+        false,
+    )
+    ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
+
+    // Load stats from the .fai file
+    ch_fasta_fai = ch_fasta_only
+        .join(SAMTOOLS_FAIDX.out.fai)
+        .map { meta, fasta, fai ->
+            [meta + get_sequence_map(fai), fasta, fai]
+        }
+    ch_fasta = ch_fasta_fai.map { meta, fasta, _fai -> tuple(meta, fasta) }
 
 
     //
     // SUBWORKFLOW: Create genome statistics table
     //
     ch_flagstat = ch_inputs.hic.map { meta, reads, _blank ->
-        def flagstat = file(reads.resolveSibling(reads.baseName + ".flagstat"), checkIfExists: true)
-        [meta, flagstat]
+
+        // Support flagstat file in the same directory and in the "stats" sub-directory
+        def candidates = [
+            reads.resolveSibling(reads.baseName + ".flagstat"),
+            reads.resolveSibling("stats").resolve(reads.baseName + ".flagstat")
+        ]
+
+        def flagstat = candidates.find { it.exists() }
+
+        if (!flagstat) {
+            throw new FileNotFoundException("Could not find flagstat for ${reads}. Tried:\n" + candidates.join("\n"))
+        }
+
+        [meta, file(flagstat)]
     }
 
     GENOME_STATISTICS(
@@ -154,7 +185,7 @@ workflow GENOMENOTE {
     // SUBWORKFLOW: Create contact map matrices from HiC alignment files
     //
     CONTACT_MAPS(
-        ch_fasta,
+        ch_fasta_fai,
         ch_inputs.hic,
         GENOME_STATISTICS.out.summary_seq,
         channel.of(params.binsize),
@@ -210,7 +241,7 @@ workflow GENOMENOTE {
 
     if (params.ancestral_table && params.ancestral_busco_lineage) {
         ANNOTATION_ANCESTRAL(
-            ch_fasta,
+            ch_fasta_fai,
             ancestral_table,
             params.ancestral_busco_lineage,
             lineage_db,
@@ -299,4 +330,30 @@ workflow GENOMENOTE {
     emit:
     multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
     versions       = ch_versions // channel: [ path(versions.yml) ]
+}
+
+// Read the .fai file to extract the number of sequences, the maximum and total sequence length
+// Inspired from https://github.com/nf-core/rnaseq/blob/3.10.1/lib/WorkflowRnaseq.groovy
+def get_sequence_map(fai_file) {
+    def n_sequences = 0
+    def max_length = 0
+    def total_length = 0
+    fai_file.eachLine { line ->
+        def lspl = line.split('\t')
+        // def chrom  = lspl[0]
+        def length = lspl[1].toLong()
+        n_sequences += 1
+        total_length += length
+        if (length > max_length) {
+            max_length = length
+        }
+    }
+
+    def sequence_map = [:]
+    sequence_map.n_sequences = n_sequences
+    sequence_map.total_length = total_length
+    if (n_sequences) {
+        sequence_map.max_length = max_length
+    }
+    return sequence_map
 }

@@ -1,35 +1,21 @@
-include { SAMTOOLS_FAIDX  } from '../../../modules/nf-core/samtools/faidx/main'
 include { PRETEXTMAP      } from '../../../modules/nf-core/pretextmap/main'
 include { PRETEXTSNAPSHOT } from '../../../modules/nf-core/pretextsnapshot/main'
 
 workflow PRETEXT_GENERATION {
     take:
-    genome // Channel [ val(meta), path(file)      ]
+    genome // Channel [ val(meta), path(fasta), path(fai) ]
     bam_tuple // Channel [ val(meta), path(file)      ]
 
     main:
     ch_versions = channel.empty()
 
     //
-    // MODULE: GENERATE FAI FILE FROM FASTA
-    //         THIS CAN LIKELY BE MOVED TO THE MAIN WORKFLOW IN THE FUTURE
-    //         AS MULTIPLE PR's USE THIS MODULE
-    //
-    SAMTOOLS_FAIDX(
-        genome,
-        [[], []],
-        false,
-    )
-    ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
-
-
-    //
     // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM - These are already aligned so we don't need any more processing
     //
     PRETEXTMAP(
         bam_tuple,
-        genome.collect(),
-        SAMTOOLS_FAIDX.out.fai.collect(),
+        genome.map { meta, fasta, _fai -> tuple(meta, fasta) }.collect(),
+        genome.map { meta, _fasta, fai -> tuple(meta, fai) }.collect(),
     )
     ch_versions = ch_versions.mix(PRETEXTMAP.out.versions)
 

@@ -1,7 +1,6 @@
 //
 // NF-CORE MODULE IMPORT BLOCK
 //
-include { SAMTOOLS_FAIDX       } from '../../../modules/nf-core/samtools/faidx/main'
 include { BUSCO_BUSCO as BUSCO } from '../../../modules/nf-core/busco/busco/main'
 
 //
@@ -13,7 +12,7 @@ include { ANCESTRAL_PLOT       } from '../../../modules/sanger-tol/ancestral/plo
 
 workflow ANNOTATION_ANCESTRAL {
     take:
-    fasta // Channel: [ meta, fasta ]
+    fasta // Channel: [ meta, fasta, fai ]
     ancestral_table // Channel: file(ancestral_table location)
     val_ancestral_lineage // ancestral lineage value to use for BUSCO, e.g. lepidoptera_odb10
     lineage_db // Channel:
@@ -21,13 +20,18 @@ workflow ANNOTATION_ANCESTRAL {
     main:
     ch_versions = channel.empty()
 
+    // LOGIG: BUSCO only needs the Fasta file, while the rest of the sub-workflow only needs the .fai
+    ch_fasta = fasta.multiMap { meta, fa, fai ->
+        fasta: tuple(meta, fa)
+        fai: tuple(meta, fai)
+    }
 
     //
     // MODULE: RUN BUSCO SOLELY FOR ANCESTRAL NOW THAT THE TWO CAN USE
     //          DIFFERING ODB VERSIONS
     //
     BUSCO(
-        fasta,
+        ch_fasta.fasta,
         "genome",
         val_ancestral_lineage,
         lineage_db.ifEmpty([]),
@@ -42,27 +46,30 @@ workflow ANNOTATION_ANCESTRAL {
     //         THIS IS THE BUSCOPAINTER.PY SCRIPT
     //
     busco_table_meta_mod = BUSCO.out.full_table
+        .join(ch_fasta.fai)
         .combine(ancestral_table)
-        .map { meta, table, ancestral_meta, _ancestral_table ->
-            [meta + [lineage: val_ancestral_lineage, ancestral_table: ancestral_meta.id], table]
+        .map { meta, table, fai, ancestral_meta, ancestral_file ->
+            [meta + [lineage: val_ancestral_lineage, ancestral_table: ancestral_meta.id], table, fai, ancestral_meta, ancestral_file]
+        }
+        .multiMap { meta, table, fai, ancestral_meta, ancestral_file ->
+            table: tuple(meta, table)
+            ancestral_table: tuple(ancestral_meta, ancestral_file)
+            fai: tuple(meta, fai)
         }
 
     ANCESTRAL_EXTRACT(
-        busco_table_meta_mod,
-        ancestral_table,
+        busco_table_meta_mod.table,
+        busco_table_meta_mod.ancestral_table,
     )
     ch_versions = ch_versions.mix(ANCESTRAL_EXTRACT.out.versions)
 
 
-    //
-    // MODULE: INDEX THE INPUT ASSEMBLY
-    //
-    SAMTOOLS_FAIDX(
-        fasta,
-        [[], []],
-        false,
-    )
-    ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
+    ch_ancestral_plot = ANCESTRAL_EXTRACT.out.comp_location
+        .join(busco_table_meta_mod.fai)
+        .multiMap { meta, comp_location, fai ->
+            comp_location: tuple(meta, comp_location)
+            fai: tuple(meta, fai)
+        }
 
 
     //
@@ -70,8 +77,8 @@ workflow ANNOTATION_ANCESTRAL {
     //         THIS IS THE PLOT_BUSCOPAINTER.PY SCRIPT
     //
     ANCESTRAL_PLOT(
-        ANCESTRAL_EXTRACT.out.comp_location,
-        SAMTOOLS_FAIDX.out.fai,
+        ch_ancestral_plot.comp_location,
+        ch_ancestral_plot.fai,
     )
     ch_versions = ch_versions.mix(ANCESTRAL_PLOT.out.versions)
 

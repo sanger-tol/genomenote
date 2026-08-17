@@ -9,7 +9,7 @@ include { PRETEXT_GENERATION } from '../pretext_generation/main'
 
 workflow CONTACT_MAPS {
     take:
-    genome // channel: [ meta, fasta ]
+    genome // channel: [ meta, fasta, fai ]
     reads // channel: [ meta, reads, [] ]
     summary_seq // channel: [ meta, summary ]
     cool_bin // channel: val(cooler_bins)
@@ -30,7 +30,7 @@ workflow CONTACT_MAPS {
     // CRAM to BAM
     SAMTOOLS_VIEW(
         reads,
-        genome.first(),
+        genome.map { meta, fasta, _fai -> tuple(meta, fasta) }.first(),
         [],
     )
     ch_versions = ch_versions.mix(SAMTOOLS_VIEW.out.versions.first())
