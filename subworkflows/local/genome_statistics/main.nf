@@ -19,8 +19,8 @@ include { UNTAR as UNTAR_KMER_DB                        } from '../../../modules
 workflow GENOME_STATISTICS {
     take:
     genome // channel: [ meta, fasta ]
-    lineage_tax_ids // channel: /path/to/lineage_tax_ids
-    lineage_db // channel: /path/to/buscoDB
+    busco_taxid_lineage_mapping // channel: /path/to/busco_taxid_lineage_mapping
+    busco_db // channel: /path/to/buscoDB
     pacbio // channel: [ meta, kmer_db or reads ]
     flagstat // channel: [ meta, flagstat ]
     haplotype // channel: [ meta, fasta ]
@@ -66,7 +66,7 @@ workflow GENOME_STATISTICS {
         //
         // MODULE: GET RAW ODB LINEAGE VALUE
         //
-        NCBI_GET_ODB(SUMMARYGENOME.out.summary, lineage_tax_ids)
+        NCBI_GET_ODB(SUMMARYGENOME.out.summary, busco_taxid_lineage_mapping)
         ch_versions = ch_versions.mix(NCBI_GET_ODB.out.versions.first())
 
 
@@ -87,7 +87,7 @@ workflow GENOME_STATISTICS {
         genome,
         "genome",
         ch_lineage,
-        lineage_db.ifEmpty([]),
+        busco_db.ifEmpty([]),
         [],
         false,
     )
@@ -129,7 +129,7 @@ workflow GENOME_STATISTICS {
             } else {
                 // Multiple files - merge them
                 def meta_read = meta_reads[0][0]
-                def runs = meta_reads.collect { it[0].run }
+                def runs = meta_reads.collect { meta, _read -> meta.run }
                 def meta_merged = meta_read + [
                     'sample': "${meta_read.specimen}/${params.merge_output}",
                     'id': "${meta_read.specimen}.${params.merge_output}",
@@ -138,7 +138,7 @@ workflow GENOME_STATISTICS {
                 ]
                 def reads = meta_reads
                     .sort { a, b -> a[0].id <=> b[0].id }
-                    .collect { it[1] }
+                    .collect { _meta, read -> read }
                 return [meta_merged, reads]
             }
         }

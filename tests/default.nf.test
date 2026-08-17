@@ -21,7 +21,7 @@ nextflow_pipeline {
         when {
             params {
                 outdir     = "$outputDir"
-                lineage_db = "${launchDir}/genomenote.GCA_963859965.1.2025-12-08"
+                busco_db   = "${launchDir}/genomenote.GCA_963859965.1.2025-12-08"
             }
         }
 

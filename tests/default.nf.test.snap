@@ -119,7 +119,7 @@
                     "untar": 1.34
                 },
                 "Workflow": {
-                    "sanger-tol/genomenote": "v2.2.0"
+                    "sanger-tol/genomenote": "v3.0.0"
                 }
             },
             [

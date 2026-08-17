@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "assembly", "binsize", "kmer_size", "outdir"],
+            "required": ["input", "assembly_accession", "cooler_bin_size", "kmer_size", "outdir"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -35,7 +35,7 @@
                     "description": "The busco lineage used for ancestral painting (must match --ancestral_table).",
                     "pattern": "._odb1[02]$"
                 },
-                "binsize": {
+                "cooler_bin_size": {
                     "type": "integer",
                     "default": 1000,
                     "description": "Bin size in base pairs for cooler cload"
@@ -45,22 +45,22 @@
                     "default": 31,
                     "description": "Size for Fastk to create the k-mer library"
                 },
-                "assembly": {
+                "assembly_accession": {
                     "type": "string",
                     "description": "The Genbank assembly accession for the assembly, for example: GCA_922984935.2.",
                     "pattern": "GCA_[0-9]*?.[0-9]"
                 },
-                "biosample_wgs": {
+                "biosample_accession_wgs": {
                     "type": "string",
                     "description": "The biosample accesion(s) linked to the WGS samples in the experiment, for example: SAMEA7520803.",
                     "pattern": "[SAM@(D|E|N)?(A|G)[0-9]*]"
                 },
-                "biosample_rna": {
+                "biosample_accession_rna": {
                     "type": "string",
                     "description": "The biosample accesion(s) linked to the RNA samples in the experiment, for example: SAMEA7521081.",
                     "pattern": "[SAM@(D|E|N)?(E|A|G)[0-9]*]"
                 },
-                "biosample_hic": {
+                "biosample_accession_hic": {
                     "type": "string",
                     "description": "The biosample accesion(s) linked to the Hi-C samples in the experiment, for example: SAMEA7520846.",
                     "pattern": "[SAM@(D|E|N)?(A|G)[0-9]*]"
@@ -113,7 +113,7 @@
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
                 },
-                "cool_order": {
+                "cooler_seq_order": {
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
@@ -136,58 +136,6 @@
                     "description": "Select the format of the output images.",
                     "fa_icon": "fas fa-image",
                     "default": "png"
-                }
-            }
-        },
-        "higlass": {
-            "title": "HiGlass options",
-            "type": "object",
-            "fa_icon": "fas fa-magnifying-glass",
-            "description": "Define if and how to upload the contact map to a HiGlass server.",
-            "properties": {
-                "upload_higlass_data": {
-                    "type": "boolean",
-                    "description": "flag to control if HiGlass server should be updated to add new files",
-                    "default": false,
-                    "fa_icon": "fas far fa-file-code",
-                    "hidden": true
-                },
-                "higlass_url": {
-                    "type": "string",
-                    "description": "URL for the HiGlass server",
-                    "hidden": true
-                },
-                "higlass_upload_directory": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "description": "The ingress directory for the kubernetes cluster running the HiGlass server.",
-                    "fa_icon": "fas fa-folder-open",
-                    "hidden": true
-                },
-                "higlass_data_project_dir": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "description": "Subdirectory struture to use for organising HiGlass data, suggested format is <project_name>/<taxon_group> e.g. '/asg/algae'",
-                    "fa_icon": "fas fa-folder-open",
-                    "hidden": true
-                },
-                "higlass_kubeconfig": {
-                    "type": "string",
-                    "format": "file-path",
-                    "exists": true,
-                    "description": "The path to the kubeconfig  for the kubernetes cluster running the HiGlass server.",
-                    "fa_icon": "fas fa-folder-open",
-                    "hidden": true
-                },
-                "higlass_deployment_name": {
-                    "type": "string",
-                    "description": "Name of the kubernetes deployment for the HiGlass server.",
-                    "hidden": true
-                },
-                "higlass_namespace": {
-                    "type": "string",
-                    "description": "The name for the namespace used in the Kubernetes cluster running the HiGlass server.",
-                    "hidden": true
                 }
             }
         },
@@ -214,15 +162,15 @@
             "type": "object",
             "fa_icon": "fas fa-database",
             "description": "Define where the pipeline should find databases.",
-            "required": ["fasta", "lineage_tax_ids"],
+            "required": ["fasta", "busco_taxid_lineage_mapping"],
             "properties": {
-                "lineage_db": {
+                "busco_db": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "Local directory where clade-specific BUSCO lineage datasets are stored.",
                     "fa_icon": "fas fa-folder-open"
                 },
-                "lineage_tax_ids": {
+                "busco_taxid_lineage_mapping": {
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
@@ -409,9 +357,6 @@
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
-        },
-        {
-            "$ref": "#/$defs/higlass"
         },
         {
             "$ref": "#/$defs/reference_genome_options"

@@ -29,9 +29,9 @@ workflow GENOME_METADATA {
 
             // Define biosamples with their types
             def biosamples = [
-                ["WGS", new_meta.biosample_wgs],
-                ["HIC", new_meta.biosample_hic],
-                ["RNA", new_meta.biosample_rna],
+                ["WGS", new_meta.biosample_accession_wgs],
+                ["HIC", new_meta.biosample_accession_hic],
+                ["RNA", new_meta.biosample_accession_rna],
             ]
 
             // Process each biosample

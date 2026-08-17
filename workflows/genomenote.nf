@@ -52,9 +52,9 @@ workflow GENOMENOTE {
     take:
     samplesheet // channel: samplesheet read in from --input
     metadata // channel: list of accession numbers to retrieve metadata for
-    lineage_db // channel: path to the Busco lineage, if provided
+    busco_db // channel: path to the Busco lineage, if provided
     ancestral_table // channel: path to the ancestral painting table, if provided
-    cool_order // channel: path to the ordered list of chromosomes, if provided
+    cooler_seq_order // channel: path to the ordered list of chromosomes, if provided
     btk_local_path // channel: path of a local blobDir, if provided
     btk_online_path // channel: path of a remote blobDir, if provided
 
@@ -149,7 +149,7 @@ workflow GENOMENOTE {
             reads.resolveSibling("stats").resolve(reads.baseName + ".flagstat")
         ]
 
-        def flagstat = candidates.find { it.exists() }
+        def flagstat = candidates.find { f -> f.exists() }
 
         if (!flagstat) {
             throw new FileNotFoundException("Could not find flagstat for ${reads}. Tried:\n" + candidates.join("\n"))
@@ -160,8 +160,8 @@ workflow GENOMENOTE {
 
     GENOME_STATISTICS(
         ch_fasta,
-        params.lineage_tax_ids,
-        lineage_db,
+        params.busco_taxid_lineage_mapping,
+        busco_db,
         ch_inputs.pacbio,
         ch_flagstat,
         ch_haplotype,
@@ -188,8 +188,8 @@ workflow GENOMENOTE {
         ch_fasta_fai,
         ch_inputs.hic,
         GENOME_STATISTICS.out.summary_seq,
-        channel.of(params.binsize),
-        cool_order,
+        channel.of(params.cooler_bin_size),
+        cooler_seq_order,
         params.select_contact_map,
     )
     ch_versions = ch_versions.mix(CONTACT_MAPS.out.versions)
@@ -203,7 +203,7 @@ workflow GENOMENOTE {
         ch_inputs.genes,
         ch_fasta.first(),
         GENOME_STATISTICS.out.ch_busco_lineage.first(),
-        lineage_db,
+        busco_db,
     )
     ch_versions = ch_versions.mix(ANNOTATION_STATISTICS.out.versions)
     ch_annotation_stats = ch_annotation_stats.mix(ANNOTATION_STATISTICS.out.summary)
@@ -227,7 +227,6 @@ workflow GENOMENOTE {
             GENOME_METADATA.out.inconsistent,
             GENOME_STATISTICS.out.summary,
             ch_annotation_stats.ifEmpty([[], []]),
-            CONTACT_MAPS.out.link,
             params.note_template,
         )
         ch_versions = ch_versions.mix(COMBINE_NOTE_DATA.out.versions)
@@ -244,7 +243,7 @@ workflow GENOMENOTE {
             ch_fasta_fai,
             ancestral_table,
             params.ancestral_busco_lineage,
-            lineage_db,
+            busco_db,
         )
         ch_versions = ch_versions.mix(ANNOTATION_ANCESTRAL.out.versions)
     }

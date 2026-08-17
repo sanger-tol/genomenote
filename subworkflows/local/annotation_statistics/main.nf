@@ -12,7 +12,7 @@ workflow ANNOTATION_STATISTICS {
     gff // channel: /path/to/annotation file
     genome // channel: [ meta, fasta ]
     busco_lineage // channel: lineage_name
-    lineage_db // channel: /path/to/buscoDB
+    busco_db // channel: /path/to/buscoDB
 
     main:
     ch_versions = channel.empty()
@@ -57,7 +57,7 @@ workflow ANNOTATION_STATISTICS {
         GFFREAD.out.gffread_fasta,
         'proteins',
         busco_lineage,
-        lineage_db.ifEmpty([]),
+        busco_db.ifEmpty([]),
         [],
         false,
     )

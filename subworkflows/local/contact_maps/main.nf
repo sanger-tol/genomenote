@@ -13,7 +13,7 @@ workflow CONTACT_MAPS {
     reads // channel: [ meta, reads, [] ]
     summary_seq // channel: [ meta, summary ]
     cool_bin // channel: val(cooler_bins)
-    cool_order // path: /path/to/file
+    cooler_seq_order // path: /path/to/file
     select_contact_map // params.select_contact_map
 
     main:
@@ -22,7 +22,7 @@ workflow CONTACT_MAPS {
     // Extract the ordered chromosome list
     GET_CHROMLIST(
         summary_seq,
-        cool_order.ifEmpty([]),
+        cooler_seq_order.ifEmpty([]),
     )
     ch_versions = ch_versions.mix(GET_CHROMLIST.out.versions.first())
 
@@ -49,13 +49,11 @@ workflow CONTACT_MAPS {
         cooler_file = HIGLASS_GENERATION.out.cool
         mcool_file = HIGLASS_GENERATION.out.mcool
         grid_file = HIGLASS_GENERATION.out.grid
-        link_file = HIGLASS_GENERATION.out.link
     }
     else {
         cooler_file = channel.empty()
         mcool_file = channel.empty()
         grid_file = channel.empty()
-        link_file = channel.empty()
     }
 
     //
@@ -80,7 +78,6 @@ workflow CONTACT_MAPS {
     cool     = cooler_file // tuple val(meta), val(cool_bin), path("*.cool")
     mcool    = mcool_file // tuple val(meta), path("*.mcool")
     grid     = grid_file // tuple val(meta), path("*.bedpe")
-    link     = link_file // channel: [ *_higlass_link.csv]
     ptxt_map = pretext_map // tuple val(meta), path("*.pretext")
     ptxt_png = pretext_png // tuple val(meta), path("*.pretext")
     versions = ch_versions // channel: [ versions.yml ]
