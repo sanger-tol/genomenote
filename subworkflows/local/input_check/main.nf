@@ -49,7 +49,7 @@ workflow INPUT_CHECK {
             def run = sample_parts.length > 1 ? sample_parts[1] : ""
             def new_id = meta.id.replace("/",".")
 
-            [meta.assembly, meta + [ "id": new_id, "sample": meta.id, "specimen": specimen, "run": run ], datafile]
+            [meta.assembly_accession, meta + [ "id": new_id, "sample": meta.id, "specimen": specimen, "run": run ], datafile]
         }
         .combine(ch_tmp_param, by: 0)
         .map { _assembly, meta, datafile, meta2 ->

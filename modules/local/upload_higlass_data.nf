@@ -25,7 +25,7 @@ process UPLOAD_HIGLASS_DATA {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         error("UPLOAD_HIGLASS_DATA modules do not support Conda. Please use Docker / Singularity / Podman instead.")
     }
-    def assembly = "${meta.assembly}"
+    def assembly = "${meta.assembly_accession}"
     def species = "${meta.species}"
     def project_name = "${higlass_data_project_dir}/${species.replaceAll('\\s', '_')}/${assembly}"
     def file_name = "${assembly}_${meta.id}"

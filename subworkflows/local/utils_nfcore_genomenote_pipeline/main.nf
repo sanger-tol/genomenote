@@ -100,12 +100,12 @@ workflow PIPELINE_INITIALISATION {
     //
 
     ch_samplesheet = channel.fromList(samplesheetToList(input, "${projectDir}/assets/schema_input.json"))
-        .map { meta, datafile -> [meta + [assembly: params.assembly], datafile] }
+        .map { meta, datafile -> [meta + [assembly_accession: params.assembly_accession], datafile] }
 
     //
     // Create channel from all accession numbers
     //
-    metadata_inputs = [params.assembly]
+    metadata_inputs = [params.assembly_accession]
     metadata_inputs.add(params.biosample_accession_wgs ?: null)
     metadata_inputs.add(params.biosample_accession_hic ?: null)
     metadata_inputs.add(params.biosample_accession_rna ?: null)

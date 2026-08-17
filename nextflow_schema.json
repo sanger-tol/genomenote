@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "assembly", "cooler_bin_size", "kmer_size", "outdir"],
+            "required": ["input", "assembly_accession", "cooler_bin_size", "kmer_size", "outdir"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -45,7 +45,7 @@
                     "default": 31,
                     "description": "Size for Fastk to create the k-mer library"
                 },
-                "assembly": {
+                "assembly_accession": {
                     "type": "string",
                     "description": "The Genbank assembly accession for the assembly, for example: GCA_922984935.2.",
                     "pattern": "GCA_[0-9]*?.[0-9]"

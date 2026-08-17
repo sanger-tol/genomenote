@@ -24,7 +24,7 @@ These typically include:
 The assembly accession for the genome you would like to analyse, optionally with the biosample accession(s) linked to this genome assembly.
 
 ```bash
---assembly '[assembly accession]'
+--assembly_accession '[assembly accession]'
 --biosample_accession_wgs '[biosample accession of the biosample used to produce the genomic sequence]'
 --biosample_accession_hic '[biosample accession of the biosample used to produce the HiC data]'
 --biosample_accession_rna '[biosample accession of the biosample used to produce the RNASeq data]
@@ -106,7 +106,7 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run sanger-tol/genomenote --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta --assembly GCA_922984935.2 -profile docker
+nextflow run sanger-tol/genomenote --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta --assembly_accession GCA_922984935.2 -profile docker
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -139,7 +139,7 @@ with:
 input: "./samplesheet.csv"
 outdir: "./results/"
 fasta: "./genome.fasta"
-assembly: "GCA_922984935.2"
+assembly_accession: "GCA_922984935.2"
 ```
 
 You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).

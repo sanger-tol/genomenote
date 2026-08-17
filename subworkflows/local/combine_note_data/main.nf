@@ -42,7 +42,7 @@ workflow COMBINE_NOTE_DATA {
         .concat(ch_higlass)
         .map { _meta, file -> file }
         .collectFile(name: 'combined.csv', sort: false) { file -> file.text }
-        .map { combined_path -> [[id: params.assembly], combined_path] }
+        .map { combined_path -> [[id: params.assembly_accession], combined_path] }
 
     POPULATE_TEMPLATE(ch_parsed, ch_note_template)
     ch_versions = ch_versions.mix(POPULATE_TEMPLATE.out.versions.first())
