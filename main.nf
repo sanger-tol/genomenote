@@ -29,7 +29,7 @@ workflow SANGERTOL_GENOMENOTE {
     take:
     samplesheet // channel: samplesheet read in from --input
     metadata // channel: list of accession numbers to retrieve metadata for
-    lineage_db // channel: path to the Busco lineage, if provided
+    busco_db // channel: path to the Busco lineage, if provided
     ancestral_table // channel: path to the ancestral painting table, if provided
     cool_order // channel: path to the ordered list of chromosomes, if provided
     btk_local_path // channel: path of a local blobDir, if provided
@@ -43,7 +43,7 @@ workflow SANGERTOL_GENOMENOTE {
     GENOMENOTE(
         samplesheet,
         metadata,
-        lineage_db,
+        busco_db,
         ancestral_table,
         cool_order,
         btk_local_path,
@@ -81,7 +81,7 @@ workflow {
     SANGERTOL_GENOMENOTE(
         PIPELINE_INITIALISATION.out.samplesheet,
         PIPELINE_INITIALISATION.out.metadata,
-        PIPELINE_INITIALISATION.out.lineage_db,
+        PIPELINE_INITIALISATION.out.busco_db,
         PIPELINE_INITIALISATION.out.ancestral_table,
         PIPELINE_INITIALISATION.out.cool_order,
         PIPELINE_INITIALISATION.out.btk_local_path,

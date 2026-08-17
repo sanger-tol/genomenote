@@ -15,7 +15,7 @@ workflow ANNOTATION_ANCESTRAL {
     fasta // Channel: [ meta, fasta, fai ]
     ancestral_table // Channel: file(ancestral_table location)
     val_ancestral_lineage // ancestral lineage value to use for BUSCO, e.g. lepidoptera_odb10
-    lineage_db // Channel:
+    busco_db // Channel:
 
     main:
     ch_versions = channel.empty()
@@ -34,7 +34,7 @@ workflow ANNOTATION_ANCESTRAL {
         ch_fasta.fasta,
         "genome",
         val_ancestral_lineage,
-        lineage_db.ifEmpty([]),
+        busco_db.ifEmpty([]),
         [],
         false,
     )

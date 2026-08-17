@@ -117,11 +117,11 @@ workflow PIPELINE_INITIALISATION {
     }
 
     // Transform parameters into channels
-    if (params.lineage_db) {
-        ch_lineage_db = channel.fromPath(params.lineage_db).first()
+    if (params.busco_db) {
+        ch_busco_db = channel.fromPath(params.busco_db).first()
     }
     else {
-        ch_lineage_db = channel.value([])
+        ch_busco_db = channel.value([])
     }
     if (params.cool_order) {
         ch_cool_order = channel.fromPath(params.cool_order).first()
@@ -151,7 +151,7 @@ workflow PIPELINE_INITIALISATION {
     emit:
     samplesheet     = ch_samplesheet
     metadata        = ch_metadata
-    lineage_db      = ch_lineage_db
+    busco_db        = ch_busco_db
     ancestral_table = ch_ancestral_table
     btk_local_path  = ch_btk_local_path
     btk_online_path = ch_btk_online_path

@@ -52,7 +52,7 @@ workflow GENOMENOTE {
     take:
     samplesheet // channel: samplesheet read in from --input
     metadata // channel: list of accession numbers to retrieve metadata for
-    lineage_db // channel: path to the Busco lineage, if provided
+    busco_db // channel: path to the Busco lineage, if provided
     ancestral_table // channel: path to the ancestral painting table, if provided
     cool_order // channel: path to the ordered list of chromosomes, if provided
     btk_local_path // channel: path of a local blobDir, if provided
@@ -161,7 +161,7 @@ workflow GENOMENOTE {
     GENOME_STATISTICS(
         ch_fasta,
         params.lineage_tax_ids,
-        lineage_db,
+        busco_db,
         ch_inputs.pacbio,
         ch_flagstat,
         ch_haplotype,
@@ -203,7 +203,7 @@ workflow GENOMENOTE {
         ch_inputs.genes,
         ch_fasta.first(),
         GENOME_STATISTICS.out.ch_busco_lineage.first(),
-        lineage_db,
+        busco_db,
     )
     ch_versions = ch_versions.mix(ANNOTATION_STATISTICS.out.versions)
     ch_annotation_stats = ch_annotation_stats.mix(ANNOTATION_STATISTICS.out.summary)
@@ -244,7 +244,7 @@ workflow GENOMENOTE {
             ch_fasta_fai,
             ancestral_table,
             params.ancestral_busco_lineage,
-            lineage_db,
+            busco_db,
         )
         ch_versions = ch_versions.mix(ANNOTATION_ANCESTRAL.out.versions)
     }

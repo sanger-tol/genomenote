@@ -20,7 +20,7 @@ workflow GENOME_STATISTICS {
     take:
     genome // channel: [ meta, fasta ]
     lineage_tax_ids // channel: /path/to/lineage_tax_ids
-    lineage_db // channel: /path/to/buscoDB
+    busco_db // channel: /path/to/buscoDB
     pacbio // channel: [ meta, kmer_db or reads ]
     flagstat // channel: [ meta, flagstat ]
     haplotype // channel: [ meta, fasta ]
@@ -87,7 +87,7 @@ workflow GENOME_STATISTICS {
         genome,
         "genome",
         ch_lineage,
-        lineage_db.ifEmpty([]),
+        busco_db.ifEmpty([]),
         [],
         false,
     )

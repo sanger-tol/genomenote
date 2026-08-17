@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed the `--write_to_portal` and `--genome_notes_api` options as the
   Genome Note platform is now expected to _pull_ data from the Genome
   After-Party.
+- Renamed parameters for consistency with the other Genome After-Party pipelines.
 
 ### Parameters
 
@@ -26,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | --annotation_set   |               |
 | --write_to_portal  |               |
 | --genome_notes_api |               |
+| --busco_db         | --lineage_db  |
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 
