@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | --higlass_kubeconfig       |                               |
 | --higlass_upload_directory |                               |
 | --higlass_data_project_dir |                               |
-| --busco_db                 | --lineage_db                  |
+| --lineage_db               | --busco_db                    |
 | --cool_order               | --cooler_seq_order            |
 | --binsize                  | --cooler_bin_size             |
 | --biosample_wgs            | --biosample_accession_wgs     |
