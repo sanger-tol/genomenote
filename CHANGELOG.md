@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | --genome_notes_api |                           |
 | --busco_db         | --lineage_db              |
 | --cool_order       | --cooler_seq_order        |
+| --binsize          | --cooler_bin_size         |
 | --biosample_wgs    | --biosample_accession_wgs |
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
