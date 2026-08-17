@@ -113,7 +113,7 @@
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
                 },
-                "cool_order": {
+                "cooler_seq_order": {
                     "type": "string",
                     "format": "file-path",
                     "exists": true,

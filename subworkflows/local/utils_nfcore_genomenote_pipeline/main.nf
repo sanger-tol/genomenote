@@ -123,11 +123,11 @@ workflow PIPELINE_INITIALISATION {
     else {
         ch_busco_db = channel.value([])
     }
-    if (params.cool_order) {
-        ch_cool_order = channel.fromPath(params.cool_order).first()
+    if (params.cooler_seq_order) {
+        ch_cooler_seq_order = channel.fromPath(params.cooler_seq_order).first()
     }
     else {
-        ch_cool_order = channel.empty()
+        ch_cooler_seq_order = channel.empty()
     }
     if (params.ancestral_table) {
         ch_ancestral_table = channel.fromPath(params.ancestral_table).map { path -> [[id: path.getBaseName()], path] }
@@ -149,14 +149,14 @@ workflow PIPELINE_INITIALISATION {
     }
 
     emit:
-    samplesheet     = ch_samplesheet
-    metadata        = ch_metadata
-    busco_db        = ch_busco_db
-    ancestral_table = ch_ancestral_table
-    btk_local_path  = ch_btk_local_path
-    btk_online_path = ch_btk_online_path
-    cool_order      = ch_cool_order
-    versions        = ch_versions
+    samplesheet      = ch_samplesheet
+    metadata         = ch_metadata
+    busco_db         = ch_busco_db
+    ancestral_table  = ch_ancestral_table
+    btk_local_path   = ch_btk_local_path
+    btk_online_path  = ch_btk_online_path
+    cooler_seq_order = ch_cooler_seq_order
+    versions         = ch_versions
 }
 
 /*

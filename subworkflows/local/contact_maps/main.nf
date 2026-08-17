@@ -13,7 +13,7 @@ workflow CONTACT_MAPS {
     reads // channel: [ meta, reads, [] ]
     summary_seq // channel: [ meta, summary ]
     cool_bin // channel: val(cooler_bins)
-    cool_order // path: /path/to/file
+    cooler_seq_order // path: /path/to/file
     select_contact_map // params.select_contact_map
 
     main:
@@ -22,7 +22,7 @@ workflow CONTACT_MAPS {
     // Extract the ordered chromosome list
     GET_CHROMLIST(
         summary_seq,
-        cool_order.ifEmpty([]),
+        cooler_seq_order.ifEmpty([]),
     )
     ch_versions = ch_versions.mix(GET_CHROMLIST.out.versions.first())
 

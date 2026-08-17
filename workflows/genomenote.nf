@@ -54,7 +54,7 @@ workflow GENOMENOTE {
     metadata // channel: list of accession numbers to retrieve metadata for
     busco_db // channel: path to the Busco lineage, if provided
     ancestral_table // channel: path to the ancestral painting table, if provided
-    cool_order // channel: path to the ordered list of chromosomes, if provided
+    cooler_seq_order // channel: path to the ordered list of chromosomes, if provided
     btk_local_path // channel: path of a local blobDir, if provided
     btk_online_path // channel: path of a remote blobDir, if provided
 
@@ -189,7 +189,7 @@ workflow GENOMENOTE {
         ch_inputs.hic,
         GENOME_STATISTICS.out.summary_seq,
         channel.of(params.binsize),
-        cool_order,
+        cooler_seq_order,
         params.select_contact_map,
     )
     ch_versions = ch_versions.mix(CONTACT_MAPS.out.versions)
