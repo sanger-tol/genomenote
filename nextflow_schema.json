@@ -139,58 +139,6 @@
                 }
             }
         },
-        "higlass": {
-            "title": "HiGlass options",
-            "type": "object",
-            "fa_icon": "fas fa-magnifying-glass",
-            "description": "Define if and how to upload the contact map to a HiGlass server.",
-            "properties": {
-                "upload_higlass_data": {
-                    "type": "boolean",
-                    "description": "flag to control if HiGlass server should be updated to add new files",
-                    "default": false,
-                    "fa_icon": "fas far fa-file-code",
-                    "hidden": true
-                },
-                "higlass_url": {
-                    "type": "string",
-                    "description": "URL for the HiGlass server",
-                    "hidden": true
-                },
-                "higlass_upload_directory": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "description": "The ingress directory for the kubernetes cluster running the HiGlass server.",
-                    "fa_icon": "fas fa-folder-open",
-                    "hidden": true
-                },
-                "higlass_data_project_dir": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "description": "Subdirectory struture to use for organising HiGlass data, suggested format is <project_name>/<taxon_group> e.g. '/asg/algae'",
-                    "fa_icon": "fas fa-folder-open",
-                    "hidden": true
-                },
-                "higlass_kubeconfig": {
-                    "type": "string",
-                    "format": "file-path",
-                    "exists": true,
-                    "description": "The path to the kubeconfig  for the kubernetes cluster running the HiGlass server.",
-                    "fa_icon": "fas fa-folder-open",
-                    "hidden": true
-                },
-                "higlass_deployment_name": {
-                    "type": "string",
-                    "description": "Name of the kubernetes deployment for the HiGlass server.",
-                    "hidden": true
-                },
-                "higlass_namespace": {
-                    "type": "string",
-                    "description": "The name for the namespace used in the Kubernetes cluster running the HiGlass server.",
-                    "hidden": true
-                }
-            }
-        },
         "reference_genome_options": {
             "title": "Reference genome options",
             "type": "object",
@@ -409,9 +357,6 @@
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
-        },
-        {
-            "$ref": "#/$defs/higlass"
         },
         {
             "$ref": "#/$defs/reference_genome_options"

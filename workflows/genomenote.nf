@@ -227,7 +227,6 @@ workflow GENOMENOTE {
             GENOME_METADATA.out.inconsistent,
             GENOME_STATISTICS.out.summary,
             ch_annotation_stats.ifEmpty([[], []]),
-            CONTACT_MAPS.out.link,
             params.note_template,
         )
         ch_versions = ch_versions.mix(COMBINE_NOTE_DATA.out.versions)
