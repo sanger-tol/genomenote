@@ -149,7 +149,7 @@ workflow GENOMENOTE {
             reads.resolveSibling("stats").resolve(reads.baseName + ".flagstat")
         ]
 
-        def flagstat = candidates.find { it.exists() }
+        def flagstat = candidates.find { f -> f.exists() }
 
         if (!flagstat) {
             throw new FileNotFoundException("Could not find flagstat for ${reads}. Tried:\n" + candidates.join("\n"))

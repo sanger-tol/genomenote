@@ -129,7 +129,7 @@ workflow GENOME_STATISTICS {
             } else {
                 // Multiple files - merge them
                 def meta_read = meta_reads[0][0]
-                def runs = meta_reads.collect { it[0].run }
+                def runs = meta_reads.collect { meta, _read -> meta.run }
                 def meta_merged = meta_read + [
                     'sample': "${meta_read.specimen}/${params.merge_output}",
                     'id': "${meta_read.specimen}.${params.merge_output}",
@@ -138,7 +138,7 @@ workflow GENOME_STATISTICS {
                 ]
                 def reads = meta_reads
                     .sort { a, b -> a[0].id <=> b[0].id }
-                    .collect { it[1] }
+                    .collect { _meta, read -> read }
                 return [meta_merged, reads]
             }
         }
