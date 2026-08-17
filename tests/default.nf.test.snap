@@ -1,0 +1,412 @@
+{
+    "-profile test": {
+        "content": [
+            93,
+            {
+                "AGAT_SPSTATISTICS": {
+                    "agat": "v1.4.1"
+                },
+                "AGAT_SQSTATBASIC": {
+                    "agat": "v1.4.1"
+                },
+                "ANCESTRAL_EXTRACT": {
+                    "python": "Python 3.12.11",
+                    "buscopainter.py": 1.1
+                },
+                "ANCESTRAL_PLOT": {
+                    "R": "4.1.3",
+                    "plot_buscopainter.R": null
+                },
+                "BEDTOOLS_BAMTOBED": {
+                    "bedtools": "2.31.1"
+                },
+                "BGZIPTABIX": {
+                    "bgzip": 1.21,
+                    "tabix": 1.21
+                },
+                "BLOBTK_PLOT": {
+                    "blobtk": "0.7.1"
+                },
+                "BUSCO": {
+                    "busco": "6.0.0"
+                },
+                "BUSCOPROTEINS": {
+                    "busco": "6.0.0"
+                },
+                "COMBINE_METADATA": {
+                    "combine_parsed_data.py": 1.0
+                },
+                "COMBINE_STATISTICS_AND_METADATA": {
+                    "combine_statistics_data.py": 1.0
+                },
+                "CREATETABLE": {
+                    "create_table.py": 3.1
+                },
+                "EXTRACT_ANNOTATION_STATISTICS_INFO": {
+                    "python": "3.9.5"
+                },
+                "FASTK_FASTK": {
+                    "fastk": 1.2
+                },
+                "FASTK_HISTEX": {
+                    "fastk": 1.2
+                },
+                "FETCH_ENSEMBL_METADATA": {
+                    "fetch_ensembl_metadata.py": 1.0
+                },
+                "FETCH_GBIF_METADATA": {
+                    "python": "3.10.0",
+                    "requests": "2.26.0"
+                },
+                "GET_CHROMLIST": {
+                    "bash": "4.2.25(1)-release"
+                },
+                "GFASTATS": {
+                    "gfastats": "1.3.10"
+                },
+                "GFFREAD": {
+                    "gffread": "0.12.7"
+                },
+                "GUNZIP": {
+                    "gunzip": 1.13
+                },
+                "GUNZIP_HAPLOTYPE": {
+                    "gunzip": 1.13
+                },
+                "GUNZIP_PRIMARY": {
+                    "gunzip": 1.13
+                },
+                "MERQURYFK_MERQURYFK": {
+                    "R": "4.2.3",
+                    "fastk": 1.2,
+                    "merquryfk": 1.2
+                },
+                "NCBI_GET_ODB": {
+                    "get_odb.py": 1.2
+                },
+                "PARAMS_CHECK": {
+                    "python": "3.10.0"
+                },
+                "PARSE_METADATA": {
+                    "python": "3.9.5"
+                },
+                "POPULATE_TEMPLATE": {
+                    "populate_genome_note_template.py": 1.1
+                },
+                "RESTRUCTUREBUSCODIR": {
+                    "restructurebuscodir": 1.0
+                },
+                "RUN_WGET": {
+                    "wget": 1.18
+                },
+                "SAMTOOLS_FAIDX": {
+                    "samtools": 1.21
+                },
+                "SAMTOOLS_VIEW": {
+                    "samtools": 1.21
+                },
+                "SUMMARYGENOME": {
+                    "ncbi-datasets-cli": "16.22.1"
+                },
+                "SUMMARYSEQUENCE": {
+                    "ncbi-datasets-cli": "16.22.1"
+                },
+                "UNTAR_KMER_DB": {
+                    "untar": 1.34
+                },
+                "Workflow": {
+                    "sanger-tol/genomenote": "v2.2.0"
+                }
+            },
+            [
+                "ancestral_plots",
+                "ancestral_plots/lepidoptera_odb10",
+                "ancestral_plots/lepidoptera_odb10/Merian_elements_full_table",
+                "ancestral_plots/lepidoptera_odb10/Merian_elements_full_table/GCA_963859965.1.lepidoptera_odb10.Merian_elements_full_table.buscopainter.pdf",
+                "ancestral_plots/lepidoptera_odb10/Merian_elements_full_table/GCA_963859965.1.lepidoptera_odb10.Merian_elements_full_table.buscopainter.png",
+                "blobtoolkit",
+                "blobtoolkit/plots",
+                "blobtoolkit/plots/GCA_963859965.1.blob.png",
+                "blobtoolkit/plots/GCA_963859965.1.blob_chr.png",
+                "blobtoolkit/plots/GCA_963859965.1.grid.png",
+                "blobtoolkit/plots/GCA_963859965.1.grid_chr.png",
+                "busco",
+                "busco/lepidoptera_odb12",
+                "busco/lepidoptera_odb12/GCA_963859965.1.lepidoptera_odb12.fragmented_busco_sequences.tar.gz",
+                "busco/lepidoptera_odb12/GCA_963859965.1.lepidoptera_odb12.full_table.tsv",
+                "busco/lepidoptera_odb12/GCA_963859965.1.lepidoptera_odb12.missing_busco_list.tsv",
+                "busco/lepidoptera_odb12/GCA_963859965.1.lepidoptera_odb12.multi_copy_busco_sequences.tar.gz",
+                "busco/lepidoptera_odb12/GCA_963859965.1.lepidoptera_odb12.short_summary.json",
+                "busco/lepidoptera_odb12/GCA_963859965.1.lepidoptera_odb12.short_summary.tsv",
+                "busco/lepidoptera_odb12/GCA_963859965.1.lepidoptera_odb12.short_summary.txt",
+                "busco/lepidoptera_odb12/GCA_963859965.1.lepidoptera_odb12.single_copy_busco_sequences.tar.gz",
+                "contact_maps",
+                "contact_maps/SAMEA112198479",
+                "contact_maps/SAMEA112198479/ERR11904130",
+                "contact_maps/SAMEA112198479/ERR11904130/GCA_963859965.1.hic.SAMEA112198479.ERR11904130.chromsizes",
+                "contact_maps/SAMEA112198479/ERR11904130/GCA_963859965.1.hic.SAMEA112198479.ERR11904130.cool",
+                "contact_maps/SAMEA112198479/ERR11904130/GCA_963859965.1.hic.SAMEA112198479.ERR11904130.mcool",
+                "contact_maps/SAMEA112198479/ERR11904130/GCA_963859965.1.hic.SAMEA112198479.ERR11904130.pretext",
+                "contact_maps/SAMEA112198479/ERR11904130/GCA_963859965.1.hic.SAMEA112198479.ERR11904130.pretext.png",
+                "contact_maps/SAMEA112198479_X",
+                "contact_maps/SAMEA112198479_X/ERR11904130",
+                "contact_maps/SAMEA112198479_X/ERR11904130/GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.chromsizes",
+                "contact_maps/SAMEA112198479_X/ERR11904130/GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.cool",
+                "contact_maps/SAMEA112198479_X/ERR11904130/GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.mcool",
+                "contact_maps/SAMEA112198479_X/ERR11904130/GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.pretext",
+                "contact_maps/SAMEA112198479_X/ERR11904130/GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.pretext.png",
+                "genes",
+                "genes/ensembl.2024_04",
+                "genes/ensembl.2024_04/GCA_963859965.1.genes.ensembl.2024_04.agat.spstats.stats.txt",
+                "genes/ensembl.2024_04/GCA_963859965.1.genes.ensembl.2024_04.agat.sqstats.stats.txt",
+                "genes/ensembl.2024_04/GCA_963859965.1.genes.ensembl.2024_04.busco.lepidoptera_odb12.short_summary.json",
+                "genes/ensembl.2024_04/GCA_963859965.1.genes.ensembl.2024_04.busco.lepidoptera_odb12.short_summary.txt",
+                "genome_note",
+                "genome_note/GCA_963859965.1.docx",
+                "genome_note/GCA_963859965.1.genome_note_consistent.csv",
+                "genome_note/GCA_963859965.1.genome_note_inconsistent.csv",
+                "genome_note/GCA_963859965.1.template_parameters.csv",
+                "genome_stats",
+                "genome_stats/GCA_963859965.1.gfastats.txt",
+                "genome_stats/pacbio",
+                "genome_stats/pacbio/SAMEA112198456",
+                "genome_stats/pacbio/SAMEA112198456/merge",
+                "genome_stats/pacbio/SAMEA112198456/merge/SOURCE.txt",
+                "genome_stats/pacbio/SAMEA112198456/merge/genomescope",
+                "genome_stats/pacbio/SAMEA112198456/merge/genomescope/GCA_963859965.1.pacbio.SAMEA112198456.merge.genomescope.linear_plot.png",
+                "genome_stats/pacbio/SAMEA112198456/merge/genomescope/GCA_963859965.1.pacbio.SAMEA112198456.merge.genomescope.log_plot.png",
+                "genome_stats/pacbio/SAMEA112198456/merge/genomescope/GCA_963859965.1.pacbio.SAMEA112198456.merge.genomescope.model.txt",
+                "genome_stats/pacbio/SAMEA112198456/merge/genomescope/GCA_963859965.1.pacbio.SAMEA112198456.merge.genomescope.summary.txt",
+                "genome_stats/pacbio/SAMEA112198456/merge/genomescope/GCA_963859965.1.pacbio.SAMEA112198456.merge.genomescope.transformed_linear_plot.png",
+                "genome_stats/pacbio/SAMEA112198456/merge/genomescope/GCA_963859965.1.pacbio.SAMEA112198456.merge.genomescope.transformed_log_plot.png",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859965.1.only.bed.gz",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859965.1.only.bed.gz.csi",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859965.1.only.bed.gz.gzi",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859965.1.only.bed.gz.tbi",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859965.1.qv",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859965.1.spectra-cn.fl.png",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859965.1.spectra-cn.ln.png",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859965.1.spectra-cn.st.png",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859975.1_alt.only.bed.gz",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859975.1_alt.only.bed.gz.csi",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859975.1_alt.only.bed.gz.gzi",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859975.1_alt.only.bed.gz.tbi",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859975.1_alt.qv",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859975.1_alt.spectra-cn.fl.png",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859975.1_alt.spectra-cn.ln.png",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859975.1_alt.spectra-cn.st.png",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.completeness.stats",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.qv",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.spectra-asm.fl.png",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.spectra-asm.ln.png",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.spectra-asm.st.png",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.spectra-cn.fl.png",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.spectra-cn.ln.png",
+                "genome_stats/pacbio/SAMEA112198456/merge/merqury/GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.spectra-cn.st.png",
+                "genome_stats/pacbio/SAMEA112198456_X",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/genomescope",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/genomescope/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.genomescope.linear_plot.png",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/genomescope/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.genomescope.log_plot.png",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/genomescope/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.genomescope.model.txt",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/genomescope/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.genomescope.summary.txt",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/genomescope/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.genomescope.transformed_linear_plot.png",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/genomescope/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.genomescope.transformed_log_plot.png",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859965.1.only.bed.gz",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859965.1.only.bed.gz.csi",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859965.1.only.bed.gz.gzi",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859965.1.only.bed.gz.tbi",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859965.1.qv",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859965.1.spectra-cn.fl.png",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859965.1.spectra-cn.ln.png",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859965.1.spectra-cn.st.png",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859975.1_alt.only.bed.gz",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859975.1_alt.only.bed.gz.csi",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859975.1_alt.only.bed.gz.gzi",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859975.1_alt.only.bed.gz.tbi",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859975.1_alt.qv",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859975.1_alt.spectra-cn.fl.png",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859975.1_alt.spectra-cn.ln.png",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859975.1_alt.spectra-cn.st.png",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.completeness.stats",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.qv",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.spectra-asm.fl.png",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.spectra-asm.ln.png",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.spectra-asm.st.png",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.spectra-cn.fl.png",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.spectra-cn.ln.png",
+                "genome_stats/pacbio/SAMEA112198456_X/ERR11892488/merqury/GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.spectra-cn.st.png",
+                "genome_stats/pacbio/SAMEA112198456_dir",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859965.1.only.bed.gz",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859965.1.only.bed.gz.csi",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859965.1.only.bed.gz.gzi",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859965.1.only.bed.gz.tbi",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859965.1.qv",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859965.1.spectra-cn.fl.png",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859965.1.spectra-cn.ln.png",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859965.1.spectra-cn.st.png",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859975.1_alt.only.bed.gz",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859975.1_alt.only.bed.gz.csi",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859975.1_alt.only.bed.gz.gzi",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859975.1_alt.only.bed.gz.tbi",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859975.1_alt.qv",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859975.1_alt.spectra-cn.fl.png",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859975.1_alt.spectra-cn.ln.png",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859975.1_alt.spectra-cn.st.png",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.completeness.stats",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.qv",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.spectra-asm.fl.png",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.spectra-asm.ln.png",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.spectra-asm.st.png",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.spectra-cn.fl.png",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.spectra-cn.ln.png",
+                "genome_stats/pacbio/SAMEA112198456_dir/merqury/GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.spectra-cn.st.png",
+                "multiqc_report.html",
+                "pipeline_info",
+                "pipeline_info/genomenote_software_mqc_versions.yml"
+            ],
+            "\tC:66.7%[S:66.7%,D:0.0%],F:0.0%,M:33.3%,n:15\t   ",
+            [
+                "        \"Complete percentage\": 66.7,",
+                "        \"Complete BUSCOs\": 10,",
+                "        \"Single copy percentage\": 66.7,",
+                "        \"Single copy BUSCOs\": 10,",
+                "        \"Multi copy percentage\": 0.0,",
+                "        \"Multi copy BUSCOs\": 0,",
+                "        \"Fragmented percentage\": 0.0,",
+                "        \"Fragmented BUSCOs\": 0,",
+                "        \"Missing percentage\": 33.3,",
+                "        \"Missing BUSCOs\": 5,",
+                "        \"n_markers\": 15,",
+                "        \"domain\": \"eukaryota\",",
+                "        \"avg_identity\": 0.92,",
+                "        \"internal_stop_codon_count\": 0,",
+                "        \"internal_stop_codon_percent\": 0,",
+                "        \"Number of scaffolds\": \"3\",",
+                "        \"Number of contigs\": \"7\",",
+                "        \"Total length\": \"58977870\",",
+                "        \"Percent gaps\": \"0.001%\",",
+                "        \"Scaffold N50\": \"29673206\",",
+                "        \"Contigs N50\": \"24534995\"",
+                "    },",
+                "    \"metrics\": {",
+                "        \"Number of scaffolds\": \"3\","
+            ],
+            [
+                "GCA_963859965.1.lepidoptera_odb10.Merian_elements_full_table.buscopainter.png:md5,cdd73e334318cf915df7cf5fa750892a",
+                "GCA_963859965.1.blob.png:md5,147e7413247cbb8f52caae9c7b79400b",
+                "GCA_963859965.1.blob_chr.png:md5,147e7413247cbb8f52caae9c7b79400b",
+                "GCA_963859965.1.grid.png:md5,1dd41fe93a5644b64817f8ceec461a5f",
+                "GCA_963859965.1.grid_chr.png:md5,1dd41fe93a5644b64817f8ceec461a5f",
+                "GCA_963859965.1.lepidoptera_odb12.full_table.tsv:md5,6d8e1467c24c90a0b1a2c4de9a5a45d5",
+                "GCA_963859965.1.lepidoptera_odb12.missing_busco_list.tsv:md5,7907b15451b96b0da834f1f48e214ec4",
+                "GCA_963859965.1.lepidoptera_odb12.short_summary.tsv:md5,97bf63d6cb79a5255dfd8974aecf406a",
+                "GCA_963859965.1.hic.SAMEA112198479.ERR11904130.chromsizes:md5,ef15e0650aa9f69b86add7af93e0c843",
+                "GCA_963859965.1.hic.SAMEA112198479.ERR11904130.pretext:md5,ebabd182607b4dd244e394064b048413",
+                "GCA_963859965.1.hic.SAMEA112198479.ERR11904130.pretext.png:md5,198a4106e7c896ff378651f9acdc913e",
+                "GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.chromsizes:md5,ef15e0650aa9f69b86add7af93e0c843",
+                "GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.pretext:md5,ebabd182607b4dd244e394064b048413",
+                "GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.pretext.png:md5,198a4106e7c896ff378651f9acdc913e",
+                "GCA_963859965.1.genes.ensembl.2024_04.agat.spstats.stats.txt:md5,f94eb9364290e6d3eabe084c67ce9198",
+                "GCA_963859965.1.genes.ensembl.2024_04.agat.sqstats.stats.txt:md5,a7fe991f7434cd6f44b0cabd3802785f",
+                "GCA_963859965.1.genome_note_consistent.csv:md5,31c58a42c36bf99a7bec50e0e29ba473",
+                "GCA_963859965.1.genome_note_inconsistent.csv:md5,ba336957b84a2b78ae95ca6412bd50c7",
+                "GCA_963859965.1.template_parameters.csv:md5,c62f77ee35d05e19afc02f5fa042cc08",
+                "GCA_963859965.1.gfastats.txt:md5,edd4cdba05800960c0ca80378e1e5e9d",
+                "SOURCE.txt:md5,4b370a78b3333085c13ddef250b5dec4",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.genomescope.linear_plot.png:md5,e0977c490b773d62f1dfa1553404275b",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.genomescope.log_plot.png:md5,7958e0f85d8096c492278e4fb97393a2",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.genomescope.model.txt:md5,b6e4f0aee658f57cca11728b2587dbb8",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.genomescope.summary.txt:md5,7294415f762019b091502adec238203d",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.genomescope.transformed_linear_plot.png:md5,92f3983b46dc5e5d9ece40425d36e237",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.genomescope.transformed_log_plot.png:md5,1743bbc666b633b5cf6cc31fb0e7ef0a",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859965.1.only.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859965.1.only.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859965.1.only.bed.gz.gzi:md5,c2cb56f4c5bf656faca0986e7eba0308",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859965.1.only.bed.gz.tbi:md5,ec06685d85d15d8f118a789a9ccc42ad",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859965.1.qv:md5,ad3e830e58f32f9f5d8ce11f415308ac",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859965.1.spectra-cn.fl.png:md5,f0dfdef58f663967bd219df521ea906b",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859965.1.spectra-cn.ln.png:md5,14657df0708d69f0a980721f70726395",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859965.1.spectra-cn.st.png:md5,44226b45e86cfa0f4704e771eaf7e99d",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859975.1_alt.only.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859975.1_alt.only.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859975.1_alt.only.bed.gz.gzi:md5,c2cb56f4c5bf656faca0986e7eba0308",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859975.1_alt.only.bed.gz.tbi:md5,ec06685d85d15d8f118a789a9ccc42ad",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859975.1_alt.qv:md5,4f3038bdb846556dbf8fcdac15759c61",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859975.1_alt.spectra-cn.fl.png:md5,1f9eb9f1f0a90eee5d5c3996a307d1e8",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859975.1_alt.spectra-cn.ln.png:md5,ee2e3c683f3d80cc7934b8194efa16a0",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.GCA_963859975.1_alt.spectra-cn.st.png:md5,646311368d550f135eec7e2c02d8b541",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.completeness.stats:md5,a86a4c673bd04b6a081115c45992d9c5",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.qv:md5,529d41cc6ae7a43753f5a1091fe7bb87",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.spectra-asm.fl.png:md5,fc20f31d8470c00282c2a86eb754df36",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.spectra-asm.ln.png:md5,0274d6573e912c4b463b4ccc39627a8e",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.spectra-asm.st.png:md5,72124021e98c52f83309233427ffa593",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.spectra-cn.fl.png:md5,7f8f962cf936916eb115fe840e978d67",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.spectra-cn.ln.png:md5,a34e44fb25ca75399d7b748d61a8247f",
+                "GCA_963859965.1.pacbio.SAMEA112198456.merge.merqury.spectra-cn.st.png:md5,2b25086b5f4aeecd2fcd9a1d10853ef2",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.genomescope.linear_plot.png:md5,a343e2361512536cc72c811482d48d47",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.genomescope.log_plot.png:md5,a34e1aaee423536fbfe33b39c8275394",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.genomescope.model.txt:md5,5bf80df03024f73d98b97d32f50ac29a",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.genomescope.summary.txt:md5,9149ae90b459e723cc6266db81b730cd",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.genomescope.transformed_linear_plot.png:md5,b3ca926121b87d1951fa3e139a507bcc",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.genomescope.transformed_log_plot.png:md5,54671cb5baca472770a16b1be1e75f3e",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859965.1.only.bed.gz:md5,b92e05b1322d0ff97702455bfa662db4",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859965.1.only.bed.gz.csi:md5,dd0afd902f7db62a49581c9128f31ed5",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859965.1.only.bed.gz.gzi:md5,7dea362b3fac8e00956a4952a3d4f474",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859965.1.only.bed.gz.tbi:md5,55358c0f26068101822469acc2ff17f3",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859965.1.qv:md5,1eedf37cb83b37562057a0bcbcbe26f0",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859965.1.spectra-cn.fl.png:md5,55ae4d1d31848bc280a057eef8b13c0b",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859965.1.spectra-cn.ln.png:md5,998e4447a5a558abaf2ebfdf105359c9",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859965.1.spectra-cn.st.png:md5,5cdb79349c64ff8d7d2d88c21aa3a1ed",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859975.1_alt.only.bed.gz:md5,51acb4783667740f6746efa15b91c04f",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859975.1_alt.only.bed.gz.csi:md5,3bdd6b2148219f406a8c1146193517c6",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859975.1_alt.only.bed.gz.gzi:md5,7dea362b3fac8e00956a4952a3d4f474",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859975.1_alt.only.bed.gz.tbi:md5,95e4b446997a82aac4fb42934b5d79c1",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859975.1_alt.qv:md5,d2864f71d39b028d5535681824303c72",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859975.1_alt.spectra-cn.fl.png:md5,0b6ebee29cb560759f4ec1b8b9169a8a",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859975.1_alt.spectra-cn.ln.png:md5,185ecc51a915b8fe9f03a0b53e9b354c",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.GCA_963859975.1_alt.spectra-cn.st.png:md5,6d225b437a7de056324a6045ee149d7d",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.completeness.stats:md5,4727d5d8bf4c140cd444f14eb5a04474",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.qv:md5,b67fdfa06856df2145f47c9170f3d106",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.spectra-asm.fl.png:md5,1815eb7c917d5056b382bd77891cceb8",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.spectra-asm.ln.png:md5,fc58e079314fcba1b94486b7e93af87e",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.spectra-asm.st.png:md5,c74365c0df39a87f2487ad3ebae881a8",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.spectra-cn.fl.png:md5,30d061c05928744aef46ba021004c9ad",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.spectra-cn.ln.png:md5,0a893e8c1c8a69e847fe385405906164",
+                "GCA_963859965.1.pacbio.SAMEA112198456_X.ERR11892488.merqury.spectra-cn.st.png:md5,a544e379b9dcb81da2fd7b6c2899acf0",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859965.1.only.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859965.1.only.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859965.1.only.bed.gz.gzi:md5,c2cb56f4c5bf656faca0986e7eba0308",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859965.1.only.bed.gz.tbi:md5,ec06685d85d15d8f118a789a9ccc42ad",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859965.1.qv:md5,ad3e830e58f32f9f5d8ce11f415308ac",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859965.1.spectra-cn.fl.png:md5,f0dfdef58f663967bd219df521ea906b",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859965.1.spectra-cn.ln.png:md5,14657df0708d69f0a980721f70726395",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859965.1.spectra-cn.st.png:md5,44226b45e86cfa0f4704e771eaf7e99d",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859975.1_alt.only.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859975.1_alt.only.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859975.1_alt.only.bed.gz.gzi:md5,c2cb56f4c5bf656faca0986e7eba0308",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859975.1_alt.only.bed.gz.tbi:md5,ec06685d85d15d8f118a789a9ccc42ad",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859975.1_alt.qv:md5,4f3038bdb846556dbf8fcdac15759c61",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859975.1_alt.spectra-cn.fl.png:md5,1f9eb9f1f0a90eee5d5c3996a307d1e8",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859975.1_alt.spectra-cn.ln.png:md5,ee2e3c683f3d80cc7934b8194efa16a0",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.GCA_963859975.1_alt.spectra-cn.st.png:md5,646311368d550f135eec7e2c02d8b541",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.completeness.stats:md5,a86a4c673bd04b6a081115c45992d9c5",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.qv:md5,529d41cc6ae7a43753f5a1091fe7bb87",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.spectra-asm.fl.png:md5,fc20f31d8470c00282c2a86eb754df36",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.spectra-asm.ln.png:md5,0274d6573e912c4b463b4ccc39627a8e",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.spectra-asm.st.png:md5,72124021e98c52f83309233427ffa593",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.spectra-cn.fl.png:md5,7f8f962cf936916eb115fe840e978d67",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.spectra-cn.ln.png:md5,a34e44fb25ca75399d7b748d61a8247f",
+                "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.spectra-cn.st.png:md5,2b25086b5f4aeecd2fcd9a1d10853ef2"
+            ]
+        ],
+        "timestamp": "2026-06-04T18:44:17.099024048",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    }
+}

@@ -24,17 +24,16 @@ include { UTILS_NEXTFLOW_PIPELINE   } from '../../nf-core/utils_nextflow_pipelin
 */
 
 workflow PIPELINE_INITIALISATION {
-
     take:
-    version           // boolean: Display version and exit
-    validate_params   // boolean: Boolean whether to validate parameters against the schema at runtime
-    monochrome_logs   // boolean: Do not use coloured log outputs
+    version // boolean: Display version and exit
+    validate_params // boolean: Boolean whether to validate parameters against the schema at runtime
+    monochrome_logs // boolean: Do not use coloured log outputs
     nextflow_cli_args //   array: List of positional nextflow CLI args
-    outdir            //  string: The output directory where the results will be saved
-    input             //  string: Path to input samplesheet
-    help              // boolean: Display help message and exit
-    help_full         // boolean: Show the full help message
-    show_hidden       // boolean: Show hidden parameters in the help message
+    outdir //  string: The output directory where the results will be saved
+    input //  string: Path to input samplesheet
+    help // boolean: Display help message and exit
+    help_full // boolean: Show the full help message
+    show_hidden // boolean: Show hidden parameters in the help message
 
     main:
 
@@ -43,26 +42,44 @@ workflow PIPELINE_INITIALISATION {
     //
     // Print version and exit if required and dump pipeline parameters to JSON file
     //
-    UTILS_NEXTFLOW_PIPELINE (
+    UTILS_NEXTFLOW_PIPELINE(
         version,
         true,
         outdir,
-        workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1
+        workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1,
     )
 
     //
     // Validate parameters and generate parameter summary to stdout
     //
 
-    def before_text = ""
-    def after_text = ""
+    def before_text = """
+-\033[2m----------------------------------------------------\033[0m-
+\033[0;34m   _____                               \033[0;32m _______   \033[0;31m _\033[0m
+\033[0;34m  / ____|                              \033[0;32m|__   __|  \033[0;31m| |\033[0m
+\033[0;34m | (___   __ _ _ __   __ _  ___ _ __ \033[0m ___ \033[0;32m| |\033[0;33m ___ \033[0;31m| |\033[0m
+\033[0;34m  \\___ \\ / _` | '_ \\ / _` |/ _ \\ '__|\033[0m|___|\033[0;32m| |\033[0;33m/ _ \\\033[0;31m| |\033[0m
+\033[0;34m  ____) | (_| | | | | (_| |  __/ |        \033[0;32m| |\033[0;33m (_) \033[0;31m| |____\033[0m
+\033[0;34m |_____/ \\__,_|_| |_|\\__, |\\___|_|        \033[0;32m|_|\033[0;33m\\___/\033[0;31m|______|\033[0m
+\033[0;34m                      __/ |\033[0m
+\033[0;34m                     |___/\033[0m
+\033[0;35m  ${workflow.manifest.name} ${workflow.manifest.version}\033[0m
+-\033[2m----------------------------------------------------\033[0m-
+        """
+    def after_text = """${workflow.manifest.doi ? "\n* The pipeline\n" : ""}${workflow.manifest.doi.tokenize(",").collect { doi -> "    https://doi.org/${doi.trim().replace('https://doi.org/', '')}" }.join("\n")}${workflow.manifest.doi ? "\n" : ""}
+* The nf-core framework
+    https://doi.org/10.1038/s41587-020-0439-x
+
+* Software dependencies
+    https://github.com/sanger-tol/genomenote/blob/main/CITATIONS.md
+"""
     if (monochrome_logs) {
         before_text = before_text.replaceAll(/\033\[[0-9;]*m/, '')
     }
 
     command = "nextflow run ${workflow.manifest.name} -profile <docker/singularity/.../institute> --input samplesheet.csv --outdir <OUTDIR>"
 
-    UTILS_NFSCHEMA_PLUGIN (
+    UTILS_NFSCHEMA_PLUGIN(
         workflow,
         validate_params,
         null,
@@ -78,7 +95,7 @@ workflow PIPELINE_INITIALISATION {
     //
     // Check config provided to the pipeline
     //
-    UTILS_NFCORE_PIPELINE (
+    UTILS_NFCORE_PIPELINE(
         nextflow_cli_args
     )
 
@@ -86,29 +103,64 @@ workflow PIPELINE_INITIALISATION {
     // Create channel from input file provided through params.input
     //
 
-    channel
-        .fromList(samplesheetToList(input, "${projectDir}/assets/schema_input.json"))
-        .map {
-            meta, fastq_1, fastq_2 ->
-                if (!fastq_2) {
-                    return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
-                } else {
-                    return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
-                }
-        }
-        .groupTuple()
-        .map { samplesheet ->
-            validateInputSamplesheet(samplesheet)
-        }
-        .map {
-            meta, fastqs ->
-                return [ meta, fastqs.flatten() ]
-        }
-        .set { ch_samplesheet }
+    ch_samplesheet = channel.fromList(samplesheetToList(input, "${projectDir}/assets/schema_input.json"))
+        .map { meta, datafile -> [meta + [assembly: params.assembly], datafile] }
+
+    //
+    // Create channel from all accession numbers
+    //
+    metadata_inputs = [params.assembly]
+    metadata_inputs.add(params.biosample_wgs ?: null)
+    metadata_inputs.add(params.biosample_hic ?: null)
+    metadata_inputs.add(params.biosample_rna ?: null)
+    ch_metadata = channel.of(metadata_inputs)
+
+    // If both are set, then error out. We want one or the other!
+    if (params.btk_location && params.btk_online_location) {
+        error('BTK Address not specified or both online and local values have been supplied')
+    }
+
+    // Transform parameters into channels
+    if (params.lineage_db) {
+        ch_lineage_db = channel.fromPath(params.lineage_db).first()
+    }
+    else {
+        ch_lineage_db = channel.value([])
+    }
+    if (params.cool_order) {
+        ch_cool_order = channel.fromPath(params.cool_order).first()
+    }
+    else {
+        ch_cool_order = channel.empty()
+    }
+    if (params.ancestral_table) {
+        ch_ancestral_table = channel.fromPath(params.ancestral_table).map { path -> [[id: path.getBaseName()], path] }
+    }
+    else {
+        ch_ancestral_table = channel.empty()
+    }
+    if (params.btk_location) {
+        ch_btk_local_path = channel.fromPath(params.btk_location, type: "dir")
+    }
+    else {
+        ch_btk_local_path = channel.of([])
+    }
+    if (params.btk_online_location) {
+        ch_btk_online_path = channel.of(params.btk_online_location)
+    }
+    else {
+        ch_btk_online_path = channel.of([])
+    }
 
     emit:
-    samplesheet = ch_samplesheet
-    versions    = ch_versions
+    samplesheet     = ch_samplesheet
+    metadata        = ch_metadata
+    lineage_db      = ch_lineage_db
+    ancestral_table = ch_ancestral_table
+    btk_local_path  = ch_btk_local_path
+    btk_online_path = ch_btk_online_path
+    cool_order      = ch_cool_order
+    versions        = ch_versions
 }
 
 /*
@@ -118,12 +170,11 @@ workflow PIPELINE_INITIALISATION {
 */
 
 workflow PIPELINE_COMPLETION {
-
     take:
-    email           //  string: email address
-    email_on_fail   //  string: email address sent on pipeline failure
+    email //  string: email address
+    email_on_fail //  string: email address sent on pipeline failure
     plaintext_email // boolean: Send plain-text email instead of HTML
-    outdir          //    path: Path to output directory where results will be published
+    outdir //    path: Path to output directory where results will be published
     monochrome_logs // boolean: Disable ANSI colour codes in log output
     multiqc_report  //  string: Path to MultiQC report
 
@@ -163,20 +214,6 @@ workflow PIPELINE_COMPLETION {
 */
 
 //
-// Validate channels from input samplesheet
-//
-def validateInputSamplesheet(input) {
-    def (metas, fastqs) = input[1..2]
-
-    // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
-    def endedness_ok = metas.collect{ meta -> meta.single_end }.unique().size == 1
-    if (!endedness_ok) {
-        error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
-    }
-
-    return [ metas[0], fastqs ]
-}
-//
 // Generate methods description for MultiQC
 //
 def toolCitationText() {
@@ -184,10 +221,10 @@ def toolCitationText() {
     // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "Tool (Foo et al. 2023)" : "",
     // Uncomment function in methodsDescriptionText to render in MultiQC report
     def citation_text = [
-            "Tools used in the workflow included:",
-            "MultiQC (Ewels et al. 2016)",
-            "."
-        ].join(' ').trim()
+        "Tools used in the workflow included:",
+        "MultiQC (Ewels et al. 2016)",
+        ".",
+    ].join(' ').trim()
 
     return citation_text
 }
@@ -197,8 +234,8 @@ def toolBibliographyText() {
     // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "<li>Author (2023) Pub name, Journal, DOI</li>" : "",
     // Uncomment function in methodsDescriptionText to render in MultiQC report
     def reference_text = [
-            "<li>Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics , 32(19), 3047–3048. doi: /10.1093/bioinformatics/btw354</li>"
-        ].join(' ').trim()
+        "<li>Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics , 32(19), 3047–3048. doi: /10.1093/bioinformatics/btw354</li>"
+    ].join(' ').trim()
 
     return reference_text
 }
@@ -220,7 +257,10 @@ def methodsDescriptionText(mqc_methods_yaml) {
             temp_doi_ref += "(doi: <a href=\'https://doi.org/${doi_ref.replace("https://doi.org/", "").replace(" ", "")}\'>${doi_ref.replace("https://doi.org/", "").replace(" ", "")}</a>), "
         }
         meta["doi_text"] = temp_doi_ref.substring(0, temp_doi_ref.length() - 2)
-    } else meta["doi_text"] = ""
+    }
+    else {
+        meta["doi_text"] = ""
+    }
     meta["nodoi_text"] = meta.manifest_map.doi ? "" : "<li>If available, make sure to update the text to include the Zenodo DOI of version of the pipeline used. </li>"
 
     // Tool references
@@ -234,7 +274,7 @@ def methodsDescriptionText(mqc_methods_yaml) {
 
     def methods_text = mqc_methods_yaml.text
 
-    def engine =  new groovy.text.SimpleTemplateEngine()
+    def engine = new groovy.text.SimpleTemplateEngine()
     def description_html = engine.createTemplate(methods_text).make(meta)
 
     return description_html.toString()

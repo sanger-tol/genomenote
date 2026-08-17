@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/sanger-tol/genomenote/master/nextflow_schema.json",
+    "$id": "https://raw.githubusercontent.com/sanger-tol/genomenote/main/nextflow_schema.json",
     "title": "sanger-tol/genomenote pipeline parameters",
     "description": "Creating standarised genome assembly publications",
     "type": "object",
@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "outdir"],
+            "required": ["input", "assembly", "binsize", "kmer_size", "outdir"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -20,28 +20,232 @@
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://pipelines.tol.sanger.ac.uk/genomenote/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
+                },
+                "ancestral_table": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.tsv$",
+                    "description": "TSV containing mappings for ancestral elements to busco genes."
+                },
+                "ancestral_busco_lineage": {
+                    "type": "string",
+                    "description": "The busco lineage used for ancestral painting (must match --ancestral_table).",
+                    "pattern": "._odb1[02]$"
+                },
+                "binsize": {
+                    "type": "integer",
+                    "default": 1000,
+                    "description": "Bin size in base pairs for cooler cload"
+                },
+                "kmer_size": {
+                    "type": "integer",
+                    "default": 31,
+                    "description": "Size for Fastk to create the k-mer library"
+                },
+                "assembly": {
+                    "type": "string",
+                    "description": "The Genbank assembly accession for the assembly, for example: GCA_922984935.2.",
+                    "pattern": "GCA_[0-9]*?.[0-9]"
+                },
+                "biosample_wgs": {
+                    "type": "string",
+                    "description": "The biosample accesion(s) linked to the WGS samples in the experiment, for example: SAMEA7520803.",
+                    "pattern": "[SAM@(D|E|N)?(A|G)[0-9]*]"
+                },
+                "biosample_rna": {
+                    "type": "string",
+                    "description": "The biosample accesion(s) linked to the RNA samples in the experiment, for example: SAMEA7521081.",
+                    "pattern": "[SAM@(D|E|N)?(E|A|G)[0-9]*]"
+                },
+                "biosample_hic": {
+                    "type": "string",
+                    "description": "The biosample accesion(s) linked to the Hi-C samples in the experiment, for example: SAMEA7520846.",
+                    "pattern": "[SAM@(D|E|N)?(A|G)[0-9]*]"
+                },
+                "busco_lineage": {
+                    "type": "string",
+                    "description": "Override the BUSCO database used for the assembly assessment.",
+                    "pattern": "._odb(10|12)$"
+                },
+                "select_contact_map": {
+                    "type": "string",
+                    "description": "Select which contact maps should be generated, higlass, pretext or both",
+                    "enum": ["higlass", "pretext", "both"],
+                    "default": "both"
+                },
+                "btk_location": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "exists": true,
+                    "description": "Location of the local blobtoolkit \"blobdir\""
+                },
+                "btk_online_location": {
+                    "type": "string",
+                    "description": "Location of an online blobtoolkit \"blobdir\"",
+                    "pattern": "^https*"
                 },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
-                    "fa_icon": "fas fa-folder-open"
+                    "fa_icon": "fas fa-folder-open",
+                    "default": "results"
+                },
+                "merge_output": {
+                    "type": "string",
+                    "default": "merge",
+                    "pattern": "^[A-Za-z0-9._-]+$",
+                    "description": "Non-empty string used as the suffix and output directory name for merged data files",
+                    "help_text": "Defines the suffix added to merged file names and name of output directory when multiple read files that share the same specimen are merged. Allowed characters are letters, numbers, dot (.), underscore (_), and hyphen (-)."
                 },
                 "email": {
                     "type": "string",
+                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
                     "description": "Email address for completion summary.",
-                    "fa_icon": "fas fa-envelope",
                     "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
-                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+                    "fa_icon": "fas fa-envelope"
                 },
                 "multiqc_title": {
                     "type": "string",
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
+                },
+                "cool_order": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/csv",
+                    "description": "Path to a file that contains the sequence names in the order you want to represent them on the contact-map.",
+                    "help_text": "If not specified, the pipeline will use the sequences in the same order they are listed by the NCI, which follows the karyotype.",
+                    "fa_icon": "fas fa-file-lines"
+                },
+                "note_template": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "The path to a genome note template file.",
+                    "help_text": "Set this parameter if you have a genome note template file that you wish to populate. Templates may be docx or xml files",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "image_format": {
+                    "type": "string",
+                    "enum": ["png", "svg"],
+                    "description": "Select the format of the output images.",
+                    "fa_icon": "fas fa-image",
+                    "default": "png"
                 }
             }
+        },
+        "higlass": {
+            "title": "HiGlass options",
+            "type": "object",
+            "fa_icon": "fas fa-magnifying-glass",
+            "description": "Define if and how to upload the contact map to a HiGlass server.",
+            "properties": {
+                "upload_higlass_data": {
+                    "type": "boolean",
+                    "description": "flag to control if HiGlass server should be updated to add new files",
+                    "default": false,
+                    "fa_icon": "fas far fa-file-code",
+                    "hidden": true
+                },
+                "higlass_url": {
+                    "type": "string",
+                    "description": "URL for the HiGlass server",
+                    "hidden": true
+                },
+                "higlass_upload_directory": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "The ingress directory for the kubernetes cluster running the HiGlass server.",
+                    "fa_icon": "fas fa-folder-open",
+                    "hidden": true
+                },
+                "higlass_data_project_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Subdirectory struture to use for organising HiGlass data, suggested format is <project_name>/<taxon_group> e.g. '/asg/algae'",
+                    "fa_icon": "fas fa-folder-open",
+                    "hidden": true
+                },
+                "higlass_kubeconfig": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "The path to the kubeconfig  for the kubernetes cluster running the HiGlass server.",
+                    "fa_icon": "fas fa-folder-open",
+                    "hidden": true
+                },
+                "higlass_deployment_name": {
+                    "type": "string",
+                    "description": "Name of the kubernetes deployment for the HiGlass server.",
+                    "hidden": true
+                },
+                "higlass_namespace": {
+                    "type": "string",
+                    "description": "The name for the namespace used in the Kubernetes cluster running the HiGlass server.",
+                    "hidden": true
+                }
+            }
+        },
+        "reference_genome_options": {
+            "title": "Reference genome options",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "Reference genome related files and options required for the workflow.",
+            "required": ["fasta"],
+            "properties": {
+                "fasta": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
+                    "description": "Path to FASTA genome file.",
+                    "fa_icon": "far fa-file-code"
+                }
+            }
+        },
+        "databases": {
+            "title": "Databases",
+            "type": "object",
+            "fa_icon": "fas fa-database",
+            "description": "Define where the pipeline should find databases.",
+            "required": ["fasta", "lineage_tax_ids"],
+            "properties": {
+                "lineage_db": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Local directory where clade-specific BUSCO lineage datasets are stored.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "lineage_tax_ids": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "Local file that holds a mapping between BUSCO lineages and taxon IDs.",
+                    "help_text": "Initialised from https://busco-data.ezlab.org/v5/data/placement_files/mapping_taxids-busco_dataset_name.eukaryota_odb10.2019-12-16.txt.tar.gz",
+                    "fa_icon": "fas fa-file-code"
+                }
+            }
+        },
+        "execution": {
+            "title": "Execution",
+            "type": "object",
+            "description": "Control the execution of the pipeline.",
+            "default": "",
+            "properties": {
+                "use_work_dir_as_temp": {
+                    "type": "boolean",
+                    "description": "Set to true to make tools (e.g. sort, FastK, MerquryFK) use the work directory for their temporary files, rather than the system default.",
+                    "fa_icon": "fas fa-arrow-circle-down",
+                    "hidden": true
+                }
+            },
+            "fa_icon": "fas fa-running"
         },
         "institutional_config_options": {
             "title": "Institutional config options",
@@ -157,7 +361,8 @@
                 "multiqc_methods_description": {
                     "type": "string",
                     "description": "Custom MultiQC yaml file containing HTML including a methods description.",
-                    "fa_icon": "fas fa-cog"
+                    "fa_icon": "fas fa-cog",
+                    "hidden": true
                 },
                 "validate_params": {
                     "type": "boolean",
@@ -197,6 +402,18 @@
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
+        },
+        {
+            "$ref": "#/$defs/higlass"
+        },
+        {
+            "$ref": "#/$defs/reference_genome_options"
+        },
+        {
+            "$ref": "#/$defs/databases"
+        },
+        {
+            "$ref": "#/$defs/execution"
         },
         {
             "$ref": "#/$defs/institutional_config_options"

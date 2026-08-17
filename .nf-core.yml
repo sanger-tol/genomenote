@@ -10,6 +10,7 @@ lint:
   files_unchanged:
     - LICENSE
     - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/ISSUE_TEMPLATE/config.yml
     - lib/NfcoreTemplate.groovy
     - assets/email_template.html
     - .github/CONTRIBUTING.md

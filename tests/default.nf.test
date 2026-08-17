@@ -6,9 +6,22 @@ nextflow_pipeline {
 
     test("-profile test") {
 
+        setup {
+            println "Downloading reduced Busco database..."
+            def busco_mockdb_url = "https://tolit.cog.sanger.ac.uk/test-data/resources/busco/genomenote.GCA_963859965.1.2025-12-08.tar.gz"
+            def busco_command = ['bash', '-c', "curl -L --retry 5 ${busco_mockdb_url} | tar xzf - -C ${launchDir}"]
+            def busco_proc = busco_command.execute()
+            busco_proc.waitFor()
+
+            if (busco_proc.exitValue() != 0) {
+                throw new RuntimeException("Error - failed to download Busco mock db: ${busco_proc.err.text}")
+            }
+        }
+
         when {
             params {
-                outdir = "$outputDir"
+                outdir     = "$outputDir"
+                lineage_db = "${launchDir}/genomenote.GCA_963859965.1.2025-12-08"
             }
         }
 
@@ -17,17 +30,42 @@ nextflow_pipeline {
             def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
             // stable_content: All files in ${params.outdir}/ with stable content
             def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+
+            def resolvePath = { pattern ->
+                def matches = getAllFilesFromDir(params.outdir, include: [pattern])
+                assert matches && matches.size() == 1 : "Expected exactly one match for pattern '${pattern}', found ${matches?.size() ?: 0}"
+                matches[0]
+            }
+
+            // BUSCO results information
+            def busco_short_txt = file("${resolvePath('busco/**/*short_summary.txt')}")
+                                            .readLines()[8]
+            def busco_short_json = file("${resolvePath('busco/**/*short_summary.json')}")
+                                            .readLines()[58..81]
             assert workflow.success
             assertAll(
                 { assert snapshot(
+                    // Number of successful tasks
+                    workflow.trace.succeeded().size(),
+
                     // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
                     removeNextflowVersion("$outputDir/pipeline_info/genomenote_software_mqc_versions.yml"),
                     // All stable path name, with a relative path
                     stable_path,
+
+                    busco_short_txt,
+                    busco_short_json,
+
                     // All files with stable contents
                     stable_content
+
                 ).match() }
             )
         }
+
+        cleanup {
+            new File("${launchDir}/GCA_963859965.1.2025-12-08").deleteDir()
+        }
+
     }
 }

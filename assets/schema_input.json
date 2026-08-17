@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/sanger-tol/genomenote/master/assets/schema_input.json",
+    "$id": "https://raw.githubusercontent.com/sanger-tol/genomenote/main/assets/schema_input.json",
     "title": "sanger-tol/genomenote pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
     "type": "array",
@@ -9,25 +9,26 @@
         "properties": {
             "sample": {
                 "type": "string",
-                "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "description": "Sample identifier",
+                "pattern": "^[^\\s/]+(?:/[^\\s/]+)?$",
+                "errorMessage": "Sample name must be formatted as 'specimen' or 'specimen/run' and cannot contain spaces",
                 "meta": ["id"]
             },
-            "fastq_1": {
+            "datatype": {
                 "type": "string",
-                "format": "file-path",
-                "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "pattern": "^\\S+$",
+                "enum": ["hic", "pacbio", "10x", "haplotype", "genes"],
+                "errorMessage": "Data type must be one of: hic, pacbio, 10x, haplotype, genes",
+                "meta": ["datatype"]
             },
-            "fastq_2": {
+            "datafile": {
                 "type": "string",
-                "format": "file-path",
+                "format": "path",
                 "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "pattern": "^\\S+$",
+                "errorMessage": "Data path for reads or kmer must be provided and cannot contain spaces"
             }
         },
-        "required": ["sample", "fastq_1"]
+        "required": ["sample", "datatype", "datafile"]
     }
 }
