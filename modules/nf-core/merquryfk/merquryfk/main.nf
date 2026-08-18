@@ -3,12 +3,12 @@ process MERQURYFK_MERQURYFK {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/3f/3fefda33017e34e77a61dd82f8a2884414cdcb222269d9ca72a543bfeb4604b6/data' :
-        'community.wave.seqera.io/library/fastk_merquryfk_r-argparse_r-cowplot_pruned:d61b120497d4185b' }"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/fb/fb9dbdf098779f2b84401de5e6e8569dd9120018a47b92126876260a0bb621a6/data'
+        : 'community.wave.seqera.io/library/merquryfk:1.2--5ac50fb470d146e0' }"
 
     input:
-    tuple val(meta) , path(fastk_hist), path(fastk_ktab), path(assembly), path(haplotigs)
+    tuple val(meta) , path(fastk_hist), path(fastk_ktab), path(assembly), path(haplotigs, arity:'0..*')
     tuple val(meta2), path(mathaptab) // optional, trio mode
     tuple val(meta3), path(pathaptab) // optional, trio mode
 
@@ -21,9 +21,9 @@ process MERQURYFK_MERQURYFK {
     tuple val(meta), path("${prefix}.phased_block.stats")         , emit: phased_block_stats, optional: true
     tuple val(meta), path("*.{pdf,png}")                          , emit: images, optional: true
     // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
-    tuple val("${task.process}"), val('merquryfk'), eval('echo 1.2'), emit: versions_merquryfk, topic: versions
+    tuple val("${task.process}"), val('merquryfk'), val('1.2'), emit: versions_merquryfk, topic: versions
     // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
-    tuple val("${task.process}"), val('fastk'), eval('echo 1.2'), emit: versions_fastk, topic: versions
+    tuple val("${task.process}"), val('fastk'), val('1.2'), emit: versions_fastk, topic: versions
     tuple val("${task.process}"), val('R'), eval('R --version | sed "1!d; s/.*version //; s/ .*//"'), emit: versions_r, topic: versions
 
     when:
@@ -36,19 +36,33 @@ process MERQURYFK_MERQURYFK {
 
     def args        = task.ext.args ?: ''
     prefix          = task.ext.prefix ?: "${meta.id}"
-    def fk_ktab     = fastk_ktab ? "${fastk_ktab.find{ path -> path.toString().endsWith(".ktab") }}" : ''
-    def mat_hapktab = mathaptab  ? "${mathaptab.find{ path -> path.toString().endsWith(".ktab") }}"  : ''
-    def pat_hapktab = pathaptab  ? "${pathaptab.find{ path -> path.toString().endsWith(".ktab") }}"  : ''
+    def fk_ktab     = fastk_ktab ? "${fastk_ktab.find { path -> path.toString().endsWith(".ktab") }}" : ''
+    def mat_hapktab = mathaptab  ? "${mathaptab.find { path -> path.toString().endsWith(".ktab") }}"  : ''
+    def pat_hapktab = pathaptab  ? "${pathaptab.find { path -> path.toString().endsWith(".ktab") }}"  : ''
+
+    // Concatenate multiple haps if provided into a "pseudo" second haplotype for polyploid genome assessment
+    def concatenate_haps = haplotigs.size() > 1
+    if(concatenate_haps && haplotigs.collect { hap -> hap.getExtension() }.unique().size() > 1) {
+        error("Error: Multiple haplotigs with different extensions found!")
+    }
+    def concat_out = haplotigs ? "temp.${haplotigs[0].getExtension() == 'gz' ? haplotigs[0].getName().split('\\.')[-2..-1].join('.') : haplotigs[0].getExtension()}" : ""
+    def concat_command = concatenate_haps ? "cat ${haplotigs} > ${concat_out}" : ""
+    def cleanup_command = concatenate_haps ? "rm ${concat_out}" : ""
+    def hap_input = haplotigs && concatenate_haps ? "${concat_out}" : haplotigs
     """
+    ${concat_command}
+
     MerquryFK \\
-        $args \\
+        ${args} \\
         -T$task.cpus \\
         ${fk_ktab} \\
         ${mat_hapktab} \\
         ${pat_hapktab} \\
-        $assembly \\
-        $haplotigs \\
-        $prefix
+        ${assembly} \\
+        ${hap_input} \\
+        ${prefix}
+
+    ${cleanup_command}
     """
 
     stub:

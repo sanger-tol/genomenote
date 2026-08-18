@@ -23,7 +23,7 @@ workflow GENOME_STATISTICS {
     busco_db // channel: /path/to/buscoDB
     pacbio // channel: [ meta, kmer_db or reads ]
     flagstat // channel: [ meta, flagstat ]
-    haplotype // channel: [ meta, fasta ]
+    haplotype // channel, value: list of [ meta, fasta ]
 
     main:
     ch_versions = channel.empty()
@@ -181,8 +181,8 @@ workflow GENOME_STATISTICS {
     ch_merq = ch_combo
         .mix(ch_grab)
         .combine(genome)
-        .combine(haplotype.ifEmpty([[], []]))
-        .map { meta, hist, ktab, meta2, fasta, _meta3, hap_fasta ->
+        .combine(haplotype.map { l -> [l] })
+        .map { meta, hist, ktab, meta2, fasta, hap_fasta ->
             [meta + [genome_size: meta2.genome_size, max_length: meta2.max_length], hist, ktab, fasta, hap_fasta]
         }
 
