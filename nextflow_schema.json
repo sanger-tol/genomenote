@@ -70,7 +70,7 @@
                     "description": "Override the BUSCO database used for the assembly assessment.",
                     "pattern": "._odb(10|12)$"
                 },
-                "select_contact_map": {
+                "contact_map_format": {
                     "type": "string",
                     "description": "Select which contact maps should be generated, higlass, pretext or both",
                     "enum": ["higlass", "pretext", "both"],

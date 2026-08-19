@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | --biosample_wgs            | --biosample_accession_wgs     |
 | --lineage_tax_ids          | --busco_taxid_lineage_mapping |
 | --assembly                 | --assembly_accession          |
+| --select_contact_map       | --contact_map_format          |
 |                            | --btk_image_format            |
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
