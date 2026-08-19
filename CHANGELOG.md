@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Language fixes to comply with the upcoming strict syntax
 - Pipeline template upgraded to nf-core 4.1.0
 - Slack / Teams functionality now moved to Nextflow plugins ([nf-slack](https://github.com/seqeralabs/nf-slack), [nf-teams](https://github.com/nvnieuwk/nf-teams))
-- Addition of the `--image_format` flag to change the output format of `blobtk/plot`
+- Addition of the `--btk_image_format` flag to change the output format of `blobtk/plot`
   - Options are `png` or `svg`
 - Updated samplesheet handling to support `sample` values in `specimen/run` format
 - Annotation input is now provided via the samplesheet instead of `--annotation_set` (see [usage.md](docs/usage.md))
@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | --biosample_wgs            | --biosample_accession_wgs     |
 | --lineage_tax_ids          | --busco_taxid_lineage_mapping |
 | --assembly                 | --assembly_accession          |
+|                            | --btk_image_format            |
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 
