@@ -38,7 +38,7 @@ workflow CONTACT_MAPS {
     //
     // SUBWORKFLOW: GENERATE THE HIGLASS FILES AND UPLOAD DEPENDING ON USER INPUT
     //
-    if (contact_map_format == "higlass" || contact_map_format == "both") {
+    if (contact_map_format in ["higlass", "all", "both"]) {
         HIGLASS_GENERATION(
             SAMTOOLS_VIEW.out.bam,
             GET_CHROMLIST.out.list,
@@ -59,7 +59,7 @@ workflow CONTACT_MAPS {
     //
     // SUBWORKFLOW: GENERATE PRETEXT SNAPSHOT FILES
     //
-    if (contact_map_format == "pretext" || contact_map_format == "both") {
+    if (contact_map_format in ["pretext", "all", "both"]) {
         PRETEXT_GENERATION(
             genome,
             SAMTOOLS_VIEW.out.bam,
