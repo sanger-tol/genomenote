@@ -92,12 +92,12 @@ ensembl.2024_04,genes,/path/to/annotation.gff3.gz
 
 Here are the expected data files for each data type:
 
-| `datatype`         | `datafile`                                                     |
-| ------------------ | -------------------------------------------------------------- |
-| `hic`              | Either `bam` or `cram` aligned reads                           |
-| `pacbio` and `10x` | Either the FASTK `kmer` directory or the unaligned `bam` files |
-| `haplotype`        | The Fasta file of the alternative haplotype                    |
-| `genes`            | Annotation `gff3`/`gff3.gz` file (maximum one row)             |
+| `datatype`         | `datafile`                                                                       |
+| ------------------ | -------------------------------------------------------------------------------- |
+| `hic`              | Either `bam` or `cram` aligned reads                                             |
+| `pacbio` and `10x` | Either the FASTK `kmer` directory or the unaligned `bam` files                   |
+| `haplotype`        | The Fasta file of an alternative haplotype. Can be repeated in case of polyploid |
+| `genes`            | Annotation `gff3`/`gff3.gz` file (maximum one row)                               |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 

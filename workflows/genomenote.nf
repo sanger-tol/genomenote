@@ -79,16 +79,6 @@ workflow GENOMENOTE {
     }
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
-    // Currently we only expect to see ONE haplotype so make this a constraint
-    ch_inputs.haplotype
-        .map { _meta, haplotype -> haplotype }
-        .collect()
-        .map { haplotype_tuples ->
-            if (haplotype_tuples.size() > 1) {
-                error("Multiple haplotype files detected (${haplotype_tuples}) and is not yet supported. Please only provide one haplotype file")
-            }
-        }
-
 
     //
     // MODULE: Unzip the input haplotype if zipped
@@ -101,12 +91,11 @@ workflow GENOMENOTE {
     GUNZIP_HAPLOTYPE(
         ch_haplotype.gzipped
     )
-    ch_unzipped = GUNZIP_HAPLOTYPE.out.gunzip
+    ch_haplotypes = GUNZIP_HAPLOTYPE.out.gunzip
+        .mix(ch_haplotype.unzipped)
+        .map { _meta, fasta -> fasta }
+        .toList()
 
-    //
-    // NOTE: Mix the unzipped haplotype with the original zipped haplotypes - this exists as a prelude to multi-haplotype support
-    //
-    ch_haplotype = ch_unzipped.mix(ch_haplotype.unzipped)
 
     //
     // MODULE: Uncompress fasta file if needed and set meta based on input params
@@ -168,7 +157,7 @@ workflow GENOMENOTE {
         busco_db,
         ch_inputs.pacbio,
         ch_flagstat,
-        ch_haplotype,
+        ch_haplotypes,
     )
     ch_versions = ch_versions.mix(GENOME_STATISTICS.out.versions)
 
