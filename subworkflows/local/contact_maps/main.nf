@@ -14,7 +14,7 @@ workflow CONTACT_MAPS {
     summary_seq // channel: [ meta, summary ]
     cool_bin // channel: val(cooler_bins)
     cooler_seq_order // path: /path/to/file
-    select_contact_map // params.select_contact_map
+    contact_map_format // params.contact_map_format
 
     main:
     ch_versions = channel.empty()
@@ -38,7 +38,7 @@ workflow CONTACT_MAPS {
     //
     // SUBWORKFLOW: GENERATE THE HIGLASS FILES AND UPLOAD DEPENDING ON USER INPUT
     //
-    if (select_contact_map == "higlass" || select_contact_map == "both") {
+    if (contact_map_format in ["higlass", "all", "both"]) {
         HIGLASS_GENERATION(
             SAMTOOLS_VIEW.out.bam,
             GET_CHROMLIST.out.list,
@@ -59,7 +59,7 @@ workflow CONTACT_MAPS {
     //
     // SUBWORKFLOW: GENERATE PRETEXT SNAPSHOT FILES
     //
-    if (select_contact_map == "pretext" || select_contact_map == "both") {
+    if (contact_map_format in ["pretext", "all", "both"]) {
         PRETEXT_GENERATION(
             genome,
             SAMTOOLS_VIEW.out.bam,

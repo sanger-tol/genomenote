@@ -183,7 +183,7 @@ workflow GENOMENOTE {
         GENOME_STATISTICS.out.summary_seq,
         channel.of(params.cooler_bin_size),
         cooler_seq_order,
-        params.select_contact_map,
+        params.contact_map_format ?: params.select_contact_map,
     )
     ch_versions = ch_versions.mix(CONTACT_MAPS.out.versions)
 

@@ -70,11 +70,11 @@
                     "description": "Override the BUSCO database used for the assembly assessment.",
                     "pattern": "._odb(10|12)$"
                 },
-                "select_contact_map": {
+                "contact_map_format": {
                     "type": "string",
-                    "description": "Select which contact maps should be generated, higlass, pretext or both",
-                    "enum": ["higlass", "pretext", "both"],
-                    "default": "both"
+                    "description": "Select which contact maps should be generated, higlass, pretext, or all",
+                    "enum": ["higlass", "pretext", "both", "all"],
+                    "default": "all"
                 },
                 "btk_location": {
                     "type": "string",
@@ -130,7 +130,7 @@
                     "help_text": "Set this parameter if you have a genome note template file that you wish to populate. Templates may be docx or xml files",
                     "fa_icon": "fas fa-folder-open"
                 },
-                "image_format": {
+                "btk_image_format": {
                     "type": "string",
                     "enum": ["png", "svg"],
                     "description": "Select the format of the output images.",
