@@ -40,8 +40,12 @@ workflow SANGERTOL_GENOMENOTE {
     //
     // WORKFLOW: Run pipeline
     //
-    GENOMENOTE(
+    GENOMENOTE (
         samplesheet,
+        params.multiqc_config,
+        params.multiqc_logo,
+        params.multiqc_methods_description,
+        params.outdir,
         metadata,
         busco_db,
         ancestral_table,
@@ -96,7 +100,6 @@ workflow {
         params.plaintext_email,
         params.outdir,
         params.monochrome_logs,
-        params.hook_url,
-        SANGERTOL_GENOMENOTE.out.multiqc_report,
+        SANGERTOL_GENOMENOTE.out.multiqc_report
     )
 }

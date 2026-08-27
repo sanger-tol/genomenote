@@ -10,6 +10,7 @@ lint:
   files_unchanged:
     - LICENSE
     - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/ISSUE_TEMPLATE/config.yml
     - lib/NfcoreTemplate.groovy
     - assets/email_template.html
     - .github/CONTRIBUTING.md
@@ -23,7 +24,7 @@ lint:
     - manifest.name
     - manifest.homePage
   template_strings: false
-nf_core_version: 3.5.2
+nf_core_version: 4.1.0
 repository_type: pipeline
 template:
   author: "@priyanka-surana"

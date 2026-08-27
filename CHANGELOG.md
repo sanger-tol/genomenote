@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Enhancements & fixes
 
 - Language fixes to comply with the upcoming strict syntax
-- Pipeline template upgraded to nf-core 3.5.2
+- Pipeline template upgraded to nf-core 4.1.0
+- Slack / Teams functionality now moved to Nextflow plugins ([nf-slack](https://github.com/seqeralabs/nf-slack), [nf-teams](https://github.com/nvnieuwk/nf-teams))
 - Addition of the `--image_format` flag to change the output format of `blobtk/plot`
   - Options are `png` or `svg`
 - Updated samplesheet handling to support `sample` values in `specimen/run` format
