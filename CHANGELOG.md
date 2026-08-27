@@ -3,6 +3,68 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[3.0.0](https://github.com/sanger-tol/genomenote/releases/tag/3.0.0)] - Standard Poodle [2026-08-18]
+
+### Enhancements & fixes
+
+- Language fixes to comply with the upcoming strict syntax
+- Pipeline template upgraded to nf-core 4.1.0
+- Slack / Teams functionality now moved to Nextflow plugins ([nf-slack](https://github.com/seqeralabs/nf-slack), [nf-teams](https://github.com/nvnieuwk/nf-teams))
+- Addition of the `--btk_image_format` flag to change the output format of `blobtk/plot`
+  - Options are `png` or `svg`
+- Updated samplesheet handling to support `sample` values in `specimen/run` format
+- Annotation input is now provided via the samplesheet instead of `--annotation_set` (see [usage.md](docs/usage.md))
+- Added support for PacBio k-mer directories provided as `tar.gz` archives
+- Updated output structure (see [output.md](docs/output.md))
+- Removed the `--write_to_portal` and `--genome_notes_api` options as the
+  Genome Note platform is now expected to _pull_ data from the Genome
+  After-Party.
+- Renamed parameters for consistency with the other Genome After-Party pipelines.
+- Removed the option to upload the Cooler contact map to a Kubernetes-hosted HiGlass server
+  as this had no more use.
+- Now supports multiple alternative haplotypes, i.e. polyploid assemblies.
+
+### Parameters
+
+| Old parameter              | New parameter                 |
+| -------------------------- | ----------------------------- |
+| --annotation_set           |                               |
+| --write_to_portal          |                               |
+| --genome_notes_api         |                               |
+| --upload_higlass_data      |                               |
+| --higlass_url              |                               |
+| --higlass_deployment_name  |                               |
+| --higlass_namespace        |                               |
+| --higlass_kubeconfig       |                               |
+| --higlass_upload_directory |                               |
+| --higlass_data_project_dir |                               |
+| --lineage_db               | --busco_db                    |
+| --cool_order               | --cooler_seq_order            |
+| --binsize                  | --cooler_bin_size             |
+| --biosample_wgs            | --biosample_accession_wgs     |
+| --lineage_tax_ids          | --busco_taxid_lineage_mapping |
+| --assembly                 | --assembly_accession          |
+| --select_contact_map       | --contact_map_format          |
+|                            | --btk_image_format            |
+
+> **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency | Old version                                | New version |
+| ---------- | ------------------------------------------ | ----------- |
+| cooler     | 0.10.2                                     | 0.10.3      |
+| FastK      | `ddea6cf254f378db51d22c6eb21af775fa9e1f77` | 1.2         |
+| MerquryFK  | 1.1.2                                      | 1.2         |
+| R          | 4.4.3                                      | 4.2.3       |
+| Histex     | 1.1                                        | 1.2         |
+| gunzip     | 1.1                                        | 1.13        |
+| tar        |                                            | 1.34        |
+
+> **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
+
 ## [[2.2.0](https://github.com/sanger-tol/genomenote/releases/tag/2.2.0)] - German Doberman [2026-01-30]
 
 ### Enhancements & fixes
@@ -67,6 +129,8 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | MultiQC               | 1.25.1      | 1.32                        |
 | samtools              |             | 1.21                        |
 
+> **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
+
 ## [[1.2.6](https://github.com/sanger-tol/insdcdownload/releases/tag/1.2.6)] - Pyrenean Mountain Dog (patch 6) - [2025-07-24]
 
 ### Enhancements & fixes
@@ -84,6 +148,8 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | datasets   | 15.12.0     | 16.22.1                                  |
 | fastk      | 1.2         | ddea6cf254f378db51d22c6eb21af775fa9e1f77 |
 | merquryfk  | 1.2         | 4578fc778098859d78cab5e4b78b27b9a9dd10a4 |
+
+> **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
 
 ## [[2.1.1](https://github.com/sanger-tol/genomenote/releases/tag/2.1.1)] - Pembroke Welsh Corgi (patch 1) [2025-03-19]
 
@@ -194,6 +260,8 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 |               | --higlass_upload_directory |
 |               | --higlass_data_project_dir |
 
+> **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
+
 ## [[1.2.2](https://github.com/sanger-tol/genomenote/releases/tag/1.2.2)] - Pyrenean Mountain Dog (patch 2) - [2024-09-10]
 
 ### Enhancements & fixes
@@ -236,6 +304,8 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | Old parameter | New parameter |
 | ------------- | ------------- |
 |               | --cool_order  |
+
+> **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 
 ## [[1.1.2](https://github.com/sanger-tol/genomenote/releases/tag/1.1.2)] - Golden Retriever (patch 2) - [2024-04-29]
 
@@ -295,6 +365,8 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 |               | --lineage_tax_ids      |
 |               | --use_work_dir_as_temp |
 
+> **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
+
 ### Software dependencies
 
 | Dependency  | Old version                                | New version                                |
@@ -302,6 +374,8 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | `datasets`  | 14.2                                       | 15.12                                      |
 | `FastK`     | `f18a4e6d2207539f7b84461daebc54530a9559b0` | `427104ea91c78c3b8b8b49f1a7d6bbeaa869ba1c` |
 | `MerquryFK` | `8ae344092df5dcaf83cfb7f90f662597a9b1fc61` | `d00d98157618f4e8d1a9190026b19b471055b22e` |
+
+> **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
 
 ## [[1.0.0](https://github.com/sanger-tol/genomenote/releases/tag/1.0.0)] - Czechoslovakian Wolfdog - [2023-05-18]
 

@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "assembly", "binsize", "kmer_size", "outdir"],
+            "required": ["input", "assembly_accession", "cooler_bin_size", "kmer_size", "outdir"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -35,7 +35,7 @@
                     "description": "The busco lineage used for ancestral painting (must match --ancestral_table).",
                     "pattern": "._odb1[02]$"
                 },
-                "binsize": {
+                "cooler_bin_size": {
                     "type": "integer",
                     "default": 1000,
                     "description": "Bin size in base pairs for cooler cload"
@@ -45,22 +45,22 @@
                     "default": 31,
                     "description": "Size for Fastk to create the k-mer library"
                 },
-                "assembly": {
+                "assembly_accession": {
                     "type": "string",
                     "description": "The Genbank assembly accession for the assembly, for example: GCA_922984935.2.",
                     "pattern": "GCA_[0-9]*?.[0-9]"
                 },
-                "biosample_wgs": {
+                "biosample_accession_wgs": {
                     "type": "string",
                     "description": "The biosample accesion(s) linked to the WGS samples in the experiment, for example: SAMEA7520803.",
                     "pattern": "[SAM@(D|E|N)?(A|G)[0-9]*]"
                 },
-                "biosample_rna": {
+                "biosample_accession_rna": {
                     "type": "string",
                     "description": "The biosample accesion(s) linked to the RNA samples in the experiment, for example: SAMEA7521081.",
                     "pattern": "[SAM@(D|E|N)?(E|A|G)[0-9]*]"
                 },
-                "biosample_hic": {
+                "biosample_accession_hic": {
                     "type": "string",
                     "description": "The biosample accesion(s) linked to the Hi-C samples in the experiment, for example: SAMEA7520846.",
                     "pattern": "[SAM@(D|E|N)?(A|G)[0-9]*]"
@@ -70,11 +70,11 @@
                     "description": "Override the BUSCO database used for the assembly assessment.",
                     "pattern": "._odb(10|12)$"
                 },
-                "select_contact_map": {
+                "contact_map_format": {
                     "type": "string",
-                    "description": "Select which contact maps should be generated, higlass, pretext or both",
-                    "enum": ["higlass", "pretext", "both"],
-                    "default": "both"
+                    "description": "Select which contact maps should be generated, higlass, pretext, or all",
+                    "enum": ["higlass", "pretext", "both", "all"],
+                    "default": "all"
                 },
                 "btk_location": {
                     "type": "string",
@@ -94,6 +94,13 @@
                     "fa_icon": "fas fa-folder-open",
                     "default": "results"
                 },
+                "merge_output": {
+                    "type": "string",
+                    "default": "merge",
+                    "pattern": "^[A-Za-z0-9._-]+$",
+                    "description": "Non-empty string used as the suffix and output directory name for merged data files",
+                    "help_text": "Defines the suffix added to merged file names and name of output directory when multiple read files that share the same specimen are merged. Allowed characters are letters, numbers, dot (.), underscore (_), and hyphen (-)."
+                },
                 "email": {
                     "type": "string",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
@@ -106,7 +113,7 @@
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
                 },
-                "cool_order": {
+                "cooler_seq_order": {
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
@@ -114,18 +121,6 @@
                     "description": "Path to a file that contains the sequence names in the order you want to represent them on the contact-map.",
                     "help_text": "If not specified, the pipeline will use the sequences in the same order they are listed by the NCI, which follows the karyotype.",
                     "fa_icon": "fas fa-file-lines"
-                },
-                "write_to_portal": {
-                    "type": "boolean",
-                    "description": "Flag to control if results are written to genome notes portal database .",
-                    "default": false,
-                    "fa_icon": "fas far fa-file-code",
-                    "hidden": true
-                },
-                "genome_notes_api": {
-                    "type": "string",
-                    "description": "URL for Genome Notes Portal API .",
-                    "fa_icon": "far fa-file-code"
                 },
                 "note_template": {
                     "type": "string",
@@ -135,67 +130,12 @@
                     "help_text": "Set this parameter if you have a genome note template file that you wish to populate. Templates may be docx or xml files",
                     "fa_icon": "fas fa-folder-open"
                 },
-                "annotation_set": {
+                "btk_image_format": {
                     "type": "string",
-                    "format": "file-path",
-                    "exists": true,
-                    "mimetype": "text/plain",
-                    "pattern": "^(?:[\\w/]+/)?\\S+\\.gff3?(?:\\.gz)?$",
-                    "description": "Path to annotation file :gff.",
-                    "help_text": "You will need to specify the path to the annotation file as eith gff or gff.gz.",
-                    "fa_icon": "fas fa-file-code"
-                }
-            }
-        },
-        "higlass": {
-            "title": "HiGlass options",
-            "type": "object",
-            "fa_icon": "fas fa-magnifying-glass",
-            "description": "Define if and how to upload the contact map to a HiGlass server.",
-            "properties": {
-                "upload_higlass_data": {
-                    "type": "boolean",
-                    "description": "flag to control if HiGlass server should be updated to add new files",
-                    "default": false,
-                    "fa_icon": "fas far fa-file-code",
-                    "hidden": true
-                },
-                "higlass_url": {
-                    "type": "string",
-                    "description": "URL for the HiGlass server",
-                    "hidden": true
-                },
-                "higlass_upload_directory": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "description": "The ingress directory for the kubernetes cluster running the HiGlass server.",
-                    "fa_icon": "fas fa-folder-open",
-                    "hidden": true
-                },
-                "higlass_data_project_dir": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "description": "Subdirectory struture to use for organising HiGlass data, suggested format is <project_name>/<taxon_group> e.g. '/asg/algae'",
-                    "fa_icon": "fas fa-folder-open",
-                    "hidden": true
-                },
-                "higlass_kubeconfig": {
-                    "type": "string",
-                    "format": "file-path",
-                    "exists": true,
-                    "description": "The path to the kubeconfig  for the kubernetes cluster running the HiGlass server.",
-                    "fa_icon": "fas fa-folder-open",
-                    "hidden": true
-                },
-                "higlass_deployment_name": {
-                    "type": "string",
-                    "description": "Name of the kubernetes deployment for the HiGlass server.",
-                    "hidden": true
-                },
-                "higlass_namespace": {
-                    "type": "string",
-                    "description": "The name for the namespace used in the Kubernetes cluster running the HiGlass server.",
-                    "hidden": true
+                    "enum": ["png", "svg"],
+                    "description": "Select the format of the output images.",
+                    "fa_icon": "fas fa-image",
+                    "default": "png"
                 }
             }
         },
@@ -222,15 +162,15 @@
             "type": "object",
             "fa_icon": "fas fa-database",
             "description": "Define where the pipeline should find databases.",
-            "required": ["fasta", "lineage_tax_ids"],
+            "required": ["fasta", "busco_taxid_lineage_mapping"],
             "properties": {
-                "lineage_db": {
+                "busco_db": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "Local directory where clade-specific BUSCO lineage datasets are stored.",
                     "fa_icon": "fas fa-folder-open"
                 },
-                "lineage_tax_ids": {
+                "busco_taxid_lineage_mapping": {
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
@@ -353,13 +293,6 @@
                     "fa_icon": "fas fa-palette",
                     "hidden": true
                 },
-                "hook_url": {
-                    "type": "string",
-                    "description": "Incoming hook URL for messaging service",
-                    "fa_icon": "fas fa-people-group",
-                    "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
-                    "hidden": true
-                },
                 "multiqc_config": {
                     "type": "string",
                     "format": "file-path",
@@ -417,9 +350,6 @@
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
-        },
-        {
-            "$ref": "#/$defs/higlass"
         },
         {
             "$ref": "#/$defs/reference_genome_options"
