@@ -16,8 +16,8 @@ def parse_args(args=None):
     parser.add_argument("--genome", required=True, help="Input NCBI genome summary JSON file.")
     parser.add_argument("--sequence", required=True, help="Input NCBI sequence summary JSON file.")
     parser.add_argument("--busco", help="Input BUSCO short summary JSON file.")
-    parser.add_argument("--qv", nargs="*", help="Input QV TSV file from MERQURYFK.")
-    parser.add_argument("--completeness", nargs="*", help="Input COMPLETENESS stats TSV file from MERQURYFK.")
+    parser.add_argument("--qv", action="append", help="Input QV TSV file from MERQURYFK.")
+    parser.add_argument("--completeness", action="append", help="Input COMPLETENESS stats TSV file from MERQURYFK.")
     parser.add_argument("--hic", action="append", help="HiC sample ID used for contact maps.")
     parser.add_argument("--flagstat", action="append", help="HiC flagstat file created by Samtools.")
     parser.add_argument("--outcsv", required=True, help="Output CSV file.")
@@ -169,36 +169,37 @@ def extract_pacbio(qv, completeness, writer):
     completeness (list): List of paths to completeness stats TSV files.
     writer (csv.writer): CSV writer object to write the extracted data.
     """
-    qval = 0
-    qv_name = None
+    qvals = {}
     for f in qv:
         with open(f, "r") as fin:
             data = csv.DictReader(fin, delimiter="\t")
             for row in data:
-                if float(row["QV"]) > qval:
-                    qval = float(row["QV"])
-                    qv_name = remove_sample_T_suffix(os.path.basename(f).removesuffix(".qv"))
-    assert qv_name is not None, "No QV values found in %s" % qv
+                qv = float(row["QV"])
+                qv_name = remove_sample_T_suffix(os.path.basename(f).removesuffix(".qv"))
+                if qv_name in qvals and qv < qvals[qv_name]:
+                    continue
+                qvals[qv_name] = qv
+    assert qvals, f"No QV values found in {qv}"
 
     # The completeness has to be from the same specimen as the QV value
-    matching_completeness_files = []
+    completeness_files = {}
     for h in completeness:
         comp_name = remove_sample_T_suffix(os.path.basename(h).removesuffix(".completeness.stats"))
-        if comp_name == qv_name:
-            matching_completeness_files.append(h)
-    assert matching_completeness_files, "No completeness files (%s) match for %s" % (completeness, qv_name)
+        if comp_name in qvals:
+            completeness_files[comp_name] = h
+    assert completeness_files.keys() == qvals.keys(), "Mismatch between QV names (%s) and completeness files (%s)" % (qv, completeness)
 
-    comp = None
-    for h in matching_completeness_files:
-        with open(h, "r") as fin:
+    for sample_name in sorted(qvals):
+        with open(completeness_files[sample_name], "r") as fin:
             data = csv.DictReader(fin, delimiter="\t")
+            comp = None
             for row in data:
                 comp = float(row["% Covered"])
-    assert comp is not None, "No completeness values found in %s" % matching_completeness_files
+            assert comp is not None, f"No completeness values found in {h}"
 
-    writer.writerow(["##MerquryFK", qv_name])
-    writer.writerow(["QV", qval])
-    writer.writerow(["Completeness", comp])
+            writer.writerow(["##MerquryFK", sample_name])
+            writer.writerow(["QV", qvals[sample_name]])
+            writer.writerow(["Completeness", comp])
 
 
 def extract_mapped(sample, file_in, writer):

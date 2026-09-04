@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed the option to upload the Cooler contact map to a Kubernetes-hosted HiGlass server
   as this had no more use.
 - Now supports multiple alternative haplotypes, i.e. polyploid assemblies.
+- Now supports outputting QV and completeness scores for multiple samples
 
 ### Parameters
 
