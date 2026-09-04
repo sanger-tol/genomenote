@@ -207,7 +207,6 @@ workflow GENOME_STATISTICS {
 
     ch_busco = BUSCO.out.short_summaries_json.ifEmpty([[], []])
 
-    // This is only temporarily removed so I'm leaving it here for now
     ch_merqury = MERQURYFK_MERQURYFK.out.qv
         .join(MERQURYFK_MERQURYFK.out.stats)
         .map { meta, qv, comp -> [meta + [id: "merq"], qv, comp] }
