@@ -10,8 +10,8 @@ process CREATETABLE {
     input:
     tuple val(meta), path(genome_summary), path(sequence_summary)
     tuple val(meta1), path(busco)
-    tuple val(meta2), path(qv), path(completeness)
-    tuple val(meta3s), path(flagstats, stageAs: "?/*")
+    tuple val(meta2s), path(qv, stageAs: "qv/?/*"), path(completeness, stageAs: "completeness/?/*")
+    tuple val(meta3s), path(flagstats, stageAs: "flagstats/?/*")
 
     output:
     tuple val(meta), path("*.csv"), emit: csv
@@ -26,8 +26,8 @@ process CREATETABLE {
     def gen = genome_summary ? "--genome ${genome_summary}" : ""
     def seq = sequence_summary ? "--sequence ${sequence_summary}" : ""
     def bus = busco ? "--busco ${busco}" : ""
-    def mqv = qv ? "--qv ${qv}" : ""
-    def mco = completeness ? "--completeness ${completeness}" : ""
+    def mqv = qv.collect {  path -> "--qv " + path }.join(' ')
+    def mco = completeness.collect {  path -> "--completeness " + path }.join(' ')
     def hic = meta3s.collect { flagstat_meta -> "--hic " + flagstat_meta.id }.join(' ')
     def fst = flagstats.collect { path -> "--flagstat " + path }.join(' ')
     """
