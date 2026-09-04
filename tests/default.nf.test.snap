@@ -316,9 +316,9 @@
                 "GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.pretext.png:md5,198a4106e7c896ff378651f9acdc913e",
                 "GCA_963859965.1.genes.ensembl.2024_04.agat.spstats.stats.txt:md5,f94eb9364290e6d3eabe084c67ce9198",
                 "GCA_963859965.1.genes.ensembl.2024_04.agat.sqstats.stats.txt:md5,a7fe991f7434cd6f44b0cabd3802785f",
-                "GCA_963859965.1.genome_note_consistent.csv:md5,31c58a42c36bf99a7bec50e0e29ba473",
-                "GCA_963859965.1.genome_note_inconsistent.csv:md5,ba336957b84a2b78ae95ca6412bd50c7",
-                "GCA_963859965.1.template_parameters.csv:md5,c62f77ee35d05e19afc02f5fa042cc08",
+                "GCA_963859965.1.genome_note_consistent.csv:md5,bf96b627287a0b965c070b7c35191e89",
+                "GCA_963859965.1.genome_note_inconsistent.csv:md5,9dca32b76432f37c9ea64f9f64b54464",
+                "GCA_963859965.1.template_parameters.csv:md5,b971d6d04666d131b7ea7e9771ddfe4f",
                 "GCA_963859965.1.gfastats.txt:md5,edd4cdba05800960c0ca80378e1e5e9d",
                 "SOURCE.txt:md5,4b370a78b3333085c13ddef250b5dec4",
                 "GCA_963859965.1.pacbio.SAMEA112198456.merge.genomescope.linear_plot.png:md5,e0977c490b773d62f1dfa1553404275b",
@@ -407,7 +407,7 @@
                 "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.temp.spectra-cn.st.png:md5,646311368d550f135eec7e2c02d8b541"
             ]
         ],
-        "timestamp": "2026-08-19T11:50:31.030994632",
+        "timestamp": "2026-09-04T16:16:42.165868805",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.0"

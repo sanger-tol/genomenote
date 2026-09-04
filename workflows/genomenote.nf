@@ -94,7 +94,7 @@ workflow GENOMENOTE {
     ch_haplotypes = GUNZIP_HAPLOTYPE.out.gunzip
         .mix(ch_haplotype.unzipped)
         .map { _meta, fasta -> fasta }
-        .toList()
+        .toSortedList { fasta -> fasta.name }
 
 
     //
