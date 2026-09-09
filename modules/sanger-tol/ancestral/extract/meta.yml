@@ -48,7 +48,7 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*buscopainter_complete_location.tsv":
+      - "*_complete_location.tsv":
           type: file
           description: |
             TSV containing complete busco's thought to be ancestrally linked.
@@ -61,7 +61,7 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*buscopainter_duplicated_location.tsv":
+      - "*_duplicated_location.tsv":
           type: file
           description: |
             TSV containing duplicated busco's thought to be ancestrally linked.
@@ -74,7 +74,7 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*summary.tsv":
+      - "*_summary.tsv":
           type: file
           description: |
             TSV containing a complete summary of results.

@@ -1,18 +1,21 @@
 process NCBIDATASETS_SUMMARYGENOME {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     conda "conda-forge::ncbi-datasets-cli=16.22.1"
     container "docker.io/biocontainers/ncbi-datasets-cli:16.22.1_cv1"
 
-    errorStrategy { sleep(Math.pow(2, task.attempt) * 30 as long); return 'retry' }
+    errorStrategy {
+        sleep(Math.pow(2, task.attempt) * 30 as long)
+        return 'retry'
+    }
 
     input:
     tuple val(meta), path(fasta)
 
     output:
     tuple val(meta), path("*.json"), emit: summary
-    path "versions.yml"            , emit: versions
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when

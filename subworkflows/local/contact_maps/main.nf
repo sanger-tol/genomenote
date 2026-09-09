@@ -2,87 +2,83 @@
 // Prepare contact maps using aligned reads
 //
 
-include { GET_CHROMLIST           } from '../../../modules/local/ncbidatasets/get_chromlist'
-include { SAMTOOLS_VIEW           } from '../../../modules/nf-core/samtools/view/main'
-include { HIGLASS_GENERATION      } from '../higlass_generation/main'
-include { PRETEXT_GENERATION      } from '../pretext_generation/main'
+include { GET_CHROMLIST      } from '../../../modules/local/ncbidatasets/get_chromlist'
+include { SAMTOOLS_VIEW      } from '../../../modules/nf-core/samtools/view/main'
+include { HIGLASS_GENERATION } from '../higlass_generation/main'
+include { PRETEXT_GENERATION } from '../pretext_generation/main'
 
 workflow CONTACT_MAPS {
     take:
-    genome                                    // channel: [ meta, fasta ]
-    reads                                     // channel: [ meta, reads, [] ]
-    summary_seq                               // channel: [ meta, summary ]
-    cool_bin                                  // channel: val(cooler_bins)
-    cool_order                                // path: /path/to/file
-    select_contact_map                        // params.select_contact_map
-
+    genome // channel: [ meta, fasta, fai ]
+    reads // channel: [ meta, reads, [] ]
+    summary_seq // channel: [ meta, summary ]
+    cool_bin // channel: val(cooler_bins)
+    cooler_seq_order // path: /path/to/file
+    contact_map_format // params.contact_map_format
 
     main:
-    ch_versions     = Channel.empty()
+    ch_versions = channel.empty()
 
     // Extract the ordered chromosome list
-    GET_CHROMLIST (
+    GET_CHROMLIST(
         summary_seq,
-        cool_order.ifEmpty([])
+        cooler_seq_order.ifEmpty([]),
     )
-    ch_versions     = ch_versions.mix ( GET_CHROMLIST.out.versions.first() )
+    ch_versions = ch_versions.mix(GET_CHROMLIST.out.versions.first())
 
 
     // CRAM to BAM
-    SAMTOOLS_VIEW (
+    SAMTOOLS_VIEW(
         reads,
-        genome.first(),
-        []
+        genome.map { meta, fasta, _fai -> tuple(meta, fasta) }.first(),
+        [],
     )
-    ch_versions     = ch_versions.mix ( SAMTOOLS_VIEW.out.versions.first() )
+    ch_versions = ch_versions.mix(SAMTOOLS_VIEW.out.versions.first())
 
     //
     // SUBWORKFLOW: GENERATE THE HIGLASS FILES AND UPLOAD DEPENDING ON USER INPUT
     //
-    if ( select_contact_map == "higlass" || select_contact_map == "both" ) {
-        HIGLASS_GENERATION (
+    if (contact_map_format in ["higlass", "all", "both"]) {
+        HIGLASS_GENERATION(
             SAMTOOLS_VIEW.out.bam,
             GET_CHROMLIST.out.list,
             cool_bin,
         )
-        ch_versions = ch_versions.mix ( HIGLASS_GENERATION.out.versions.first() )
+        ch_versions = ch_versions.mix(HIGLASS_GENERATION.out.versions.first())
 
         cooler_file = HIGLASS_GENERATION.out.cool
-        mcool_file  = HIGLASS_GENERATION.out.mcool
-        grid_file   = HIGLASS_GENERATION.out.grid
-        link_file   = HIGLASS_GENERATION.out.link
-    } else {
-        cooler_file = Channel.empty()
-        mcool_file  = Channel.empty()
-        grid_file   = Channel.empty()
-        link_file   = Channel.empty()
+        mcool_file = HIGLASS_GENERATION.out.mcool
+        grid_file = HIGLASS_GENERATION.out.grid
+    }
+    else {
+        cooler_file = channel.empty()
+        mcool_file = channel.empty()
+        grid_file = channel.empty()
     }
 
     //
     // SUBWORKFLOW: GENERATE PRETEXT SNAPSHOT FILES
     //
-    if ( select_contact_map == "pretext" || select_contact_map == "both" ) {
-        PRETEXT_GENERATION (
+    if (contact_map_format in ["pretext", "all", "both"]) {
+        PRETEXT_GENERATION(
             genome,
-            GET_CHROMLIST.out.list,
-            SAMTOOLS_VIEW.out.bam
+            SAMTOOLS_VIEW.out.bam,
         )
-        ch_versions = ch_versions.mix ( PRETEXT_GENERATION.out.versions.first() )
+        ch_versions = ch_versions.mix(PRETEXT_GENERATION.out.versions.first())
 
         pretext_map = PRETEXT_GENERATION.out.pretext_map
         pretext_png = PRETEXT_GENERATION.out.pretext_png
-    } else {
-        pretext_map = Channel.empty()
-        pretext_png = Channel.empty()
+    }
+    else {
+        pretext_map = channel.empty()
+        pretext_png = channel.empty()
     }
 
-
     emit:
-    cool     = cooler_file      // tuple val(meta), val(cool_bin), path("*.cool")
-    mcool    = mcool_file       // tuple val(meta), path("*.mcool")
-    grid     = grid_file        // tuple val(meta), path("*.bedpe")
-    link     = link_file        // channel: [ *_higlass_link.csv]
-    ptxt_map = pretext_map      // tuple val(meta), path("*.pretext")
-    ptxt_png = pretext_png      // tuple val(meta), path("*.pretext")
-    versions = ch_versions      // channel: [ versions.yml ]
+    cool     = cooler_file // tuple val(meta), val(cool_bin), path("*.cool")
+    mcool    = mcool_file // tuple val(meta), path("*.mcool")
+    grid     = grid_file // tuple val(meta), path("*.bedpe")
+    ptxt_map = pretext_map // tuple val(meta), path("*.pretext")
+    ptxt_png = pretext_png // tuple val(meta), path("*.pretext")
+    versions = ch_versions // channel: [ versions.yml ]
 }

@@ -40,8 +40,6 @@ process ANCESTRAL_PLOT {
     """
 
     stub:
-    def args    = task.ext.args     ?: ''
-    def prefix  = task.ext.prefix   ?: "${meta.id}"
     """
     touch ${comp_location}_buscopainter.png
     touch ${comp_location}_buscopainter.pdf

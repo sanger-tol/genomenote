@@ -10,19 +10,21 @@ lint:
   files_unchanged:
     - LICENSE
     - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/ISSUE_TEMPLATE/config.yml
     - lib/NfcoreTemplate.groovy
     - assets/email_template.html
     - .github/CONTRIBUTING.md
     - .github/workflows/branch.yml
     - .github/PULL_REQUEST_TEMPLATE.md
     - .github/workflows/linting.yml
+    - .gitignore
   multiqc_config:
     - report_comment
   nextflow_config:
     - manifest.name
     - manifest.homePage
   template_strings: false
-nf_core_version: 3.5.1
+nf_core_version: 4.1.0
 repository_type: pipeline
 template:
   author: "@priyanka-surana"
@@ -35,4 +37,4 @@ template:
   skip_features:
     - igenomes
     - fastqc
-  version: 2.2.0
+  version: 3.0.0

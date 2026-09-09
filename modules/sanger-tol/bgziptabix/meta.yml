@@ -1,0 +1,142 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "bgziptabix"
+description: bgzip a sorted tab-delimited genome file and then create tabix
+  indexes in TBI and CSI format when the coordinate / sequence length is within
+  the supported range of each index format.
+keywords:
+  - bgzip
+  - compress
+  - index
+  - tabix
+  - vcf
+tools:
+  - bgzip:
+      description: |
+        Bgzip compresses or decompresses files in a similar manner to, and compatible with, gzip.
+      homepage: https://www.htslib.org/doc/tabix.html
+      documentation: http://www.htslib.org/doc/bgzip.html
+      doi: 10.1093/bioinformatics/btp352
+      licence: ["MIT"]
+      identifier: biotools:tabix
+  - tabix:
+      description: Generic indexer for TAB-delimited genome position files.
+      homepage: https://www.htslib.org/doc/tabix.html
+      documentation: https://www.htslib.org/doc/tabix.1.html
+      doi: 10.1093/bioinformatics/btq671
+      licence: ["MIT"]
+      identifier: biotools:tabix
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - input:
+        type: file
+        description: Sorted tab-delimited genome file
+        ontologies: []
+    - max_seq_length:
+        type: integer
+        description: Maximum length (coordinate) of a sequence in this genome (TSV)
+  - - column_numbers:
+        type: string
+        description: |
+          Optional. Columns to extract from the input file, in a format understood by `cut`
+          e.g. '1-3,5'
+    - header_lines:
+        type: integer
+        description: |
+          Number of header lines to skip from the input file. Only considered when column_numbers
+    - extension:
+        type: string
+        description: |
+          Extension to name the output file, in case it differs from the input
+          file - for instance, turning a TSV into BED
+output:
+  gz_index:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.gz":
+          type: file
+          description: bgzipped tab-delimited genome file
+          pattern: "*.gz"
+          ontologies:
+            - edam: http://edamontology.org/format_3989
+      - "*.gzi":
+          type: file
+          description: bgzip index file (GZI format)
+          pattern: "*.gzi"
+          ontologies: []
+  tbi:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.tbi":
+          type: file
+          description: Tabix index file (TBI format)
+          pattern: "*.tbi"
+          ontologies:
+            - edam: http://edamontology.org/format_3616
+  csi:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.csi":
+          type: file
+          description: Tabix index file (CSI format)
+          pattern: "*.csi"
+          ontologies: []
+  versions_bgzip:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - bgzip:
+          type: string
+          description: The tool name
+      - bgzip --version | sed '1!d;s/.* //':
+          type: eval
+          description: The expression to obtain the version of the tool
+  versions_tabix:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - tabix:
+          type: string
+          description: The tool name
+      - tabix -h 2>&1 | grep -oP 'Version:\s*\K[^\s]+':
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - bgzip:
+          type: string
+          description: The tool name
+      - bgzip --version | sed '1!d;s/.* //':
+          type: eval
+          description: The expression to obtain the version of the tool
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - tabix:
+          type: string
+          description: The tool name
+      - tabix -h 2>&1 | grep -oP 'Version:\s*\K[^\s]+':
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@maxulysse"
+  - "@DLBPointon"
+  - "@muffato"
+maintainers:
+  - "@DLBPointon"
+  - "@muffato"

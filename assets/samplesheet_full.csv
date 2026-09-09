@@ -1,4 +1,5 @@
 sample,datatype,datafile
-ilYpsSequ1,hic,/data/tol/data/darwin/insects/Ypsolopha_sequella/analysis/ilYpsSequ2.1/read_mapping/hic/GCA_934047225.1.unmasked.hic.ilYpsSequ1.cram
-ilYpsSequ1,pacbio,/data/tol/data/darwin/insects/Ypsolopha_sequella/genomic_data/ilYpsSequ1/pacbio/kmer/k31
-ilYpsSequ2,pacbio,/data/tol/data/darwin/insects/Ypsolopha_sequella/genomic_data/ilYpsSequ2/pacbio/kmer/k31
+SAMEA7519968/ERR8571662,hic,/data/tol/data/darwin/insects/Ypsolopha_sequella/analysis/ilYpsSequ2.1/read_mapping/hic/GCA_934047225.1.unmasked.hic.ilYpsSequ1.cram
+SAMEA7519968/ERR9081700,pacbio,/data/tol/data/darwin/insects/Ypsolopha_sequella/genomic_data/ilYpsSequ1/pacbio/kmer/k31
+SAMEA7519969/ERR9081701,pacbio,/data/tol/data/darwin/insects/Ypsolopha_sequella/genomic_data/ilYpsSequ2/pacbio/kmer/k31
+braker.2022_09,genes,https://tolit.cog.sanger.ac.uk/test-data/Ypsolopha_sequella/annotation/GCA_934047225.1.braker.2022_09.gff3.gz

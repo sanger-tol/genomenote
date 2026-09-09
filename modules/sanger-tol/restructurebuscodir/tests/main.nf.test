@@ -1,0 +1,118 @@
+nextflow_process {
+
+    name "Test Process RESTRUCTUREBUSCODIR"
+    script "../main.nf"
+    process "RESTRUCTUREBUSCODIR"
+
+    tag "modules"
+    tag "modules_sangertol"
+    tag "restructurebuscodir"
+
+    test("busco dir all sequences") {
+
+        setup {
+            // params.modules_testdata_base_path isn't available in the setup phase
+            curlAndExtract("https://tolit.cog.sanger.ac.uk/test-data/resources/busco/modules.restructurebuscodir.GCA_922984935.2-carnivora_odb10-busco.tar.gz", "${launchDir}/module_output_seq")
+        }
+        when {
+            process {
+                """
+                def module_output = "${launchDir}/module_output_seq/"
+                def run_dir = module_output + "GCA_922984935.2-carnivora_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_carnivora_odb10/"
+                input[0] = [
+                    [ id:'test' ],
+                    'carnivora_odb10',
+                    file(module_output + 'GCA_922984935.2-carnivora_odb10-busco.batch_summary.txt', checkIfExists: true),
+                    file(module_output + 'short_summary.specific.carnivora_odb10.GCA_922984935.2.subset.phiXspike.fasta.txt', checkIfExists: true),
+                    file(module_output + 'short_summary.specific.carnivora_odb10.GCA_922984935.2.subset.phiXspike.fasta.json', checkIfExists: true),
+                    file(run_dir + 'full_table.tsv', checkIfExists: true),
+                    file(run_dir + 'missing_busco_list.tsv', checkIfExists: true),
+                    file(run_dir + 'busco_sequences', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+
+            def stable_outputs = getAllFilesFromDir(process.out.clean_busco_dir[0][1], include: ["*.tsv", "*.short_summary.*"])
+            def unstable_outputs = getAllFilesFromDir(process.out.clean_busco_dir[0][1], include: ["*.tar.gz"], relative: true)
+
+            assert process.success
+            assertAll(
+                { assert snapshot([
+                    clean_busco_dir_meta: process.out.clean_busco_dir[0][0],
+                    clean_busco_dir_md5: stable_outputs,
+                    clean_busco_dir_lst: unstable_outputs,
+                    versions_restructurebuscodir: process.out.versions_restructurebuscodir
+                ]).match() }
+            )
+        }
+
+    }
+
+    test("busco dir tar'ed sequences") {
+
+        setup {
+            // params.modules_testdata_base_path isn't available in the setup phase
+            curlAndExtract("https://tolit.cog.sanger.ac.uk/test-data/resources/busco/modules.restructurebuscodir.GCA_963859965.1-lepidoptera_odb12-busco.tar.gz", "${launchDir}/module_output_tar")
+        }
+
+        when {
+            process {
+                """
+                def module_output = "${launchDir}/module_output_tar/"
+                def run_dir = module_output + "GCA_963859965.1-lepidoptera_odb12-busco/GCA_963859965.1.fasta/run_lepidoptera_odb12/"
+                input[0] = [
+                    [ id:'test' ],
+                    'lepidoptera_odb12',
+                    file(module_output + 'GCA_963859965.1-lepidoptera_odb12-busco.batch_summary.txt', checkIfExists: true),
+                    file(module_output + 'short_summary.specific.lepidoptera_odb12.GCA_963859965.1.fasta.txt', checkIfExists: true),
+                    file(module_output + 'short_summary.specific.lepidoptera_odb12.GCA_963859965.1.fasta.json', checkIfExists: true),
+                    file(run_dir + 'full_table.tsv', checkIfExists: true),
+                    file(run_dir + 'missing_busco_list.tsv', checkIfExists: true),
+                    file(run_dir + 'busco_sequences', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert snapshot(
+                    process.out,
+                ).match() }
+            )
+        }
+
+    }
+
+    test("stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    'lepidoptera_odb14',
+                    [], [], [], [], [], [],
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert snapshot(
+                    process.out,
+                ).match() }
+            )
+        }
+
+    }
+
+}

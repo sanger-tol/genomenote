@@ -22,8 +22,9 @@
                     },
                     "blobtk/plot": {
                         "branch": "master",
-                        "git_sha": "83f6c07efc833fb8608a0b3843158e94707155c9",
-                        "installed_by": ["modules"]
+                        "git_sha": "02616d1725cc2f97670e25d14d7d1c29d412dffc",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/blobtk/plot/blobtk-plot.diff"
                     },
                     "busco/busco": {
                         "branch": "master",
@@ -38,7 +39,7 @@
                     },
                     "cooler/dump": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["modules"]
                     },
                     "cooler/zoomify": {
@@ -48,29 +49,28 @@
                     },
                     "fastk/fastk": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "9678889112458c22cf237769be1465774467e798",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/fastk/fastk/fastk-fastk.diff"
                     },
                     "fastk/histex": {
                         "branch": "master",
-                        "git_sha": "26ae0455fc69b3fbf542ec506c71bce44ddddc4e",
+                        "git_sha": "9678889112458c22cf237769be1465774467e798",
                         "installed_by": ["modules"]
                     },
                     "genescopefk": {
                         "branch": "master",
-                        "git_sha": "a4d916a39231897a49c903089a548704c09b8ef3",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/genescopefk/genescopefk.diff"
+                        "git_sha": "575e1a4b51a9bad7a8cd1316a88fb85684ef7c7b",
+                        "installed_by": ["modules"]
                     },
                     "gfastats": {
                         "branch": "master",
-                        "git_sha": "8bc54984b57a02c8712d48274b90c1161bf2c996",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["modules"]
                     },
                     "gffread": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "51f2b493a7ff28b40a9f99faca64245521f2bb24",
                         "installed_by": ["modules"]
                     },
                     "gnu/sort": {
@@ -80,18 +80,17 @@
                     },
                     "gunzip": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "96c57dfd98a0641886a67bd449fe33ee2ec0e374",
                         "installed_by": ["modules"]
                     },
                     "merquryfk/merquryfk": {
                         "branch": "master",
-                        "git_sha": "05954dab2ff481bcb999f24455da29a5828af08d",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/merquryfk/merquryfk/merquryfk-merquryfk.diff"
+                        "git_sha": "89ddac6065d90fe246fa7f86bfec311023c9424f",
+                        "installed_by": ["modules"]
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "af27af1be706e6a2bb8fe454175b0cdf77f47b49",
+                        "git_sha": "98403d15b0e50edae1f3fec5eae5e24982f1fade",
                         "installed_by": ["modules"]
                     },
                     "pretextmap": {
@@ -114,6 +113,11 @@
                         "branch": "master",
                         "git_sha": "2d20463181b1c38981a02e90d3084b5f9fa8d540",
                         "installed_by": ["modules"]
+                    },
+                    "untar": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"]
                     }
                 }
             },
@@ -121,17 +125,17 @@
                 "nf-core": {
                     "utils_nextflow_pipeline": {
                         "branch": "master",
-                        "git_sha": "05954dab2ff481bcb999f24455da29a5828af08d",
+                        "git_sha": "c2b22d85f30a706a3073387f30380704fcae013b",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nfcore_pipeline": {
                         "branch": "master",
-                        "git_sha": "271e7fc14eb1320364416d996fb077421f3faed2",
+                        "git_sha": "a3fb7351b1fdb2b1de282b765816bbea190e86a8",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nfschema_plugin": {
                         "branch": "master",
-                        "git_sha": "4b406a74dc0449c0401ed87d5bfff4252fd277fd",
+                        "git_sha": "a7b27fd25bfa8dcc07d299e88bd790585901a436",
                         "installed_by": ["subworkflows"]
                     }
                 }
@@ -142,12 +146,22 @@
                 "sanger-tol": {
                     "ancestral/extract": {
                         "branch": "main",
-                        "git_sha": "006011139ed98264e0fd161d60801d62476162df",
+                        "git_sha": "8046a87011cff32f871ed9234801270fa15e7f40",
                         "installed_by": ["modules"]
                     },
                     "ancestral/plot": {
                         "branch": "main",
-                        "git_sha": "6ed770244dd4f8098a1e374727bbf0f1e04a3ae4",
+                        "git_sha": "ac0fc48df659b3a6cca0fc2b0346af41162caabb",
+                        "installed_by": ["modules"]
+                    },
+                    "bgziptabix": {
+                        "branch": "main",
+                        "git_sha": "d87a6e1f034a64bfec4befec1d5d9f398c4239ec",
+                        "installed_by": ["modules"]
+                    },
+                    "restructurebuscodir": {
+                        "branch": "main",
+                        "git_sha": "8dac7d789fb5ec033c38e69c2553e71cae0dd4c3",
                         "installed_by": ["modules"]
                     }
                 }

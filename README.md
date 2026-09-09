@@ -6,9 +6,9 @@
 [![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.7949384-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.7949384)
 [![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)
 
-[![Nextflow](https://img.shields.io/badge/version-%E2%89%A525.04.0-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)
-[![nf-core template version](https://img.shields.io/badge/nf--core_template-3.5.1-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/3.5.1)
-[![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=conda)](https://docs.conda.io/en/latest/)
+[![Nextflow](https://img.shields.io/badge/version-%E2%89%A525.10.4-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)
+[![nf-core template version](https://img.shields.io/badge/nf--core_template-4.1.0-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/4.1.0)
+[![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
 [![Launch on Seqera Platform](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Seqera%20Platform-%234256e7)](https://cloud.seqera.io/launch?pipeline=https://github.com/sanger-tol/genomenote)
@@ -17,18 +17,18 @@
 
 ## Introduction
 
-**sanger-tol/genomenote** is a bioinformatics pipeline that takes aligned HiC reads, creates contact maps and chromosomal grid using Cooler, and display on a [HiGlass server](https://genome-note-higlass.tol.sanger.ac.uk/app). The pipeline also collates (1) assembly information, statistics and chromosome details from NCBI datasets, (2) genome completeness from BUSCO, (3) consensus quality and k-mer completeness from MerquryFK, (4) HiC primary mapped percentage from samtools flagstat and optionally (5) Annotation statistics from AGAT and BUSCO. The pipeline combines the calculated statistics and collated assembly metadata with a template document to output a genome note document.
+**sanger-tol/genomenote** is a bioinformatics pipeline that takes aligned HiC reads, creates contact maps and chromosomal grid using Cooler and/or Pretext. The pipeline also collates (1) assembly information, statistics and chromosome details from NCBI datasets, (2) genome completeness from BUSCO, (3) consensus quality and k-mer completeness from MerquryFK, (4) HiC primary mapped percentage from samtools flagstat and optionally (5) Annotation statistics from AGAT and BUSCO. The pipeline combines the calculated statistics and collated assembly metadata with a template document to output a genome note document.
 
 <!--![sanger-tol/genomenote workflow](https://raw.githubusercontent.com/sanger-tol/genomenote/main/docs/images/sanger-tol-genomenote_workflow.png)-->
 
 <!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
-     workflows use the "tube map" design for that. See https://nf-co.re/docs/guidelines/graphic_design/workflow_diagrams#examples for examples.   -->
+     workflows use the "tube map" design for that. See https://nf-co.re/docs/community/brand/workflow-schematics#examples for examples.   -->
 <!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
 ## Usage
 
 > [!NOTE]
-> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
+> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/get_started/environment_setup/overview) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/get_started/run-your-first-pipeline) with `-profile test` before running the workflow on actual data.
 
 First, prepare a samplesheet with your input data that looks as follows:
 
@@ -49,15 +49,15 @@ nextflow run sanger-tol/genomenote \
    -profile <docker/singularity/.../institute> \
    --input samplesheet.csv \
    --fasta genome.fasta \
-   --assembly GCA_922984935.2 \
-   --biosample_wgs SAMEA112198456 \
-   --biosample_hic SAMEA112198479 \
-   --biosample_rna SAMEA112232914 \
+   --assembly_accession GCA_922984935.2 \
+   --biosample_accession_wgs SAMEA112198456 \
+   --biosample_accession_hic SAMEA112198479 \
+   --biosample_accession_rna SAMEA112232914 \
    --outdir <OUTDIR>
 ```
 
 > [!WARNING]
-> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/usage/getting_started/configuration#custom-configuration-files).
+> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/running/run-pipelines#using-parameter-files).
 
 For more details, please refer to the [usage documentation](https://pipelines.tol.sanger.ac.uk/genomenote/usage) and the [parameter documentation](https://pipelines.tol.sanger.ac.uk/genomenote/parameters).
 
@@ -74,7 +74,7 @@ We thank the following people for their assistance in the development of this pi
 
 ## Contributions and Support
 
-If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
+If you would like to contribute to this pipeline, please see the [contributing guidelines](docs/CONTRIBUTING.md).
 
 ## Citations
 
