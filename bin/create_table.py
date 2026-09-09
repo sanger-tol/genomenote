@@ -179,7 +179,9 @@ def extract_pacbio(qv, completeness, writer):
                 if qv_name in qvals and qv < qvals[qv_name]:
                     continue
                 qvals[qv_name] = qv
-    assert qvals, f"No QV values found in {qv}"
+    if not qvals:
+        print(f"No QV values found in {qv}", file=sys.stderr)
+        sys.exit(1)
 
     # The completeness has to be from the same specimen as the QV value
     completeness_files = {}
@@ -187,7 +189,9 @@ def extract_pacbio(qv, completeness, writer):
         comp_name = remove_sample_T_suffix(os.path.basename(h).removesuffix(".completeness.stats"))
         if comp_name in qvals:
             completeness_files[comp_name] = h
-    assert completeness_files.keys() == qvals.keys(), "Mismatch between QV names (%s) and completeness files (%s)" % (qv, completeness)
+    if completeness_files.keys() != qvals.keys():
+        print(f"Mismatch between QV names ({qv}) and completeness files ({completeness})", file=sys.stderr)
+        sys.exit(1)
 
     for sample_name in sorted(qvals):
         with open(completeness_files[sample_name], "r") as fin:
@@ -195,7 +199,9 @@ def extract_pacbio(qv, completeness, writer):
             comp = None
             for row in data:
                 comp = float(row["% Covered"])
-            assert comp is not None, f"No completeness values found in {h}"
+            if comp is None:
+                print(f"No completeness values found in {h}", file=sys.stderr)
+                sys.exit(1)
 
             writer.writerow(["##MerquryFK", sample_name])
             writer.writerow(["QV", qvals[sample_name]])
