@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Enhancements & fixes
 
 - Language fixes to comply with the upcoming strict syntax
-- Pipeline template upgraded to nf-core 4.1.0
+- Pipeline template upgraded to nf-core 4.1.0. Also bumped up the nf-schema plugin to ensure
+  seamless compatibility with Nextflow 26.04
 - Slack / Teams functionality now moved to Nextflow plugins ([nf-slack](https://github.com/seqeralabs/nf-slack), [nf-teams](https://github.com/nvnieuwk/nf-teams))
 - Addition of the `--btk_image_format` flag to change the output format of `blobtk/plot`
   - Options are `png` or `svg`
@@ -23,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed the option to upload the Cooler contact map to a Kubernetes-hosted HiGlass server
   as this had no more use.
 - Now supports multiple alternative haplotypes, i.e. polyploid assemblies.
+- Now supports outputting QV and completeness scores for multiple samples
 
 ### Parameters
 
