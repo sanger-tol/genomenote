@@ -1,7 +1,7 @@
 {
     "-profile test": {
         "content": [
-            93,
+            94,
             {
                 "AGAT_SPSTATISTICS": {
                     "agat": "v1.4.1"
@@ -134,6 +134,7 @@
                 "blobtoolkit/plots/GCA_963859965.1.blob_chr.png",
                 "blobtoolkit/plots/GCA_963859965.1.grid.png",
                 "blobtoolkit/plots/GCA_963859965.1.grid_chr.png",
+                "blobtoolkit/plots/GCA_963859965.1.snail_plot.png",
                 "busco",
                 "busco/lepidoptera_odb12",
                 "busco/lepidoptera_odb12/GCA_963859965.1.lepidoptera_odb12.fragmented_busco_sequences.tar.gz",
@@ -305,6 +306,7 @@
                 "GCA_963859965.1.blob_chr.png:md5,147e7413247cbb8f52caae9c7b79400b",
                 "GCA_963859965.1.grid.png:md5,1dd41fe93a5644b64817f8ceec461a5f",
                 "GCA_963859965.1.grid_chr.png:md5,1dd41fe93a5644b64817f8ceec461a5f",
+                "GCA_963859965.1.snail_plot.png:md5,9b47b790b693d1064f288ba0ca13aa07",
                 "GCA_963859965.1.lepidoptera_odb12.full_table.tsv:md5,6d8e1467c24c90a0b1a2c4de9a5a45d5",
                 "GCA_963859965.1.lepidoptera_odb12.missing_busco_list.tsv:md5,7907b15451b96b0da834f1f48e214ec4",
                 "GCA_963859965.1.lepidoptera_odb12.short_summary.tsv:md5,97bf63d6cb79a5255dfd8974aecf406a",
@@ -407,7 +409,7 @@
                 "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.temp.spectra-cn.st.png:md5,646311368d550f135eec7e2c02d8b541"
             ]
         ],
-        "timestamp": "2026-09-04T16:16:42.165868805",
+        "timestamp": "2026-09-15T09:39:31.344855342",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.0"
