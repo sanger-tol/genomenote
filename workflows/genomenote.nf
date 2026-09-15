@@ -20,7 +20,7 @@ include { GENOME_STATISTICS          } from '../subworkflows/local/genome_statis
 include { COMBINE_NOTE_DATA          } from '../subworkflows/local/combine_note_data/main'
 include { ANNOTATION_STATISTICS      } from '../subworkflows/local/annotation_statistics/main'
 include { ANNOTATION_ANCESTRAL       } from '../subworkflows/local/annotation_ancestral/main'
-include { GET_BLOBTK_PLOTS           } from '../subworkflows/local/get_blobtk_plots/main'
+include { GET_BLOBTK_PLOTS           } from '../subworkflows/sanger-tol/get_blobtk_plots/main'
 
 
 /*
@@ -170,6 +170,7 @@ workflow GENOMENOTE {
             ch_fasta,
             btk_local_path,
             btk_online_path,
+            channel.of(params.btk_image_format),
         )
     }
 

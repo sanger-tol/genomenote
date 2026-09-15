@@ -1,0 +1,110 @@
+{
+    "ilCerPisi1.1 - online plots - stub": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "ilCerPisi1_1"
+                    },
+                    "ilCerPisi1_1_BLOB_CHR_VIEW.png"
+                ],
+                [
+                    {
+                        "id": "ilCerPisi1_1"
+                    },
+                    "ilCerPisi1_1_BLOB_VIEW.png"
+                ],
+                [
+                    {
+                        "id": "ilCerPisi1_1"
+                    },
+                    "ilCerPisi1_1_GRID_CHR_VIEW.png"
+                ],
+                [
+                    {
+                        "id": "ilCerPisi1_1"
+                    },
+                    "ilCerPisi1_1_GRID_VIEW.png"
+                ],
+                [
+                    {
+                        "id": "ilCerPisi1_1"
+                    },
+                    "ilCerPisi1_1_SNAIL_PLOT.png"
+                ]
+            ],
+            {
+                
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-03-13T14:58:01.915654935"
+    },
+    "ilCerPisi1.1 - online plots - svg": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "ilCerPisi1_1"
+                    },
+                    "ilCerPisi1_1_BLOB_CHR_VIEW.svg"
+                ],
+                [
+                    {
+                        "id": "ilCerPisi1_1"
+                    },
+                    "ilCerPisi1_1_BLOB_VIEW.svg"
+                ],
+                [
+                    {
+                        "id": "ilCerPisi1_1"
+                    },
+                    "ilCerPisi1_1_GRID_CHR_VIEW.svg"
+                ],
+                [
+                    {
+                        "id": "ilCerPisi1_1"
+                    },
+                    "ilCerPisi1_1_GRID_VIEW.svg"
+                ],
+                [
+                    {
+                        "id": "ilCerPisi1_1"
+                    },
+                    "ilCerPisi1_1_SNAIL_PLOT.svg"
+                ]
+            ],
+            {
+                
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-03-13T14:57:33.213949349"
+    },
+    "ilCerPisi1.1 - local plots - png": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "ilCerPisi1_1"
+                    },
+                    "ilCerPisi1_1_SNAIL_PLOT.png"
+                ]
+            ],
+            {
+                
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-03-13T14:57:02.480375963"
+    }
+}

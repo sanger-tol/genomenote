@@ -1,0 +1,147 @@
+nextflow_workflow {
+
+    name "Test Subworkflow GET_BLOBTK_PLOTS"
+    script "../main.nf"
+    config "./nextflow.config"
+    workflow "GET_BLOBTK_PLOTS"
+
+    tag "subworkflows"
+    tag "subworkflows_sangertol"
+    tag "subworkflows/get_blobtk_plots"
+    tag "modules/nf-core/blobtk/plot"
+    tag "modules/nf-core/untar"
+    tag "subworkflows/../../modules/nf-core/blobtk/plot"
+    tag "subworkflows/../../modules/nf-core/untar"
+
+    setup {
+        nfcoreInitialise("${launchDir}/library/")
+        nfcoreInstall(
+            "${launchDir}/library/",
+            [
+                "blobtk/plot",
+                "untar"
+            ]
+        )
+        nfcoreLink("${launchDir}/library/", "${baseDir}/modules/")
+
+        run("UNTAR") {
+            script "../../../../modules/nf-core/untar/main.nf"
+            process {
+                """
+                input[0] = channel.of([
+                    [ id : "ilCerPisi1_1" ],
+                    file(params.modules_testdata_base_path + 'resources/genomenote/btk_test_directory.tar.gz', checkIfExists: true)
+                ])
+                """
+            }
+        }
+    }
+
+    test("ilCerPisi1.1 - local plots - png") {
+       	config "./nextflow.config"
+
+        when {
+
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id : "ilCerPisi1_1" ],
+                    file(params.modules_testdata_base_path + 'Ceramica_pisi/assembly/release/ilCerPisi1.1/insdc/GCA_963859965.1.fasta.gz', checkIfExists: true)
+                ])
+                input[1] = UNTAR.out.untar.map { meta, file -> file }
+                input[2] = channel.of([])
+                input[3] = channel.of("png")
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                {
+                    assert snapshot(
+                        workflow.out.png_blobtk_images.collect { meta, image -> [meta, file(image).name] },
+                        workflow.out.findAll { key, val -> key.startsWith("versions") }
+                    ).match()
+                }
+            )
+        }
+
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
+        }
+    }
+
+    test("ilCerPisi1.1 - online plots - svg") {
+       	config "./nextflow.config"
+
+        when {
+
+
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id : "ilCerPisi1_1" ],
+                    file(params.modules_testdata_base_path + 'Ceramica_pisi/assembly/release/ilCerPisi1.1/insdc/GCA_963859965.1.fasta.gz', checkIfExists: true)
+                ])
+                input[1] = channel.of([])
+                input[2] = channel.of("https://blobtoolkit.genomehubs.org/api/v1/dataset/id/CALUEP01")
+                input[3] = channel.of("svg")
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                {
+                    assert snapshot(
+                        workflow.out.svg_blobtk_images.collect { meta, image -> [meta, file(image).name] },
+                        workflow.out.findAll { key, val -> key.startsWith("versions") }
+                    ).match()
+                }
+            )
+        }
+
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
+        }
+    }
+
+    test("ilCerPisi1.1 - online plots - stub") {
+        options "-stub"
+
+       	config "./nextflow.config"
+
+        when {
+
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id : "ilCerPisi1_1" ],
+                    file(params.modules_testdata_base_path + 'Ceramica_pisi/assembly/release/ilCerPisi1.1/insdc/GCA_963859965.1.fasta.gz', checkIfExists: true)
+                ])
+                input[1] = channel.of([])
+                input[2] = channel.of("https://blobtoolkit.genomehubs.org/api/v1/dataset/id/CALUEP01")
+                input[3] = channel.of("png")
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                {
+                    assert snapshot(
+                        workflow.out.png_blobtk_images.collect { meta, image -> [meta, file(image).name] },
+                        workflow.out.findAll { key, val -> key.startsWith("versions") }
+                    ).match()
+                }
+            )
+        }
+
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
+        }
+    }
+}
