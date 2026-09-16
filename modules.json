@@ -23,7 +23,7 @@
                     "blobtk/plot": {
                         "branch": "master",
                         "git_sha": "02616d1725cc2f97670e25d14d7d1c29d412dffc",
-                        "installed_by": ["modules"],
+                        "installed_by": ["get_blobtk_plots"],
                         "patch": "modules/nf-core/blobtk/plot/blobtk-plot.diff"
                     },
                     "busco/busco": {
@@ -34,18 +34,18 @@
                     },
                     "cooler/cload": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
-                        "installed_by": ["modules"]
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules", "pairs_create_contact_maps"]
                     },
                     "cooler/dump": {
                         "branch": "master",
-                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
                         "installed_by": ["modules"]
                     },
                     "cooler/zoomify": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
-                        "installed_by": ["modules"]
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules", "pairs_create_contact_maps"]
                     },
                     "fastk/fastk": {
                         "branch": "master",
@@ -57,6 +57,11 @@
                         "branch": "master",
                         "git_sha": "9678889112458c22cf237769be1465774467e798",
                         "installed_by": ["modules"]
+                    },
+                    "gawk": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["pairs_create_contact_maps"]
                     },
                     "genescopefk": {
                         "branch": "master",
@@ -83,6 +88,11 @@
                         "git_sha": "96c57dfd98a0641886a67bd449fe33ee2ec0e374",
                         "installed_by": ["modules"]
                     },
+                    "juicertools/pre": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["pairs_create_contact_maps"]
+                    },
                     "merquryfk/merquryfk": {
                         "branch": "master",
                         "git_sha": "89ddac6065d90fe246fa7f86bfec311023c9424f",
@@ -95,14 +105,14 @@
                     },
                     "pretextmap": {
                         "branch": "master",
-                        "git_sha": "05954dab2ff481bcb999f24455da29a5828af08d",
-                        "installed_by": ["modules"],
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["pairs_create_contact_maps"],
                         "patch": "modules/nf-core/pretextmap/pretextmap.diff"
                     },
                     "pretextsnapshot": {
                         "branch": "master",
-                        "git_sha": "81880787133db07d9b4c1febd152c090eb8325dc",
-                        "installed_by": ["modules"]
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["pairs_create_contact_maps"]
                     },
                     "samtools/faidx": {
                         "branch": "master",
@@ -163,6 +173,20 @@
                         "branch": "main",
                         "git_sha": "8dac7d789fb5ec033c38e69c2553e71cae0dd4c3",
                         "installed_by": ["modules"]
+                    }
+                }
+            },
+            "subworkflows": {
+                "sanger-tol": {
+                    "get_blobtk_plots": {
+                        "branch": "main",
+                        "git_sha": "ef3474c266f1c488568d09ce02c4c3ae695e5d5a",
+                        "installed_by": ["subworkflows"]
+                    },
+                    "pairs_create_contact_maps": {
+                        "branch": "main",
+                        "git_sha": "304455b447d7768cfc22181542f1e5b1b4fe2d8b",
+                        "installed_by": ["subworkflows"]
                     }
                 }
             }
