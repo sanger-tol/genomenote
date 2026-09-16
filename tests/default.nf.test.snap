@@ -42,6 +42,12 @@
                 "COOLER_CLOAD": {
                     "cooler": "0.10.4"
                 },
+                "COOLER_DUMP": {
+                    "cooler": "0.10.3"
+                },
+                "COOLER_ZOOMIFY": {
+                    "cooler": "0.10.4"
+                },
                 "CREATETABLE": {
                     "create_table.py": 3.1
                 },

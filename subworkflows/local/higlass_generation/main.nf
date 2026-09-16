@@ -50,14 +50,12 @@ workflow HIGLASS_GENERATION {
 
     // Create the `.mcool` file
     COOLER_ZOOMIFY( COOLER_CLOAD.out.cool )
-    ch_versions = ch_versions.mix(COOLER_ZOOMIFY.out.versions.first())
 
 
     // Create the `.genome` file
     ch_dump = COOLER_CLOAD.out.cool.map { meta, cool -> [meta, cool, []] }
 
     COOLER_DUMP(ch_dump)
-    ch_versions = ch_versions.mix(COOLER_DUMP.out.versions.first())
 
     emit:
     cool     = COOLER_CLOAD.out.cool // tuple val(meta), path("*.cool")
