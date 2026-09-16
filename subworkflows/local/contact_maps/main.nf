@@ -5,7 +5,7 @@
 include { GET_CHROMLIST      } from '../../../modules/local/ncbidatasets/get_chromlist'
 include { SAMTOOLS_VIEW      } from '../../../modules/nf-core/samtools/view/main'
 include { HIGLASS_GENERATION } from '../higlass_generation/main'
-include { PRETEXT_GENERATION } from '../pretext_generation/main'
+include { PAIRS_CREATE_CONTACT_MAPS } from '../../sanger-tol/pairs_create_contact_maps/main'
 
 workflow CONTACT_MAPS {
     take:
@@ -41,7 +41,7 @@ workflow CONTACT_MAPS {
     if (contact_map_format in ["higlass", "all", "both"]) {
         HIGLASS_GENERATION(
             SAMTOOLS_VIEW.out.bam,
-            GET_CHROMLIST.out.list,
+            GET_CHROMLIST.out.list.first(),
             cool_bin,
         )
         ch_versions = ch_versions.mix(HIGLASS_GENERATION.out.versions.first())
@@ -60,14 +60,19 @@ workflow CONTACT_MAPS {
     // SUBWORKFLOW: GENERATE PRETEXT SNAPSHOT FILES
     //
     if (contact_map_format in ["pretext", "all", "both"]) {
-        PRETEXT_GENERATION(
-            genome,
+        PAIRS_CREATE_CONTACT_MAPS(
             SAMTOOLS_VIEW.out.bam,
+            channel.empty(),
+            channel.empty(),
+            contact_map_format in ["pretext", "all", "both"],
+            contact_map_format in ["pretext", "all", "both"],
+            false,
+            false,
+            cool_bin,
         )
-        ch_versions = ch_versions.mix(PRETEXT_GENERATION.out.versions.first())
 
-        pretext_map = PRETEXT_GENERATION.out.pretext_map
-        pretext_png = PRETEXT_GENERATION.out.pretext_png
+        pretext_map = PAIRS_CREATE_CONTACT_MAPS.out.pretext
+        pretext_png = PAIRS_CREATE_CONTACT_MAPS.out.pretext_png
     }
     else {
         pretext_map = channel.empty()
@@ -75,7 +80,7 @@ workflow CONTACT_MAPS {
     }
 
     emit:
-    cool     = cooler_file // tuple val(meta), val(cool_bin), path("*.cool")
+    cool     = cooler_file // tuple val(meta), path("*.cool")
     mcool    = mcool_file // tuple val(meta), path("*.mcool")
     grid     = grid_file // tuple val(meta), path("*.bedpe")
     ptxt_map = pretext_map // tuple val(meta), path("*.pretext")

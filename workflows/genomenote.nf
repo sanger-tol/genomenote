@@ -182,7 +182,7 @@ workflow GENOMENOTE {
         ch_fasta_fai,
         ch_inputs.hic,
         GENOME_STATISTICS.out.summary_seq,
-        channel.of(params.cooler_bin_size),
+        channel.value(params.cooler_bin_size),
         cooler_seq_order,
         params.contact_map_format ?: params.select_contact_map,
     )

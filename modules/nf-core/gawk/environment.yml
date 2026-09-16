@@ -4,4 +4,4 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - bioconda::cooler=0.10.4
+  - conda-forge::gawk=5.3.1

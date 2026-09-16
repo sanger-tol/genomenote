@@ -56,15 +56,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
 
-| Dependency | Old version                                | New version |
-| ---------- | ------------------------------------------ | ----------- |
-| cooler     | 0.10.2                                     | 0.10.3      |
-| FastK      | `ddea6cf254f378db51d22c6eb21af775fa9e1f77` | 1.2         |
-| MerquryFK  | 1.1.2                                      | 1.2         |
-| R          | 4.4.3                                      | 4.2.3       |
-| Histex     | 1.1                                        | 1.2         |
-| gunzip     | 1.1                                        | 1.13        |
-| tar        |                                            | 1.34        |
+| Dependency      | Old version                                | New version               |
+| --------------- | ------------------------------------------ | ------------------------- |
+| cooler          | 0.9.2 and 0.10.2                           | 0.9.2, 0.10.3, and 0.10.4 |
+| FastK           | `ddea6cf254f378db51d22c6eb21af775fa9e1f77` | 1.2                       |
+| MerquryFK       | 1.1.2                                      | 1.2                       |
+| R               | 4.4.3                                      | 4.2.3                     |
+| Histex          | 1.1                                        | 1.2                       |
+| pretextmap      | 0.1.9                                      | 0.2.4                     |
+| pretextsnapshot | 0.0.4                                      | 0.0.7                     |
+| gunzip          | 1.1                                        | 1.13                      |
+| tar             |                                            | 1.34                      |
 
 > **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
 
