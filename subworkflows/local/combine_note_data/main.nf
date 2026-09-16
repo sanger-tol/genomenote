@@ -36,7 +36,6 @@ workflow COMBINE_NOTE_DATA {
     COMBINE_STATISTICS_AND_METADATA(ch_params_consistent, ch_params_inconsistent, PARSE_METADATA.out.file_path, ch_annotation_summary)
     ch_versions = ch_versions.mix(COMBINE_STATISTICS_AND_METADATA.out.versions.first())
 
-    // Add higlass url to the parsed dataset
     ch_parsed = COMBINE_STATISTICS_AND_METADATA.out.consistent
         .map { _meta, file -> file }
         .collectFile(name: 'combined.csv', sort: false) { file -> file.text }
