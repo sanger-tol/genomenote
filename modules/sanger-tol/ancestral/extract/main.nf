@@ -13,7 +13,8 @@ process ANCESTRAL_EXTRACT {
     tuple val(meta), path("*_complete_location.tsv")  , emit: comp_location
     tuple val(meta), path("*_duplicated_location.tsv"), emit: dup_location
     tuple val(meta), path("*_summary.tsv")            , emit: summary
-    path "versions.yml"                               , emit: versions
+    tuple val("${task.process}"), val('python'), eval('echo \$(python3 --version 2>&1) | sed "s/^.*python //; s/Using.*\$//"'), emit: versions_python, topic: versions
+    tuple val("${task.process}"), val('buscopainter.py'), eval('buscopainter.py -v'), emit: versions_buscopainter, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -22,31 +23,23 @@ process ANCESTRAL_EXTRACT {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         error "ANCESTRAL_EXTRACT module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
-
     def args    = task.ext.args     ?: ''
     def prefix  = task.ext.prefix   ?: "${meta.id}"
-
     """
-    buscopainter.py -r $ancestraltable -q $fulltable -p $prefix $args
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(echo \$(python3 --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
-        buscopainter.py: \$(buscopainter.py -v)
-    END_VERSIONS
+    buscopainter.py \\
+        -r ${ancestraltable} \\
+        -q ${fulltable} \\
+        -p ${prefix} \\
+        ${args}
     """
 
     stub:
     def prefix  = task.ext.prefix   ?: "${meta.id}"
+    def args = task.ext.args     ?: ''
     """
+    echo ${args}
     touch ${prefix}_complete_location.tsv
     touch ${prefix}_duplicated_location.tsv
     touch ${prefix}_summary.tsv
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
-        buscopainter.py: \$(buscopainter.py -v)
-    END_VERSIONS
     """
 }

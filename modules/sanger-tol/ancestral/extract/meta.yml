@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/sanger-tol/nf-core-modules/main/modules/meta-schema.json
 name: "ancestral_extract"
 description: |
   Extracts ancestrally linked busco genes from a busco full table file.
@@ -13,7 +13,8 @@ tools:
         Scripts to extract ancestrally linked busco genes.
       homepage: https://github.com/sanger-tol/busco_painter
       documentation: https://github.com/sanger-tol/busco_painter
-      licence: ["GPL v2.0"]
+      licence:
+        - "GPL v2.0"
       identifier: ""
 input:
   - - meta:
@@ -27,8 +28,7 @@ input:
           BUSCO full table tsv file.
         pattern: "*.tsv"
         ontologies:
-          - edam: http://edamontology.org/format_3475 # TSV
-
+          - edam: http://edamontology.org/format_3475
   - - meta2:
         type: map
         description: |
@@ -54,7 +54,6 @@ output:
             TSV containing complete busco's thought to be ancestrally linked.
           ontologies:
             - edam: http://edamontology.org/format_3475 # TSV
-
   dup_location:
     - - meta:
           type: map
@@ -67,7 +66,6 @@ output:
             TSV containing duplicated busco's thought to be ancestrally linked.
           ontologies:
             - edam: http://edamontology.org/format_3475 # TSV
-
   summary:
     - - meta:
           type: map
@@ -79,15 +77,47 @@ output:
           description: |
             TSV containing a complete summary of results.
           ontologies:
-            - edam: http://edamontology.org/format_3003
-
+            - edam: http://edamontology.org/format_3003 # BED
+  versions_python:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - python:
+          type: string
+          description: The name of the tool
+      - echo \$(python3 --version 2>&1) | sed "s/^.*python //; s/Using.*\$//":
+          type: eval
+          description: The expression to obtain the version of the tool
+  versions_buscopainter:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - buscopainter.py:
+          type: string
+          description: The name of the tool
+      - buscopainter.py -v:
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
   versions:
-    - versions.yml:
-        type: file
-        description: File containing software versions
-        pattern: "versions.yml"
-        ontologies:
-          - edam: http://edamontology.org/format_3750 # YAML
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - python:
+          type: string
+          description: The name of the tool
+      - echo \$(python3 --version 2>&1) | sed "s/^.*python //; s/Using.*\$//":
+          type: eval
+          description: The expression to obtain the version of the tool
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - buscopainter.py:
+          type: string
+          description: The name of the tool
+      - buscopainter.py -v:
+          type: eval
+          description: The expression to obtain the version of the tool
 authors:
   - "@DLBPointon"
 maintainers:

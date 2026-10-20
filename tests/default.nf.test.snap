@@ -1,7 +1,7 @@
 {
     "-profile test": {
         "content": [
-            94,
+            95,
             {
                 "AGAT_SPSTATISTICS": {
                     "agat": "v1.4.1"
@@ -10,12 +10,12 @@
                     "agat": "v1.4.1"
                 },
                 "ANCESTRAL_EXTRACT": {
-                    "python": "Python 3.12.11",
-                    "buscopainter.py": 1.1
+                    "buscopainter.py": 1.1,
+                    "python": "Python 3.12.11"
                 },
                 "ANCESTRAL_PLOT": {
                     "R": "4.1.3",
-                    "plot_buscopainter.R": null
+                    "plot_buscopainter.R": "1.0.0"
                 },
                 "BEDTOOLS_BAMTOBED": {
                     "bedtools": "2.31.1"
@@ -104,7 +104,7 @@
                     "wget": 1.18
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": 1.21
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_VIEW": {
                     "samtools": 1.21
@@ -409,7 +409,7 @@
                 "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.temp.spectra-cn.st.png:md5,646311368d550f135eec7e2c02d8b541"
             ]
         ],
-        "timestamp": "2026-09-15T09:39:31.344855342",
+        "timestamp": "2026-10-20T13:14:24.433158902",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.0"

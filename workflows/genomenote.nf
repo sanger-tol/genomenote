@@ -110,22 +110,20 @@ workflow GENOMENOTE {
         ch_unzipped = ch_genome
     }
 
-    ch_fasta_only = ch_unzipped.map { meta, fa -> [meta + [id: fa.baseName, genome_size: fa.size()], fa] }
+    ch_fasta_empty_fai = ch_unzipped.map { meta, fa -> [meta + [id: fa.baseName, genome_size: fa.size()], fa, []] }
 
     //
     // MODULE: INDEX THE INPUT ASSEMBLY
     //
     SAMTOOLS_FAIDX(
-        ch_fasta_only,
-        [[], []],
+        ch_fasta_empty_fai,
         false,
     )
-    ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
 
     // Load stats from the .fai file
-    ch_fasta_fai = ch_fasta_only
+    ch_fasta_fai = ch_fasta_empty_fai
         .join(SAMTOOLS_FAIDX.out.fai)
-        .map { meta, fasta, fai ->
+        .map { meta, fasta, _fai, fai ->
             [meta + get_sequence_map(fai), fasta, fai]
         }
     ch_fasta = ch_fasta_fai.map { meta, fasta, _fai -> tuple(meta, fasta) }
@@ -234,7 +232,7 @@ workflow GENOMENOTE {
 
     if (params.ancestral_table && params.ancestral_busco_lineage) {
         ANNOTATION_ANCESTRAL(
-            ch_fasta_fai,
+            ch_fasta,
             ancestral_table,
             params.ancestral_busco_lineage,
             busco_db,

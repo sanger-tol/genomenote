@@ -106,8 +106,8 @@
                     },
                     "samtools/faidx": {
                         "branch": "master",
-                        "git_sha": "05954dab2ff481bcb999f24455da29a5828af08d",
-                        "installed_by": ["modules"]
+                        "git_sha": "5f344f0e41fdfaf2506f89400e42a2689d6ab323",
+                        "installed_by": ["ancestral_annotation", "modules"]
                     },
                     "samtools/view": {
                         "branch": "master",
@@ -146,13 +146,13 @@
                 "sanger-tol": {
                     "ancestral/extract": {
                         "branch": "main",
-                        "git_sha": "8046a87011cff32f871ed9234801270fa15e7f40",
-                        "installed_by": ["modules"]
+                        "git_sha": "b917041e7261a65b826c658391a7bdc1e24b1001",
+                        "installed_by": ["ancestral_annotation"]
                     },
                     "ancestral/plot": {
                         "branch": "main",
-                        "git_sha": "ac0fc48df659b3a6cca0fc2b0346af41162caabb",
-                        "installed_by": ["modules"]
+                        "git_sha": "b917041e7261a65b826c658391a7bdc1e24b1001",
+                        "installed_by": ["ancestral_annotation"]
                     },
                     "bgziptabix": {
                         "branch": "main",
@@ -168,6 +168,11 @@
             },
             "subworkflows": {
                 "sanger-tol": {
+                    "ancestral_annotation": {
+                        "branch": "main",
+                        "git_sha": "b917041e7261a65b826c658391a7bdc1e24b1001",
+                        "installed_by": ["subworkflows"]
+                    },
                     "get_blobtk_plots": {
                         "branch": "main",
                         "git_sha": "ef3474c266f1c488568d09ce02c4c3ae695e5d5a",
