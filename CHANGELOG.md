@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [[3.0.0](https://github.com/sanger-tol/genomenote/releases/tag/3.0.0)] - Standard Poodle [2026-08-18]
+## [[3.0.0](https://github.com/sanger-tol/genomenote/releases/tag/3.0.0)] - Standard Poodle [2026-10-21]
 
 ### Enhancements & fixes
 
@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Slack / Teams functionality now moved to Nextflow plugins ([nf-slack](https://github.com/seqeralabs/nf-slack), [nf-teams](https://github.com/nvnieuwk/nf-teams))
 - Addition of the `--btk_image_format` flag to change the output format of `blobtk/plot`
   - Options are `png` or `svg`
+- Addition of the "snail plot" as a pipeline output
 - Updated samplesheet handling to support `sample` values in `specimen/run` format
 - Annotation input is now provided via the samplesheet instead of `--annotation_set` (see [usage.md](docs/usage.md))
 - Added support for PacBio k-mer directories provided as `tar.gz` archives

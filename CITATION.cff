@@ -46,13 +46,13 @@ authors:
     orcid: https://orcid.org/0000-0003-1658-1762
     website: https://github.com/BethYates
 cff-version: 1.2.0
-date-released: "2026-08-18"
+date-released: "2026-10-21"
 doi: 10.5281/zenodo.7949384
 license: MIT
 message: If you use this software, please cite it using the metadata from this file
   and all references from CITATIONS.md.
 repository-code: https://github.com/sanger-tol/genomenote
-title: sanger-tol/genomenote v3.0.0 - Standard Poodle [2026-08-18]
+title: sanger-tol/genomenote v3.0.0 - Standard Poodle [2026-10-21]
 type: software
 url: https://pipelines.tol.sanger.ac.uk/genomenote
 version: 3.0.0

@@ -1,0 +1,64 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/sanger-tol/nf-core-modules/main/subworkflows/yaml-schema.json
+name: "ancestral_annotation"
+description: Generate ancestral linkage plots against an input assembly
+keywords:
+  - ancestral
+  - linkage
+  - png
+  - pdf
+  - busco
+components:
+  - ancestral/extract
+  - ancestral/plot
+  - samtools/faidx:
+      git_remote: https://github.com/nf-core/modules.git
+
+input:
+  - reference:
+      type: file
+      description: |
+        Structure [ val(meta), path(reference) ]
+        Meta is the Groovy Map containing sample information
+        Reference is the fasta for analysis
+  - ancestral_table:
+      type: file
+      description: |
+        Structure [ val(meta), path(ancestral_table) ]
+        Meta is the Groovy Map containing sample information
+        ancestral_table is an ancestral linkage table
+  - busco_full_table:
+      type: file
+      description: |
+        Structure [ val(meta), path(busco_full_table) ]
+        Meta is the Groovy Map containing sample information
+        busco_full_table is the full_table output from busco
+output:
+  - ancestral_png_plot:
+      type: file
+      description: |
+        Structure: [ val(meta), path(png_plot) ]
+        PNG plot of linkage groups against input assembly
+  - ancestral_pdf_plot:
+      type: file
+      description: |
+        Structure: [ val(meta), path(pdf_plot) ]
+        PDF plot of linkage groups against input assembly
+  - ancestral_complete_location:
+      type: file
+      description: |
+        Structure: [ val(meta), path(comp_location) ]
+        TSV file containing complete busco locations
+  - ancestral_duplicate_location:
+      type: file
+      description: |
+        Structure: [ val(meta), path(dup_location) ]
+        TSV file containing duplicate busco locations.
+  - ancestral_summary:
+      type: file
+      description: |
+        Structure: [ val(meta), path(summary) ]
+        TSV file containing a summary of all data.
+authors:
+  - "@DLBPointon"
+maintainers:
+  - "@DLBPointon"

@@ -1,0 +1,32 @@
+{
+    "Cloeon_dipterum genome - stub": {
+        "content": [
+            "test-full-table_complete_location.tsv_buscopainter.png",
+            "test-full-table_complete_location.tsv_buscopainter.pdf",
+            "test-full-table_complete_location.tsv:md5,d41d8cd98f00b204e9800998ecf8427e",
+            "test-full-table_duplicated_location.tsv:md5,d41d8cd98f00b204e9800998ecf8427e",
+            "test-full-table_summary.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+        ],
+        "timestamp": "2026-03-20T13:53:56.102916",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Ceramica_pisi genome [fasta]": {
+        "content": [
+            "test-full-table_complete_location.tsv_buscopainter.png",
+            81941,
+            "test-full-table_complete_location.tsv_buscopainter.pdf",
+            6599,
+            "test-full-table_complete_location.tsv:md5,92a2d60e7a66edeb5070e3d982a53193",
+            "test-full-table_duplicated_location.tsv:md5,23301496a69958b2b64d30df982ca2df",
+            "test-full-table_summary.tsv:md5,16931cc78cc8506863b360e149d81111"
+        ],
+        "timestamp": "2026-03-20T13:53:38.139345",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    }
+}
