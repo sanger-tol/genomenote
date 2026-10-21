@@ -312,10 +312,8 @@
                 "GCA_963859965.1.lepidoptera_odb12.short_summary.tsv:md5,97bf63d6cb79a5255dfd8974aecf406a",
                 "GCA_963859965.1.hic.SAMEA112198479.ERR11904130.chromsizes:md5,ef15e0650aa9f69b86add7af93e0c843",
                 "GCA_963859965.1.hic.SAMEA112198479.ERR11904130.pretext:md5,ebabd182607b4dd244e394064b048413",
-                "GCA_963859965.1.hic.SAMEA112198479.ERR11904130.pretext.png:md5,198a4106e7c896ff378651f9acdc913e",
                 "GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.chromsizes:md5,ef15e0650aa9f69b86add7af93e0c843",
                 "GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.pretext:md5,ebabd182607b4dd244e394064b048413",
-                "GCA_963859965.1.hic.SAMEA112198479_X.ERR11904130.pretext.png:md5,198a4106e7c896ff378651f9acdc913e",
                 "GCA_963859965.1.genes.ensembl.2024_04.agat.spstats.stats.txt:md5,f94eb9364290e6d3eabe084c67ce9198",
                 "GCA_963859965.1.genes.ensembl.2024_04.agat.sqstats.stats.txt:md5,a7fe991f7434cd6f44b0cabd3802785f",
                 "GCA_963859965.1.genome_note_consistent.csv:md5,bf96b627287a0b965c070b7c35191e89",
@@ -409,7 +407,7 @@
                 "GCA_963859965.1.pacbio.SAMEA112198456_dir.merqury.temp.spectra-cn.st.png:md5,646311368d550f135eec7e2c02d8b541"
             ]
         ],
-        "timestamp": "2026-10-20T13:14:24.433158902",
+        "timestamp": "2026-10-21T12:20:13.328373142",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.0"
