@@ -1,0 +1,7 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/sanger-tol/nf-core-modules/main/modules/environment-schema.json
+channels:
+  - conda-forge
+dependencies:
+  - conda-forge::coreutils=9.5
+  - conda-forge::tar=1.35

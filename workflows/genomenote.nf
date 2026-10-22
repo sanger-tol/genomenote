@@ -3,11 +3,44 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { MULTIQC                } from '../modules/nf-core/multiqc/main'
-include { paramsSummaryMap       } from 'plugin/nf-schema'
-include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_genomenote_pipeline'
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORT LOCAL MODULES/SUBWORKFLOWS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+//
+// SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
+//
+include { INPUT_CHECK                } from '../subworkflows/local/input_check/main'
+include { GENOME_METADATA            } from '../subworkflows/local/genome_metadata/main'
+include { CONTACT_MAPS               } from '../subworkflows/local/contact_maps/main'
+include { GENOME_STATISTICS          } from '../subworkflows/local/genome_statistics/main'
+include { COMBINE_NOTE_DATA          } from '../subworkflows/local/combine_note_data/main'
+include { ANNOTATION_STATISTICS      } from '../subworkflows/local/annotation_statistics/main'
+include { ANNOTATION_ANCESTRAL       } from '../subworkflows/local/annotation_ancestral/main'
+include { GET_BLOBTK_PLOTS           } from '../subworkflows/sanger-tol/get_blobtk_plots/main'
+
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORT NF-CORE MODULES/SUBWORKFLOWS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+//
+// MODULE: Installed directly from nf-core/modules
+//
+include { GUNZIP as GUNZIP_PRIMARY   } from '../modules/nf-core/gunzip/main'
+include { GUNZIP as GUNZIP_HAPLOTYPE } from '../modules/nf-core/gunzip/main'
+include { SAMTOOLS_FAIDX             } from '../modules/nf-core/samtools/faidx/main'
+include { MULTIQC                    } from '../modules/nf-core/multiqc/main'
+
+include { paramsSummaryMap           } from 'plugin/nf-schema'
+include { paramsSummaryMultiqc       } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML     } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText     } from '../subworkflows/local/utils_nfcore_genomenote_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -16,18 +49,196 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_geno
 */
 
 workflow GENOMENOTE {
-
     take:
     ch_samplesheet // channel: samplesheet read in from --input
     multiqc_config
     multiqc_logo
     multiqc_methods_description
     outdir
+    metadata // channel: list of accession numbers to retrieve metadata for
+    busco_db // channel: path to the Busco lineage, if provided
+    ancestral_table // channel: path to the ancestral painting table, if provided
+    cooler_seq_order // channel: path to the ordered list of chromosomes, if provided
+    btk_local_path // channel: path of a local blobDir, if provided
+    btk_online_path // channel: path of a remote blobDir, if provided
 
     main:
 
     def ch_versions = channel.empty()
     def ch_multiqc_files = channel.empty()
+
+    ch_inputs = INPUT_CHECK(ch_samplesheet, metadata).data.branch { meta, file ->
+        hic: meta.datatype == 'hic'
+        return [meta, file, []]
+        pacbio: meta.datatype == 'pacbio' || meta.datatype == '10x'
+        return [meta, file]
+        haplotype: meta.datatype == 'haplotype'
+        return [meta, file]
+        genes: meta.datatype == 'genes'
+        return [meta, file]
+    }
+    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+
+
+    //
+    // MODULE: Unzip the input haplotype if zipped
+    //
+    ch_haplotype = ch_inputs.haplotype.branch { _meta, fasta ->
+        gzipped: fasta.name.endsWith('.gz')
+        unzipped: true
+    }
+
+    GUNZIP_HAPLOTYPE(
+        ch_haplotype.gzipped
+    )
+    ch_haplotypes = GUNZIP_HAPLOTYPE.out.gunzip
+        .mix(ch_haplotype.unzipped)
+        .map { _meta, fasta -> fasta }
+        .toSortedList { fasta -> fasta.name }
+
+
+    //
+    // MODULE: Uncompress fasta file if needed and set meta based on input params
+    //
+
+    ch_genome = INPUT_CHECK.out.param.map { meta -> [meta, params.fasta] }
+
+    if (params.fasta.endsWith('.gz')) {
+        ch_unzipped = GUNZIP_PRIMARY(ch_genome).gunzip
+    }
+    else {
+        ch_unzipped = ch_genome
+    }
+
+    ch_fasta_empty_fai = ch_unzipped.map { meta, fa -> [meta + [id: fa.baseName, genome_size: fa.size()], fa, []] }
+
+    //
+    // MODULE: INDEX THE INPUT ASSEMBLY
+    //
+    SAMTOOLS_FAIDX(
+        ch_fasta_empty_fai,
+        false,
+    )
+
+    // Load stats from the .fai file
+    ch_fasta_fai = ch_fasta_empty_fai
+        .join(SAMTOOLS_FAIDX.out.fai)
+        .map { meta, fasta, _fai, fai ->
+            [meta + get_sequence_map(fai), fasta, fai]
+        }
+    ch_fasta = ch_fasta_fai.map { meta, fasta, _fai -> tuple(meta, fasta) }
+
+
+    //
+    // SUBWORKFLOW: Create genome statistics table
+    //
+    ch_flagstat = ch_inputs.hic.map { meta, reads, _blank ->
+
+        // Support flagstat file in the same directory and in the "stats" sub-directory
+        def candidates = [
+            reads.resolveSibling(reads.baseName + ".flagstat"),
+            reads.resolveSibling("stats").resolve(reads.baseName + ".flagstat")
+        ]
+
+        def flagstat = candidates.find { f -> f.exists() }
+
+        if (!flagstat) {
+            throw new FileNotFoundException("Could not find flagstat for ${reads}. Tried:\n" + candidates.join("\n"))
+        }
+
+        [meta, file(flagstat)]
+    }
+
+    GENOME_STATISTICS(
+        ch_fasta,
+        params.busco_taxid_lineage_mapping,
+        busco_db,
+        ch_inputs.pacbio,
+        ch_flagstat,
+        ch_haplotypes,
+    )
+    ch_versions = ch_versions.mix(GENOME_STATISTICS.out.versions)
+
+
+    if (params.btk_location || params.btk_online_location) {
+        //
+        // SUBWORKFLOW: Grab blobtoolkit plots via API
+        //
+        GET_BLOBTK_PLOTS(
+            ch_fasta,
+            btk_local_path,
+            btk_online_path,
+            channel.of(params.btk_image_format),
+        )
+    }
+
+
+    //
+    // SUBWORKFLOW: Create contact map matrices from HiC alignment files
+    //
+    CONTACT_MAPS(
+        ch_fasta_fai,
+        ch_inputs.hic,
+        GENOME_STATISTICS.out.summary_seq,
+        channel.of(params.cooler_bin_size),
+        cooler_seq_order,
+        params.contact_map_format ?: params.select_contact_map,
+    )
+    ch_versions = ch_versions.mix(CONTACT_MAPS.out.versions)
+
+
+    //
+    // SUBWORKFLOW : Obtain feature statistics from the annotation file : GFF
+    //
+    ch_annotation_stats = channel.empty()
+    ANNOTATION_STATISTICS(
+        ch_inputs.genes,
+        ch_fasta.first(),
+        GENOME_STATISTICS.out.ch_busco_lineage.first(),
+        busco_db,
+    )
+    ch_versions = ch_versions.mix(ANNOTATION_STATISTICS.out.versions)
+    ch_annotation_stats = ch_annotation_stats.mix(ANNOTATION_STATISTICS.out.summary)
+
+    if (params.note_template) {
+
+        //
+        // SUBWORKFLOW: Read in template of data files to fetch, parse these files and output a list of genome metadata params
+        //
+        ch_file_list = channel.fromPath("${projectDir}/assets/genome_metadata_template.csv")
+        ch_metadata = INPUT_CHECK.out.param.combine(ch_file_list)
+
+        GENOME_METADATA(ch_metadata)
+        ch_versions = ch_versions.mix(GENOME_METADATA.out.versions)
+
+        //
+        // SUBWORKFLOW: Combine data from previous steps to create formatted genome note
+        //
+        COMBINE_NOTE_DATA(
+            GENOME_METADATA.out.consistent,
+            GENOME_METADATA.out.inconsistent,
+            GENOME_STATISTICS.out.summary,
+            ch_annotation_stats.ifEmpty([[], []]),
+            params.note_template,
+        )
+        ch_versions = ch_versions.mix(COMBINE_NOTE_DATA.out.versions)
+    }
+
+    //
+    // SUBWORKFLOW: Ancestral Element Analysis workflow - generates plots for user provided ancestral element mapping
+    //              Only available for lepidoptera as of April 2025
+    //              Once there are more options, this should be reviewed for a better system
+    //
+
+    if (params.ancestral_table && params.ancestral_busco_lineage) {
+        ANNOTATION_ANCESTRAL(
+            ch_fasta,
+            ancestral_table,
+            params.ancestral_busco_lineage,
+            busco_db,
+        )
+        ch_versions = ch_versions.mix(ANNOTATION_ANCESTRAL.out.versions)
+    }
 
     //
     // Collate and save software versions
@@ -41,9 +252,9 @@ workflow GENOMENOTE {
 
     def topic_versions_string = topic_versions.versions_tuple
         .map { process, tool, version ->
-            [ process[process.lastIndexOf(':')+1..-1], "  ${tool}: ${version}" ]
+            [process[process.lastIndexOf(':') + 1..-1], "  ${tool}: ${version}"]
         }
-        .groupTuple(by:0)
+        .groupTuple(by: 0)
         .map { process, tool_versions ->
             tool_versions.unique().sort()
             "${process}:\n${tool_versions.join('\n')}"
@@ -70,6 +281,8 @@ workflow GENOMENOTE {
         : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
     def ch_methods_description = channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_flagstat.collect { _meta, file -> file }.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(GENOME_STATISTICS.out.multiqc.collect { _meta, file -> file }.ifEmpty([]))
     MULTIQC(
         ch_multiqc_files.flatten().collect().map { files ->
             [
@@ -84,12 +297,33 @@ workflow GENOMENOTE {
             ]
         }
     )
-    emit:multiqc_report = MULTIQC.out.report.map { _meta, report -> [report] }.toList() // channel: /path/to/multiqc_report.html
+    emit:
+    multiqc_report = MULTIQC.out.report.map { _meta, report -> [report] }.toList() // channel: /path/to/multiqc_report.html
     versions       = ch_versions                 // channel: [ path(versions.yml) ]
 }
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    THE END
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
+// Read the .fai file to extract the number of sequences, the maximum and total sequence length
+// Inspired from https://github.com/nf-core/rnaseq/blob/3.10.1/lib/WorkflowRnaseq.groovy
+def get_sequence_map(fai_file) {
+    def n_sequences = 0
+    def max_length = 0
+    def total_length = 0
+    fai_file.eachLine { line ->
+        def lspl = line.split('\t')
+        // def chrom  = lspl[0]
+        def length = lspl[1].toLong()
+        n_sequences += 1
+        total_length += length
+        if (length > max_length) {
+            max_length = length
+        }
+    }
+
+    def sequence_map = [:]
+    sequence_map.n_sequences = n_sequences
+    sequence_map.total_length = total_length
+    if (n_sequences) {
+        sequence_map.max_length = max_length
+    }
+    return sequence_map
+}

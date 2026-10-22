@@ -1,0 +1,112 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/sanger-tol/nf-core-modules/main/modules/meta-schema.json
+name: "ancestral_plot"
+description: |
+  Plot ancestrally linked busco genes from ancestral extract output.
+keywords:
+  - pdf
+  - png
+  - ancestral
+  - busco
+  - plot
+tools:
+  - plot_buscopainter:
+      description: |
+        Generate BUSCO ancestral linkage plots (PDF/PNG) from the ancestrally linked BUSCO TSV produced by the extract module.
+      homepage: https://github.com/sanger-tol/busco_painter
+      documentation: https://github.com/sanger-tol/busco_painter
+      licence:
+        - "GPL v2.0"
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - comp_location:
+        type: file
+        description: |
+          Complete location busco painter output.
+        pattern: "*.tsv"
+        ontologies:
+          - edam: http://edamontology.org/format_3475
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - fai:
+        type: file
+        description: |
+          Assembly index file
+        pattern: "*.fai"
+        ontologies: []
+output:
+  png_plot:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_buscopainter.png":
+          type: file
+          description: |
+            A PNG plot showing busco gene linkage maps.
+          ontologies:
+            - edam: http://edamontology.org/format_3603
+  pdf_plot:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_buscopainter.pdf":
+          type: file
+          description: |
+            A PDF plot showing busco gene linkage maps.
+          ontologies:
+            - edam: http://edamontology.org/format_3508
+  versions_r:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - R:
+          type: string
+          description: The name of the tool
+      - R --version | grep -oP "\d+\.\d+\.\d+":
+          type: eval
+          description: The expression to obtain the version of the tool
+  versions_plotbuscopainter:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - plot_buscopainter.R:
+          type: string
+          description: The name of the tool
+      - 1.0.0:
+          type: string
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - R:
+          type: string
+          description: The name of the tool
+      - R --version | grep -oP "\d+\.\d+\.\d+":
+          type: eval
+          description: The expression to obtain the version of the tool
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - plot_buscopainter.R:
+          type: string
+          description: The name of the tool
+      - 1.0.0:
+          type: string
+          description: The expression to obtain the version of the tool
+authors:
+  - "@DLBPointon"
+maintainers:
+  - "@DLBPointon"
