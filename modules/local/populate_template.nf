@@ -8,7 +8,7 @@ process POPULATE_TEMPLATE {
 
     input:
     tuple val(meta), path(param_data)
-    path(note_template)
+    path note_template
 
     output:
     tuple val(meta), path("*.{docx,xml}"), emit: genome_note
@@ -23,8 +23,8 @@ process POPULATE_TEMPLATE {
 
     """
     populate_genome_note_template.py \\
-        $param_data \\
-        $note_template \\
+        ${param_data} \\
+        ${note_template} \\
         ${file_type} \\
         ${prefix}.${file_type}
 

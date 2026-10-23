@@ -10,15 +10,15 @@
             "sample": {
                 "type": "string",
                 "description": "Sample identifier",
-                "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "pattern": "^[^\\s/]+(?:/[^\\s/]+)?$",
+                "errorMessage": "Sample name must be formatted as 'specimen' or 'specimen/run' and cannot contain spaces",
                 "meta": ["id"]
             },
             "datatype": {
                 "type": "string",
                 "pattern": "^\\S+$",
-                "enum": ["hic", "pacbio", "10x", "haplotype"],
-                "errorMessage": "Data type must be one of: hic, pacbio, 10x, haplotype",
+                "enum": ["hic", "pacbio", "10x", "haplotype", "genes"],
+                "errorMessage": "Data type must be one of: hic, pacbio, 10x, haplotype, genes",
                 "meta": ["datatype"]
             },
             "datafile": {
@@ -26,7 +26,7 @@
                 "format": "path",
                 "exists": true,
                 "pattern": "^\\S+$",
-                "errorMessage": "Data path for reads or kmer"
+                "errorMessage": "Data path for reads or kmer must be provided and cannot contain spaces"
             }
         },
         "required": ["sample", "datatype", "datafile"]

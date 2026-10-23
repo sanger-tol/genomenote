@@ -3,30 +3,27 @@ process COMBINE_METADATA {
     label 'process_single'
 
     conda "conda-forge::python=3.9.1"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/python:3.9--1' :
-        'quay.io/biocontainers/python:3.9--1' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/python:3.9--1'
+        : 'quay.io/biocontainers/python:3.9--1'}"
 
     input:
     tuple val(meta), path(file_list)
 
     output:
-    tuple val (meta), path("${meta.id}_consistent.csv"), emit: consistent
-    tuple val (meta), path("${meta.id}_inconsistent.csv"), emit: inconsistent
+    tuple val(meta), path("${meta.id}_consistent.csv"), emit: consistent
+    tuple val(meta), path("${meta.id}_inconsistent.csv"), emit: inconsistent
     path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args = []
     def prefix = task.ext.prefix ?: meta.id
-    for (item in  file_list){
-        def file = item
+    def args = file_list.collectMany { item ->
         def file_ext = item.getExtension()
         def file_name = "--" + item.getName().minus("${prefix}_").minus(".${file_ext}").toLowerCase() + "_file"
-        args.add(file_name)
-        args.add(file)
+        [file_name, item]
     }
 
     """

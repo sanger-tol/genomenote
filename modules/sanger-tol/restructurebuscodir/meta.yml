@@ -1,0 +1,97 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/sanger-tol/nf-core-modules/main/modules/meta-schema.json
+name: "restructurebuscodir"
+description: Create a directory with clean BUSCO outputs
+keywords:
+  - busco
+  - tar
+  - genomics
+tools:
+  - coreutils:
+      description: |
+        GNU coreutils provides standard utilities such as paste and tr used during conversion.
+      homepage: https://www.gnu.org/software/coreutils/
+      licence: ["GPL-3.0-or-later"]
+  - tar:
+      description: |
+        GNU tape archive program
+      homepage: https://www.gnu.org/software/tar/
+      licence: ["GPL-3.0-or-later"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - lineage:
+        type: string
+        description: The BUSCO lineage to use, or "auto", "auto_prok" or
+          "auto_euk" to automatically select lineage
+    - batch_summary:
+        type: file
+        description: Summary of all sequence files analyzed
+        pattern: "*-busco.batch_summary.txt"
+        ontologies:
+          - edam: http://edamontology.org/format_3475 # TSV
+    - short_summary_txt:
+        type: file
+        description: Short Busco summary in plain text format
+        pattern: "short_summary.*.txt"
+        ontologies:
+          - edam: http://edamontology.org/format_2330 # Textual format
+    - short_summary_json:
+        type: file
+        description: Short Busco summary in JSON format
+        pattern: "short_summary.*.json"
+        ontologies:
+          - edam: http://edamontology.org/format_3464 # JSON
+    - full_table:
+        type: file
+        description: Full BUSCO results table
+        pattern: "full_table.tsv"
+        ontologies:
+          - edam: http://edamontology.org/format_3475 # TSV
+    - missing_busco_list:
+        type: file
+        description: List of missing BUSCOs
+        pattern: "missing_busco_list.tsv"
+        ontologies:
+          - edam: http://edamontology.org/format_3475 # TSV
+    - seq_dir:
+        type: directory
+        description: BUSCO sequence directory
+        pattern: "busco_sequences"
+output:
+  clean_busco_dir:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'sample1' ]
+      - "${lineage}":
+          type: directory
+          description: BUSCO results directory
+  versions_restructurebuscodir:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - restructurebuscodir:
+          type: string
+          description: The name of the tool
+      - echo 1.0:
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - restructurebuscodir:
+          type: string
+          description: The name of the tool
+      - echo 1.0:
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@muffato"
+maintainers:
+  - "@muffato"

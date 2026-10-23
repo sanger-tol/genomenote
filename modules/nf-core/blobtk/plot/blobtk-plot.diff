@@ -1,0 +1,25 @@
+Changes in component 'nf-core/blobtk/plot'
+'modules/nf-core/blobtk/plot/meta.yml' is unchanged
+Changes in 'blobtk/plot/main.nf':
+--- modules/nf-core/blobtk/plot/main.nf
++++ modules/nf-core/blobtk/plot/main.nf
+@@ -1,13 +1,4 @@
+ process BLOBTK_PLOT {
+-    // Linked to issue https://github.com/sanger-tol/genomenote/issues/184
+-    // Depending on the blob dataset in use, the grid option may not
+-    // work at all. This is down to the version of blobtoolkit used to
+-    // generate the blob.
+-    // Adding a check would overly complicate the module so for now
+-    // we can ignore errors, with the knowledge it would only kill
+-    // runs in which the blobdir doesn't have the right data.
+-    errorStrategy 'ignore'
+-
+     tag "$prefix"
+     label 'process_single'
+ 
+
+'modules/nf-core/blobtk/plot/environment.yml' is unchanged
+'modules/nf-core/blobtk/plot/tests/main.nf.test' is unchanged
+'modules/nf-core/blobtk/plot/tests/nextflow.config' is unchanged
+'modules/nf-core/blobtk/plot/tests/main.nf.test.snap' is unchanged
+************************************************************

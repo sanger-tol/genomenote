@@ -1,16 +1,15 @@
 process FETCH_ENSEMBL_METADATA {
-    tag "$assembly"
+    tag "${assembly}"
     label 'process_single'
 
     conda "conda-forge::python=3.9.1"
 
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/requests:2.26.0':
-        'quay.io/biocontainers/requests:2.26.0'}"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/requests:2.26.0'
+        : 'quay.io/biocontainers/requests:2.26.0'}"
 
     input:
     tuple val(assembly), val(taxon_id)
-
 
     output:
     path "*.csv", emit: file_path
@@ -24,7 +23,7 @@ process FETCH_ENSEMBL_METADATA {
     def output_file = "${assembly}_ensembl_annotation.csv"
 
     """
-    $script_name --taxon_id $taxon_id --output $output_file
+    ${script_name} --taxon_id ${taxon_id} --output ${output_file}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

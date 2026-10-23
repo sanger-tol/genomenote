@@ -1,0 +1,138 @@
+nextflow_workflow {
+
+    name "Test Subworkflow ANCESTRAL_ANNOTATION"
+    script "../main.nf"
+    config "./nextflow.config"
+    workflow "ANCESTRAL_ANNOTATION"
+
+    tag "subworkflows"
+    tag "subworkflows_sangertol"
+    tag "subworkflows/ancestral_annotation"
+    tag "samtools/faidx"
+    tag "ancestral/extract"
+    tag "ancestral/plot"
+    tag "subworkflows/../../modules/nf-core/samtools/faidx"
+	tag "modules/nf-core/gunzip"
+
+    setup {
+        nfcoreInitialise("${launchDir}/library/")
+        nfcoreInstall(
+            "${launchDir}/library/",
+            [
+                "samtools/faidx",
+                "gunzip"
+            ]
+        )
+        nfcoreLink("${launchDir}/library/", "${baseDir}/modules/")
+
+        run("GUNZIP"){
+            script "../../../../modules/nf-core/gunzip/main.nf"
+            process {
+                """
+                input[0] = [
+                    [ id: "Ceramica_pisi" ],
+                    file(params.modules_testdata_base_path + 'Ceramica_pisi/assembly/release/ilCerPisi1.1/insdc/GCA_963859965.1.fasta.gz', checkIfExists: true)
+                ]
+                """
+            }
+        }
+    }
+
+    test("Ceramica_pisi genome [fasta]") {
+
+        when {
+
+            params {
+                ancestral_plot_args     = "-m True -d True"
+            }
+
+            workflow {
+                """
+                input[0] = GUNZIP.out.gunzip
+
+                input[1] = Channel.of(
+                    [
+                        [ id:'lepidoptera' ], // meta map
+                        file(params.modules_testdata_base_path + 'resources/genomenote/ancestral_data/Merian_elements_full_table.tsv', checkIfExists: true)
+                    ]
+                )
+
+                input[2] = Channel.of(
+                    [
+                        [ id:'test-full-table' ], // meta map
+                        file(params.modules_testdata_base_path + 'resources/genomenote/ancestral_data/GCA_963859965.1_busco_full_table.tsv', checkIfExists: true)
+                    ]
+                )
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    file(workflow.out.ancestral_png_plot.get(0).get(1)).getName(),
+                    file(workflow.out.ancestral_png_plot.get(0).get(1)).size(),
+                    file(workflow.out.ancestral_pdf_plot.get(0).get(1)).getName(),
+                    file(workflow.out.ancestral_pdf_plot.get(0).get(1)).size(),
+                    file(workflow.out.ancestral_complete_location.get(0).get(1)),
+                    file(workflow.out.ancestral_duplicate_location.get(0).get(1)),
+                    file(workflow.out.ancestral_summary.get(0).get(1))
+                ).match() }
+            )
+        }
+
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
+        }
+    }
+
+    test("Cloeon_dipterum genome - stub") {
+
+        options "-stub"
+
+        when {
+
+            params {
+                ancestral_plot_args     = "-m True -d True"
+            }
+
+            workflow {
+                """
+                input[0] = GUNZIP.out.gunzip
+
+                input[1] = Channel.of(
+                    [
+                        [ id:'lepidoptera' ], // meta map
+                        file(params.modules_testdata_base_path + 'resources/genomenote/ancestral_data/Merian_elements_full_table.tsv', checkIfExists: true)
+                    ]
+                )
+
+                input[2] = Channel.of(
+                    [
+                        [ id:'test-full-table' ], // meta map
+                        file(params.modules_testdata_base_path + 'resources/genomenote/ancestral_data/GCA_963859965.1_busco_full_table.tsv', checkIfExists: true)
+                    ]
+                )
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    file(workflow.out.ancestral_png_plot.get(0).get(1)).getName(),
+                    file(workflow.out.ancestral_pdf_plot.get(0).get(1)).getName(),
+                    file(workflow.out.ancestral_complete_location.get(0).get(1)),
+                    file(workflow.out.ancestral_duplicate_location.get(0).get(1)),
+                    file(workflow.out.ancestral_summary.get(0).get(1))
+                ).match() }
+            )
+        }
+
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
+        }
+    }
+}

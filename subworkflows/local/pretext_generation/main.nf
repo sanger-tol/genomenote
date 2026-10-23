@@ -1,51 +1,35 @@
-include { SAMTOOLS_FAIDX    } from '../../../modules/nf-core/samtools/faidx/main'
-include { PRETEXTMAP        } from '../../../modules/nf-core/pretextmap/main'
-include { PRETEXTSNAPSHOT   } from '../../../modules/nf-core/pretextsnapshot/main'
+include { PRETEXTMAP      } from '../../../modules/nf-core/pretextmap/main'
+include { PRETEXTSNAPSHOT } from '../../../modules/nf-core/pretextsnapshot/main'
 
 workflow PRETEXT_GENERATION {
     take:
-    genome          // Channel [ val(meta), path(file)      ]
-    chrom_list      // Channel [ val(meta), path(file)      ]
-    bam_tuple       // Channel [ val(meta), path(file)      ]
+    genome // Channel [ val(meta), path(fasta), path(fai) ]
+    bam_tuple // Channel [ val(meta), path(file)      ]
 
     main:
-    ch_versions     = Channel.empty()
-
-    //
-    // MODULE: GENERATE FAI FILE FROM FASTA
-    //         THIS CAN LIKELY BE MOVED TO THE MAIN WORKFLOW IN THE FUTURE
-    //         AS MULTIPLE PR's USE THIS MODULE
-    //
-    SAMTOOLS_FAIDX (
-        genome,
-        [[],[]],
-        false
-    )
-    ch_versions     = ch_versions.mix( SAMTOOLS_FAIDX.out.versions )
-
+    ch_versions = channel.empty()
 
     //
     // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM - These are already aligned so we don't need any more processing
     //
-    PRETEXTMAP (
+    PRETEXTMAP(
         bam_tuple,
-        genome,
-        SAMTOOLS_FAIDX.out.fai
+        genome.map { meta, fasta, _fai -> tuple(meta, fasta) }.collect(),
+        genome.map { meta, _fasta, fai -> tuple(meta, fai) }.collect(),
     )
-    ch_versions     = ch_versions.mix( PRETEXTMAP.out.versions )
+    ch_versions = ch_versions.mix(PRETEXTMAP.out.versions)
 
 
     //
     // MODULE: GENERATE PNG FROM PRETEXT MAP
     //
-    PRETEXTSNAPSHOT (
+    PRETEXTSNAPSHOT(
         PRETEXTMAP.out.pretext
     )
-    ch_versions     = ch_versions.mix( PRETEXTSNAPSHOT.out.versions )
-
+    ch_versions = ch_versions.mix(PRETEXTSNAPSHOT.out.versions)
 
     emit:
-    pretext_map     = PRETEXTMAP.out.pretext        // tuple val(meta), path("*.pretext")
-    pretext_png     = PRETEXTSNAPSHOT.out.image     // tuple val(meta), path("*.pretext")
-    versions        = ch_versions                   // channel: [ versions.yml ]
+    pretext_map = PRETEXTMAP.out.pretext // tuple val(meta), path("*.pretext")
+    pretext_png = PRETEXTSNAPSHOT.out.image // tuple val(meta), path("*.pretext")
+    versions    = ch_versions // channel: [ versions.yml ]
 }

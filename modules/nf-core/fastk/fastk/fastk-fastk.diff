@@ -1,39 +1,48 @@
 Changes in component 'nf-core/fastk/fastk'
+'modules/nf-core/fastk/fastk/environment.yml' is unchanged
 'modules/nf-core/fastk/fastk/meta.yml' is unchanged
 Changes in 'fastk/fastk/main.nf':
 --- modules/nf-core/fastk/fastk/main.nf
 +++ modules/nf-core/fastk/fastk/main.nf
-@@ -3,7 +3,7 @@
-     label 'process_medium'
+@@ -15,6 +15,7 @@
+     tuple val(meta), path("*.hist")                      , emit: hist
+     tuple val(meta), path("*.ktab*", hidden: true)       , emit: ktab, optional: true
+     tuple val(meta), path("*.{prof,pidx}*", hidden: true), emit: prof, optional: true
++    tuple val(meta), path("SOURCE.txt")                  , emit: source_txt, optional: true
+     // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+     tuple val("${task.process}"), val('fastk'), eval('echo 1.2'), emit: versions_fastk, topic: versions
  
-     // WARN: Version information not provided by tool on CLI. Please update version string below when bumping container versions.
--    container 'ghcr.io/nbisweden/fastk_genescopefk_merquryfk:1.2'
-+    container 'quay.io/sanger-tol/fastk:1.1.0-c1'
- 
-     input:
-     tuple val(meta), path(reads)
-@@ -24,7 +24,7 @@
-     }
-     def args = task.ext.args ?: ''
-     def prefix = task.ext.prefix ?: "${meta.id}"
--    def FASTK_VERSION = 'f18a4e6d2207539f7b84461daebc54530a9559b0' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
-+    def FASTK_VERSION = 'ddea6cf254f378db51d22c6eb21af775fa9e1f77' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+@@ -24,13 +25,15 @@
+     script:
+     def args      = task.ext.args ?: ''
+     def prefix    = task.ext.prefix ?: "${meta.id}"
++    def source_files_args = meta.merge_source ? "&& printf \"%s\" \"${meta.merge_source}\" > SOURCE.txt" : ""
      """
      FastK \\
          $args \\
-@@ -49,7 +49,7 @@
-     }
-     def args = task.ext.args ?: ''
-     def prefix = task.ext.prefix ?: "${meta.id}"
--    def FASTK_VERSION = 'f18a4e6d2207539f7b84461daebc54530a9559b0' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
-+    def FASTK_VERSION = 'ddea6cf254f378db51d22c6eb21af775fa9e1f77' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+         -T$task.cpus \\
+         -M${task.memory.toGiga()} \\
+         -N${prefix} \\
+-        $reads
++        $reads \\
++        ${source_files_args}
  
-     def touch_ktab = args.contains('-t') ? "touch ${prefix}_fk.ktab .${prefix}_fk.ktab.1" : ''
-     def touch_prof = args.contains('-p') ? "touch ${prefix}_fk.prof .${prefix}_fk.pidx.1" : ''
+     find . -name '*.ktab*' -exec chmod a+r {} \\;
+     """
+@@ -40,8 +43,10 @@
+     def prefix     = task.ext.prefix ?: "${meta.id}"
+     def touch_ktab = args.contains('-t') ? "touch ${prefix}.ktab .${prefix}.ktab.1" : ''
+     def touch_prof = args.contains('-p') ? "touch ${prefix}.prof .${prefix}.pidx.1" : ''
++    def source_files_args = meta.merge_source ? "&& printf \"%s\" \"${meta.merge_source}\" > SOURCE.txt" : ""
+     """
+-    touch ${prefix}.hist
++    touch ${prefix}.hist \\
++    ${source_files_args}
+     $touch_ktab
+     $touch_prof
+ 
 
-'modules/nf-core/fastk/fastk/environment.yml' is unchanged
-'modules/nf-core/fastk/fastk/tests/main.nf.test' is unchanged
-'modules/nf-core/fastk/fastk/tests/tags.yml' is unchanged
-'modules/nf-core/fastk/fastk/tests/nextflow.config' is unchanged
 'modules/nf-core/fastk/fastk/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/fastk/fastk/tests/nextflow.config' is unchanged
+'modules/nf-core/fastk/fastk/tests/main.nf.test' is unchanged
 ************************************************************

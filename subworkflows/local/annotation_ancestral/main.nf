@@ -1,82 +1,64 @@
 //
 // NF-CORE MODULE IMPORT BLOCK
 //
-include { SAMTOOLS_FAIDX        } from '../../../modules/nf-core/samtools/faidx/main'
-include { BUSCO_BUSCO as BUSCO  } from '../../../modules/nf-core/busco/busco/main'
+include { BUSCO_BUSCO as BUSCO } from '../../../modules/nf-core/busco/busco/main'
 
 //
-// LOCAL MODULE IMPORT BLOCK
+// SANGER-TOL MODULE IMPORT BLOCK
 //
-include { ANCESTRAL_EXTRACT     } from '../../../modules/sanger-tol/ancestral/extract'
-include { ANCESTRAL_PLOT        } from '../../../modules/sanger-tol/ancestral/plot'
+include { ANCESTRAL_ANNOTATION } from '../../sanger-tol/ancestral_annotation/main'
 
 
 workflow ANNOTATION_ANCESTRAL {
     take:
-    fasta                // Channel: [ meta, fasta ]
-    ancestral_table      // Channel: file(ancestral_table location)
-    ch_ancestral_lineage // Channel:
-    lineage_db           // Channel:
-
+    fasta // Channel: [ meta, fasta ]
+    ancestral_table // Channel: file(ancestral_table location)
+    val_ancestral_lineage // ancestral lineage value to use for BUSCO, e.g. lepidoptera_odb10
+    busco_db // Channel:
 
     main:
-    ch_versions                     = Channel.empty()
-
+    ch_versions = channel.empty()
 
     //
     // MODULE: RUN BUSCO SOLELY FOR ANCESTRAL NOW THAT THE TWO CAN USE
     //          DIFFERING ODB VERSIONS
     //
-    BUSCO (
+    BUSCO(
         fasta,
         "genome",
-        ch_ancestral_lineage,
-        lineage_db.ifEmpty([]),
+        val_ancestral_lineage,
+        busco_db.ifEmpty([]),
         [],
-        false
+        false,
     )
-    ch_versions         = ch_versions.mix ( BUSCO.out.versions.first() )
+    ch_versions = ch_versions.mix(BUSCO.out.versions.first())
 
 
     //
     // MODULE: EXTRACTS ANCESTRALLY LINKED BUSCO GENES FROM FULL TABLE
     //         THIS IS THE BUSCOPAINTER.PY SCRIPT
     //
-    ANCESTRAL_EXTRACT(
-        BUSCO.out.full_table,
-        ancestral_table
-    )
-    ch_versions                     = ch_versions.mix(ANCESTRAL_EXTRACT.out.versions)
+    busco_table_meta_mod = BUSCO.out.full_table
+        .combine(ancestral_table)
+        .map { meta, table, ancestral_meta, ancestral_file ->
+            [meta + [lineage: val_ancestral_lineage, ancestral_table: ancestral_meta.id], table, ancestral_meta, ancestral_file]
+        }
+        .multiMap { meta, table, ancestral_meta, ancestral_file ->
+            table: tuple(meta, table)
+            ancestral_table: tuple(ancestral_meta, ancestral_file)
+        }
 
-
-    //
-    // MODULE: INDEX THE INPUT ASSEMBLY
-    //
-    SAMTOOLS_FAIDX(
+    ANCESTRAL_ANNOTATION(
         fasta,
-        [[],[]],
-        false
+        busco_table_meta_mod.ancestral_table,
+        busco_table_meta_mod.table,
     )
-    ch_versions                     = ch_versions.mix( SAMTOOLS_FAIDX.out.versions )
-
-
-    //
-    // MODULE: PLOTS THE ANCESTRAL BUSCO GENES
-    //         THIS IS THE PLOT_BUSCOPAINTER.PY SCRIPT
-    //
-    ANCESTRAL_PLOT (
-        ANCESTRAL_EXTRACT.out.comp_location,
-        SAMTOOLS_FAIDX.out.fai
-    )
-    ch_versions                     = ch_versions.mix(ANCESTRAL_PLOT.out.versions)
-
 
     emit:
-    ancestral_png_plot              = ANCESTRAL_PLOT.out.png_plot           // channel: [   [id], file  ]
-    ancestral_pdf_plot              = ANCESTRAL_PLOT.out.pdf_plot           // channel: [   [id], file  ]
-    ancestral_complete_location     = ANCESTRAL_EXTRACT.out.comp_location   // channel: [   [id], file  ]
-    ancestral_duplicate_location    = ANCESTRAL_EXTRACT.out.dup_location    // channel: [   [id], file  ]
-    ancestral_summary               = ANCESTRAL_EXTRACT.out.summary         // channel: [   [id], file  ]
-    versions                        = ch_versions                           // channel: [ versions.yml  ]
-
+    ancestral_png_plot           = ANCESTRAL_ANNOTATION.out.ancestral_png_plot // channel: [   [id], file  ]
+    ancestral_pdf_plot           = ANCESTRAL_ANNOTATION.out.ancestral_pdf_plot // channel: [   [id], file  ]
+    ancestral_complete_location  = ANCESTRAL_ANNOTATION.out.ancestral_complete_location // channel: [   [id], file  ]
+    ancestral_duplicate_location = ANCESTRAL_ANNOTATION.out.ancestral_duplicate_location // channel: [   [id], file  ]
+    ancestral_summary            = ANCESTRAL_ANNOTATION.out.ancestral_summary // channel: [   [id], file  ]
+    versions                     = ch_versions // channel: [ versions.yml  ]
 }

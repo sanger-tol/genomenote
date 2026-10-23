@@ -15,7 +15,7 @@ These typically include:
 3. Genome completeness from BUSCO.
 4. Annotation statistics from AGAT and completeness from BUSCO.
 5. Consensus quality and k-mer completeness from MerquryFK - when high-quality reads are available.
-6. Hi-C contact map and chromosomal grid using Cooler, as well as primary mapped percentage from samtools flagstat - when Hi-C reads are provided. These files can be displayed on a [HiGlass](http://higlass.io) server, like the one use by the [Sanger Institute](https://genome-note-higlass.tol.sanger.ac.uk/app).
+6. Hi-C contact map and chromosomal grid using Cooler, as well as primary mapped percentage from samtools flagstat - when Hi-C reads are provided. These files can be displayed on a [HiGlass](http://higlass.io) server.
 7. Ancestral Plots are mappings of putative ancestral BUSCO genes onto the chromosomes of the input assembly.
 8. Pretext map and snapshot
 
@@ -24,18 +24,22 @@ These typically include:
 The assembly accession for the genome you would like to analyse, optionally with the biosample accession(s) linked to this genome assembly.
 
 ```bash
---assembly '[assembly accession]'
---biosample_wgs '[biosample accession of the biosample used to produce the genomic sequence]'
---biosample_hic '[biosample accession of the biosample used to produce the HiC data]'
---biosample_rna '[biosample accession of the biosample used to produce the RNASeq data]
+--assembly_accession '[assembly accession]'
+--biosample_accession_wgs '[biosample accession of the biosample used to produce the genomic sequence]'
+--biosample_accession_hic '[biosample accession of the biosample used to produce the HiC data]'
+--biosample_accession_rna '[biosample accession of the biosample used to produce the RNASeq data]
 ```
 
 ## Annotation input
 
-If you want to generate statistics on the geneset annotated for the assembly you will need to supply a GFF3 file of the predicted gene sequences. The assembly region names used in this file must match the assembly regions names used in the assembly fasta file provided with --fasta
+If you want to generate statistics on the annotated gene set for the assembly, provide the annotation GFF3 as a `genes` row in the samplesheet.
 
-```bash
---annotation_set '[Path to annotation file :gff]
+The assembly region names used in the GFF3 file must match the assembly region names used in the assembly FASTA provided with `--fasta`.
+
+For example:
+
+```csv
+ensembl.2024_04,genes,/path/to/annotation.gff3.gz
 ```
 
 ## Samplesheet input
@@ -48,41 +52,52 @@ You will need to create a samplesheet with information about the samples you wou
 
 ### Multiple runs of the same sample
 
-The `sample` identifiers have to be the same when you have re-sequenced the same sample using different technologies. Below is an example for the same sample sequenced using HiC and PacBio sequencing technology:
+The `sample` identifiers have to be unique.
+
+Use either `specimen` or `specimen/run` format:
+
+- `specimen`: single run.
+- `specimen/run`: multiple runs from the same specimen.
+
+If `specimen/run` is used, both components must be non-empty and only one slash is allowed.
+
+Below is an example for the same specimen sequenced using Hi-C and PacBio technology:
 
 ```csv title="samplesheet.csv"
 sample,datatype,datafile
-sample1,hic,/path/to/aligned/cram
-sample1,pacbio,/path/to/unaligned/bam
-sample1,haplotype,/path/to/haplotype/assembly/fasta{.gz}
+specimen1/run1,hic,/path/to/aligned/cram
+specimen1/run2,pacbio,/path/to/unaligned/bam
+specimen1,haplotype,/path/to/haplotype/assembly/fasta{.gz}
 ```
 
 ### Full samplesheet
 
 The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
 
-A final samplesheet file consisting of both HiC and PacBio data may look something like the one below. This is for 1 sample, where `sample1` has been sequenced twice.
+A final samplesheet file including Hi-C, PacBio, haplotype and annotation input may look like this:
 
 ```csv title="samplesheet.csv"
 sample,datatype,datafile
-sample1,hic,/path/to/aligned/cram
-sample1,pacbio,/path/to/unaligned/bam
-sample1,haplotype,/path/to/haplotype/assembly/fasta{.gz}
+specimen1/run1,hic,/path/to/aligned/cram
+specimen1/run2,pacbio,/path/to/unaligned/bam
+specimen1,haplotype,/path/to/haplotype/assembly/fasta{.gz}
+ensembl.2024_04,genes,/path/to/annotation.gff3.gz
 ```
 
-| Column     | Description                                                                                                                                                                            |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`   | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `datatype` | Type of data. Must be `hic`, `pacbio`, `10x` or `haplotype`                                                                                                                            |
-| `datafile` | Full path to the data location.                                                                                                                                                        |
+| Column     | Description                                                                                                                                                                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`   | Sample identifier must be unique (slash `/` and `.` are treated equivalent). Please use `specimen/run` when multiple runs exist for one specimen. For annotation sets with datatype as `genes`, `sample` is source of genes (i.e., `ensembl.2024_04`). Sample names must not contain spaces. |
+| `datatype` | Type of data. Must be `hic`, `pacbio`, `10x`, `haplotype`, or `genes` (annotation input).                                                                                                                                                                                                    |
+| `datafile` | Full path to the data location.                                                                                                                                                                                                                                                              |
 
 Here are the expected data files for each data type:
 
-| `datatype`         | `datafile`                                                     |
-| ------------------ | -------------------------------------------------------------- |
-| `hic`              | Either `bam` or `cram` aligned reads                           |
-| `pacbio` and `10x` | Either the FASTK `kmer` directory or the unaligned `bam` files |
-| `haplotype`        | The Fasta file of the alternative haplotype                    |
+| `datatype`         | `datafile`                                                                       |
+| ------------------ | -------------------------------------------------------------------------------- |
+| `hic`              | Either `bam` or `cram` aligned reads                                             |
+| `pacbio` and `10x` | Either the FASTK `kmer` directory or the unaligned `bam` files                   |
+| `haplotype`        | The Fasta file of an alternative haplotype. Can be repeated in case of polyploid |
+| `genes`            | Annotation `gff3`/`gff3.gz` file (maximum one row)                               |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
@@ -91,7 +106,7 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run sanger-tol/genomenote --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta --assembly GCA_922984935.2 -profile docker
+nextflow run sanger-tol/genomenote --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta --assembly_accession GCA_922984935.2 -profile docker
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -110,7 +125,7 @@ If you wish to repeatedly use the same parameters for multiple runs, rather than
 Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`.
 
 > [!WARNING]
-> Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
+> Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/running/run-pipelines#configuring-pipelines), other infrastructural tweaks (such as output directories), or module arguments (args).
 
 The above pipeline run specified with a params file in yaml format:
 
@@ -124,10 +139,15 @@ with:
 input: "./samplesheet.csv"
 outdir: "./results/"
 fasta: "./genome.fasta"
-assembly: "GCA_922984935.2"
+assembly_accession: "GCA_922984935.2"
 ```
 
-You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
+If you want to populate a genome notes template file with the key-value pairs generated by this pipeline you will need to pass the path to the template file as the "note_template" parameter. Templates may be either docx or xml format.
+See the provided `assets/genome_note_template.docx` for an example
+
+```bash
+   --note_template '/path/to/template'
+```
 
 ### Updating the pipeline
 
@@ -184,7 +204,9 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
 - `apptainer`
   - A generic configuration profile to be used with [Apptainer](https://apptainer.org/)
 - `wave`
-  - A generic configuration profile to enable [Wave](https://seqera.io/wave/) containers. Use together with one of the above (requires Nextflow ` 24.03.0-edge` or later).
+  - A generic configuration profile to enable [Wave](https://seqera.io/wave/) containers. Use together with one of the above (requires Nextflow `24.03.0-edge` or later).
+- `conda`
+  - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter, Charliecloud, or Apptainer.
 - `test`
   - A profile with a minimal configuration for automated testing
   - Includes links to test data so needs no other parameters
@@ -209,19 +231,19 @@ Specify the path to a specific config file (this is a core Nextflow command). Se
 
 Whilst the default requirements set within the pipeline will hopefully work for most people and with most input data, you may find that you want to customise the compute resources that the pipeline requests. Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the pipeline steps, if the job exits with any of the error codes specified [here](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/base.config#L18) it will automatically be resubmitted with higher resources request (2 x original, then 3 x original). If it still fails after the third attempt then the pipeline execution is stopped.
 
-To change the resource requests, please see the [max resources](https://nf-co.re/docs/usage/configuration#max-resources) and [tuning workflow resources](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources) section of the nf-core website.
+To change the resource requests, please see the [max resources](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#set-max-resources) and [customise process resources](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#customize-process-resources) section of the nf-core website.
 
 ### Custom Containers
 
 In some cases, you may wish to change the container or conda environment used by a pipeline steps for a particular tool. By default, nf-core pipelines use containers and software from the [biocontainers](https://biocontainers.pro/) or [bioconda](https://bioconda.github.io/) projects. However, in some cases the pipeline specified version maybe out of date.
 
-To use a different container from the default container or conda environment specified in a pipeline, please see the [updating tool versions](https://nf-co.re/docs/usage/configuration#updating-tool-versions) section of the nf-core website.
+To use a different container from the default container or conda environment specified in a pipeline, please see the [updating tool versions](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#update-tool-versions) section of the nf-core website.
 
 ### Custom Tool Arguments
 
 A pipeline might not always support every possible argument or option of a particular tool used in pipeline. Fortunately, nf-core pipelines provide some freedom to users to insert additional parameters that the pipeline does not include by default.
 
-To learn how to provide additional arguments to a particular tool of the pipeline, please see the [customising tool arguments](https://nf-co.re/docs/usage/configuration#customising-tool-arguments) section of the nf-core website.
+To learn how to provide additional arguments to a particular tool of the pipeline, please see the [customising tool arguments](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#modifying-tool-arguments) section of the nf-core website.
 
 ### nf-core/configs
 
@@ -247,36 +269,4 @@ We recommend adding the following line to your environment to limit this (typica
 
 ```bash
 NXF_OPTS='-Xms1g -Xmx4g'
-```
-
-## For internal Sanger use only
-
-If you wish to run the optional step that writes genome metadata key value-pairs to a genome notes databases you will need to set the parameter "write_to_portal" to true and provide the base url for the REST API that writes to the database.
-
-```bash
-   --write_to_portal_db 'true'
-   --genome_notes_api '[URL for Genome Notes Portal API]'
-```
-
-You will also need to set a nextflow secret to store the API key belonging to your user.
-
-```bash
-  nextflow secrets set TOL_API_KEY '[API key]'
-```
-
-If you want to populate a genome notes template file with the key-value pairs generated by this pipeline you will need to pass the path to the template file as the "note_template" parameter. Templates may be either docx or xml format.
-
-```bash
-   --note_template '[URL for Genome Notes Portal API]'
-```
-
-If you wish to run the optional step that writes the .mcool and .genome files produced by the contact_maps subworkflow to a kubernetes hosted higlass server you will need to set the parameter "upload_higlass_data" to true and provide the configuration information for the kubernetes deployment.
-
-```bash
-   --upload_higlass_data 'true'
-   --higlass_upload_directory  '[Path to ingress directory for kubernetes]'
-   --higlass_data_project_dir '[Directory structure to be used for Higlass data, suggestions is to use /<project-name>/<taxon-group>]'
-   --higlass_deployment_name '[ Name of Higlass Deployment in kubernetes]'
-   --higlass_namespace '[Name of the namespace used for Higlass Deployment in Kubernetes]'
-   --higlass_kubeconfig '[path to kubeconfig file]'
 ```
